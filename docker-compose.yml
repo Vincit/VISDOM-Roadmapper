@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  roadmapper-db:
+    build: ./postgres
+    container_name: roadmapper-db
+    environment:
+      - POSTGRES_DB=roadmapper-db
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+    ports:
+      - "5432:5432"
+
+  roadmapper-server:
+    container_name: roadmapper-server
+    build:
+      context: ./server
+    volumes:
+      - ".:/server"
+      - "/frontend/node_modules"
+    ports:
+      - 5000:5000
+    environment:
+      - DATABASE_CONNECTION_STRING=postgres://test:test@127.0.0.1:5432/roadmapper-db
+
+  roadmapper-frontend:
+    container_name: roadmapper-frontend
+    stdin_open: true
+    build:
+      context: ./frontend
+    volumes:
+      - ".:/frontend"
+      - "/frontend/node_modules"
+    ports:
+      - 3000:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
