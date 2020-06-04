@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "target": "esnext",
+    "rootDir": "./",
+    "outDir": "./build",
+    "baseUrl": ".",
+    "paths": {
+      "objection-password": ["./src/types/objection-password"]
+    }
+  }
+}
