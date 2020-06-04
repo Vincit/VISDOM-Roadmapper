@@ -2,6 +2,7 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { Navbar, Nav } from 'react-bootstrap';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { paths } from '../router/paths';
 
 const Styles = styled.div`
@@ -17,10 +18,10 @@ export const NavBar = () => {
       <Navbar>
         <Navbar.Brand href={paths.home}>VISDOM</Navbar.Brand>
         <Nav>
-          <Nav.Link href={paths.home}>
-            <Trans i18nKey="User" />
+          <Nav.Link as={Link} to={paths.home}>
+            <Trans i18nKey="Home" />
           </Nav.Link>
-          <Nav.Link href={paths.userInfo}>
+          <Nav.Link as={Link} to={paths.userInfo}>
             <Trans i18nKey="UserInfo" />
           </Nav.Link>
         </Nav>
