@@ -11,6 +11,7 @@ import { NavBar } from './components/NavBar';
 import { Router } from './router/Router';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ModalRoot } from './components/ModalRoot';
 
 i18n.use(initReactI18next).init(i18config);
 
@@ -41,6 +42,7 @@ export const App = () => {
             <SideBar />
             <Col>
               <Router />
+              <ModalRoot />
             </Col>
           </FullHeightRow>
         </FullHeightContainer>
