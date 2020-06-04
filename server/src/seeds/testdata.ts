@@ -1,6 +1,6 @@
 import * as Knex from 'knex';
-import User from '../models/user';
-import Roadmap from '../models/roadmap';
+import User from '../api/users/users.model';
+import Roadmap from '../api/roadmaps/roadmaps.model';
 import { Model } from 'objection';
 
 export async function seed(knex: Knex): Promise<any> {
