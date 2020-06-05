@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, CaseReducer } from '@reduxjs/toolkit';
 import {
   RoadmapsState,
   Roadmap,
@@ -104,4 +104,11 @@ export const ADD_RELATED_TASK_FULFILLED = (
   if (parentTask) {
     parentTask.relatedTasks = action.payload.newRelatedTasks;
   }
+};
+
+export const SELECT_CURRENT_ROADMAP: CaseReducer<
+  RoadmapsState,
+  PayloadAction<Number>
+> = (state, action) => {
+  state.selectedRoadmapId = action.payload;
 };

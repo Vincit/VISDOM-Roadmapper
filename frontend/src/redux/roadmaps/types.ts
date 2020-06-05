@@ -1,5 +1,6 @@
 export interface RoadmapsState {
   roadmaps: Roadmap[];
+  selectedRoadmapId?: Number;
 }
 
 export interface Roadmap {
