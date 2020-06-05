@@ -8,5 +8,9 @@ export const english = {
     'Add new task': 'Add new task',
     'Task name': 'Task name',
     Description: 'Description',
+    'Task List': 'Task list',
+    'Search for tasks': 'Search for tasks',
+    'Task description': 'Task description',
+    'No tasks available': 'No tasks available',
   },
 };

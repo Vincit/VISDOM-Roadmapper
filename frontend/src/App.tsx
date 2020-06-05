@@ -31,6 +31,11 @@ const FullHeightRow = styled(Row)`
   height: 100%;
 `;
 
+const ContentColumn = styled(Col)`
+  margin: 0px;
+  padding: 0px;
+`;
+
 export const App = () => {
   return (
     <div className="App">
@@ -40,10 +45,10 @@ export const App = () => {
         <FullHeightContainer fluid>
           <FullHeightRow>
             <SideBar />
-            <Col>
+            <ContentColumn>
               <Router />
               <ModalRoot />
-            </Col>
+            </ContentColumn>
           </FullHeightRow>
         </FullHeightContainer>
       </BrowserRouter>

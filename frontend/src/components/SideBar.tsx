@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Trans } from 'react-i18next';
 import { Nav, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { paths } from '../router/paths';
 
 const Sidebar = styled(Col)`
   display: block;
@@ -15,8 +18,9 @@ export const SideBar = () => {
     <>
       <Sidebar>
         <Nav>
-          <Nav.Link href="#">Link 1</Nav.Link>
-          <Nav.Link href="#">Link 2</Nav.Link>
+          <Nav.Link as={Link} to={paths.taskList}>
+            <Trans i18nKey="Task list" />
+          </Nav.Link>
         </Nav>
       </Sidebar>
     </>
