@@ -15,8 +15,8 @@ const Styles = styled.div``;
 export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
-  const [state, setState] = useState({ name: '', description: '' });
-  const chosenRoadmapId = useSelector<RootState, Number | undefined>(
+  const [formValues, setFormValues] = useState({ name: '', description: '' });
+  const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
   );
 
@@ -27,9 +27,9 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
 
     if (form.checkValidity()) {
       const req: TaskRequest = {
-        name: state.name,
-        description: state.description,
-        parentRoadmap: chosenRoadmapId,
+        name: formValues.name,
+        description: formValues.description,
+        roadmapId: chosenRoadmapId,
       };
 
       dispatch(roadmapsActions.addTask(req));
@@ -39,11 +39,11 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   };
 
   const onNameChange = (name: string) => {
-    setState({ ...state, name });
+    setFormValues({ ...formValues, name });
   };
 
   const onDescriptionChange = (description: string) => {
-    setState({ ...state, description });
+    setFormValues({ ...formValues, description });
   };
 
   return (

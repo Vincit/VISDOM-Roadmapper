@@ -49,6 +49,7 @@ module.exports = {
     'react/jsx-curly-newline': 'off', // conflicts with prettier
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
+    'react/jsx-props-no-spreading': 'off',
   },
   settings: {
     'import/resolver': {

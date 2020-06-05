@@ -5,6 +5,7 @@ import { SHOW_MODAL, HIDE_MODAL } from './reducers';
 const initialState: ModalsState = {
   showModal: false,
   currentModal: ModalTypes.ADD_TASK_MODAL,
+  modalProps: {},
 };
 
 export const modalsSlice = createSlice({

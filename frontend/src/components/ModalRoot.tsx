@@ -29,6 +29,10 @@ export const ModalRoot = () => {
   }, [dispatch]);
 
   return (
-    <>{modalsState.showModal ? <ChosenModal show onClose={onClose} /> : null}</>
+    <>
+      {modalsState.showModal && (
+        <ChosenModal show onClose={onClose} {...modalsState.modalProps} />
+      )}
+    </>
   );
 };
