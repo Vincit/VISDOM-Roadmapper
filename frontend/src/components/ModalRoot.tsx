@@ -7,6 +7,7 @@ import { modalStateSelector } from '../redux/modals/selectors';
 import { RootState } from '../redux/types';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
+/* eslint-disable react/jsx-props-no-spreading */
 
 type ModalTypeToComponent = {
   [K in ModalTypes]: React.FC<ModalProps>;
