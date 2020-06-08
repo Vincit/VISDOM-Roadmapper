@@ -28,7 +28,7 @@ export default class Roadmap extends Model {
         modelClass: Task,
         join: {
           from: 'roadmaps.id',
-          to: 'tasks.roadmap_id',
+          to: 'tasks.roadmapId',
         },
       },
     };

@@ -34,10 +34,7 @@ const deleteRoadmap = async (roadmap: RoadmapRequest) => {
 };
 
 const addTask = async (task: TaskRequest) => {
-  const response = await axios.post(
-    `/roadmaps/${task.parentRoadmap}/tasks`,
-    task,
-  );
+  const response = await axios.post(`/roadmaps/${task.roadmapId}/tasks`, task);
   return response.data as Task;
 };
 

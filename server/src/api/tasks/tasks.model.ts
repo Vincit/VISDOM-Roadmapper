@@ -31,7 +31,7 @@ export default class Task extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Roadmap,
         join: {
-          from: 'tasks.roadmap_id',
+          from: 'tasks.roadmapId',
           to: 'roadmaps.id',
         },
       },

@@ -38,7 +38,7 @@ export const ADD_TASK_FULFILLED = (
   action: PayloadAction<Task>,
 ) => {
   const parent = state.roadmaps.find(
-    (roadmap) => roadmap.id === action.payload.roadmap_id,
+    (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
   parent.tasks.push(action.payload);
 };
@@ -48,7 +48,7 @@ export const DELETE_TASK_FULFILLED = (
   action: PayloadAction<TaskRequest>,
 ) => {
   const parent = state.roadmaps.find(
-    (roadmap) => roadmap.id === action.payload.roadmap_id,
+    (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
   parent.tasks = parent.tasks.filter((task) => task.id !== action.payload.id);
 };

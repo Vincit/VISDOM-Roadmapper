@@ -23,7 +23,7 @@ export async function up(knex: Knex): Promise<any> {
       table.text('description');
 
       table
-        .integer('roadmap_id')
+        .integer('roadmapId')
         .unsigned()
         .notNullable()
         .references('id')

@@ -21,7 +21,7 @@ export interface Task {
   id: number;
   name: string;
   description: string;
-  roadmap_id: number;
+  roadmapId: number;
   ratings: Taskrating[];
   relatedTasks: number[];
 }
@@ -30,7 +30,7 @@ export interface TaskRequest {
   id?: number;
   name?: string;
   description?: string;
-  roadmap_id?: number;
+  roadmapId?: number;
   relatedTasks?: TaskRequest[];
 }
 
