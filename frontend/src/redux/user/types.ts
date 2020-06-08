@@ -1,8 +1,8 @@
 export interface UserInfo {
-  name: String;
-  email: String;
-  uuid: String;
-  group: String;
+  name: string;
+  email: string;
+  uuid: string;
+  group: string;
 }
 
 export interface UserState {

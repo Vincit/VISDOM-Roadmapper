@@ -4,8 +4,8 @@ import TaskRating from '../taskratings/taskratings.model';
 
 export default class Task extends Model {
   id!: number;
-  name!: String;
-  description!: String;
+  name!: string;
+  description!: string;
 
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];

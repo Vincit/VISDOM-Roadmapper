@@ -3,8 +3,8 @@ import Task from './../tasks/tasks.model';
 
 export default class Roadmap extends Model {
   id!: number;
-  name!: String;
-  description!: String;
+  name!: string;
+  description!: string;
 
   tasks?: Task[];
 

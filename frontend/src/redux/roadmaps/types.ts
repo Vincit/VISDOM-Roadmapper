@@ -1,36 +1,36 @@
 export interface RoadmapsState {
   roadmaps: Roadmap[];
-  selectedRoadmapId?: Number;
+  selectedRoadmapId?: number;
 }
 
 export interface Roadmap {
-  id: Number;
-  name: String;
-  description: String;
+  id: number;
+  name: string;
+  description: string;
   tasks: Task[];
 }
 
 export interface RoadmapRequest {
-  id?: Number;
-  name?: String;
-  description?: String;
+  id?: number;
+  name?: string;
+  description?: string;
   tasks?: Task[];
 }
 
 export interface Task {
-  id: Number;
-  name: String;
-  description: String;
-  parentRoadmap: Number;
+  id: number;
+  name: string;
+  description: string;
+  roadmap_id: number;
   ratings: Taskrating[];
-  relatedTasks: Number[];
+  relatedTasks: number[];
 }
 
 export interface TaskRequest {
-  id?: Number;
-  name?: String;
-  description?: String;
-  parentRoadmap?: Number;
+  id?: number;
+  name?: string;
+  description?: string;
+  roadmap_id?: number;
   relatedTasks?: TaskRequest[];
 }
 
@@ -40,27 +40,27 @@ export const enum TaskRatingDimension {
 }
 
 export interface Taskrating {
-  id: Number;
+  id: number;
   dimension: TaskRatingDimension;
-  value: Number;
-  createdByUser: Number;
-  parentTask: Number;
+  value: number;
+  createdByUser: number;
+  parentTask: number;
 }
 
 export interface TaskratingRequest {
-  id?: Number;
+  id?: number;
   dimension?: TaskRatingDimension;
-  value?: Number;
-  createdByUser?: Number;
-  parentTask?: Number;
+  value?: number;
+  createdByUser?: number;
+  parentTask?: number;
 }
 
 export interface RelatedtaskRequest {
-  fromTask: Number;
-  toTask: Number;
+  fromTask: number;
+  toTask: number;
 }
 
 export interface RelatedtaskResponsePayload {
-  newRelatedTasks: Number[];
-  parentTaskId: Number;
+  newRelatedTasks: number[];
+  parentTaskId: number;
 }

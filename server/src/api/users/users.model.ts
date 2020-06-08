@@ -4,10 +4,10 @@ import objectionPassword from 'objection-password';
 const Password = objectionPassword();
 export default class User extends Password(Model) {
   id!: number;
-  username!: String;
-  email!: String;
-  group!: String;
-  password!: String;
+  username!: string;
+  email!: string;
+  group!: string;
+  password!: string;
 
   static tableName = 'users';
 

@@ -4,7 +4,7 @@ import { Roadmap } from './types';
 export const roadmapsSelector = (state: RootState): Roadmap[] =>
   state.roadmaps.roadmaps;
 
-export const chosenRoadmapIdSelector = (state: RootState): Number | undefined =>
+export const chosenRoadmapIdSelector = (state: RootState): number | undefined =>
   state.roadmaps.selectedRoadmapId;
 
 export const chosenRoadmapSelector = (state: RootState): Roadmap | undefined =>

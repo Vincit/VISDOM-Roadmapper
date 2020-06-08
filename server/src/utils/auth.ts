@@ -6,7 +6,7 @@ const fetchUserById = async (id: number) => {
   return await User.query().findById(id).first();
 };
 
-const fetchUserByName = async (username: String) => {
+const fetchUserByName = async (username: string) => {
   return await User.query().modify('searchByUsernameExact', username).first();
 };
 
