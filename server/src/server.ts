@@ -12,6 +12,7 @@ import session from 'koa-session';
 import passport from 'koa-passport';
 import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
+import cors from '@koa/cors';
 Dotenv.config();
 
 const createServer = async () => {
@@ -22,6 +23,7 @@ const createServer = async () => {
 
   app.keys = [process.env.SESSION_SECRET!];
   app.use(session({}, app));
+  app.use(cors());
   app.use(passport.initialize());
   app.use(passport.session());
 
