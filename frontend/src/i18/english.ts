@@ -12,5 +12,10 @@ export const english = {
     'Search for tasks': 'Search for tasks',
     'Task description': 'Task description',
     'No tasks available': 'No tasks available',
+    Login: 'Login',
+    Username: 'Username',
+    Password: 'Password',
+    'Not logged in': 'Not logged in',
+    'Invalid username or password': 'Invalid username or password',
   },
 };

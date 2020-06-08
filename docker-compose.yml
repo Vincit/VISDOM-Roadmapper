@@ -27,6 +27,8 @@ services:
       - KNEX_DATABASE=roadmapper-db
       - KNEX_USER=testuser
       - KNEX_PASSWORD=testpassword
+      - SESSION_SECRET=!top!secret!session!secret!
+      - CORS_ORIGIN=http://localhost:3000
       - SERVER_PORT=5000
 
   roadmapper-frontend:

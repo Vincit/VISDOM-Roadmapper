@@ -23,7 +23,12 @@ const createServer = async () => {
 
   app.keys = [process.env.SESSION_SECRET!];
   app.use(session({}, app));
-  app.use(cors());
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
+    }),
+  );
   app.use(passport.initialize());
   app.use(passport.session());
 

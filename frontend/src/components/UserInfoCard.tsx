@@ -1,30 +1,52 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { Trans } from 'react-i18next';
 import { UserInfo } from '../redux/user/types';
 import { StoreDispatchType } from '../redux/index';
-import { getUserInfo } from '../redux/user/actions';
+import { modalsActions } from '../redux/modals';
+import { userInfoSelector, loggedInSelector } from '../redux/user/selectors';
+import { ModalTypes } from '../redux/modals/types';
 import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
 
 export const UserInfoCard = () => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const userInfo = useSelector<RootState, UserInfo>(
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
+    shallowEqual,
+  );
+  const loggedIn = useSelector<RootState, boolean>(
+    loggedInSelector,
     shallowEqual,
   );
 
   useEffect(() => {
-    dispatch(getUserInfo());
-  }, [dispatch]);
-
-  const { name, email, group, uuid } = userInfo;
+    if (!loggedIn) {
+      dispatch(
+        modalsActions.showModal({
+          modalType: ModalTypes.LOGIN_MODAL,
+          modalProps: {
+            username: 'BusinessPerson1',
+            password: 'test',
+          },
+        }),
+      );
+    }
+  }, [dispatch, loggedIn]);
 
   return (
     <div>
-      <div>{name}</div>
-      <div>{email}</div>
-      <div>{group}</div>
-      <div>{uuid}</div>
+      {userInfo && loggedIn ? (
+        <>
+          <div>{userInfo.username}</div>
+          <div>{userInfo.email}</div>
+          <div>{userInfo.group}</div>
+          <div>{userInfo.id}</div>
+        </>
+      ) : (
+        <div>
+          <Trans i18nKey="Not logged in" />
+        </div>
+      )}
     </div>
   );
 };

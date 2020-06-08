@@ -7,7 +7,7 @@ import { modalStateSelector } from '../redux/modals/selectors';
 import { RootState } from '../redux/types';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
-/* eslint-disable react/jsx-props-no-spreading */
+import { LoginModal } from './LoginModal';
 
 type ModalTypeToComponent = {
   [K in ModalTypes]: React.FC<ModalProps>;
@@ -15,6 +15,7 @@ type ModalTypeToComponent = {
 
 const Modals: ModalTypeToComponent = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
+  [ModalTypes.LOGIN_MODAL]: LoginModal,
 };
 
 export const ModalRoot = () => {

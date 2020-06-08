@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
   Roadmap,
@@ -10,10 +10,12 @@ import {
   RelatedtaskRequest,
   RelatedtaskResponsePayload,
 } from '../redux/roadmaps/types';
+import { UserLoginRequest, UserInfo } from '../redux/user/types';
 
 dotenv.config();
-const axiosConfig = {
+const axiosConfig: AxiosRequestConfig = {
   baseURL: process.env.REACT_APP_API_BASE_URL,
+  withCredentials: true,
 };
 
 const axios = Axios.create(axiosConfig);
@@ -69,6 +71,21 @@ const addRelatedTask = async (relatedTaskRequest: RelatedtaskRequest) => {
   } as RelatedtaskResponsePayload;
 };
 
+const login = async (loginRequest: UserLoginRequest) => {
+  const response = await axios.post(`/users/login`, loginRequest);
+  return response.status === 200;
+};
+
+const logout = async () => {
+  const response = await axios.get(`/users/logout`);
+  return response.status === 200;
+};
+
+const getCurrentUserInfo = async () => {
+  const response = await axios.get(`/users/whoami`);
+  return response.data as UserInfo;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -78,4 +95,7 @@ export const api = {
   addTaskrating,
   deleteTaskrating,
   addRelatedTask,
+  login,
+  logout,
+  getCurrentUserInfo,
 };

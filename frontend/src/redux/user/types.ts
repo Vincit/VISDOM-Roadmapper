@@ -1,15 +1,20 @@
 export interface UserInfo {
-  name: string;
+  username: string;
   email: string;
-  uuid: string;
+  id: number;
   group: string;
 }
 
 export interface UserState {
-  info: UserInfo;
-  loggedIn: false;
+  info?: UserInfo;
+  loggedIn: boolean;
 }
 
 export interface GetUserInfoError {
   message: string;
+}
+
+export interface UserLoginRequest {
+  username: string;
+  password: string;
 }

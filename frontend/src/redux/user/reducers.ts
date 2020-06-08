@@ -7,3 +7,17 @@ export const GET_USER_INFO_FULFILLED = (
 ) => {
   state.info = action.payload;
 };
+
+export const LOGIN_FULFILLED = (state: UserState) => {
+  state.loggedIn = true;
+};
+
+export const LOGOUT_FULFILLED = (state: UserState) => {
+  state.loggedIn = false;
+  state.info = {
+    username: '',
+    email: '',
+    id: -1,
+    group: '',
+  };
+};
