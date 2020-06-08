@@ -10,7 +10,7 @@ export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postTaskratings: RouteHandlerFnc = async (ctx, _) => {
-  ctx.body = await Taskrating.query().insert(ctx.request.body);
+  ctx.body = await Taskrating.query().insertAndFetch(ctx.request.body);
 };
 
 export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {

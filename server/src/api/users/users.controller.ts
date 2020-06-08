@@ -22,7 +22,7 @@ export const getUsers: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postUsers: RouteHandlerFnc = async (ctx, _) => {
-  const inserted = await User.query().insert(ctx.request.body);
+  const inserted = await User.query().insertAndFetch(ctx.request.body);
 
   ctx.body = inserted;
 };

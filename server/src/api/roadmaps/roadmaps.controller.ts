@@ -25,7 +25,7 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
-  ctx.body = await Roadmap.query().insert(ctx.request.body);
+  ctx.body = await Roadmap.query().insertAndFetch(ctx.request.body);
 };
 
 export const patchRoadmaps: RouteHandlerFnc = async (ctx, _) => {
@@ -50,7 +50,7 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 export const postRoadmapsTasks: RouteHandlerFnc = async (ctx, _) => {
   const child = await Roadmap.relatedQuery('tasks')
     .for(ctx.params.id)
-    .insert(ctx.request.body);
+    .insertAndFetch(ctx.request.body);
 
   ctx.body = child;
 };

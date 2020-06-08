@@ -20,7 +20,7 @@ export const getTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postTasks: RouteHandlerFnc = async (ctx, _) => {
-  ctx.body = await Task.query().insert(ctx.request.body);
+  ctx.body = await Task.query().insertAndFetch(ctx.request.body);
 };
 
 export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
@@ -45,7 +45,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
 export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
   const child = await Task.relatedQuery('ratings')
     .for(ctx.params.id)
-    .insert(ctx.request.body);
+    .insertAndFetch(ctx.request.body);
 
   ctx.body = child;
 };

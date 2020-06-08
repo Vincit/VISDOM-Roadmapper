@@ -21,7 +21,7 @@ export default class Task extends Model {
       id: { type: 'integer' },
       name: { type: 'string', minLength: 1, maxLength: 255 },
       description: { type: 'string', minLength: 1, maxLength: 1000 },
-      roadmap_id: { type: 'number' },
+      roadmapId: { type: 'integer' },
     },
   };
 
