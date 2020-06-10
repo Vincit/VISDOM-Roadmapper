@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { ModalProps } from './types';
 import { TaskRequest } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
@@ -16,6 +16,8 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [formValues, setFormValues] = useState({ name: '', description: '' });
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
   );
@@ -32,9 +34,16 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
         roadmapId: chosenRoadmapId,
       };
 
-      dispatch(roadmapsActions.addTask(req));
-
-      onClose();
+      dispatch(roadmapsActions.addTask(req)).then((res) => {
+        if (roadmapsActions.addTask.rejected.match(res)) {
+          setHasError(true);
+          if (res.payload) {
+            setErrorMessage(res.payload.message);
+          }
+        } else {
+          onClose();
+        }
+      });
     }
   };
 
@@ -76,6 +85,14 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
                 onChange={(e) => onDescriptionChange(e.currentTarget.value)}
               />
             </Form.Group>
+            <Alert
+              show={hasError}
+              variant="danger"
+              dismissible
+              onClose={() => setHasError(false)}
+            >
+              {errorMessage}
+            </Alert>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={onClose}>

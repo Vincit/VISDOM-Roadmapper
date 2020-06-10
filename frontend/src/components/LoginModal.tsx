@@ -3,11 +3,9 @@ import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { SerializedError, PayloadAction } from '@reduxjs/toolkit';
 import { ModalProps } from './types';
 import { StoreDispatchType } from '../redux';
 import { userActions } from '../redux/user';
-import { UserLoginRequest } from '../redux/user/types';
 
 const Styles = styled.div``;
 
@@ -41,24 +39,17 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           username: formValues.username,
           password: formValues.password,
         }),
-      ).then((result) => {
-        if (!result.payload) {
-          // TODO make this neater somehow
-          const resultCastType = result as PayloadAction<
-            unknown,
-            string,
-            {
-              arg: UserLoginRequest;
-              requestId: string;
-              aborted: boolean;
-              condition: boolean;
-            },
-            SerializedError
-          >;
-          if (resultCastType.error && resultCastType.error.message) {
-            setErrorMessage(resultCastType.error.message);
-          }
+      ).then((res) => {
+        // Redux-toolkit way to check if the thunk resolved or rejected
+        if (userActions.login.rejected.match(res)) {
           setHasError(true);
+          if (res.payload) {
+            if (res.payload.response?.status === 401) {
+              setErrorMessage(t('Invalid username or password'));
+            } else {
+              setErrorMessage(res.payload.message);
+            }
+          }
         } else {
           onClose();
         }
