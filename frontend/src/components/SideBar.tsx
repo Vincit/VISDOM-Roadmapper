@@ -21,6 +21,9 @@ export const SideBar = () => {
           <Nav.Link as={Link} to={paths.taskList}>
             <Trans i18nKey="Task list" />
           </Nav.Link>
+          <Nav.Link as={Link} to={paths.ratings}>
+            <Trans i18nKey="Rating" />
+          </Nav.Link>
         </Nav>
       </Sidebar>
     </>

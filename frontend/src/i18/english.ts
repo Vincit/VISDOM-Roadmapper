@@ -17,5 +17,10 @@ export const english = {
     Password: 'Password',
     'Not logged in': 'Not logged in',
     'Invalid username or password': 'Invalid username or password',
+    'How to rate?': 'How to rate?',
+    'Sort by': 'Sort by',
+    'Your ratings': 'Your ratings',
+    "Team's overall ratings": "Team's overall ratings",
+    'Not yet rated:': 'Not yet rated:',
   },
 };
