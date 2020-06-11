@@ -13,10 +13,11 @@ import { roadmapsActions } from '../redux/roadmaps/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
 
-const Line = styled.hr`
-  background-color: rgba(0, 0, 0, 1);
-  margin-top: 0;
-  margin-bottom: 0;
+const Styles = styled.div`
+  .bottomborder {
+    border: 0px;
+    border-bottom: 1px solid black;
+  }
 `;
 
 export const TaskListPage = () => {
@@ -59,7 +60,7 @@ export const TaskListPage = () => {
   const renderTopbar = () => {
     return (
       <>
-        <Navbar className="justify-content-start">
+        <Navbar className="justify-content-start bottomborder">
           <Form className="w-100">
             <Form.Row>
               <Col>
@@ -113,14 +114,13 @@ export const TaskListPage = () => {
   };
 
   return (
-    <>
+    <Styles>
       {renderTopbar()}
-      <Line />
       {getAndSearchTasks().length > 0 ? (
         renderTasksTable()
       ) : (
         <Trans i18nKey="No tasks available" />
       )}
-    </>
+    </Styles>
   );
 };

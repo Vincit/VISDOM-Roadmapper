@@ -15,12 +15,6 @@ import { ModalRoot } from './components/ModalRoot';
 
 i18n.use(initReactI18next).init(i18config);
 
-const Line = styled.hr`
-  background-color: rgba(0, 0, 0, 1);
-  margin-top: 0;
-  margin-bottom: 0;
-`;
-
 const FullHeightContainer = styled(Container)`
   min-height: 100%;
   height: 100%;
@@ -41,7 +35,6 @@ export const App = () => {
     <div className="App">
       <BrowserRouter>
         <NavBar />
-        <Line />
         <FullHeightContainer fluid>
           <FullHeightRow>
             <SideBar />

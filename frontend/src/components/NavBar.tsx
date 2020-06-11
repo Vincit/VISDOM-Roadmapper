@@ -10,12 +10,17 @@ const Styles = styled.div`
     width: 100%;
     justify-content: flex-end;
   }
+
+  .bottomborder {
+    border: 0px;
+    border-bottom: 1px solid black;
+  }
 `;
 
 export const NavBar = () => {
   return (
     <Styles>
-      <Navbar>
+      <Navbar className="bottomborder">
         <Navbar.Brand href={paths.home}>VISDOM</Navbar.Brand>
         <Nav>
           <Nav.Link as={Link} to={paths.home}>
