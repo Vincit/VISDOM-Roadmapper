@@ -1,4 +1,9 @@
-import { Model, StringReturningMethod, Modifiers } from 'objection';
+import {
+  Model,
+  StringReturningMethod,
+  Modifiers,
+  QueryContext,
+} from 'objection';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
 
@@ -6,6 +11,9 @@ export default class Task extends Model {
   id!: number;
   name!: string;
   description!: string;
+  requiredBy!: string;
+  completed!: boolean;
+  createdAt!: string;
 
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
@@ -22,8 +30,15 @@ export default class Task extends Model {
       name: { type: 'string', minLength: 1, maxLength: 255 },
       description: { type: 'string', minLength: 1, maxLength: 1000 },
       roadmapId: { type: 'integer' },
+      requiredBy: { type: 'string' },
+      completed: { type: 'boolean' },
     },
   };
+
+  async $beforeInsert(context: QueryContext): Promise<void> {
+    await super.$beforeInsert(context);
+    this.createdAt = new Date().toJSON();
+  }
 
   static get relationMappings() {
     return {

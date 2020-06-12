@@ -22,6 +22,9 @@ export interface Task {
   name: string;
   description: string;
   roadmapId: number;
+  requiredBy: string;
+  createdAt: Date;
+  completed: boolean;
   ratings: Taskrating[];
   relatedTasks: number[];
 }
@@ -30,6 +33,8 @@ export interface TaskRequest {
   id?: number;
   name?: string;
   description?: string;
+  completed?: boolean;
+  requiredBy?: string;
   roadmapId?: number;
   relatedTasks?: TaskRequest[];
 }
@@ -43,6 +48,7 @@ export interface Taskrating {
   id: number;
   dimension: TaskRatingDimension;
   value: number;
+  comment: string;
   createdByUser: number;
   parentTask: number;
 }
@@ -51,6 +57,7 @@ export interface TaskratingRequest {
   id?: number;
   dimension?: TaskRatingDimension;
   value?: number;
+  comment?: string;
   createdByUser?: number;
   parentTask?: number;
 }

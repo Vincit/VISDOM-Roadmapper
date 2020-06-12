@@ -15,7 +15,11 @@ const Styles = styled.div``;
 export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
-  const [formValues, setFormValues] = useState({ name: '', description: '' });
+  const [formValues, setFormValues] = useState({
+    name: '',
+    description: '',
+    requiredBy: '',
+  });
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
@@ -32,6 +36,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
         name: formValues.name,
         description: formValues.description,
         roadmapId: chosenRoadmapId,
+        requiredBy: formValues.requiredBy,
       };
 
       dispatch(roadmapsActions.addTask(req)).then((res) => {
@@ -55,6 +60,10 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
     setFormValues({ ...formValues, description });
   };
 
+  const onRequiredByChange = (requiredBy: string) => {
+    setFormValues({ ...formValues, requiredBy });
+  };
+
   return (
     <Modal show onHide={onClose}>
       <Styles>
@@ -65,7 +74,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Group controlId="name">
+            <Form.Group>
               <Form.Control
                 required
                 name="name"
@@ -75,7 +84,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
               />
             </Form.Group>
 
-            <Form.Group controlId="description">
+            <Form.Group>
               <Form.Control
                 required
                 as="textarea"
@@ -83,6 +92,16 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
                 id="description"
                 placeholder={t('Description')}
                 onChange={(e) => onDescriptionChange(e.currentTarget.value)}
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Control
+                required
+                name="requiredby"
+                id="requiredby"
+                placeholder={t('Required by')}
+                onChange={(e) => onRequiredByChange(e.currentTarget.value)}
               />
             </Form.Group>
             <Alert

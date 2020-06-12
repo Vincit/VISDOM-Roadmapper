@@ -21,6 +21,9 @@ export async function up(knex: Knex): Promise<any> {
       table.increments('id').primary();
       table.string('name', 250);
       table.text('description');
+      table.string('requiredBy', 75).defaultTo('');
+      table.boolean('completed').defaultTo(false);
+      table.timestamp('createdAt');
 
       table
         .integer('roadmapId')
@@ -35,6 +38,7 @@ export async function up(knex: Knex): Promise<any> {
       table.increments('id').primary();
       table.integer('dimension');
       table.float('value').unsigned();
+      table.text('comment').defaultTo('');
 
       table
         .integer('parentTask')

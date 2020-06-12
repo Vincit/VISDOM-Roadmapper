@@ -3,6 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { Navbar, Form, Button, Col, Table } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { Search } from 'react-bootstrap-icons';
 import { RootState } from '../redux/types';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
@@ -18,6 +19,12 @@ const Styles = styled.div`
     border: 0px;
     border-bottom: 1px solid black;
   }
+`;
+
+const SearchBarIcon = styled(Search)`
+  position: absolute;
+  top: 12px;
+  right: 16px;
 `;
 
 export const TaskListPage = () => {
@@ -68,7 +75,9 @@ export const TaskListPage = () => {
                   <Form.Control
                     placeholder={t('Search for tasks')}
                     onChange={(e) => onSearchChange(e.currentTarget.value)}
+                    className="glyphicon glyphicon-search"
                   />
+                  <SearchBarIcon />
                 </Form.Group>
               </Col>
               <Col className="d-flex justify-content-end">
@@ -91,10 +100,19 @@ export const TaskListPage = () => {
         <thead>
           <tr>
             <th>
+              <Trans i18nKey="Status" />
+            </th>
+            <th>
               <Trans i18nKey="Task name" />
             </th>
             <th>
               <Trans i18nKey="Task description" />
+            </th>
+            <th>
+              <Trans i18nKey="Required by" />
+            </th>
+            <th>
+              <Trans i18nKey="Created at" />
             </th>
           </tr>
         </thead>
@@ -106,6 +124,9 @@ export const TaskListPage = () => {
               name={task.name}
               roadmapId={task.roadmapId}
               description={task.description}
+              completed={task.completed}
+              createdAt={new Date(task.createdAt).toLocaleDateString()}
+              requiredBy={task.requiredBy}
             />
           ))}
         </tbody>

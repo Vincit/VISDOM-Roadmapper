@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Button } from 'react-bootstrap';
+import { CheckAll } from 'react-bootstrap-icons';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps/index';
 
@@ -9,6 +10,9 @@ interface TableTaskRowProps {
   name: string;
   description: string;
   roadmapId: number;
+  completed: boolean;
+  createdAt: string;
+  requiredBy: string;
 }
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({
@@ -16,6 +20,9 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({
   name,
   description,
   roadmapId,
+  completed,
+  requiredBy,
+  createdAt,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
 
@@ -25,8 +32,13 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({
 
   return (
     <tr>
+      <td>
+        {completed ? <CheckAll /> : <span aria-hidden="true">&times;</span>}
+      </td>
       <td>{name}</td>
       <td>{description}</td>
+      <td>{requiredBy || 'N/A'}</td>
+      <td>{createdAt}</td>
       <td>
         <Button
           size="sm"

@@ -23,6 +23,7 @@ const createTestRoadmap = async () => {
         '#id': 'task1',
         name: 'Test task 1',
         description: 'Test desc 1',
+        requiredBy: 'Business',
         ratings: [
           {
             createdBy: {
@@ -43,6 +44,7 @@ const createTestRoadmap = async () => {
       {
         name: 'Test task 2',
         description: 'Test desc 2',
+        requiredBy: 'Customers',
         relatedTasks: [
           {
             '#ref': 'task1',

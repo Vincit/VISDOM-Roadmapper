@@ -22,5 +22,7 @@ export const english = {
     'Your ratings': 'Your ratings',
     "Team's overall ratings": "Team's overall ratings",
     'Not yet rated:': 'Not yet rated:',
+    Status: 'Status',
+    'Required by': 'Required by',
   },
 };
