@@ -32,6 +32,7 @@ export default class Task extends Model {
       roadmapId: { type: 'integer' },
       requiredBy: { type: 'string' },
       completed: { type: 'boolean' },
+      createdAt: { type: 'string' },
     },
   };
 

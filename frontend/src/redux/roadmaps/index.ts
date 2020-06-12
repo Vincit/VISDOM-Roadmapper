@@ -63,4 +63,5 @@ export const roadmapsActions = {
   addRoadmap,
   getRoadmaps,
   getPublicUsers,
+  patchTask,
 };

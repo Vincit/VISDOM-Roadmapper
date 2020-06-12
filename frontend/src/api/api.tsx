@@ -28,6 +28,7 @@ const getRoadmaps = async () => {
 
 const addRoadmap = async (roadmap: RoadmapRequest) => {
   const response = await axios.post('/roadmaps', roadmap);
+  if (!response.data.tasks) response.data.tasks = [];
   return response.data as Roadmap;
 };
 
@@ -38,6 +39,8 @@ const deleteRoadmap = async (roadmap: RoadmapRequest) => {
 
 const addTask = async (task: TaskRequest) => {
   const response = await axios.post(`/roadmaps/${task.roadmapId}/tasks`, task);
+  if (!response.data.ratings) response.data.ratings = [];
+  if (!response.data.relatedTasks) response.data.relatedTasks = [];
   return response.data as Task;
 };
 
@@ -109,9 +112,6 @@ export const api = {
   login,
   logout,
   getCurrentUserInfo,
-<<<<<<< HEAD
   patchTask,
-=======
   getPublicUsers,
->>>>>>> 34fc4a8... Added actions to get public user data, added "Required by" field to add task modal
 };

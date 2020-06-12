@@ -1,7 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 import { Button } from 'react-bootstrap';
-import { CheckAll } from 'react-bootstrap-icons';
+import { TrashFill, CheckCircle, Circle } from 'react-bootstrap-icons';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps/index';
 
@@ -11,9 +12,13 @@ interface TableTaskRowProps {
   description: string;
   roadmapId: number;
   completed: boolean;
-  createdAt: string;
+  createdAt: Date;
   requiredBy: string;
 }
+
+const ClickableTd = styled.td`
+  cursor: pointer;
+`;
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({
   id,
@@ -30,15 +35,19 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({
     dispatch(roadmapsActions.deleteTask({ id, roadmapId }));
   };
 
+  const toggleTaskCompleted = () => {
+    dispatch(roadmapsActions.patchTask({ id, completed: !completed }));
+  };
+
   return (
     <tr>
-      <td>
-        {completed ? <CheckAll /> : <span aria-hidden="true">&times;</span>}
-      </td>
+      <ClickableTd onClick={() => toggleTaskCompleted()}>
+        {completed ? <CheckCircle /> : <Circle />}
+      </ClickableTd>
       <td>{name}</td>
       <td>{description}</td>
-      <td>{requiredBy || 'N/A'}</td>
-      <td>{createdAt}</td>
+      <td>{requiredBy || '-'}</td>
+      <td>{createdAt.toLocaleDateString()}</td>
       <td>
         <Button
           size="sm"
@@ -46,7 +55,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({
           aria-label="Delete task"
           onClick={() => deleteTask()}
         >
-          <span aria-hidden="true">&times;</span>
+          <TrashFill />
         </Button>
       </td>
     </tr>
