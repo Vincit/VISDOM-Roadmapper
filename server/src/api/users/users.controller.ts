@@ -4,19 +4,7 @@ import passport from 'passport';
 
 export const getUsers: RouteHandlerFnc = async (ctx, _) => {
   const query = User.query();
-
-  if (ctx.query.select) {
-    query.select(ctx.query.select);
-  }
-
-  if (ctx.query.username) {
-    query.modify('searchByUsernamePartial', ctx.query.username);
-  }
-
-  if (ctx.query.orderby) {
-    query.orderBy(ctx.query.orderby);
-  }
-
+  query.select('username', 'group');
   ctx.body = await query;
 };
 
