@@ -8,6 +8,7 @@ import {
   Taskrating,
   TaskratingRequest,
   RelatedtaskResponsePayload,
+  PublicUser,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -15,6 +16,13 @@ export const GET_ROADMAPS_FULFILLED = (
   action: PayloadAction<Roadmap[]>,
 ) => {
   state.roadmaps = action.payload;
+};
+
+export const GET_PUBLIC_USERS_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<PublicUser[]>,
+) => {
+  state.allUsers = action.payload;
 };
 
 export const ADD_ROADMAP_FULFILLED = (

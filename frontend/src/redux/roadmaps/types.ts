@@ -1,6 +1,12 @@
 export interface RoadmapsState {
   roadmaps: Roadmap[];
   selectedRoadmapId?: number;
+  allUsers: PublicUser[];
+}
+
+export interface PublicUser {
+  username: string;
+  group: string;
 }
 
 export interface Roadmap {

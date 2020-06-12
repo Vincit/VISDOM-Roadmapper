@@ -9,8 +9,21 @@ import {
   Roadmap,
   Task,
   RelatedtaskResponsePayload,
+  PublicUser,
 } from './types';
 import { api } from '../../api/api';
+
+export const getPublicUsers = createAsyncThunk<
+  PublicUser[],
+  void,
+  { rejectValue: AxiosError }
+>('roadmaps/getPublicUsers', async (_, thunkAPI) => {
+  try {
+    return await api.getPublicUsers();
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
 
 export const getRoadmaps = createAsyncThunk<
   Roadmap[],

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
@@ -7,7 +7,10 @@ import { ModalProps } from './types';
 import { TaskRequest } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
-import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import {
+  chosenRoadmapIdSelector,
+  userGroupsSelector,
+} from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps/index';
 
 const Styles = styled.div``;
@@ -25,6 +28,14 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
   );
+  const userGroups = useSelector<RootState, string[]>(
+    userGroupsSelector,
+    shallowEqual,
+  );
+
+  useEffect(() => {
+    dispatch(roadmapsActions.getPublicUsers());
+  }, [dispatch]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -80,6 +91,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
                 name="name"
                 id="name"
                 placeholder={t('Task name')}
+                value={formValues.name}
                 onChange={(e) => onNameChange(e.currentTarget.value)}
               />
             </Form.Group>
@@ -91,18 +103,23 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
                 name="description"
                 id="description"
                 placeholder={t('Description')}
+                value={formValues.description}
                 onChange={(e) => onDescriptionChange(e.currentTarget.value)}
               />
             </Form.Group>
-
             <Form.Group>
               <Form.Control
                 required
-                name="requiredby"
-                id="requiredby"
-                placeholder={t('Required by')}
+                as="select"
                 onChange={(e) => onRequiredByChange(e.currentTarget.value)}
-              />
+              >
+                <option disabled selected>
+                  Required by
+                </option>
+                {userGroups.map((group) => (
+                  <option key={group}>{group}</option>
+                ))}
+              </Form.Control>
             </Form.Group>
             <Alert
               show={hasError}

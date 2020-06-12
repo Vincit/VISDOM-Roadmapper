@@ -10,6 +10,7 @@ import {
   deleteTaskrating,
   addRelatedtask,
   patchTask,
+  getPublicUsers,
 } from './actions';
 import {
   GET_ROADMAPS_FULFILLED,
@@ -22,11 +23,13 @@ import {
   ADD_RELATED_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
   PATCH_TASK_FULFILLED,
+  GET_PUBLIC_USERS_FULFILLED,
 } from './reducers';
 
 const initialState: RoadmapsState = {
   roadmaps: [],
   selectedRoadmapId: undefined,
+  allUsers: [],
 };
 
 export const roadmapsSlice = createSlice({
@@ -45,6 +48,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(deleteTaskrating.fulfilled, DELETE_TASKRATING_FULFILLED);
     builder.addCase(addRelatedtask.fulfilled, ADD_RELATED_TASK_FULFILLED);
     builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
+    builder.addCase(getPublicUsers.fulfilled, GET_PUBLIC_USERS_FULFILLED);
   },
 });
 
@@ -58,4 +62,5 @@ export const roadmapsActions = {
   deleteRoadmap,
   addRoadmap,
   getRoadmaps,
+  getPublicUsers,
 };

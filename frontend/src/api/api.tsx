@@ -9,6 +9,7 @@ import {
   Taskrating,
   RelatedtaskRequest,
   RelatedtaskResponsePayload,
+  PublicUser,
 } from '../redux/roadmaps/types';
 import { UserLoginRequest, UserInfo } from '../redux/user/types';
 
@@ -91,6 +92,11 @@ const getCurrentUserInfo = async () => {
   return response.data as UserInfo;
 };
 
+const getPublicUsers = async () => {
+  const response = await axios.get(`/users`);
+  return response.data as PublicUser[];
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -103,5 +109,9 @@ export const api = {
   login,
   logout,
   getCurrentUserInfo,
+<<<<<<< HEAD
   patchTask,
+=======
+  getPublicUsers,
+>>>>>>> 34fc4a8... Added actions to get public user data, added "Required by" field to add task modal
 };
