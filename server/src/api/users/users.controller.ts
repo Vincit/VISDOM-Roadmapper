@@ -1,7 +1,6 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
 import passport from 'passport';
-import { Context } from 'koa';
 
 export const getUsers: RouteHandlerFnc = async (ctx, _) => {
   const query = User.query();
@@ -70,9 +69,7 @@ export const logoutUser: RouteHandlerFnc = async (ctx, _) => {
 
 export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.isAuthenticated()) {
-    const userCopy = { ...ctx.state.user };
-    delete userCopy.password;
-    ctx.body = userCopy;
+    ctx.body = ctx.state.user;
   } else {
     ctx.status = 401;
   }
