@@ -60,6 +60,18 @@ export const addTask = createAsyncThunk<
   }
 });
 
+export const patchTask = createAsyncThunk<
+  Task,
+  TaskRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchTask', async (task: TaskRequest, thunkAPI) => {
+  try {
+    return await api.patchTask(task);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
 export const deleteTask = createAsyncThunk<
   TaskRequest,
   TaskRequest,

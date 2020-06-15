@@ -40,6 +40,11 @@ const addTask = async (task: TaskRequest) => {
   return response.data as Task;
 };
 
+const patchTask = async (task: TaskRequest) => {
+  const response = await axios.patch(`/tasks/${task.id}`, task);
+  return response.data as Task;
+};
+
 const deleteTask = async (task: TaskRequest) => {
   await axios.delete(`/tasks/${task.id}`);
   return task;
@@ -98,4 +103,5 @@ export const api = {
   login,
   logout,
   getCurrentUserInfo,
+  patchTask,
 };

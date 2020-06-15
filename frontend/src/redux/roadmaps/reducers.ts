@@ -43,6 +43,21 @@ export const ADD_TASK_FULFILLED = (
   parent.tasks.push(action.payload);
 };
 
+export const PATCH_TASK_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Task>,
+) => {
+  const parent = state.roadmaps.find(
+    (roadmap) => roadmap.id === action.payload.roadmapId,
+  )!;
+
+  const patchedTask = parent.tasks.find(
+    (task) => task.id === action.payload.id,
+  );
+
+  Object.assign(patchedTask, action.payload);
+};
+
 export const DELETE_TASK_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<TaskRequest>,

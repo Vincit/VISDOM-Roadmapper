@@ -9,6 +9,7 @@ import {
   addTaskrating,
   deleteTaskrating,
   addRelatedtask,
+  patchTask,
 } from './actions';
 import {
   GET_ROADMAPS_FULFILLED,
@@ -20,6 +21,7 @@ import {
   DELETE_TASKRATING_FULFILLED,
   ADD_RELATED_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
+  PATCH_TASK_FULFILLED,
 } from './reducers';
 
 const initialState: RoadmapsState = {
@@ -42,6 +44,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(addTaskrating.fulfilled, ADD_TASKRATING_FULFILLED);
     builder.addCase(deleteTaskrating.fulfilled, DELETE_TASKRATING_FULFILLED);
     builder.addCase(addRelatedtask.fulfilled, ADD_RELATED_TASK_FULFILLED);
+    builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
   },
 });
 
