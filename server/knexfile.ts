@@ -20,5 +20,5 @@ const config = {
   },
 };
 
-module.exports = config;
-export default config;
+module.exports = config.development;
+export default config.development;

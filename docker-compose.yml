@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  roadmapper-db:
+  roadmapper-database:
     build: ./postgres
     container_name: roadmapper-db
     environment:
@@ -15,15 +15,12 @@ services:
     container_name: roadmapper-server
     build:
       context: ./server
-    volumes:
-      - ".:/server"
-      - "/server/node_modules"
     ports:
       - 5000:5000
     environment:
       - NODE_ENV=test
       - KNEX_PORT=5432
-      - KNEX_HOST=127.0.0.1
+      - KNEX_HOST=roadmapper-database
       - KNEX_DATABASE=roadmapper-db
       - KNEX_USER=testuser
       - KNEX_PASSWORD=testpassword
@@ -36,10 +33,8 @@ services:
     stdin_open: true
     build:
       context: ./frontend
-    volumes:
-      - ".:/frontend"
-      - "/frontend/node_modules"
     ports:
       - 3000:3000
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_BASE_URL=http://localhost:5000/

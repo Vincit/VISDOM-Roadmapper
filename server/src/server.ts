@@ -5,7 +5,7 @@ import userRouter from './api/users/users.routes';
 import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import tasksRouter from './api/tasks/tasks.routes';
 import taskratingRouter from './api/taskratings/taskratings.routes';
-import Knex from 'Knex';
+import Knex from 'knex';
 import Dotenv from 'dotenv';
 import knexConfig from '../knexfile';
 import session from 'koa-session';
@@ -19,7 +19,7 @@ const createServer = async () => {
   console.log('Creating server');
   setupAuth();
   const app = new Koa();
-  Model.knex(Knex(knexConfig.development));
+  Model.knex(Knex(knexConfig));
 
   app.keys = [process.env.SESSION_SECRET!];
   app.use(session({}, app));
