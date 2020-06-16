@@ -346,16 +346,7 @@ export const TaskListPage = () => {
         </thead>
         <tbody>
           {getRenderTaskList().map((task) => (
-            <TableTaskRow
-              key={task.id}
-              id={task.id}
-              name={task.name}
-              roadmapId={task.roadmapId}
-              description={task.description}
-              completed={task.completed}
-              createdAt={new Date(task.createdAt)}
-              requiredBy={task.requiredBy}
-            />
+            <TableTaskRow key={task.id} task={task} />
           ))}
         </tbody>
       </Table>

@@ -68,6 +68,15 @@ const deleteTaskrating = async (taskrating: TaskratingRequest) => {
   return taskrating;
 };
 
+const patchTaskrating = async (taskrating: TaskratingRequest) => {
+  const response = await axios.patch(
+    `/taskratings/${taskrating.id}`,
+    taskrating,
+  );
+
+  return response.data as Taskrating;
+};
+
 const addRelatedTask = async (relatedTaskRequest: RelatedtaskRequest) => {
   const response = await axios.post(
     `/tasks/${relatedTaskRequest.fromTask}/relatedtasks`,
@@ -114,4 +123,5 @@ export const api = {
   getCurrentUserInfo,
   patchTask,
   getPublicUsers,
+  patchTaskrating,
 };

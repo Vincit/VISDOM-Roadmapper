@@ -7,15 +7,20 @@ import { modalStateSelector } from '../redux/modals/selectors';
 import { RootState } from '../redux/types';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
-import { LoginModal } from './LoginModal';
+import { LoginModal, LoginModalProps } from './LoginModal';
+import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 
 type ModalTypeToComponent = {
-  [K in ModalTypes]: React.FC<ModalProps>;
+  [K in ModalTypes]:
+    | React.FC<ModalProps>
+    | React.FC<RateTaskModalProps>
+    | React.FC<LoginModalProps>;
 };
 
 const Modals: ModalTypeToComponent = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
   [ModalTypes.LOGIN_MODAL]: LoginModal,
+  [ModalTypes.RATE_TASK_MODAL]: RateTaskModal,
 };
 
 export const ModalRoot = () => {
@@ -24,7 +29,7 @@ export const ModalRoot = () => {
     modalStateSelector,
     shallowEqual,
   );
-  const ChosenModal: React.FC<ModalProps> = Modals[modalsState.currentModal];
+  const ChosenModal = Modals[modalsState.currentModal] as React.FC<ModalProps>;
 
   const onClose = useCallback(() => {
     dispatch(modalsActions.hideModal());

@@ -2,37 +2,51 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Button } from 'react-bootstrap';
-import { TrashFill, CheckCircle, Circle } from 'react-bootstrap-icons';
+import {
+  TrashFill,
+  CheckCircle,
+  Circle,
+  PencilSquare,
+} from 'react-bootstrap-icons';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps/index';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../redux/modals/types';
+import { Task } from '../redux/roadmaps/types';
 
 interface TableTaskRowProps {
-  id: number;
-  name: string;
-  description: string;
-  roadmapId: number;
-  completed: boolean;
-  createdAt: Date;
-  requiredBy: string;
+  task: Task;
 }
 
 const ClickableTd = styled.td`
   cursor: pointer;
 `;
 
-export const TableTaskRow: React.FC<TableTaskRowProps> = ({
-  id,
-  name,
-  description,
-  roadmapId,
-  completed,
-  requiredBy,
-  createdAt,
-}) => {
+export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   const dispatch = useDispatch<StoreDispatchType>();
+  const {
+    id,
+    name,
+    completed,
+    roadmapId,
+    requiredBy,
+    description,
+    createdAt,
+  } = task;
 
   const deleteTask = () => {
     dispatch(roadmapsActions.deleteTask({ id, roadmapId }));
+  };
+
+  const editTask = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.RATE_TASK_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
   };
 
   const toggleTaskCompleted = () => {
@@ -47,8 +61,17 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({
       <td>{name}</td>
       <td>{description}</td>
       <td>{requiredBy || '-'}</td>
-      <td>{createdAt.toLocaleDateString()}</td>
+      <td>{new Date(createdAt).toLocaleDateString()}</td>
       <td>
+        <Button
+          className="mr-3"
+          size="sm"
+          variant="success"
+          aria-label="Edit task"
+          onClick={() => editTask()}
+        >
+          <PencilSquare />
+        </Button>
         <Button
           size="sm"
           variant="danger"

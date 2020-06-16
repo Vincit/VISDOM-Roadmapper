@@ -93,6 +93,26 @@ export const ADD_TASKRATING_FULFILLED = (
   }
 };
 
+export const PATCH_TASKRATING_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Taskrating>,
+) => {
+  let parentTask: Task | undefined;
+  state.roadmaps.forEach((roadmap) => {
+    if (parentTask !== undefined) return;
+    parentTask = roadmap.tasks.find(
+      (task) => task.id === action.payload.parentTask,
+    );
+  });
+
+  if (parentTask) {
+    const taskrating = parentTask.ratings.find(
+      (rating) => rating.id === action.payload.id,
+    );
+    Object.assign(taskrating, action.payload);
+  }
+};
+
 export const DELETE_TASKRATING_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<TaskratingRequest>,

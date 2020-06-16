@@ -30,5 +30,9 @@ export const english = {
     'Created at': 'Created at',
     Completed: 'Completed',
     'Not completed': 'Not completed',
+    'Rate task': 'Rate task',
+    'Comment your rating...': 'Comment your rating...',
+    'Please input a rating before submitting':
+      'Please input a rating before submitting',
   },
 };

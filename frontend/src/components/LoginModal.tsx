@@ -9,7 +9,7 @@ import { userActions } from '../redux/user';
 
 const Styles = styled.div``;
 
-interface LoginModalProps extends ModalProps {
+export interface LoginModalProps extends ModalProps {
   username?: string;
   password?: string;
 }

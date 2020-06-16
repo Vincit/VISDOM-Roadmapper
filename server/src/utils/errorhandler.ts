@@ -3,6 +3,7 @@ import {
   ValidationError,
   UniqueViolationError,
   ForeignKeyViolationError,
+  NotNullViolationError,
 } from 'objection';
 
 export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
@@ -50,6 +51,12 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       ctx.body = {
         error: 'ForeignKeyViolationError',
         message: err.message,
+      };
+    } else if (err instanceof NotNullViolationError) {
+      ctx.status = 400;
+      ctx.body = {
+        error: 'NotNullViolationError',
+        message: err.column + ' is required',
       };
     } else {
       console.log(err);

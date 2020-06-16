@@ -124,6 +124,44 @@ export const deleteTaskrating = createAsyncThunk<
   },
 );
 
+export const patchTaskrating = createAsyncThunk<
+  Taskrating,
+  TaskratingRequest,
+  { rejectValue: AxiosError }
+>(
+  'roadmaps/patchTaskrating',
+  async (taskrating: TaskratingRequest, thunkAPI) => {
+    try {
+      return await api.patchTaskrating(taskrating);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const addOrPatchTaskrating = createAsyncThunk<
+  Taskrating,
+  TaskratingRequest,
+  { rejectValue: AxiosError }
+>(
+  'roadmaps/patchTaskrating',
+  async (taskrating: TaskratingRequest, thunkAPI) => {
+    if (taskrating.id) {
+      const res = await thunkAPI.dispatch(patchTaskrating(taskrating));
+      if (patchTaskrating.rejected.match(res)) {
+        return thunkAPI.rejectWithValue(res.payload!);
+      }
+      return res.payload;
+    }
+
+    const res = await thunkAPI.dispatch(addTaskrating(taskrating));
+    if (addTaskrating.rejected.match(res)) {
+      return thunkAPI.rejectWithValue(res.payload!);
+    }
+    return res.payload;
+  },
+);
+
 export const addRelatedtask = createAsyncThunk<
   RelatedtaskResponsePayload,
   RelatedtaskRequest,

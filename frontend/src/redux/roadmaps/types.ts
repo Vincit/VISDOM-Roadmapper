@@ -45,7 +45,7 @@ export interface TaskRequest {
   relatedTasks?: TaskRequest[];
 }
 
-export const enum TaskRatingDimension {
+export enum TaskRatingDimension {
   BusinessValue = 0,
   RequiredWork = 1,
 }
