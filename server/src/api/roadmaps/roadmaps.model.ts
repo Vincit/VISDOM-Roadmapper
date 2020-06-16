@@ -1,4 +1,4 @@
-import { Model, StringReturningMethod, Modifiers } from 'objection';
+import { Model } from 'objection';
 import Task from './../tasks/tasks.model';
 
 export default class Roadmap extends Model {

@@ -1,4 +1,4 @@
-import { Model, StringReturningMethod, Modifiers } from 'objection';
+import { Model } from 'objection';
 import { TaskRatingDimension } from '../../types/customTypes';
 import User from '../users/users.model';
 import Task from '../tasks/tasks.model';

@@ -1,9 +1,4 @@
-import {
-  Model,
-  StringReturningMethod,
-  Modifiers,
-  QueryContext,
-} from 'objection';
+import { Model, QueryContext } from 'objection';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
 
