@@ -15,6 +15,7 @@ import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
+import { calcTaskPriority } from '../utils/TaskUtils';
 
 const Styles = styled.div`
   .bottomborder {
@@ -72,6 +73,7 @@ enum SortingTypes {
   SORT_DESC,
   SORT_REQUIREDBY,
   SORT_CREATEDAT,
+  SORT_RATINGS,
 }
 
 enum SortingOrders {
@@ -193,6 +195,13 @@ export const TaskListPage = () => {
         tasks.sort(
           (a, b) =>
             (+a.completed - +b.completed) *
+            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
+        );
+        break;
+      case SortingTypes.SORT_RATINGS:
+        tasks.sort(
+          (a, b) =>
+            (calcTaskPriority(a) - calcTaskPriority(b)) *
             (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
         );
         break;
@@ -318,6 +327,7 @@ export const TaskListPage = () => {
     { label: 'Status', sorting: SortingTypes.SORT_STATUS },
     { label: 'Task name', sorting: SortingTypes.SORT_NAME },
     { label: 'Task description', sorting: SortingTypes.SORT_DESC },
+    { label: 'Ratings', sorting: SortingTypes.SORT_RATINGS },
     { label: 'Required by', sorting: SortingTypes.SORT_REQUIREDBY },
     { label: 'Created at', sorting: SortingTypes.SORT_CREATEDAT },
   ];

@@ -7,12 +7,15 @@ import {
   CheckCircle,
   Circle,
   PencilSquare,
+  Wrench,
+  StarFill,
 } from 'react-bootstrap-icons';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps/index';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
-import { Task } from '../redux/roadmaps/types';
+import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import { calcTaskAverageRating } from '../utils/TaskUtils';
 
 interface TableTaskRowProps {
   task: Task;
@@ -53,6 +56,36 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     dispatch(roadmapsActions.patchTask({ id, completed: !completed }));
   };
 
+  const renderTaskRatings = () => {
+    const averageBusinessVal = calcTaskAverageRating(
+      TaskRatingDimension.BusinessValue,
+      task,
+    );
+    const averageWorkVal = calcTaskAverageRating(
+      TaskRatingDimension.RequiredWork,
+      task,
+    );
+    const renderBusinessVal = averageBusinessVal >= 0;
+    const renderWorkVal = averageWorkVal >= 0;
+    return (
+      <>
+        {renderBusinessVal && (
+          <span className="m-1">
+            {averageBusinessVal}
+            <StarFill />
+          </span>
+        )}
+        {renderWorkVal && (
+          <span className="m-1">
+            {averageWorkVal}
+            <Wrench />
+          </span>
+        )}
+        {!renderWorkVal && !renderBusinessVal && <span>-</span>}
+      </>
+    );
+  };
+
   return (
     <tr>
       <ClickableTd onClick={() => toggleTaskCompleted()}>
@@ -60,6 +93,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       </ClickableTd>
       <td>{name}</td>
       <td>{description}</td>
+      <td>{renderTaskRatings()}</td>
       <td>{requiredBy || '-'}</td>
       <td>{new Date(createdAt).toLocaleDateString()}</td>
       <td>
