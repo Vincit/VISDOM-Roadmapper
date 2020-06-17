@@ -12,6 +12,8 @@ import {
   userGroupsSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps/index';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../redux/modals/types';
 
 const Styles = styled.div``;
 
@@ -58,6 +60,15 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
           }
         } else {
           onClose();
+          dispatch(
+            modalsActions.showModal({
+              modalType: ModalTypes.RATE_TASK_MODAL,
+              modalProps: {
+                task: res.payload,
+                cameFromTaskCreation: true,
+              },
+            }),
+          );
         }
       });
     }

@@ -17,11 +17,13 @@ import { StoreDispatchType } from '../redux';
 
 export interface RateTaskModalProps extends ModalProps {
   task: Task;
+  cameFromTaskCreation?: boolean;
 }
 
 export const RateTaskModal: React.FC<RateTaskModalProps> = ({
   onClose,
   task,
+  cameFromTaskCreation,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
@@ -125,7 +127,15 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h6 className="m-4">{task?.name}</h6>
+          {cameFromTaskCreation ? (
+            <div className="m-4">
+              <h6>Task &apos;{task?.name}&apos; created!</h6>
+              <h6>You may now rate it!</h6>
+            </div>
+          ) : (
+            <h6 className="m-4">{task?.name}</h6>
+          )}
+
           <TaskRatingWidget
             onBusinessRatingChange={onBusinessRatingChange}
             onRequiredWorkRatingChange={onRequiredWorkRatingChange}
