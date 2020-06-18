@@ -15,7 +15,7 @@
   "scripts": {
     "migrate": "knex --knexfile=./knexfile.ts migrate:latest",
     "seed-db": "knex --knexfile=./knexfile.ts seed:run",
-    "start": "knex --knexfile=./knexfile.ts migrate:latest && npx ts-node ./src/server.ts",
+    "start": "knex --knexfile=./knexfile.ts migrate:latest && knex --knexfile=./knexfile.ts seed:run && npx ts-node ./src/server.ts",
     "start-db": "cd .. && docker-compose -f docker-compose.yml up -d roadmapper-db",
     "test": "mocha -r ts-node/register tests/**/*.test.ts"
   },
