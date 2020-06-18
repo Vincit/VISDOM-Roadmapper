@@ -1,0 +1,22 @@
+test:
+  stage: test
+  image: node:12.16.3
+  services:
+    - postgres:11
+  variables:
+    POSTGRES_DB: "roadmapper-db"
+    POSTGRES_USER: "testuser"
+    POSTGRES_PASSWORD: "testpassword"
+    NODE_ENV: "test"
+    KNEX_PORT: "5432"
+    KNEX_HOST: "localhost"
+    KNEX_DATABASE: "roadmapper-db"
+    KNEX_USER: "testuser"
+    KNEX_PASSWORD: "testpassword"
+    SESSION_SECRET: "!top!secret!session!secret!"
+    CORS_ORIGIN: "http://localhost:3000"
+    SERVER_PORT: "5000"
+    CHOKIDAR_USEPOLLING: "true"
+    REACT_APP_API_BASE_URL: "http://localhost:5000/"
+  script:
+    - cd server && yarn && yarn test
