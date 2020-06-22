@@ -29,7 +29,7 @@ export interface Task {
   description: string;
   roadmapId: number;
   requiredBy: string;
-  createdAt: Date;
+  createdAt: string;
   completed: boolean;
   ratings: Taskrating[];
   relatedTasks: number[];
