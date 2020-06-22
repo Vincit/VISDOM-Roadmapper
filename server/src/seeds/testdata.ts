@@ -2,6 +2,7 @@ import * as Knex from 'knex';
 import User from '../api/users/users.model';
 import Roadmap from '../api/roadmaps/roadmaps.model';
 import { Model } from 'objection';
+import { UserType } from '../types/customTypes';
 
 export async function seed(knex: Knex): Promise<any> {
   Model.knex(knex);
@@ -23,7 +24,9 @@ const createTestRoadmap = async () => {
         '#id': 'task1',
         name: 'Test task 1',
         description: 'Test desc 1',
-        requiredBy: 'Business',
+        createdBy: {
+          id: 1,
+        },
         ratings: [
           {
             createdBy: {
@@ -44,7 +47,9 @@ const createTestRoadmap = async () => {
       {
         name: 'Test task 2',
         description: 'Test desc 2',
-        requiredBy: 'Customers',
+        createdBy: {
+          id: 1,
+        },
         relatedTasks: [
           {
             '#ref': 'task1',
@@ -77,42 +82,49 @@ const createTestUsers = async () => {
     id: 1,
     username: 'BusinessPerson1',
     email: 'biz@business.com',
-    group: 'Business',
+    type: UserType.BusinessUser,
     password: 'test',
   });
   await User.query().insert({
     id: 2,
     username: 'BusinessPerson2',
     email: 'biz2@business.com',
-    group: 'Business',
+    type: UserType.BusinessUser,
     password: 'test',
   });
   await User.query().insert({
     id: 3,
     username: 'DeveloperPerson1',
     email: 'dev@coders.com',
-    group: 'Developers',
+    type: UserType.DeveloperUser,
     password: 'test',
   });
   await User.query().insert({
     id: 4,
     username: 'DeveloperPerson2',
     email: 'dev2@coders.com',
-    group: 'Developers',
+    type: UserType.DeveloperUser,
     password: 'test',
   });
   await User.query().insert({
     id: 5,
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
-    group: 'Customers',
+    type: UserType.CustomerUser,
     password: 'test',
   });
   await User.query().insert({
     id: 6,
     username: 'CustomerPerson2',
     email: 'customer2@webuystuff.com',
-    group: 'Customers',
+    type: UserType.CustomerUser,
+    password: 'test',
+  });
+  await User.query().insert({
+    id: 7,
+    username: 'AdminPerson1',
+    email: 'admin@admins.com',
+    type: UserType.AdminUser,
     password: 'test',
   });
 };

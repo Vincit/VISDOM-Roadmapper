@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
@@ -7,10 +7,7 @@ import { ModalProps } from './types';
 import { TaskRequest } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
-import {
-  chosenRoadmapIdSelector,
-  userGroupsSelector,
-} from '../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps/index';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
@@ -23,16 +20,11 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
-    requiredBy: '',
   });
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
-  );
-  const userGroups = useSelector<RootState, string[]>(
-    userGroupsSelector,
-    shallowEqual,
   );
 
   useEffect(() => {
@@ -49,7 +41,6 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
         name: formValues.name,
         description: formValues.description,
         roadmapId: chosenRoadmapId,
-        requiredBy: formValues.requiredBy,
       };
 
       dispatch(roadmapsActions.addTask(req)).then((res) => {
@@ -80,10 +71,6 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
 
   const onDescriptionChange = (description: string) => {
     setFormValues({ ...formValues, description });
-  };
-
-  const onRequiredByChange = (requiredBy: string) => {
-    setFormValues({ ...formValues, requiredBy });
   };
 
   return (
@@ -117,20 +104,6 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
                 value={formValues.description}
                 onChange={(e) => onDescriptionChange(e.currentTarget.value)}
               />
-            </Form.Group>
-            <Form.Group>
-              <Form.Control
-                required
-                as="select"
-                onChange={(e) => onRequiredByChange(e.currentTarget.value)}
-              >
-                <option disabled selected>
-                  Required by
-                </option>
-                {userGroups.map((group) => (
-                  <option key={group}>{group}</option>
-                ))}
-              </Form.Control>
             </Form.Group>
             <Alert
               show={hasError}

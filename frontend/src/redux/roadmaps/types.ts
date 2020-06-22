@@ -1,3 +1,5 @@
+import { UserType } from '../user/types';
+
 export interface RoadmapsState {
   roadmaps: Roadmap[];
   selectedRoadmapId?: number;
@@ -6,7 +8,7 @@ export interface RoadmapsState {
 
 export interface PublicUser {
   username: string;
-  group: string;
+  type: UserType;
 }
 
 export interface Roadmap {
@@ -28,11 +30,11 @@ export interface Task {
   name: string;
   description: string;
   roadmapId: number;
-  requiredBy: string;
   createdAt: string;
   completed: boolean;
   ratings: Taskrating[];
   relatedTasks: number[];
+  createdByUser: number;
 }
 
 export interface TaskRequest {
@@ -40,8 +42,8 @@ export interface TaskRequest {
   name?: string;
   description?: string;
   completed?: boolean;
-  requiredBy?: string;
   roadmapId?: number;
+  createdByUser?: number;
   relatedTasks?: TaskRequest[];
 }
 

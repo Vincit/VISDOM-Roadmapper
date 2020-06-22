@@ -27,15 +27,7 @@ const ClickableTd = styled.td`
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const {
-    id,
-    name,
-    completed,
-    roadmapId,
-    requiredBy,
-    description,
-    createdAt,
-  } = task;
+  const { id, name, completed, roadmapId, description, createdAt } = task;
 
   const deleteTask = () => {
     dispatch(roadmapsActions.deleteTask({ id, roadmapId }));
@@ -94,7 +86,6 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       <td>{name}</td>
       <td>{description}</td>
       <td>{renderTaskRatings()}</td>
-      <td>{requiredBy || '-'}</td>
       <td>{new Date(createdAt).toLocaleDateString()}</td>
       <td>
         <Button

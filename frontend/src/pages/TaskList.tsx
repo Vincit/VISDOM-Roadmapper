@@ -207,7 +207,6 @@ export const TaskListPage = () => {
     { label: 'Task name', sorting: SortingTypes.SORT_NAME },
     { label: 'Task description', sorting: SortingTypes.SORT_DESC },
     { label: 'Ratings', sorting: SortingTypes.SORT_RATINGS },
-    { label: 'Required by', sorting: SortingTypes.SORT_REQUIREDBY },
     { label: 'Created at', sorting: SortingTypes.SORT_CREATEDAT },
   ];
 

@@ -4,7 +4,7 @@ import passport from 'passport';
 
 export const getUsers: RouteHandlerFnc = async (ctx, _) => {
   const query = User.query();
-  query.select('username', 'group');
+  query.select('username', 'type');
   ctx.body = await query;
 };
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Trans } from 'react-i18next';
-import { UserInfo } from '../redux/user/types';
+import { UserInfo, UserType } from '../redux/user/types';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals';
 import { userInfoSelector, loggedInSelector } from '../redux/user/selectors';
@@ -39,7 +39,7 @@ export const UserInfoCard = () => {
         <>
           <div>{userInfo.username}</div>
           <div>{userInfo.email}</div>
-          <div>{userInfo.group}</div>
+          <div>{UserType[userInfo.type]}</div>
           <div>{userInfo.id}</div>
         </>
       ) : (

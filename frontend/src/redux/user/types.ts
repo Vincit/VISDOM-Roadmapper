@@ -2,7 +2,7 @@ export interface UserInfo {
   username: string;
   email: string;
   id: number;
-  group: string;
+  type: UserType;
 }
 
 export interface UserState {
@@ -17,4 +17,11 @@ export interface GetUserInfoError {
 export interface UserLoginRequest {
   username: string;
   password: string;
+}
+
+export enum UserType {
+  BusinessUser = 0,
+  DeveloperUser = 1,
+  CustomerUser = 2,
+  AdminUser = 3,
 }

@@ -1,33 +1,34 @@
 import { Model, QueryContext } from 'objection';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
+import User from '../users/users.model';
 
 export default class Task extends Model {
   id!: number;
   name!: string;
   description!: string;
-  requiredBy!: string;
   completed!: boolean;
   createdAt!: string;
 
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
   relatedTasks?: Task[];
+  createdBy?: User;
 
   static tableName = 'tasks';
 
   static jsonSchema = {
     type: 'object',
-    required: ['name', 'description'],
+    required: ['name', 'description', 'createdByUser'],
 
     properties: {
       id: { type: 'integer' },
       name: { type: 'string', minLength: 1, maxLength: 255 },
       description: { type: 'string', minLength: 1, maxLength: 1000 },
       roadmapId: { type: 'integer' },
-      requiredBy: { type: 'string' },
       completed: { type: 'boolean' },
       createdAt: { type: 'string' },
+      createdByUser: { type: 'integer' },
     },
   };
 
@@ -64,6 +65,14 @@ export default class Task extends Model {
             to: 'taskjointable.taskIdRelated',
           },
           to: 'tasks.id',
+        },
+      },
+      createdBy: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'tasks.createdByUser',
+          to: 'users.id',
         },
       },
     };

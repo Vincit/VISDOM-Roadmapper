@@ -14,10 +14,5 @@ export const LOGIN_FULFILLED = (state: UserState) => {
 
 export const LOGOUT_FULFILLED = (state: UserState) => {
   state.loggedIn = false;
-  state.info = {
-    username: '',
-    email: '',
-    id: -1,
-    group: '',
-  };
+  state.info = undefined;
 };

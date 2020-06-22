@@ -13,7 +13,6 @@ export enum SortingTypes {
   SORT_NAME,
   SORT_STATUS,
   SORT_DESC,
-  SORT_REQUIREDBY,
   SORT_CREATEDAT,
   SORT_RATINGS,
 }
@@ -121,13 +120,6 @@ export const sortTasks = (
       tasks.sort(
         (a, b) =>
           a.description.localeCompare(b.description) *
-          (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-      );
-      break;
-    case SortingTypes.SORT_REQUIREDBY:
-      tasks.sort(
-        (a, b) =>
-          a.requiredBy.localeCompare(b.requiredBy) *
           (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
       );
       break;

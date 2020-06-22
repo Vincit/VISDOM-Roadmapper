@@ -1,26 +1,35 @@
 import { Model, StringReturningMethod, Modifiers, Pojo } from 'objection';
 import objectionPassword from 'objection-password';
+import { UserType } from 'src/types/customTypes';
 
 const Password = objectionPassword();
 export default class User extends Password(Model) {
   id!: number;
   username!: string;
   email!: string;
-  group!: string;
+  type!: number;
   password!: string;
 
   static tableName = 'users';
 
   static jsonSchema = {
     type: 'object',
-    required: ['username', 'email', 'group', 'password'],
+    required: ['username', 'email', 'type', 'password'],
 
     properties: {
       id: { type: 'integer' },
       username: { type: 'string', minLength: 1, maxLength: 255 },
       email: { type: 'string', minLength: 1, maxLength: 255 },
       password: { type: 'string', minLength: 1, maxLength: 255 },
-      group: { type: 'string', minLength: 1, maxLength: 255 },
+      type: {
+        type: 'integer',
+        enum: [
+          UserType.BusinessUser,
+          UserType.DeveloperUser,
+          UserType.CustomerUser,
+          UserType.AdminUser,
+        ],
+      },
     },
   };
 

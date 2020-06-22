@@ -4,16 +4,23 @@ import Objection from 'objection';
 
 export const getTasks: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
-    ctx.body = await Task.query().withGraphFetched('[ratings, relatedTasks]');
+    ctx.body = await Task.query().withGraphFetched(
+      '[ratings, relatedTasks, createdBy]',
+    );
   } else {
     ctx.body = await Task.query()
-      .withGraphFetched('[ratings(selectRatingId), relatedTasks(selectTaskId)]')
+      .withGraphFetched(
+        '[ratings(selectRatingId), relatedTasks(selectTaskId), createdBy(selectUserId)]',
+      )
       .modifiers({
         selectTaskId: (builder: Objection.AnyQueryBuilder) => {
           builder.select('tasks.id');
         },
         selectRatingId: (builder: Objection.AnyQueryBuilder) => {
           builder.select('taskratings.id');
+        },
+        selectUserId: (builder: Objection.AnyQueryBuilder) => {
+          builder.select('users.id');
         },
       });
   }

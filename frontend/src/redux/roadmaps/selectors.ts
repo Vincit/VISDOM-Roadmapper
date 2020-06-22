@@ -15,9 +15,3 @@ export const chosenRoadmapSelector = (state: RootState): Roadmap | undefined =>
 export const publicUsersSelector = (state: RootState): PublicUser[] => {
   return state.roadmaps.allUsers;
 };
-
-export const userGroupsSelector = (state: RootState): string[] => {
-  const groups = state.roadmaps.allUsers.map((user) => user.group);
-  const uniqueGroups = groups.filter((val, ix) => groups.indexOf(val) === ix);
-  return uniqueGroups;
-};

@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<any> {
       table.string('username', 75);
       table.string('email', 75);
       table.string('password', 75);
-      table.string('group', 75);
+      table.integer('type').notNullable().unsigned();
 
       table.unique(['username']);
       table.unique(['email']);
@@ -21,7 +21,6 @@ export async function up(knex: Knex): Promise<any> {
       table.increments('id').primary();
       table.string('name', 250);
       table.text('description');
-      table.string('requiredBy', 75).defaultTo('');
       table.boolean('completed').defaultTo(false);
       table.timestamp('createdAt');
 
@@ -32,6 +31,14 @@ export async function up(knex: Knex): Promise<any> {
         .references('id')
         .inTable('roadmaps')
         .onDelete('CASCADE')
+        .index();
+
+      table
+        .integer('createdByUser')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onDelete('SET NULL')
         .index();
     })
     .createTable('taskratings', (table) => {
