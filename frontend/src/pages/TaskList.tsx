@@ -15,7 +15,13 @@ import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { calcTaskPriority } from '../utils/TaskUtils';
+import {
+  FilterTypes,
+  SortingTypes,
+  SortingOrders,
+  filterTasks,
+  sortTasks,
+} from '../utils/TaskUtils';
 
 const Styles = styled.div`
   .bottomborder {
@@ -58,29 +64,6 @@ const IconTextDiv = styled.div`
   display: inline-block;
 `;
 
-enum FilterTypes {
-  SHOW_ALL,
-  NOT_RATED_BY_ME,
-  RATED_BY_ME,
-  COMPLETED,
-  NOT_COMPLETED,
-}
-
-enum SortingTypes {
-  NO_SORT,
-  SORT_NAME,
-  SORT_STATUS,
-  SORT_DESC,
-  SORT_REQUIREDBY,
-  SORT_CREATEDAT,
-  SORT_RATINGS,
-}
-
-enum SortingOrders {
-  ASCENDING,
-  DESCENDING,
-}
-
 interface TableHeader {
   label: string;
   sorting: SortingTypes;
@@ -110,122 +93,18 @@ export const TaskListPage = () => {
     );
   }, [dispatch]);
 
-  const filterNotRatedByMe = (task: Task) => {
-    if (
-      task.ratings?.find(
-        (taskrating) => taskrating.createdByUser === userInfo?.id,
-      )
-    ) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const filterRatedByMe = (task: Task) => {
-    if (
-      task.ratings?.find(
-        (taskrating) => taskrating.createdByUser === userInfo?.id,
-      )
-    ) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const filterTaskByCompletion = (completion: boolean) => {
-    return (task: Task) => task.completed === completion;
-  };
-
-  const filterTasks = (taskList: Task[]) => {
-    let filterFunc: (task: Task) => boolean;
-    switch (searchFilter) {
-      case FilterTypes.NOT_RATED_BY_ME:
-        filterFunc = filterNotRatedByMe;
-        break;
-      case FilterTypes.RATED_BY_ME:
-        filterFunc = filterRatedByMe;
-        break;
-      case FilterTypes.COMPLETED:
-        filterFunc = filterTaskByCompletion(true);
-        break;
-      case FilterTypes.NOT_COMPLETED:
-        filterFunc = filterTaskByCompletion(false);
-        break;
-      default:
-        filterFunc = () => true;
-    }
-    return taskList.filter(filterFunc);
-  };
-
-  const sortTasks = (taskList: Task[]) => {
-    const tasks = [...taskList];
-    switch (sortingType) {
-      case SortingTypes.SORT_CREATEDAT:
-        tasks.sort(
-          (a, b) =>
-            (new Date(a.createdAt).getTime() -
-              new Date(b.createdAt).getTime()) *
-            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-        );
-        break;
-      case SortingTypes.SORT_NAME:
-        tasks.sort(
-          (a, b) =>
-            a.name.localeCompare(b.name) *
-            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-        );
-        break;
-      case SortingTypes.SORT_DESC:
-        tasks.sort(
-          (a, b) =>
-            a.description.localeCompare(b.description) *
-            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-        );
-        break;
-      case SortingTypes.SORT_REQUIREDBY:
-        tasks.sort(
-          (a, b) =>
-            a.requiredBy.localeCompare(b.requiredBy) *
-            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-        );
-        break;
-      case SortingTypes.SORT_STATUS:
-        tasks.sort(
-          (a, b) =>
-            (+a.completed - +b.completed) *
-            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-        );
-        break;
-      case SortingTypes.SORT_RATINGS:
-        tasks.sort(
-          (a, b) =>
-            (calcTaskPriority(a) - calcTaskPriority(b)) *
-            (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-        );
-        break;
-      default:
-        // SortingTypes.NO_SORT
-        break;
-    }
-
-    // if (sortingOrder === SortingOrders.DESCENDING) tasks.reverse();
-    return tasks;
-  };
-
   const getRenderTaskList: () => Task[] = () => {
     let tasks: Task[] = [];
     if (currentRoadmap) tasks = currentRoadmap.tasks;
 
     // Filter, search, sort tasks
-    const filtered = filterTasks(tasks);
+    const filtered = filterTasks(tasks, searchFilter, userInfo?.id);
     const searched = filtered.filter(
       (task) =>
         task.name.toLowerCase().includes(searchString) ||
         task.description.toLowerCase().includes(searchString),
     );
-    const sorted = sortTasks(searched);
+    const sorted = sortTasks(searched, sortingType, sortingOrder);
 
     return sorted;
   };
