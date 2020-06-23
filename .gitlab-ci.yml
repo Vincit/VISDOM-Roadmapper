@@ -9,7 +9,7 @@ test:
     POSTGRES_PASSWORD: "testpassword"
     NODE_ENV: "test"
     KNEX_PORT: "5432"
-    KNEX_HOST: "localhost"
+    KNEX_HOST: "postgres"
     KNEX_DATABASE: "roadmapper-db"
     KNEX_USER: "testuser"
     KNEX_PASSWORD: "testpassword"

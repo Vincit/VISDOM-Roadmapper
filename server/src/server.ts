@@ -15,11 +15,13 @@ import { errorHandler } from './utils/errorhandler';
 import cors from '@koa/cors';
 Dotenv.config();
 
+export const knex = Knex(knexConfig);
+
 const createServer = async () => {
   console.log('Creating server');
   setupAuth();
   const app = new Koa();
-  Model.knex(Knex(knexConfig));
+  Model.knex(knex);
 
   app.keys = [process.env.SESSION_SECRET!];
   app.use(session({}, app));
@@ -44,9 +46,10 @@ const createServer = async () => {
   app.use(taskratingRouter.allowedMethods());
 
   const port = process.env.SERVER_PORT;
-  return app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`App listening on port ${port}`);
   });
+  return server;
 };
 
-export const app = createServer();
+export const server = createServer();

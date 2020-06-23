@@ -16,6 +16,8 @@ const createTestData = async () => {
 };
 
 const createTestRoadmap = async () => {
+  const firstUserId = (await User.query().first()).id;
+
   const testRoadMap = {
     name: 'Test roadmap',
     description: 'Testy roadmap description',
@@ -25,19 +27,19 @@ const createTestRoadmap = async () => {
         name: 'Test task 1',
         description: 'Test desc 1',
         createdBy: {
-          id: 1,
+          id: firstUserId,
         },
         ratings: [
           {
             createdBy: {
-              id: 1,
+              id: firstUserId,
             },
             dimension: 0,
             value: 5,
           },
           {
             createdBy: {
-              id: 1,
+              id: firstUserId,
             },
             dimension: 1,
             value: 5,
@@ -48,7 +50,7 @@ const createTestRoadmap = async () => {
         name: 'Test task 2',
         description: 'Test desc 2',
         createdBy: {
-          id: 1,
+          id: firstUserId,
         },
         relatedTasks: [
           {
@@ -79,35 +81,30 @@ const clearData = async () => {
 
 const createTestUsers = async () => {
   await User.query().insert({
-    id: 1,
     username: 'BusinessPerson1',
     email: 'biz@business.com',
     type: UserType.BusinessUser,
     password: 'test',
   });
   await User.query().insert({
-    id: 2,
     username: 'BusinessPerson2',
     email: 'biz2@business.com',
     type: UserType.BusinessUser,
     password: 'test',
   });
   await User.query().insert({
-    id: 3,
     username: 'DeveloperPerson1',
     email: 'dev@coders.com',
     type: UserType.DeveloperUser,
     password: 'test',
   });
   await User.query().insert({
-    id: 4,
     username: 'DeveloperPerson2',
     email: 'dev2@coders.com',
     type: UserType.DeveloperUser,
     password: 'test',
   });
   await User.query().insert({
-    id: 5,
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
     type: UserType.CustomerUser,
@@ -115,7 +112,6 @@ const createTestUsers = async () => {
     customerValue: 500000,
   });
   await User.query().insert({
-    id: 6,
     username: 'CustomerPerson2',
     email: 'customer2@webuystuff.com',
     type: UserType.CustomerUser,
@@ -123,7 +119,6 @@ const createTestUsers = async () => {
     customerValue: 1000000,
   });
   await User.query().insert({
-    id: 7,
     username: 'AdminPerson1',
     email: 'admin@admins.com',
     type: UserType.AdminUser,

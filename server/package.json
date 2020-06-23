@@ -16,7 +16,7 @@
     "migrate": "knex --knexfile=./knexfile.ts migrate:latest",
     "seed-db": "knex --knexfile=./knexfile.ts seed:run",
     "start": "knex --knexfile=./knexfile.ts migrate:latest && knex --knexfile=./knexfile.ts seed:run && npx ts-node ./src/server.ts",
-    "start-db": "cd .. && docker-compose -f docker-compose.yml up -d roadmapper-db",
+    "start-db": "cd .. && docker-compose -f docker-compose.yml up -d roadmapper-database",
     "test": "mocha -r ts-node/register tests/**/*.test.ts"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "@types/koa__cors": "^3.0.1",
     "@types/koa__router": "^8.0.2",
     "@types/passport-local": "^1.0.33",
+    "chai-http": "^4.3.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.0.0",
     "knex": "^0.21.1",
