@@ -1,9 +1,9 @@
-import chai, { assert, expect } from 'chai';
+import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
-chai.use(chaiHttp);
-import { app } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
+import { app } from './setuptests';
+chai.use(chaiHttp);
 
 describe('Test /roadmaps/ api', function () {
   describe('GET /roadmaps/', function () {
