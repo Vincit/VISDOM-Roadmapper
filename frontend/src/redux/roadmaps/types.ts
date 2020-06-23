@@ -9,6 +9,7 @@ export interface RoadmapsState {
 export interface PublicUser {
   username: string;
   type: UserType;
+  customerValue?: number;
 }
 
 export interface Roadmap {

@@ -112,6 +112,7 @@ const createTestUsers = async () => {
     email: 'customer@webuystuff.com',
     type: UserType.CustomerUser,
     password: 'test',
+    customerValue: 500000,
   });
   await User.query().insert({
     id: 6,
@@ -119,6 +120,7 @@ const createTestUsers = async () => {
     email: 'customer2@webuystuff.com',
     type: UserType.CustomerUser,
     password: 'test',
+    customerValue: 1000000,
   });
   await User.query().insert({
     id: 7,

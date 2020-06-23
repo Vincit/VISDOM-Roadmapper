@@ -1,4 +1,11 @@
-import { Model, StringReturningMethod, Modifiers, Pojo } from 'objection';
+import {
+  Model,
+  Modifiers,
+  Pojo,
+  QueryContext,
+  ValidationError,
+  ModelOptions,
+} from 'objection';
 import objectionPassword from 'objection-password';
 import { UserType } from 'src/types/customTypes';
 
@@ -9,6 +16,7 @@ export default class User extends Password(Model) {
   email!: string;
   type!: number;
   password!: string;
+  customerValue!: number;
 
   static tableName = 'users';
 
@@ -21,6 +29,7 @@ export default class User extends Password(Model) {
       username: { type: 'string', minLength: 1, maxLength: 255 },
       email: { type: 'string', minLength: 1, maxLength: 255 },
       password: { type: 'string', minLength: 1, maxLength: 255 },
+      customerValue: { type: 'integer', minimum: 0 },
       type: {
         type: 'integer',
         enum: [
@@ -32,6 +41,26 @@ export default class User extends Password(Model) {
       },
     },
   };
+
+  customValidation = (context: QueryContext) => {
+    if (this.customerValue && this.type !== UserType.CustomerUser) {
+      throw new ValidationError({
+        message:
+          'Customervalue can only be assigned to users with type CustomerUser',
+        type: 'CustomerValueError',
+      });
+    }
+  };
+
+  async $beforeInsert(context: QueryContext): Promise<void> {
+    await super.$beforeInsert(context);
+    this.customValidation(context);
+  }
+
+  async $beforeUpdate(opt: ModelOptions, context: QueryContext): Promise<void> {
+    await super.$beforeUpdate(opt, context);
+    this.customValidation(context);
+  }
 
   $formatJson(json: Pojo): Pojo {
     json = super.$formatJson(json);

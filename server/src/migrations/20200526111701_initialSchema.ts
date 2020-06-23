@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<any> {
       table.string('email', 75);
       table.string('password', 75);
       table.integer('type').notNullable().unsigned();
+      table.integer('customerValue').unsigned();
 
       table.unique(['username']);
       table.unique(['email']);
