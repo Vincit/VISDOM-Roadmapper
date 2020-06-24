@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { Navbar, Form, Button, Col, Table } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -7,10 +7,8 @@ import { Search, ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { RootState } from '../redux/types';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { getRoadmaps } from '../redux/roadmaps/actions';
 import { StoreDispatchType } from '../redux/index';
 import { TableTaskRow } from '../components/TableTaskRow';
-import { roadmapsActions } from '../redux/roadmaps/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -84,14 +82,6 @@ export const TaskListPage = () => {
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();
-
-  // TODO REMOVE
-  // Temporarily selecting roadmap & getting data here until proper roadmap selector component is implemented
-  useEffect(() => {
-    dispatch(getRoadmaps()).then(() =>
-      dispatch(roadmapsActions.selectCurrentRoadmap(1)),
-    );
-  }, [dispatch]);
 
   const getRenderTaskList: () => Task[] = () => {
     let tasks: Task[] = [];
