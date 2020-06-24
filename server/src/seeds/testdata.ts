@@ -52,11 +52,6 @@ const createTestRoadmap = async () => {
         createdBy: {
           id: firstUserId,
         },
-        relatedTasks: [
-          {
-            '#ref': 'task1',
-          },
-        ],
       },
     ],
   };
