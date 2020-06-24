@@ -37,13 +37,6 @@ const createTestRoadmap = async () => {
             dimension: 0,
             value: 5,
           },
-          {
-            createdBy: {
-              id: firstUserId,
-            },
-            dimension: 1,
-            value: 5,
-          },
         ],
       },
       {
