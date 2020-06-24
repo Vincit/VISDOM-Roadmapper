@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { Nav, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { paths } from '../router/paths';
+import { Link, useRouteMatch } from 'react-router-dom';
+import { paths } from '../routers/paths';
 
 const Sidebar = styled(Col)`
   display: block;
@@ -14,14 +14,18 @@ const Sidebar = styled(Col)`
 `;
 
 export const SideBar = () => {
+  const { url } = useRouteMatch();
+
+  console.log(url);
+
   return (
     <>
       <Sidebar>
         <Nav>
-          <Nav.Link as={Link} to={paths.taskList}>
+          <Nav.Link as={Link} to={url + paths.roadmapRelative.taskList}>
             <Trans i18nKey="Task list" />
           </Nav.Link>
-          <Nav.Link as={Link} to={paths.ratings}>
+          <Nav.Link as={Link} to={url + paths.roadmapRelative.ratings}>
             <Trans i18nKey="Rating" />
           </Nav.Link>
         </Nav>

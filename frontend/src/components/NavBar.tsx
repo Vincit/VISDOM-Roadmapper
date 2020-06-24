@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next';
 import { Navbar, Nav } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { paths } from '../router/paths';
+import { paths } from '../routers/paths';
 
 const Styles = styled.div`
   .navbar-nav {
@@ -28,6 +28,9 @@ export const NavBar = () => {
           </Nav.Link>
           <Nav.Link as={Link} to={paths.userInfo}>
             <Trans i18nKey="UserInfo" />
+          </Nav.Link>{' '}
+          <Nav.Link as={Link} to={paths.roadmapHome}>
+            <Trans i18nKey="Roadmap" />
           </Nav.Link>
         </Nav>
       </Navbar>

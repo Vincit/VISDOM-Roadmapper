@@ -34,5 +34,6 @@ export const english = {
     'Comment your rating...': 'Comment your rating...',
     'Please input a rating before submitting':
       'Please input a rating before submitting',
+    Roadmap: 'Roadmap',
   },
 };
