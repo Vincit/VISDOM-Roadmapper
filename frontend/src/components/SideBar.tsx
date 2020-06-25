@@ -1,8 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Col, Nav } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { Nav, Col } from 'react-bootstrap';
 import { Link, useRouteMatch } from 'react-router-dom';
+import styled from 'styled-components';
 import { paths } from '../routers/paths';
 
 const Sidebar = styled(Col)`
@@ -27,6 +27,9 @@ export const SideBar = () => {
           </Nav.Link>
           <Nav.Link as={Link} to={url + paths.roadmapRelative.ratings}>
             <Trans i18nKey="Rating" />
+          </Nav.Link>{' '}
+          <Nav.Link as={Link} to={url + paths.roadmapRelative.visualize}>
+            <Trans i18nKey="Visualize" />
           </Nav.Link>
         </Nav>
       </Sidebar>

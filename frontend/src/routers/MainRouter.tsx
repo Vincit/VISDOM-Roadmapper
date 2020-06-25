@@ -1,11 +1,10 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { Col } from 'react-bootstrap';
-import { paths } from './paths';
+import { Route, Switch } from 'react-router-dom';
+import { HomePage } from '../pages/HomePage';
 import { RoadmapHomePage } from '../pages/RoadmapHomepage';
 import { UserInfoPage } from '../pages/UserInfoPage';
+import { paths } from './paths';
 import { RoadmapRouter } from './RoadmapRouter';
-import { HomePage } from '../pages/HomePage';
 
 const routes = [
   {
@@ -33,18 +32,16 @@ const routes = [
 export const MainRouter = () => {
   return (
     <>
-      <Col>
-        <Switch>
-          {routes.map((route) => (
-            <Route
-              exact={route.exact}
-              key={route.path}
-              path={route.path}
-              component={route.component}
-            />
-          ))}
-        </Switch>
-      </Col>
+      <Switch>
+        {routes.map((route) => (
+          <Route
+            exact={route.exact}
+            key={route.path}
+            path={route.path}
+            component={route.component}
+          />
+        ))}
+      </Switch>
     </>
   );
 };

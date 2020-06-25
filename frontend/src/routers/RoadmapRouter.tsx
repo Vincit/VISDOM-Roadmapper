@@ -4,12 +4,13 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import {
   FullHeightRow,
-  MarginlessColumn,
+  PaddinglessCol,
 } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { RatingPage } from '../pages/RatingPage';
 import { TaskListPage } from '../pages/TaskListPage';
+import { VisualizationPage } from '../pages/VisualizationPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
@@ -23,6 +24,7 @@ const routes = [
     component: TaskListPage,
   },
   { path: paths.roadmapRelative.ratings, component: RatingPage },
+  { path: paths.roadmapRelative.visualize, component: VisualizationPage },
 ];
 
 export const RoadmapRouter = () => {
@@ -61,7 +63,7 @@ export const RoadmapRouter = () => {
       return (
         <FullHeightRow>
           <SideBar />
-          <MarginlessColumn>
+          <PaddinglessCol>
             <Switch>
               {routes.map((route) => (
                 <Route
@@ -71,7 +73,7 @@ export const RoadmapRouter = () => {
                 />
               ))}
             </Switch>
-          </MarginlessColumn>
+          </PaddinglessCol>
         </FullHeightRow>
       );
     }
