@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { ModalProps } from './types';
-import { TaskRequest } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
-import { RootState } from '../redux/types';
-import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { roadmapsActions } from '../redux/roadmaps/index';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
+import { roadmapsActions } from '../redux/roadmaps/index';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { TaskRequest } from '../redux/roadmaps/types';
+import { RootState } from '../redux/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo } from '../redux/user/types';
+import { ModalProps } from './types';
 
 const Styles = styled.div``;
 
@@ -25,6 +27,10 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
+  );
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
   );
 
   useEffect(() => {
@@ -41,6 +47,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
         name: formValues.name,
         description: formValues.description,
         roadmapId: chosenRoadmapId,
+        createdByUser: userInfo?.id,
       };
 
       dispatch(roadmapsActions.addTask(req)).then((res) => {
