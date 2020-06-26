@@ -4,14 +4,26 @@ import {
   DraggableLocation,
   DropResult,
 } from 'react-beautiful-dnd';
+import { Button, Col } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
-import { PaddinglessRow } from '../components/CommonLayoutComponents';
+import styled from 'styled-components';
+import {
+  ColumnHeader,
+  Divider,
+  PaddinglessRow,
+  TopBarWithBorder,
+} from '../components/CommonLayoutComponents';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 
-// Function to help us with reordering item in list
+const ListContainer = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+`;
+// Function to help with reordering item in list
 const reorderList = (list: Task[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -20,7 +32,7 @@ const reorderList = (list: Task[], startIndex: number, endIndex: number) => {
   return result;
 };
 
-// Function to help us move items between lists
+// Function to help move items between lists
 const moveBetweenLists = (
   source: Task[],
   destination: Task[],
@@ -40,8 +52,8 @@ const moveBetweenLists = (
 };
 
 enum ListId {
-  First = 'FIRST_LIST',
-  Second = 'SECOND_LIST',
+  RoadmapTasks = 'ROADMAP_TASKS',
+  VersionTasks = 'VERSION_TASKS',
 }
 
 export const VisualizationPage = () => {
@@ -51,19 +63,19 @@ export const VisualizationPage = () => {
   );
   const initialTasks: Task[] = currentRoadmap?.tasks || [];
   const [taskLists, setTasks] = useState({
-    [ListId.First]: initialTasks,
-    [ListId.Second]: [] as Task[],
+    [ListId.RoadmapTasks]: initialTasks,
+    [ListId.VersionTasks]: [] as Task[],
   });
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
 
+    // TODO Use immutability helper to mutate state
     if (source.droppableId === destination.droppableId) {
-      // TODO Use immutability helper or something here
       const taskListsCopy = {
-        [ListId.First]: taskLists[ListId.First],
-        [ListId.Second]: taskLists[ListId.Second],
+        [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
+        [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
       };
       taskListsCopy[source.droppableId as ListId] = reorderList(
         taskListsCopy[source.droppableId as ListId],
@@ -80,25 +92,87 @@ export const VisualizationPage = () => {
       );
 
       const taskListsCopy = {
-        [ListId.First]: newLists[ListId.First],
-        [ListId.Second]: newLists[ListId.Second],
+        [ListId.RoadmapTasks]: newLists[ListId.RoadmapTasks],
+        [ListId.VersionTasks]: newLists[ListId.VersionTasks],
       };
       setTasks(taskListsCopy);
     }
   };
 
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <PaddinglessRow>
-        <SortableTaskList
-          listId={ListId.First}
-          tasks={taskLists[ListId.First]}
-        />
-        <SortableTaskList
-          listId={ListId.Second}
-          tasks={taskLists[ListId.Second]}
-        />
+  const renderTopbar = () => {
+    return (
+      <TopBarWithBorder className="justify-content-start">
+        <Button className="m-1">Roadmap view</Button>
+        <Button className="m-1">Version X</Button>
+        <Button className="m-1">Version Y</Button>
+      </TopBarWithBorder>
+    );
+  };
+
+  const renderRoadmapList = () => {
+    return (
+      <PaddinglessRow className="h-50 mh-50 bottomborder">
+        <Col xs={5} className="h-100 mh-100 d-flex flex-column">
+          <ColumnHeader>
+            {`${currentRoadmap?.name} `}
+            <Trans i18nKey="task list" />
+            <Divider />
+          </ColumnHeader>
+          <ListContainer>
+            <SortableTaskList
+              listId={ListId.RoadmapTasks}
+              tasks={taskLists[ListId.RoadmapTasks]}
+            />
+          </ListContainer>
+        </Col>
+
+        <Col>
+          <ColumnHeader>
+            {`${currentRoadmap?.name} `}
+            <Divider />
+          </ColumnHeader>
+        </Col>
       </PaddinglessRow>
-    </DragDropContext>
+    );
+  };
+
+  const renderVersionList = () => {
+    return (
+      <PaddinglessRow className="h-50 mh-50">
+        <Col xs={5} className="h-100 mh-100 d-flex flex-column">
+          <ColumnHeader>
+            <Trans i18nKey="Version name task list" />
+            <Divider />
+          </ColumnHeader>
+          <ListContainer>
+            <SortableTaskList
+              listId={ListId.VersionTasks}
+              tasks={taskLists[ListId.VersionTasks]}
+            />
+          </ListContainer>
+        </Col>
+
+        <Col>
+          <ColumnHeader>
+            {`${currentRoadmap?.name} `}
+            <Divider />
+          </ColumnHeader>
+        </Col>
+      </PaddinglessRow>
+    );
+  };
+
+  return (
+    <>
+      <div className="h-100 d-flex flex-column">
+        <PaddinglessRow>{renderTopbar()}</PaddinglessRow>
+        <div className="flex-grow-1">
+          <DragDropContext onDragEnd={onDragEnd}>
+            {renderRoadmapList()}
+            {renderVersionList()}
+          </DragDropContext>
+        </div>
+      </div>
+    </>
   );
 };

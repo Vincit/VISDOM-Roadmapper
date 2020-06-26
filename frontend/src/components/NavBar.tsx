@@ -1,14 +1,18 @@
 import React from 'react';
+import { Nav, Navbar } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { Navbar, Nav } from 'react-bootstrap';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import { paths } from '../routers/paths';
 
 const Styles = styled.div`
   .navbar-nav {
     width: 100%;
     justify-content: flex-end;
+  }
+
+  .navbar {
+    width: 100%;
   }
 
   .bottomborder {

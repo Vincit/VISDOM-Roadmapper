@@ -5,12 +5,12 @@ import { Task } from '../redux/roadmaps/types';
 import { SortableTask } from './SortableTask';
 
 const ListDiv = styled.div`
-  background-color: rgb(240, 240, 240);
+  overflow-y: visible;
   padding: 0.5em;
-  border: 2px solid black;
-  margin: auto;
-  margin-top: 1em;
-  min-width: 20em;
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  border: 1px solid black;
 `;
 
 export const SortableTaskList: React.FC<{ listId: string; tasks: Task[] }> = ({
@@ -18,17 +18,15 @@ export const SortableTaskList: React.FC<{ listId: string; tasks: Task[] }> = ({
   tasks,
 }) => {
   return (
-    <ListDiv>
-      <Droppable droppableId={listId}>
-        {(provided) => (
-          <div ref={provided.innerRef}>
-            {tasks.map((task, index) => (
-              <SortableTask task={task} index={index} />
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </ListDiv>
+    <Droppable droppableId={listId}>
+      {(provided) => (
+        <ListDiv ref={provided.innerRef}>
+          {tasks.map((task, index) => (
+            <SortableTask task={task} index={index} />
+          ))}
+          {provided.placeholder}
+        </ListDiv>
+      )}
+    </Droppable>
   );
 };

@@ -8,7 +8,6 @@ import {
 } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
-import { RatingPage } from '../pages/RatingPage';
 import { TaskListPage } from '../pages/TaskListPage';
 import { VisualizationPage } from '../pages/VisualizationPage';
 import { StoreDispatchType } from '../redux';
@@ -23,7 +22,6 @@ const routes = [
     path: paths.roadmapRelative.taskList,
     component: TaskListPage,
   },
-  { path: paths.roadmapRelative.ratings, component: RatingPage },
   { path: paths.roadmapRelative.visualize, component: VisualizationPage },
 ];
 
@@ -63,7 +61,7 @@ export const RoadmapRouter = () => {
       return (
         <FullHeightRow>
           <SideBar />
-          <PaddinglessCol>
+          <PaddinglessCol className="h-100">
             <Switch>
               {routes.map((route) => (
                 <Route

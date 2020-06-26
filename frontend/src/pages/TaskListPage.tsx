@@ -1,32 +1,26 @@
 import React, { useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
-import { Navbar, Form, Button, Col, Table } from 'react-bootstrap';
+import { Button, Col, Form, Table } from 'react-bootstrap';
+import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
+import { Trans, useTranslation } from 'react-i18next';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { Search, ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
-import { RootState } from '../redux/types';
-import { Roadmap, Task } from '../redux/roadmaps/types';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { StoreDispatchType } from '../redux/index';
+import { TopBarWithBorder } from '../components/CommonLayoutComponents';
 import { TableTaskRow } from '../components/TableTaskRow';
+import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { Roadmap, Task } from '../redux/roadmaps/types';
+import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import {
-  FilterTypes,
-  SortingTypes,
-  SortingOrders,
   filterTasks,
+  FilterTypes,
+  SortingOrders,
+  SortingTypes,
   sortTasks,
 } from '../utils/TaskUtils';
-
-const Styles = styled.div`
-  .bottomborder {
-    border: 0px;
-    border-bottom: 1px solid black;
-  }
-`;
 
 const SearchBarIcon = styled(Search)`
   position: absolute;
@@ -136,7 +130,7 @@ export const TaskListPage = () => {
   const renderTopbar = () => {
     return (
       <>
-        <Navbar className="justify-content-start bottomborder">
+        <TopBarWithBorder className="justify-content-start">
           <Form className="w-100">
             <Form.Row>
               <Col>
@@ -179,7 +173,7 @@ export const TaskListPage = () => {
               </Col>
             </Form.Row>
           </Form>
-        </Navbar>
+        </TopBarWithBorder>
       </>
     );
   };
@@ -232,13 +226,13 @@ export const TaskListPage = () => {
   };
 
   return (
-    <Styles>
+    <>
       {renderTopbar()}
       {getRenderTaskList().length > 0 ? (
         renderTasksTable()
       ) : (
         <Trans i18nKey="No tasks found" />
       )}
-    </Styles>
+    </>
   );
 };
