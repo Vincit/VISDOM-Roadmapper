@@ -37,5 +37,6 @@ export const english = {
     Roadmap: 'Roadmap',
     'Roadmap View': 'Roadmap View',
     'task list': 'task list',
+    Planner: 'Planner',
   },
 };

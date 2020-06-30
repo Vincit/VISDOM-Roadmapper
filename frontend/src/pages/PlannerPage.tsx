@@ -64,7 +64,7 @@ enum ListId {
   VersionTasks = 'VERSION_TASKS',
 }
 
-export const VisualizationPage = () => {
+export const PlannerPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,

@@ -7,6 +7,6 @@ export const paths = {
     home: '/',
     taskList: '/tasks',
     ratings: '/ratings',
-    visualize: '/visualize',
+    planner: '/planner',
   },
 };

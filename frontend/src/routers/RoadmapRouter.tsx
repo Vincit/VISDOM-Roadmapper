@@ -8,8 +8,8 @@ import {
 } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
+import { PlannerPage } from '../pages/PlannerPage';
 import { TaskListPage } from '../pages/TaskListPage';
-import { VisualizationPage } from '../pages/VisualizationPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
@@ -22,12 +22,12 @@ const routes = [
     path: paths.roadmapRelative.taskList,
     component: TaskListPage,
   },
-  { path: paths.roadmapRelative.visualize, component: VisualizationPage },
+  { path: paths.roadmapRelative.planner, component: PlannerPage },
 ];
 
 export const RoadmapRouter = () => {
   const { path } = useRouteMatch();
-  const { roadmapId } = useParams();
+  const { roadmapId } = useParams<{ roadmapId: string | undefined }>();
   const dispatch = useDispatch<StoreDispatchType>();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
@@ -37,7 +37,9 @@ export const RoadmapRouter = () => {
   const [useEffectFinished, setUseEffectFinished] = useState(false);
 
   useEffect(() => {
-    dispatch(roadmapsActions.selectCurrentRoadmap(+roadmapId));
+    if (roadmapId) {
+      dispatch(roadmapsActions.selectCurrentRoadmap(+roadmapId));
+    }
     if (!currentRoadmap) {
       setIsLoading(true);
       dispatch(roadmapsActions.getRoadmaps()).then(() => {

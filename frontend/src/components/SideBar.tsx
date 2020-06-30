@@ -23,8 +23,8 @@ export const SideBar = () => {
           <Nav.Link as={Link} to={url + paths.roadmapRelative.taskList}>
             <Trans i18nKey="Task list" />
           </Nav.Link>
-          <Nav.Link as={Link} to={url + paths.roadmapRelative.visualize}>
-            <Trans i18nKey="Visualize" />
+          <Nav.Link as={Link} to={url + paths.roadmapRelative.planner}>
+            <Trans i18nKey="Planner" />
           </Nav.Link>
         </Nav>
       </Sidebar>
