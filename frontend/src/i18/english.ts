@@ -35,5 +35,7 @@ export const english = {
     'Please input a rating before submitting':
       'Please input a rating before submitting',
     Roadmap: 'Roadmap',
+    'Roadmap View': 'Roadmap View',
+    'task list': 'task list',
   },
 };

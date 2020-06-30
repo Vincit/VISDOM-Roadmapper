@@ -20,9 +20,9 @@ export const SortableTaskList: React.FC<{ listId: string; tasks: Task[] }> = ({
   return (
     <Droppable droppableId={listId}>
       {(provided) => (
-        <ListDiv ref={provided.innerRef}>
+        <ListDiv ref={provided.innerRef} {...provided.droppableProps}>
           {tasks.map((task, index) => (
-            <SortableTask task={task} index={index} />
+            <SortableTask key={task.id} task={task} index={index} />
           ))}
           {provided.placeholder}
         </ListDiv>

@@ -1,14 +1,14 @@
-import { PayloadAction, CaseReducer } from '@reduxjs/toolkit';
+import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
-  RoadmapsState,
+  PublicUser,
+  RelatedtaskResponsePayload,
   Roadmap,
-  Task,
-  TaskRequest,
   RoadmapRequest,
+  RoadmapsState,
+  Task,
   Taskrating,
   TaskratingRequest,
-  RelatedtaskResponsePayload,
-  PublicUser,
+  TaskRequest,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (

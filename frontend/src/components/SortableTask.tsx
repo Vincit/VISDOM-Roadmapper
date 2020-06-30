@@ -64,21 +64,21 @@ export const SortableTask: React.FC<{
   index: number;
 }> = ({ task, index }) => {
   return (
-    <Styles>
-      <Draggable key={task.id} draggableId={`${task.id}`} index={index}>
-        {(provider) => (
+    <Draggable key={task.id} draggableId={`${task.id}`} index={index}>
+      {(provided) => (
+        <Styles>
           <TaskDiv
-            ref={provider.innerRef}
-            {...provider.draggableProps}
-            {...provider.dragHandleProps}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
           >
             <div className="text-left aligncenter">{task.name}</div>
             <div className="text-left aligncenter">
               {renderTaskRatings(task)}
             </div>
           </TaskDiv>
-        )}
-      </Draggable>
-    </Styles>
+        </Styles>
+      )}
+    </Draggable>
   );
 };

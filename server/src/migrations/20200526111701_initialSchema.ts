@@ -86,6 +86,13 @@ export async function up(knex: Knex): Promise<any> {
         .onDelete('CASCADE')
         .index();
       table.unique(['taskId', 'taskIdRelated']);
+    })
+    .createTable('versions', (table) => {
+      table.increments('id').primary();
+      table.integer('roadmapId').references('id').inTable('roadmaps').index();
+      table.string('name', 75);
+      table.text('tasks');
+      table.unique(['roadmapId', 'id']);
     });
 }
 

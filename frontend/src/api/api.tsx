@@ -1,17 +1,18 @@
 import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
-  Roadmap,
-  RoadmapRequest,
-  TaskRequest,
-  Task,
-  TaskratingRequest,
-  Taskrating,
+  PublicUser,
   RelatedtaskRequest,
   RelatedtaskResponsePayload,
-  PublicUser,
+  Roadmap,
+  RoadmapRequest,
+  Task,
+  Taskrating,
+  TaskratingRequest,
+  TaskRequest,
 } from '../redux/roadmaps/types';
-import { UserLoginRequest, UserInfo } from '../redux/user/types';
+import { UserInfo, UserLoginRequest } from '../redux/user/types';
+import { Version, VersionRequest } from '../redux/versions/types';
 
 dotenv.config();
 const axiosConfig: AxiosRequestConfig = {
@@ -109,6 +110,26 @@ const getPublicUsers = async () => {
   return response.data as PublicUser[];
 };
 
+const getVersions = async () => {
+  const response = await axios.get('/versions');
+  return response.data as Version[];
+};
+
+const addVersion = async (version: VersionRequest) => {
+  const response = await axios.post('/versions', version);
+  return response.data as Version;
+};
+
+const deleteVersion = async (version: VersionRequest) => {
+  await axios.delete(`/versions/${version.id}`);
+  return version;
+};
+
+const patchVersion = async (version: VersionRequest) => {
+  const response = await axios.patch(`/versions/${version.id}`, version);
+  return response.data as Version;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -124,4 +145,8 @@ export const api = {
   patchTask,
   getPublicUsers,
   patchTaskrating,
+  getVersions,
+  addVersion,
+  patchVersion,
+  deleteVersion,
 };

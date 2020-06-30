@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DragDropContext,
   DraggableLocation,
@@ -6,7 +6,7 @@ import {
 } from 'react-beautiful-dnd';
 import { Button, Col } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
   ColumnHeader,
@@ -14,10 +14,18 @@ import {
   PaddinglessRow,
   TopBarWithBorder,
 } from '../components/CommonLayoutComponents';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SortableTaskList } from '../components/SortableTaskList';
+import { StoreDispatchType } from '../redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { versionsActions } from '../redux/versions';
+import {
+  roadmapsVersionsSelector,
+  selectedVersionSelector,
+} from '../redux/versions/selectors';
+import { Version } from '../redux/versions/types';
 
 const ListContainer = styled.div`
   flex-grow: 1;
@@ -57,15 +65,47 @@ enum ListId {
 }
 
 export const VisualizationPage = () => {
+  const dispatch = useDispatch<StoreDispatchType>();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const initialTasks: Task[] = currentRoadmap?.tasks || [];
+  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
+    roadmapsVersionsSelector,
+    shallowEqual,
+  );
+  const currentVersion = useSelector<RootState, Version | undefined>(
+    selectedVersionSelector,
+    shallowEqual,
+  );
+
   const [taskLists, setTasks] = useState({
-    [ListId.RoadmapTasks]: initialTasks,
+    [ListId.RoadmapTasks]: [] as Task[],
     [ListId.VersionTasks]: [] as Task[],
   });
+
+  useEffect(() => {
+    if (roadmapsVersions === undefined) {
+      dispatch(versionsActions.getVersions());
+    }
+  }, [roadmapsVersions, dispatch]);
+
+  useEffect(() => {
+    let roadmapTasks = [] as Task[];
+    roadmapTasks = currentRoadmap!.tasks;
+    setTasks(() => {
+      return {
+        [ListId.RoadmapTasks]: roadmapTasks.filter((task) => {
+          if (!currentVersion) return true;
+          return !(task.id in currentVersion.tasks);
+        }),
+        [ListId.VersionTasks]: roadmapTasks.filter((task) => {
+          if (!currentVersion) return false;
+          return task.id in currentVersion.tasks;
+        }),
+      };
+    });
+  }, [currentRoadmap, currentVersion]);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -99,19 +139,46 @@ export const VisualizationPage = () => {
     }
   };
 
+  const selectVersion = (id: number | undefined) => {
+    dispatch(versionsActions.selectVersionId(id));
+  };
+
+  const addVersion = () => {
+    dispatch(
+      versionsActions.addVersion({
+        name: `Version ${Math.floor(Math.random() * 999999)}`,
+      }),
+    );
+  };
+
   const renderTopbar = () => {
     return (
       <TopBarWithBorder className="justify-content-start">
-        <Button className="m-1">Roadmap view</Button>
-        <Button className="m-1">Version X</Button>
-        <Button className="m-1">Version Y</Button>
+        <Button onClick={() => selectVersion(undefined)} className="m-1">
+          <Trans i18nKey="Roadmap View" />
+        </Button>
+        {roadmapsVersions &&
+          roadmapsVersions.map((version) => (
+            <Button
+              key={version.id}
+              onClick={() => selectVersion(version.id)}
+              className="m-1"
+            >
+              {version.name}
+            </Button>
+          ))}
+        <Button onClick={() => addVersion()} variant="success" className="m-1">
+          + Add new version
+        </Button>
       </TopBarWithBorder>
     );
   };
 
   const renderRoadmapList = () => {
     return (
-      <PaddinglessRow className="h-50 mh-50 bottomborder">
+      <PaddinglessRow
+        className={currentVersion ? 'h-50 mh-50 bottomborder' : 'flex-grow-1'}
+      >
         <Col xs={5} className="h-100 mh-100 d-flex flex-column">
           <ColumnHeader>
             {`${currentRoadmap?.name} `}
@@ -141,7 +208,8 @@ export const VisualizationPage = () => {
       <PaddinglessRow className="h-50 mh-50">
         <Col xs={5} className="h-100 mh-100 d-flex flex-column">
           <ColumnHeader>
-            <Trans i18nKey="Version name task list" />
+            {`${currentVersion?.name} `}
+            <Trans i18nKey="task list" />
             <Divider />
           </ColumnHeader>
           <ListContainer>
@@ -164,15 +232,19 @@ export const VisualizationPage = () => {
 
   return (
     <>
-      <div className="h-100 d-flex flex-column">
-        <PaddinglessRow>{renderTopbar()}</PaddinglessRow>
-        <div className="flex-grow-1">
-          <DragDropContext onDragEnd={onDragEnd}>
-            {renderRoadmapList()}
-            {renderVersionList()}
-          </DragDropContext>
+      {roadmapsVersions ? (
+        <div className="h-100 d-flex flex-column">
+          <PaddinglessRow>{renderTopbar()}</PaddinglessRow>
+          <div className="flex-grow-1">
+            <DragDropContext onDragEnd={onDragEnd}>
+              {renderRoadmapList()}
+              {currentVersion && renderVersionList()}
+            </DragDropContext>
+          </div>
         </div>
-      </div>
+      ) : (
+        <LoadingSpinner />
+      )}
     </>
   );
 };

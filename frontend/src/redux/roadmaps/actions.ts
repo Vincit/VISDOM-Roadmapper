@@ -1,17 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import {
-  RoadmapRequest,
-  TaskRequest,
-  TaskratingRequest,
-  RelatedtaskRequest,
-  Taskrating,
-  Roadmap,
-  Task,
-  RelatedtaskResponsePayload,
-  PublicUser,
-} from './types';
 import { api } from '../../api/api';
+import {
+  PublicUser,
+  RelatedtaskRequest,
+  RelatedtaskResponsePayload,
+  Roadmap,
+  RoadmapRequest,
+  Task,
+  Taskrating,
+  TaskratingRequest,
+  TaskRequest,
+} from './types';
 
 export const getPublicUsers = createAsyncThunk<
   PublicUser[],
