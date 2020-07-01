@@ -3,7 +3,12 @@ import { AxiosError } from 'axios';
 import { api } from '../../api/api';
 import { chosenRoadmapIdSelector } from '../roadmaps/selectors';
 import { RootState } from '../types';
-import { Version, VersionRequest } from './types';
+import {
+  AddTaskToVersionRequest,
+  RemoveTaskFromVersionRequest,
+  Version,
+  VersionRequest,
+} from './types';
 
 export const addVersion = createAsyncThunk<
   Version,
@@ -58,3 +63,48 @@ export const deleteVersion = createAsyncThunk<
     return thunkAPI.rejectWithValue(err);
   }
 });
+
+export const addTaskToVersion = createAsyncThunk<
+  Version,
+  AddTaskToVersionRequest,
+  { rejectValue: AxiosError }
+>(
+  'versions/addTaskToVersion',
+  async (request: AddTaskToVersionRequest, thunkAPI) => {
+    const versionCopy = { ...request.version };
+    versionCopy.tasks = [...versionCopy.tasks];
+    versionCopy.tasks.splice(request.index, 0, request.task.id!);
+    try {
+      const res = await thunkAPI.dispatch(patchVersion(versionCopy));
+      if (patchVersion.rejected.match(res)) {
+        return thunkAPI.rejectWithValue(res.payload!);
+      }
+      return res.payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const removeTaskFromVersion = createAsyncThunk<
+  Version,
+  RemoveTaskFromVersionRequest,
+  { rejectValue: AxiosError }
+>(
+  'versions/removeTaskFromVersion',
+  async (request: RemoveTaskFromVersionRequest, thunkAPI) => {
+    const versionCopy = { ...request.version };
+    versionCopy.tasks = versionCopy.tasks.filter(
+      (taskId) => taskId !== request.task.id,
+    );
+    try {
+      const res = await thunkAPI.dispatch(patchVersion(versionCopy));
+      if (patchVersion.rejected.match(res)) {
+        return thunkAPI.rejectWithValue(res.payload!);
+      }
+      return res.payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);

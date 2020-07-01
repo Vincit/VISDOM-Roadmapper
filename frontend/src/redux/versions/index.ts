@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  addTaskToVersion,
   addVersion,
   deleteVersion,
   getVersions,
   patchVersion,
+  removeTaskFromVersion,
 } from './actions';
 import {
   ADD_VERSION_FULFILLED,
@@ -39,4 +41,6 @@ export const versionsActions = {
   getVersions,
   patchVersion,
   deleteVersion,
+  addTaskToVersion,
+  removeTaskFromVersion,
 };

@@ -4,25 +4,32 @@ import styled from 'styled-components';
 import { Task } from '../redux/roadmaps/types';
 import { SortableTask } from './SortableTask';
 
-const ListDiv = styled.div`
+const ListDiv = styled.div<{ loadingCursor?: boolean }>`
   overflow-y: visible;
   padding: 0.5em;
   width: 100%;
   min-width: 100%;
   min-height: 100%;
   border: 1px solid black;
+  cursor: ${(props) => (props.loadingCursor ? 'wait !important' : 'auto')};
 `;
 
-export const SortableTaskList: React.FC<{ listId: string; tasks: Task[] }> = ({
-  listId,
-  tasks,
-}) => {
+export const SortableTaskList: React.FC<{
+  listId: string;
+  tasks: Task[];
+  disableDragging: boolean;
+}> = ({ listId, tasks, disableDragging }) => {
   return (
     <Droppable droppableId={listId}>
       {(provided) => (
         <ListDiv ref={provided.innerRef} {...provided.droppableProps}>
           {tasks.map((task, index) => (
-            <SortableTask key={task.id} task={task} index={index} />
+            <SortableTask
+              key={task.id}
+              task={task}
+              index={index}
+              disableDragging={disableDragging}
+            />
           ))}
           {provided.placeholder}
         </ListDiv>

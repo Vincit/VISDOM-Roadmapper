@@ -1,5 +1,4 @@
 import { UserType } from '../user/types';
-import { VersionRequest } from '../versions/types';
 
 export interface RoadmapsState {
   roadmaps: Roadmap[];
@@ -80,9 +79,4 @@ export interface RelatedtaskRequest {
 export interface RelatedtaskResponsePayload {
   newRelatedTasks: number[];
   parentTaskId: number;
-}
-
-export interface TaskVersionRequest {
-  task: TaskRequest;
-  version: VersionRequest | undefined;
 }

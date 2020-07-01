@@ -1,3 +1,5 @@
+import { TaskRequest } from '../roadmaps/types';
+
 export interface Version {
   roadmapId: number;
   id: number;
@@ -15,4 +17,15 @@ export interface VersionRequest {
   id?: number;
   name?: string;
   tasks?: number[];
+}
+
+export interface AddTaskToVersionRequest {
+  task: TaskRequest;
+  version: Version;
+  index: number;
+}
+
+export interface RemoveTaskFromVersionRequest {
+  task: TaskRequest;
+  version: Version;
 }

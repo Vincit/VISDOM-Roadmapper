@@ -84,6 +84,8 @@ export const PlannerPage = () => {
     [ListId.VersionTasks]: [] as Task[],
   });
 
+  const [disableDragging, setDisableDragging] = useState(false);
+
   useEffect(() => {
     if (roadmapsVersions === undefined) {
       dispatch(versionsActions.getVersions());
@@ -91,29 +93,54 @@ export const PlannerPage = () => {
   }, [roadmapsVersions, dispatch]);
 
   useEffect(() => {
+    setDisableDragging(true);
     let roadmapTasks = [] as Task[];
     roadmapTasks = currentRoadmap!.tasks;
     setTasks(() => {
       return {
         [ListId.RoadmapTasks]: roadmapTasks.filter((task) => {
-          if (!currentVersion) return true;
-          return !(task.id in currentVersion.tasks);
+          if (!currentVersion) return true; // Show all tasks in this list if no version selected
+          return !currentVersion.tasks.includes(task.id);
         }),
-        [ListId.VersionTasks]: roadmapTasks.filter((task) => {
-          if (!currentVersion) return false;
-          return task.id in currentVersion.tasks;
-        }),
+        [ListId.VersionTasks]: roadmapTasks
+          .filter((task) => {
+            if (!currentVersion) return false; // Show no tasks here if no version selected
+            return currentVersion.tasks.includes(task.id);
+          })
+          .sort(
+            (a, b) =>
+              currentVersion!.tasks.indexOf(a.id) -
+              currentVersion!.tasks.indexOf(b.id),
+          ),
       };
     });
+    setDisableDragging(false);
   }, [currentRoadmap, currentVersion]);
+
+  const onDragStart = () => {
+    setDisableDragging(true);
+  };
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
-    if (!destination) return;
+    if (
+      !destination ||
+      (source.index === destination.index &&
+        source.droppableId === destination.droppableId)
+    ) {
+      setDisableDragging(false);
+      return;
+    }
 
     // TODO Use immutability helper to mutate state
+    // TODO Perhaps only save lists on exit / save button
     if (source.droppableId === destination.droppableId) {
       const taskListsCopy = {
+        [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
+        [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
+      };
+      // We need original copy to revert re-ordering if api request doesnt go through
+      const taskListsBackup = {
         [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
         [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
       };
@@ -122,8 +149,28 @@ export const PlannerPage = () => {
         source.index,
         destination.index,
       );
+      // Always initially re-order lists before request is finished
       setTasks(taskListsCopy);
+      if (source.droppableId === ListId.VersionTasks) {
+        // If we are re-ordering a versions tasks
+        setDisableDragging(true);
+        dispatch(
+          versionsActions.patchVersion({
+            id: currentVersion!.id,
+            tasks: taskListsCopy[ListId.VersionTasks].map((task) => task.id),
+          }),
+        ).then((res) => {
+          // Revert task re-ordering if request fails
+          if (versionsActions.patchVersion.rejected.match(res)) {
+            setDisableDragging(false);
+            setTasks(taskListsBackup);
+          }
+        });
+      } else {
+        setDisableDragging(false);
+      }
     } else {
+      // TODO dispatch add&remove task from version actions
       const newLists = moveBetweenLists(
         taskLists[source.droppableId as ListId],
         taskLists[destination.droppableId as ListId],
@@ -135,7 +182,45 @@ export const PlannerPage = () => {
         [ListId.RoadmapTasks]: newLists[ListId.RoadmapTasks],
         [ListId.VersionTasks]: newLists[ListId.VersionTasks],
       };
+      // We need original copy to revert re-ordering if api request doesnt go through
+      const taskListsBackup = {
+        [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
+        [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
+      };
       setTasks(taskListsCopy);
+      setDisableDragging(false);
+      if (destination.droppableId === ListId.VersionTasks) {
+        dispatch(
+          versionsActions.addTaskToVersion({
+            version: currentVersion!,
+            task: {
+              id: +result.draggableId,
+            },
+            index: destination.index,
+          }),
+        ).then((res) => {
+          // Revert task re-ordering if request fails
+          if (versionsActions.addTaskToVersion.rejected.match(res)) {
+            setDisableDragging(false);
+            setTasks(taskListsBackup);
+          }
+        });
+      } else {
+        dispatch(
+          versionsActions.removeTaskFromVersion({
+            version: currentVersion!,
+            task: {
+              id: +result.draggableId,
+            },
+          }),
+        ).then((res) => {
+          // Revert task re-ordering if request fails
+          if (versionsActions.removeTaskFromVersion.rejected.match(res)) {
+            setDisableDragging(false);
+            setTasks(taskListsBackup);
+          }
+        });
+      }
     }
   };
 
@@ -201,6 +286,7 @@ export const PlannerPage = () => {
             <SortableTaskList
               listId={ListId.RoadmapTasks}
               tasks={taskLists[ListId.RoadmapTasks]}
+              disableDragging={disableDragging}
             />
           </ListContainer>
         </Col>
@@ -228,6 +314,7 @@ export const PlannerPage = () => {
             <SortableTaskList
               listId={ListId.VersionTasks}
               tasks={taskLists[ListId.VersionTasks]}
+              disableDragging={disableDragging}
             />
           </ListContainer>
         </Col>
@@ -248,7 +335,7 @@ export const PlannerPage = () => {
         <div className="h-100 d-flex flex-column">
           <PaddinglessRow>{renderTopbar()}</PaddinglessRow>
           <div className="flex-grow-1">
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
               {renderRoadmapList()}
               {currentVersion && renderVersionList()}
             </DragDropContext>

@@ -5,12 +5,13 @@ import styled from 'styled-components';
 import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
 import { calcTaskAverageRating } from '../utils/TaskUtils';
 
-const TaskDiv = styled.div`
+const TaskDiv = styled.div<{ loadingCursor?: boolean }>`
   border: 1px solid black;
   padding: 5px;
   margin-bottom: 5px;
   background-color: white !important;
   user-select: none;
+  cursor: ${(props) => (props.loadingCursor ? 'wait !important' : 'auto')};
 `;
 
 const Styles = styled.div`
@@ -62,9 +63,15 @@ const renderTaskRatings = (task: Task) => {
 export const SortableTask: React.FC<{
   task: Task;
   index: number;
-}> = ({ task, index }) => {
+  disableDragging: boolean;
+}> = ({ task, index, disableDragging }) => {
   return (
-    <Draggable key={task.id} draggableId={`${task.id}`} index={index}>
+    <Draggable
+      key={task.id}
+      draggableId={`${task.id}`}
+      index={index}
+      isDragDisabled={disableDragging}
+    >
       {(provided) => (
         <Styles>
           <TaskDiv
