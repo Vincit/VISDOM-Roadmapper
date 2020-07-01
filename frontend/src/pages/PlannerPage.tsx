@@ -143,6 +143,10 @@ export const PlannerPage = () => {
     dispatch(versionsActions.selectVersionId(id));
   };
 
+  const deleteVersion = (id: number) => {
+    dispatch(versionsActions.deleteVersion({ id }));
+  };
+
   const addVersion = () => {
     dispatch(
       versionsActions.addVersion({
@@ -161,7 +165,15 @@ export const PlannerPage = () => {
           roadmapsVersions.map((version) => (
             <Button
               key={version.id}
-              onClick={() => selectVersion(version.id)}
+              onClick={() => {
+                selectVersion(version.id);
+              }}
+              onContextMenu={(
+                e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+              ) => {
+                e.preventDefault();
+                deleteVersion(version.id);
+              }}
               className="m-1"
             >
               {version.name}
