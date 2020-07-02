@@ -3,10 +3,11 @@ import { UserType } from '../user/types';
 export interface RoadmapsState {
   roadmaps: Roadmap[];
   selectedRoadmapId?: number;
-  allUsers: PublicUser[];
+  allUsers: PublicUser[] | undefined;
 }
 
 export interface PublicUser {
+  id: number;
   username: string;
   type: UserType;
   customerValue?: number;

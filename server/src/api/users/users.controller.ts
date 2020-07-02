@@ -1,10 +1,10 @@
+import passport from 'passport';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
-import passport from 'passport';
 
 export const getUsers: RouteHandlerFnc = async (ctx, _) => {
   const query = User.query();
-  query.select('username', 'type', 'customerValue');
+  query.select('id', 'username', 'type', 'customerValue');
   ctx.body = await query;
 };
 

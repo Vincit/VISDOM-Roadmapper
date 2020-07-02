@@ -3,6 +3,7 @@ export enum ModalTypes {
   LOGIN_MODAL = 'LOGIN_MODAL',
   RATE_TASK_MODAL = 'RATE_TASK_MODAL',
   EDIT_TASK_MODAL = 'EDIT_TASK_MODAL',
+  TASK_INFO_MODAL = 'TASK_INFO_MODAL',
 }
 
 export interface ShowModalPayload {

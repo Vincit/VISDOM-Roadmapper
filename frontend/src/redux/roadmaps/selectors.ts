@@ -1,5 +1,5 @@
 import { RootState } from '../types';
-import { Roadmap, PublicUser } from './types';
+import { PublicUser, Roadmap } from './types';
 
 export const roadmapsSelector = (state: RootState): Roadmap[] =>
   state.roadmaps.roadmaps;
@@ -12,6 +12,8 @@ export const chosenRoadmapSelector = (state: RootState): Roadmap | undefined =>
     (roadmap) => roadmap.id === state.roadmaps.selectedRoadmapId,
   );
 
-export const publicUsersSelector = (state: RootState): PublicUser[] => {
+export const publicUsersSelector = (
+  state: RootState,
+): PublicUser[] | undefined => {
   return state.roadmaps.allUsers;
 };

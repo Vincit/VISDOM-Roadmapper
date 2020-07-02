@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { StoreDispatchType } from '../redux';
-import { roadmapsActions } from '../redux/roadmaps/index';
-import { Task, TaskRequest } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
-import { userActions } from '../redux/user';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
-import { ModalProps } from './types';
+import { StoreDispatchType } from '../../redux';
+import { roadmapsActions } from '../../redux/roadmaps/index';
+import { Task, TaskRequest } from '../../redux/roadmaps/types';
+import { RootState } from '../../redux/types';
+import { userActions } from '../../redux/user';
+import { userInfoSelector } from '../../redux/user/selectors';
+import { UserInfo } from '../../redux/user/types';
+import { StyledButton } from '../forms/StyledButton';
+import { StyledFormControl } from '../forms/StyledFormControl';
+import { ModalCloseButton } from './modalparts/ModalCloseButton';
+import { ModalContent } from './modalparts/ModalContent';
+import { ModalFooter } from './modalparts/ModalFooter';
+import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
+import { ModalHeader } from './modalparts/ModalHeader';
+import { ModalProps } from '../types';
 
 export interface EditTaskModalProps extends ModalProps {
   task: Task;
 }
 
 export const EditTaskModal: React.FC<EditTaskModalProps> = ({
-  onClose,
+  closeModal,
   task,
 }) => {
   const { t } = useTranslation();
@@ -56,7 +63,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
             setErrorMessage(res.payload.message);
           }
         } else {
-          onClose();
+          closeModal();
         }
       });
     }
@@ -71,34 +78,37 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
   };
 
   return (
-    <Modal show onHide={onClose}>
+    <>
+      <ModalCloseButton onClick={closeModal} />
+
       <Form onSubmit={handleSubmit}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <Trans i18nKey="Edit task" />
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader>
+          <Trans i18nKey="Edit task" />
+        </ModalHeader>
+
+        <ModalContent>
           <Form.Group>
-            <Form.Control
+            <StyledFormControl
+              autoComplete="off"
               required
               name="name"
               id="name"
               placeholder={t('Task name')}
               value={formValues.name}
-              onChange={(e) => onNameChange(e.currentTarget.value)}
+              onChange={(e: any) => onNameChange(e.currentTarget.value)}
             />
           </Form.Group>
 
           <Form.Group>
-            <Form.Control
+            <StyledFormControl
+              isTextArea
               required
               as="textarea"
               name="description"
               id="description"
               placeholder={t('Description')}
               value={formValues.description}
-              onChange={(e) => onDescriptionChange(e.currentTarget.value)}
+              onChange={(e: any) => onDescriptionChange(e.currentTarget.value)}
             />
           </Form.Group>
           <Alert
@@ -109,16 +119,20 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
           >
             {errorMessage}
           </Alert>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>
-            <Trans i18nKey="Close" />
-          </Button>
-          <Button variant="primary" type="submit">
-            <Trans i18nKey="Save" />
-          </Button>
-        </Modal.Footer>
+        </ModalContent>
+        <ModalFooter>
+          <ModalFooterButtonDiv rightmargin>
+            <StyledButton fullWidth buttonType="cancel" onClick={closeModal}>
+              <Trans i18nKey="Cancel" />
+            </StyledButton>
+          </ModalFooterButtonDiv>
+          <ModalFooterButtonDiv>
+            <StyledButton fullWidth buttonType="submit" type="submit">
+              <Trans i18nKey="Save" />
+            </StyledButton>
+          </ModalFooterButtonDiv>
+        </ModalFooter>
       </Form>
-    </Modal>
+    </>
   );
 };

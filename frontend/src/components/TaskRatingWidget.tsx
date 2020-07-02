@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
-import { StarFill, Wrench, ChatDots } from 'react-bootstrap-icons';
 import { Form } from 'react-bootstrap';
+import { ChatDots, StarFill, Wrench } from 'react-bootstrap-icons';
+import { useTranslation } from 'react-i18next';
 import Rating from 'react-rating';
+import styled from 'styled-components';
 import { TaskRatingDimension } from '../redux/roadmaps/types';
 
 const StarEmpty = styled(StarFill)`
@@ -60,10 +60,11 @@ const CommentBoxWrapper = styled(Form.Group)`
   right: 0;
   left: 0;
   bottom: 0;
-  margin-left: 2.5em;
-  margin-right: 2.5em;
+  margin-left: 2em;
+  margin-right: 2em;
   z-index: 999;
   textarea {
+    resize: none;
     position: absolute;
     top: 0;
     right: 0;

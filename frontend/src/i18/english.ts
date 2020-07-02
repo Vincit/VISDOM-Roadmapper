@@ -28,6 +28,7 @@ export const english = {
     'Not rated by me': 'Not rated by me',
     'Rated by me': 'Rated by me',
     'Created at': 'Created at',
+    'Created by': 'Created by',
     Completed: 'Completed',
     'Not completed': 'Not completed',
     'Rate task': 'Rate task',
@@ -38,5 +39,7 @@ export const english = {
     'Roadmap View': 'Roadmap View',
     'task list': 'task list',
     Planner: 'Planner',
+    Cancel: 'Cancel',
+    'Overview for': 'Overview for',
   },
 };

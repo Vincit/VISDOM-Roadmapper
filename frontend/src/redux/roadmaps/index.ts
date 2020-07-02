@@ -32,7 +32,7 @@ import { RoadmapsState } from './types';
 const initialState: RoadmapsState = {
   roadmaps: [],
   selectedRoadmapId: undefined,
-  allUsers: [],
+  allUsers: undefined,
 };
 
 export const roadmapsSlice = createSlice({

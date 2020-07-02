@@ -191,7 +191,7 @@ export const TaskListPage = () => {
     { label: 'Task name', sorting: SortingTypes.SORT_NAME },
     { label: 'Task description', sorting: SortingTypes.SORT_DESC },
     { label: 'Ratings', sorting: SortingTypes.SORT_RATINGS },
-    { label: 'Created at', sorting: SortingTypes.SORT_CREATEDAT },
+    { label: 'Created in', sorting: SortingTypes.SORT_CREATEDAT },
   ];
 
   const renderTasksTable = () => {

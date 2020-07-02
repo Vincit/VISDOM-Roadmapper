@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { Alert, Modal, Button, Form } from 'react-bootstrap';
+import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { ModalProps } from './types';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { StoreDispatchType } from '../../redux';
+import { roadmapsActions } from '../../redux/roadmaps';
 import {
   Task,
   TaskRatingDimension,
   TaskratingRequest,
-} from '../redux/roadmaps/types';
-import { TaskRatingWidget } from './TaskRatingWidget';
-import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
-import { roadmapsActions } from '../redux/roadmaps';
-import { StoreDispatchType } from '../redux';
+} from '../../redux/roadmaps/types';
+import { RootState } from '../../redux/types';
+import { userInfoSelector } from '../../redux/user/selectors';
+import { UserInfo } from '../../redux/user/types';
+import { StyledButton } from '../forms/StyledButton';
+import { ModalCloseButton } from './modalparts/ModalCloseButton';
+import { ModalContent } from './modalparts/ModalContent';
+import { ModalFooter } from './modalparts/ModalFooter';
+import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
+import { ModalHeader } from './modalparts/ModalHeader';
+import { TaskRatingWidget } from '../TaskRatingWidget';
+import { ModalProps } from '../types';
 
 export interface RateTaskModalProps extends ModalProps {
   task: Task;
@@ -21,7 +27,7 @@ export interface RateTaskModalProps extends ModalProps {
 }
 
 export const RateTaskModal: React.FC<RateTaskModalProps> = ({
-  onClose,
+  closeModal,
   task,
   cameFromTaskCreation,
 }) => {
@@ -93,7 +99,7 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
       }
     }
 
-    onClose();
+    closeModal();
   };
 
   const onBusinessRatingChange = (rating: {
@@ -119,21 +125,20 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
   };
 
   return (
-    <Modal show onHide={onClose}>
+    <>
+      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <Trans i18nKey="Rate task" />
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader>
+          <Trans i18nKey="Rate task" />
+        </ModalHeader>
+        <ModalContent>
           {cameFromTaskCreation ? (
-            <div className="m-4">
+            <div className="m-4 text-left">
               <h6>Task &apos;{task?.name}&apos; created!</h6>
               <h6>You may now rate it!</h6>
             </div>
           ) : (
-            <h6 className="m-4">{task?.name}</h6>
+            <h6 className="m-4 text-left">{task?.name}</h6>
           )}
 
           <TaskRatingWidget
@@ -156,16 +161,20 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
           >
             {errorMessage}
           </Alert>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>
-            <Trans i18nKey="Close" />
-          </Button>
-          <Button variant="primary" type="submit">
-            <Trans i18nKey="Submit" />
-          </Button>
-        </Modal.Footer>
+        </ModalContent>
+        <ModalFooter>
+          <ModalFooterButtonDiv rightmargin>
+            <StyledButton fullWidth buttonType="cancel" onClick={closeModal}>
+              <Trans i18nKey="Cancel" />
+            </StyledButton>
+          </ModalFooterButtonDiv>
+          <ModalFooterButtonDiv>
+            <StyledButton fullWidth buttonType="submit" type="submit">
+              <Trans i18nKey="Submit" />
+            </StyledButton>
+          </ModalFooterButtonDiv>
+        </ModalFooter>
       </Form>
-    </Modal>
+    </>
   );
 };

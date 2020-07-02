@@ -7,7 +7,6 @@ import {
   PencilSquare,
   StarFill,
   TrashFill,
-  Wrench,
 } from 'react-bootstrap-icons';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
@@ -15,8 +14,8 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
 import { roadmapsActions } from '../redux/roadmaps/index';
-import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { Task } from '../redux/roadmaps/types';
+import { TaskRatingsText } from './TaskRatingsText';
 
 interface TableTaskRowProps {
   task: Task;
@@ -59,7 +58,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   const taskDetails = () => {
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.RATE_TASK_MODAL,
+        modalType: ModalTypes.TASK_INFO_MODAL,
         modalProps: {
           task,
         },
@@ -71,36 +70,6 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     dispatch(roadmapsActions.patchTask({ id, completed: !completed }));
   };
 
-  const renderTaskRatings = () => {
-    const averageBusinessVal = calcTaskAverageRating(
-      TaskRatingDimension.BusinessValue,
-      task,
-    );
-    const averageWorkVal = calcTaskAverageRating(
-      TaskRatingDimension.RequiredWork,
-      task,
-    );
-    const renderBusinessVal = averageBusinessVal >= 0;
-    const renderWorkVal = averageWorkVal >= 0;
-    return (
-      <>
-        {renderBusinessVal && (
-          <span className="m-1">
-            {averageBusinessVal}
-            <StarFill />
-          </span>
-        )}
-        {renderWorkVal && (
-          <span className="m-1">
-            {averageWorkVal}
-            <Wrench />
-          </span>
-        )}
-        {!renderWorkVal && !renderBusinessVal && <span>-</span>}
-      </>
-    );
-  };
-
   return (
     <tr>
       <ClickableTd onClick={() => toggleTaskCompleted()}>
@@ -108,7 +77,9 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       </ClickableTd>
       <td>{name}</td>
       <td>{description}</td>
-      <td>{renderTaskRatings()}</td>
+      <td>
+        <TaskRatingsText task={task} />
+      </td>
       <td>{new Date(createdAt).toLocaleDateString()}</td>
       <td>
         <Button
