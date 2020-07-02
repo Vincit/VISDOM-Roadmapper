@@ -10,6 +10,7 @@ import { roadmapsActions } from '../redux/roadmaps/index';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { TaskRequest } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { userActions } from '../redux/user';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { ModalProps } from './types';
@@ -34,8 +35,8 @@ export const AddTaskModal: React.FC<ModalProps> = ({ onClose }) => {
   );
 
   useEffect(() => {
-    dispatch(roadmapsActions.getPublicUsers());
-  }, [dispatch]);
+    if (!userInfo) dispatch(userActions.getUserInfo());
+  }, [userInfo, dispatch]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
