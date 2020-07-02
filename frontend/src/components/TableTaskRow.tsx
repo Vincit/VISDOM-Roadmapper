@@ -1,19 +1,20 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
 import { Button } from 'react-bootstrap';
 import {
-  TrashFill,
   CheckCircle,
   Circle,
+  InfoCircleFill,
   PencilSquare,
-  Wrench,
   StarFill,
+  TrashFill,
+  Wrench,
 } from 'react-bootstrap-icons';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 import { StoreDispatchType } from '../redux';
-import { roadmapsActions } from '../redux/roadmaps/index';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
+import { roadmapsActions } from '../redux/roadmaps/index';
 import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
 import { calcTaskAverageRating } from '../utils/TaskUtils';
 
@@ -34,6 +35,28 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   };
 
   const editTask = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.EDIT_TASK_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
+  const rateTask = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.RATE_TASK_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
+  const taskDetails = () => {
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.RATE_TASK_MODAL,
@@ -89,7 +112,25 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       <td>{new Date(createdAt).toLocaleDateString()}</td>
       <td>
         <Button
-          className="mr-3"
+          className="mr-2"
+          size="sm"
+          variant="primary"
+          aria-label="Task details"
+          onClick={() => taskDetails()}
+        >
+          <InfoCircleFill />
+        </Button>
+        <Button
+          className="mr-2"
+          size="sm"
+          variant="warning"
+          aria-label="Rate task"
+          onClick={() => rateTask()}
+        >
+          <StarFill />
+        </Button>
+        <Button
+          className="mr-2"
           size="sm"
           variant="success"
           aria-label="Edit task"
