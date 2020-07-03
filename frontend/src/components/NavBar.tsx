@@ -1,13 +1,10 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
-import { shallowEqual, useSelector } from 'react-redux';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { paths } from '../routers/paths';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
 
 const Styles = styled.div`
   .navbar-nav {
@@ -26,19 +23,6 @@ const Styles = styled.div`
 `;
 
 export const NavBar = () => {
-  const { t } = useTranslation();
-
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-
-  const getRenderRoadmapName: () => String = () => {
-    if (currentRoadmap) return currentRoadmap.name;
-
-    return t('Roadmap');
-  };
-
   return (
     <Styles>
       <Navbar className="bottomborder">
@@ -49,10 +33,8 @@ export const NavBar = () => {
           </Nav.Link>
           <Nav.Link as={Link} to={paths.userInfo}>
             <Trans i18nKey="UserInfo" />
-          </Nav.Link>{' '}
-          <Nav.Link as={Link} to={paths.roadmapHome}>
-            {getRenderRoadmapName()}
           </Nav.Link>
+          <RoadmapSelectorWidget />
         </Nav>
       </Navbar>
     </Styles>
