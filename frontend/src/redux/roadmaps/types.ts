@@ -1,7 +1,7 @@
 import { UserType } from '../user/types';
 
 export interface RoadmapsState {
-  roadmaps: Roadmap[];
+  roadmaps: Roadmap[] | undefined;
   selectedRoadmapId?: number;
   allUsers: PublicUser[] | undefined;
 }

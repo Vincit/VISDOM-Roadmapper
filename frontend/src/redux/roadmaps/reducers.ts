@@ -29,6 +29,7 @@ export const ADD_ROADMAP_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<Roadmap>,
 ) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   state.roadmaps.push(action.payload);
 };
 
@@ -36,6 +37,7 @@ export const DELETE_ROADMAP_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<RoadmapRequest>,
 ) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   state.roadmaps = state.roadmaps.filter(
     (roadmap) => roadmap.id !== action.payload.id,
   );
@@ -45,6 +47,7 @@ export const ADD_TASK_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<Task>,
 ) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   const parent = state.roadmaps.find(
     (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
@@ -55,6 +58,7 @@ export const PATCH_TASK_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<Task>,
 ) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   const parent = state.roadmaps.find(
     (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
@@ -70,6 +74,7 @@ export const DELETE_TASK_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<TaskRequest>,
 ) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   const parent = state.roadmaps.find(
     (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
@@ -81,6 +86,7 @@ export const ADD_TASKRATING_FULFILLED = (
   action: PayloadAction<Taskrating>,
 ) => {
   let parentTask: Task | undefined;
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   state.roadmaps.forEach((roadmap) => {
     if (parentTask !== undefined) return;
     parentTask = roadmap.tasks.find(
@@ -98,6 +104,7 @@ export const PATCH_TASKRATING_FULFILLED = (
   action: PayloadAction<Taskrating>,
 ) => {
   let parentTask: Task | undefined;
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   state.roadmaps.forEach((roadmap) => {
     if (parentTask !== undefined) return;
     parentTask = roadmap.tasks.find(
@@ -118,6 +125,7 @@ export const DELETE_TASKRATING_FULFILLED = (
   action: PayloadAction<TaskratingRequest>,
 ) => {
   let parentTask: Task | undefined;
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   state.roadmaps.forEach((roadmap) => {
     if (parentTask !== undefined) return;
     parentTask = roadmap.tasks.find(
@@ -137,6 +145,7 @@ export const ADD_RELATED_TASK_FULFILLED = (
   action: PayloadAction<RelatedTaskResponsePayload>,
 ) => {
   let parentTask: Task | undefined;
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   state.roadmaps.forEach((roadmap) => {
     if (parentTask !== undefined) return;
     parentTask = roadmap.tasks.find(

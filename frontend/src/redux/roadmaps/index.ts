@@ -30,7 +30,7 @@ import {
 import { RoadmapsState } from './types';
 
 const initialState: RoadmapsState = {
-  roadmaps: [],
+  roadmaps: undefined,
   selectedRoadmapId: undefined,
   allUsers: undefined,
 };
