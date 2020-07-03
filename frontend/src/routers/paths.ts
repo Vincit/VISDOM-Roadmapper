@@ -1,7 +1,7 @@
 export const paths = {
   home: '/',
   userInfo: '/user',
-  roadmapHome: '/roadmap/',
+  roadmapHome: '/roadmap',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
   roadmapRelative: {
     home: '/',
