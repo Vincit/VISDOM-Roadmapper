@@ -22,7 +22,10 @@ const routes = [
     path: paths.roadmapRelative.taskList,
     component: TaskListPage,
   },
-  { path: paths.roadmapRelative.planner, component: PlannerPage },
+  { 
+    path: paths.roadmapRelative.planner, 
+    component: PlannerPage 
+  },
 ];
 
 export const RoadmapRouter = () => {
