@@ -1,7 +1,8 @@
 import React from 'react';
 import { UserInfoCard } from '../components/UserInfoCard';
+import { requireLogin } from '../utils/requirelogin';
 
-export const UserInfoPage = () => {
+const UserInfoPageComponent = () => {
   return (
     <div>
       This is the user info page.
@@ -9,3 +10,5 @@ export const UserInfoPage = () => {
     </div>
   );
 };
+
+export const UserInfoPage = requireLogin(UserInfoPageComponent);

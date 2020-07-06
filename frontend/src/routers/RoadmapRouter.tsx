@@ -15,6 +15,7 @@ import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
 
 const routes = [
@@ -22,13 +23,13 @@ const routes = [
     path: paths.roadmapRelative.taskList,
     component: TaskListPage,
   },
-  { 
-    path: paths.roadmapRelative.planner, 
-    component: PlannerPage 
+  {
+    path: paths.roadmapRelative.planner,
+    component: PlannerPage,
   },
 ];
 
-export const RoadmapRouter = () => {
+const RoadmapRouterComponent = () => {
   const { path } = useRouteMatch();
   const { roadmapId } = useParams<{ roadmapId: string | undefined }>();
   const dispatch = useDispatch<StoreDispatchType>();
@@ -84,3 +85,5 @@ export const RoadmapRouter = () => {
   };
   return <>{renderOrRedirect()}</>;
 };
+
+export const RoadmapRouter = requireLogin(RoadmapRouterComponent);
