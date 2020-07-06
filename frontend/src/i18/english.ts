@@ -41,5 +41,6 @@ export const english = {
     Planner: 'Planner',
     Cancel: 'Cancel',
     'Overview for': 'Overview for',
+    Logout: 'Logout',
   },
 };
