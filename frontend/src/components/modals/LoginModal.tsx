@@ -94,6 +94,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               name="description"
               id="description"
               type="password"
+              placeholder={t('Password')}
               value={formValues.password}
               onChange={(e: any) => onPasswordChange(e.currentTarget.value)}
             />
