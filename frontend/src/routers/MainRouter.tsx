@@ -1,8 +1,9 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage';
+import { NotFoundPage } from '../pages/NotFoundPage';
 import { UserInfoPage } from '../pages/UserInfoPage';
 import { paths } from './paths';
 import { RoadmapRouter } from './RoadmapRouter';
@@ -31,6 +32,16 @@ const routes = [
   {
     path: paths.home,
     component: HomePage,
+    exact: true,
+  },
+  {
+    path: paths.notFound,
+    component: NotFoundPage,
+    exact: true,
+  },
+  {
+    path: '',
+    component: () => <Redirect to={paths.notFound} />,
     exact: false,
   },
 ];
