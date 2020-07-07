@@ -55,6 +55,17 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
+  const taskRatingDetails = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
   const taskDetails = () => {
     dispatch(
       modalsActions.showModal({
@@ -95,8 +106,8 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           className="mr-2"
           size="sm"
           variant="warning"
-          aria-label="Rate task"
-          onClick={() => rateTask()}
+          aria-label="Task ratings"
+          onClick={() => taskRatingDetails()}
         >
           <StarFill />
         </Button>

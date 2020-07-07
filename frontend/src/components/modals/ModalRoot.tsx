@@ -12,6 +12,10 @@ import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { LoginModal, LoginModalProps } from './LoginModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
+import {
+  TaskRatingsInfoModal,
+  TaskRatingsInfoModalProps,
+} from './TaskRatingsInfoModal';
 
 type ModalTypeToComponent = {
   [K in ModalTypes]:
@@ -19,7 +23,8 @@ type ModalTypeToComponent = {
     | React.FC<RateTaskModalProps>
     | React.FC<LoginModalProps>
     | React.FC<EditTaskModalProps>
-    | React.FC<TaskInfoModalProps>;
+    | React.FC<TaskInfoModalProps>
+    | React.FC<TaskRatingsInfoModalProps>;
 };
 
 const Modals: ModalTypeToComponent = {
@@ -28,13 +33,14 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.RATE_TASK_MODAL]: RateTaskModal,
   [ModalTypes.EDIT_TASK_MODAL]: EditTaskModal,
   [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
+  [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
 };
 
 const StyledModal = Modal.styled`
   position: absolute;
   top: 15%;
   background-color: white;
-  min-width: 500px;
+  min-width: 540px;
   max-width: 80vw;
   max-height: 80vh;
   border: 1px solid black;

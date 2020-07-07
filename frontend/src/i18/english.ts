@@ -43,5 +43,11 @@ export const english = {
     'Overview for': 'Overview for',
     Logout: 'Logout',
     'Logging out': 'Logging out',
+    'Ratings for': 'Ratings for',
+    'Your rating': 'Your rating',
+    'Your comment': 'Your comment',
+    'You have not rated this task': 'You have not rated this task',
+    "Team's ratings": "Team's ratings",
+    'No ratings from team': 'No ratings from team',
   },
 };
