@@ -16,7 +16,6 @@ import { TaskRatingBar } from '../RatingBars';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
-import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalHeader } from './modalparts/ModalHeader';
 
 export interface TaskRatingsInfoModalProps extends ModalProps {
@@ -31,7 +30,7 @@ const UserRatingDiv = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 100%;
+  max-width: 50em;
   margin-bottom: 4px;
 `;
 
@@ -53,6 +52,8 @@ const RatingDiv = styled.div<{ rightMargin?: boolean }>`
 `;
 
 const LabelText = styled.p`
+  display: flex;
+  white-space: nowrap;
   font-family: 'Anonymous Pro';
   margin-bottom: 8px;
   font-size: 11px;
@@ -63,28 +64,38 @@ const LabelText = styled.p`
 `;
 
 const ColumnFlexBox = styled.div`
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   width: 100%;
   text-align: left;
+  overflow-y: auto;
 `;
 
 const TeamRatingsBox = styled.div`
+  display: flex;
   font-size: 14px;
   margin-top: 8px;
-  padding: 16px;
   background-color: #f3f3f3;
   width: 100%;
+  overflow-y: auto;
+  max-height: 40em;
 `;
 
 const TeamRatingDiv = styled.div`
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 8px;
+  max-width: 50em;
 `;
 
-const TeamRatingUsername = styled.span`
+const TeamRatingUsername = styled.div`
+  display: inline-block;
   font-weight: bold;
-  margin-right: 8px;
+  margin-right: 16px;
+  width: 14em;
+`;
+
+const TeamRatingBarContainer = styled.div`
+  display: inline-block;
 `;
 
 export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
@@ -179,11 +190,13 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
                     ?.username
                 }
               </TeamRatingUsername>
-              <TaskRatingBar
-                dimension={rating.dimension}
-                initialValue={rating.value}
-                readonly
-              />
+              <TeamRatingBarContainer>
+                <TaskRatingBar
+                  dimension={rating.dimension}
+                  initialValue={rating.value}
+                  readonly
+                />
+              </TeamRatingBarContainer>
             </RatingDiv>
             {rating.comment && (
               <CommentDiv rightMargin topMargin>
@@ -208,8 +221,8 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
         </span>
       </ModalHeader>
 
-      <ModalContent>{renderOwnRatings()}</ModalContent>
-      <ModalFooter>
+      <ModalContent>
+        {renderOwnRatings()}{' '}
         <ColumnFlexBox>
           <LabelText>
             <Trans i18nKey="Team's ratings" />:
@@ -218,7 +231,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <ColumnFlexBox>{renderTeamRatings()}</ColumnFlexBox>
           </TeamRatingsBox>
         </ColumnFlexBox>
-      </ModalFooter>
+      </ModalContent>
     </>
   );
 };

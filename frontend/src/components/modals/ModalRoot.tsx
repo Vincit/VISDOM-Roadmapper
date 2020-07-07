@@ -37,6 +37,9 @@ const Modals: ModalTypeToComponent = {
 };
 
 const StyledModal = Modal.styled`
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 15%;
   background-color: white;
