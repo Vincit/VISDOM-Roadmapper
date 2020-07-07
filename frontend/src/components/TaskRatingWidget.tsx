@@ -1,40 +1,10 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { ChatDots, StarFill, Wrench } from 'react-bootstrap-icons';
+import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
-import Rating from 'react-rating';
 import styled from 'styled-components';
 import { TaskRatingDimension } from '../redux/roadmaps/types';
-
-const StarEmpty = styled(StarFill)`
-  color: gray;
-  opacity: 0.25;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
-
-const StarFilled = styled(StarFill)`
-  color: gold;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
-
-const WrenchEmpty = styled(Wrench)`
-  color: gray;
-  opacity: 0.25;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
-
-const WrenchFill = styled(Wrench)`
-  color: black;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
+import { TaskRatingBar } from './RatingBars';
 
 const CommentButton = styled(ChatDots)`
   position: relative;
@@ -159,14 +129,10 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
       <>
         <Form.Group>
           <div className="d-flex justify-content-around">
-            <Rating
-              initialRating={businessValueRating.value}
-              start={0}
-              stop={10}
-              fractions={2}
+            <TaskRatingBar
+              dimension={TaskRatingDimension.BusinessValue}
+              initialValue={businessValueRating.value}
               onChange={businessValueChanged}
-              emptySymbol={<StarEmpty />}
-              fullSymbol={<StarFilled />}
             />
             <CommentButton
               onClick={() => openCommentBox(TaskRatingDimension.BusinessValue)}
@@ -175,14 +141,10 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
         </Form.Group>
         <Form.Group>
           <div className="d-flex justify-content-around">
-            <Rating
-              initialRating={requiredWorkRating.value}
-              start={0}
-              stop={10}
-              fractions={2}
+            <TaskRatingBar
+              dimension={TaskRatingDimension.RequiredWork}
+              initialValue={requiredWorkRating.value}
               onChange={requiredWorkValueChanged}
-              emptySymbol={<WrenchEmpty />}
-              fullSymbol={<WrenchFill />}
             />
             <CommentButton
               onClick={() => openCommentBox(TaskRatingDimension.RequiredWork)}
