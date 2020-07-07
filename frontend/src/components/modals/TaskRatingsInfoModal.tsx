@@ -3,12 +3,15 @@ import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { StoreDispatchType } from '../../redux';
+import { modalsActions } from '../../redux/modals';
+import { ModalTypes } from '../../redux/modals/types';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { publicUsersSelector } from '../../redux/roadmaps/selectors';
 import { PublicUser, Task } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
+import { EditPenButton } from '../forms/EditPenButton';
 import { TaskRatingBar } from '../RatingBars';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -29,7 +32,7 @@ const UserRatingDiv = styled.div`
   justify-content: space-between;
   width: 100%;
   max-width: 100%;
-  padding: 4px;
+  margin-bottom: 4px;
 `;
 
 const CommentDiv = styled.div<{ rightMargin?: boolean; topMargin?: boolean }>`
@@ -98,6 +101,17 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
     shallowEqual,
   );
 
+  const rateTask = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.RATE_TASK_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
   useEffect(() => {
     if (!publicUsers) dispatch(roadmapsActions.getPublicUsers());
   }, [dispatch, publicUsers]);
@@ -113,13 +127,15 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
           <UserRatingDiv>
             <CommentDiv rightMargin>
               <LabelText>
-                <Trans i18nKey="Your comment" />
+                <Trans i18nKey="Your comment" />{' '}
+                <EditPenButton onClick={() => rateTask()} />
               </LabelText>
               {rating.comment || '-'}
             </CommentDiv>
             <RatingDiv>
               <LabelText>
-                <Trans i18nKey="Your rating" />
+                <Trans i18nKey="Your rating" />{' '}
+                <EditPenButton onClick={() => rateTask()} />
               </LabelText>
               <TaskRatingBar
                 dimension={rating.dimension}
@@ -134,7 +150,8 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <CommentDiv rightMargin>
               <LabelText>
                 <LabelText>
-                  <Trans i18nKey="You have not rated this task" />
+                  <Trans i18nKey="You have not rated this task" />{' '}
+                  <EditPenButton onClick={() => rateTask()} />
                 </LabelText>
               </LabelText>
             </CommentDiv>
