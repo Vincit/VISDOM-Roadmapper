@@ -8,26 +8,37 @@ import {
   StarFill,
   TrashFill,
 } from 'react-bootstrap-icons';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
 import { roadmapsActions } from '../redux/roadmaps/index';
 import { Task } from '../redux/roadmaps/types';
+import { RootState } from '../redux/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo } from '../redux/user/types';
+import { StyledButton } from './forms/StyledButton';
 import { TaskRatingsText } from './TaskRatingsText';
 
 interface TableTaskRowProps {
   task: Task;
 }
 
-const ClickableTd = styled.td`
-  cursor: pointer;
+const TaskTd = styled.td<{ clickable?: boolean; rightalign?: boolean }>`
+  cursor: ${(props) => (props.clickable ? 'pointer' : 'inherit')};
+  vertical-align: middle;
+  text-align: ${(props) => (props.rightalign ? 'end' : 'center')};
+  padding: 1em;
 `;
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { id, name, completed, roadmapId, description, createdAt } = task;
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
 
   const deleteTask = () => {
     dispatch(roadmapsActions.deleteTask({ id, roadmapId }));
@@ -83,18 +94,25 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
 
   return (
     <tr>
-      <ClickableTd onClick={() => toggleTaskCompleted()}>
+      <TaskTd clickable onClick={() => toggleTaskCompleted()}>
         {completed ? <CheckCircle /> : <Circle />}
-      </ClickableTd>
-      <td>{name}</td>
-      <td>{description}</td>
-      <td>
+      </TaskTd>
+      <TaskTd>{name}</TaskTd>
+      <TaskTd>{description}</TaskTd>
+      <TaskTd>
         <TaskRatingsText task={task} />
-      </td>
-      <td>{new Date(createdAt).toLocaleDateString()}</td>
-      <td>
+      </TaskTd>
+      <TaskTd>{new Date(createdAt).toLocaleDateString()}</TaskTd>
+      <TaskTd rightalign>
+        {!task.ratings.find(
+          (rating) => rating.createdByUser === userInfo?.id,
+        ) && (
+          <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
+            Rate now
+          </StyledButton>
+        )}
         <Button
-          className="mr-2"
+          className="m-1"
           size="sm"
           variant="primary"
           aria-label="Task details"
@@ -103,7 +121,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           <InfoCircleFill />
         </Button>
         <Button
-          className="mr-2"
+          className="m-1"
           size="sm"
           variant="warning"
           aria-label="Task ratings"
@@ -112,7 +130,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           <StarFill />
         </Button>
         <Button
-          className="mr-2"
+          className="m-1"
           size="sm"
           variant="success"
           aria-label="Edit task"
@@ -121,6 +139,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           <PencilSquare />
         </Button>
         <Button
+          className="m-1"
           size="sm"
           variant="danger"
           aria-label="Delete task"
@@ -128,7 +147,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         >
           <TrashFill />
         </Button>
-      </td>
+      </TaskTd>
     </tr>
   );
 };

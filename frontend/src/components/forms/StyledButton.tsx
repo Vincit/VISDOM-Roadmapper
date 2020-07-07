@@ -1,15 +1,24 @@
 import styled from 'styled-components';
 
 interface StyledButtonProps {
-  buttonType: 'submit' | 'cancel';
+  buttonType: 'submit' | 'cancel' | 'ratenow';
   fullWidth?: boolean;
 }
 
 export const StyledButton = styled.button<StyledButtonProps>`
   border-radius: 16px;
-  height: 40px;
+  height: ${(props) => {
+    switch (props.buttonType) {
+      case 'ratenow':
+        return '24px';
+      default:
+        return '40px';
+    }
+  }};
+
   justify-content: center;
   align-items: center;
+  vertical-align: middle;
   color: white;
   width: ${(props) => (props.fullWidth ? '100%' : 'initial')};
   border: 0px;
@@ -19,6 +28,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
         return '#202020';
       case 'cancel':
         return '#aaaaaa';
+      case 'ratenow':
+        return '#FF2DF7';
       default:
         return 'black';
     }
