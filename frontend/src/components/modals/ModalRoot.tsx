@@ -40,7 +40,7 @@ const StyledModal = Modal.styled`
   position: absolute;
   top: 15%;
   background-color: white;
-  min-width: 500px;
+  min-width: 540px;
   max-width: 80vw;
   max-height: 80vh;
   border: 1px solid black;
