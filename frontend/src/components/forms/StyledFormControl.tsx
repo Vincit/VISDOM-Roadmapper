@@ -16,9 +16,10 @@ export const StyledFormControl = styled(FormControl)<StyledFormControlProps>`
   max-height: 25em;
   height: ${(props) => (props.isTextArea ? '6em' : 'initial')};
   :focus {
-    border: 0;
-    border-color: rgba(0, 0, 0, 255);
-    box-shadow: 0 0 0 1pt rgba(75, 75, 75, 0.65);
+    border-color: rgba(50, 50, 50, 0.45);
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 0 0 0;
     background-color: #f8f8f8;
     outline: 0;
   }
