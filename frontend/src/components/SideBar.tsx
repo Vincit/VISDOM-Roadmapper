@@ -1,32 +1,71 @@
 import React from 'react';
-import { Col, Nav } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
+import { ReactComponent as PlanButtonIcon } from '../icons/sidebar_plan.svg';
+import { ReactComponent as TasksButtonIcon } from '../icons/sidebar_tasks.svg';
 import { paths } from '../routers/paths';
 
-const Sidebar = styled(Col)`
-  display: block;
-  min-width: 130px !important;
-  max-width: 130px !important;
+const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: start;
+  vertical-align: center;
+  min-width: 96px !important;
+  max-width: 96px !important;
   min-height: 100%;
   border-right: solid 1px #000;
+  background-color: #f3f3f3;
+  overflow: hidden;
 `;
+
+const SideBarButton = styled(Link)<{ isActive?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  height: 96px;
+  width: 96px;
+  justify-content: space-around;
+  padding: 16px;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  background-color: ${(props) => (props.isActive ? '#e3e3e3' : 'inherit')};
+  :hover {
+    background-color: ${(props) => (props.isActive ? '#e3e3e3' : '#ededed')};
+    text-decoration: none;
+    color: black;
+  }
+`;
+
+const SideBarIcon = styled.div``;
 
 export const SideBar = () => {
   const { url } = useRouteMatch();
+  const { pathname } = useLocation();
 
   return (
     <>
       <Sidebar>
-        <Nav>
-          <Nav.Link as={Link} to={url + paths.roadmapRelative.taskList}>
-            <Trans i18nKey="Task list" />
-          </Nav.Link>
-          <Nav.Link as={Link} to={url + paths.roadmapRelative.planner}>
-            <Trans i18nKey="Planner" />
-          </Nav.Link>
-        </Nav>
+        <SideBarButton
+          to={url + paths.roadmapRelative.taskList}
+          isActive={pathname.includes(url + paths.roadmapRelative.taskList)}
+        >
+          <SideBarIcon>
+            <TasksButtonIcon />
+          </SideBarIcon>
+          <Trans i18nKey="Tasks" />
+        </SideBarButton>
+        <SideBarButton
+          to={url + paths.roadmapRelative.planner}
+          isActive={pathname.includes(url + paths.roadmapRelative.planner)}
+        >
+          <SideBarIcon>
+            <PlanButtonIcon />
+          </SideBarIcon>
+          <Trans i18nKey="Plan" />
+        </SideBarButton>
       </Sidebar>
     </>
   );
