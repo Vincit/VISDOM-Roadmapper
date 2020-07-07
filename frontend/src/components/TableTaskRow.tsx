@@ -25,11 +25,16 @@ interface TableTaskRowProps {
   task: Task;
 }
 
-const TaskTd = styled.td<{ clickable?: boolean; rightalign?: boolean }>`
+const TaskTd = styled.td<{
+  clickable?: boolean;
+  rightalign?: boolean;
+  nowrap?: boolean;
+}>`
+  vertical-align: middle !important;
+  max-width: 30em;
   cursor: ${(props) => (props.clickable ? 'pointer' : 'inherit')};
-  vertical-align: middle;
   text-align: ${(props) => (props.rightalign ? 'end' : 'center')};
-  padding: 1em;
+  white-space: ${(props) => (props.nowrap ? 'nowrap' : 'inherit')};
 `;
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
@@ -98,12 +103,16 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         {completed ? <CheckCircle /> : <Circle />}
       </TaskTd>
       <TaskTd>{name}</TaskTd>
-      <TaskTd>{description}</TaskTd>
+      <TaskTd>
+        {description.length > 75
+          ? `${description.slice(0, 75)}...`
+          : description}
+      </TaskTd>
       <TaskTd>
         <TaskRatingsText task={task} />
       </TaskTd>
       <TaskTd>{new Date(createdAt).toLocaleDateString()}</TaskTd>
-      <TaskTd rightalign>
+      <TaskTd rightalign nowrap>
         {!task.ratings.find(
           (rating) => rating.createdByUser === userInfo?.id,
         ) && (
