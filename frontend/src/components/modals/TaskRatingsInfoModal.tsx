@@ -221,7 +221,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
         </span>
       </ModalHeader>
 
-      <ModalContent>
+      <ModalContent overflowAuto>
         {renderOwnRatings()}{' '}
         <ColumnFlexBox>
           <LabelText>
