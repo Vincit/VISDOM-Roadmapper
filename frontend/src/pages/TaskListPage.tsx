@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Col, Form, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { TopBarWithBorder } from '../components/CommonLayoutComponents';
 import { StyledButton } from '../components/forms/StyledButton';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { TableTaskRow } from '../components/TableTaskRow';
@@ -24,9 +23,44 @@ import {
   sortTasks,
 } from '../utils/TaskUtils';
 
+const TopBar = styled.div`
+  display: flex;
+  justify-content: start;
+  vertical-align: middle;
+  border-bottom: 1px solid black;
+  padding: 8px;
+  padding-left: 16px;
+`;
+
+const SearchBarContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  max-width: 20em;
+  min-width: 10em;
+`;
+
+const FilterSelectContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  max-width: 20em;
+  min-width: 6em;
+  margin-left: 8px;
+`;
+
+const AddNewButtonContainer = styled.div`
+  min-width: 10em;
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
 const SearchBarIcon = styled(Search)`
   position: absolute;
-  top: 0.7em;
+  top: 0.8em;
   right: 1em;
 `;
 
@@ -132,52 +166,40 @@ export const TaskListPage = () => {
 
   const renderTopbar = () => {
     return (
-      <>
-        <TopBarWithBorder className="justify-content-start">
-          <Form className="w-100">
-            <Form.Row>
-              <Col>
-                <StyledFormControl
-                  placeholder={t('Search for tasks')}
-                  onChange={(e: any) => onSearchChange(e.currentTarget.value)}
-                />
-                <SearchBarIcon />
-              </Col>
-              <Col>
-                <StyledFormControl
-                  required
-                  as="select"
-                  onChange={(e: any) =>
-                    onFilterChange(
-                      parseInt(e.currentTarget.value, 10) as FilterTypes,
-                    )
-                  }
-                  value={searchFilter}
-                >
-                  <option value={FilterTypes.SHOW_ALL}>{t('Show all')}</option>
-                  <option value={FilterTypes.NOT_RATED_BY_ME}>
-                    {t('Not rated by me')}
-                  </option>
-                  <option value={FilterTypes.RATED_BY_ME}>
-                    {t('Rated by me')}
-                  </option>
-                  <option value={FilterTypes.COMPLETED}>
-                    {t('Completed')}
-                  </option>
-                  <option value={FilterTypes.NOT_COMPLETED}>
-                    {t('Not completed')}
-                  </option>
-                </StyledFormControl>
-              </Col>
-              <Col className="d-flex justify-content-end align-items-center">
-                <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
-                  + <Trans i18nKey="Add new" />
-                </StyledButton>
-              </Col>
-            </Form.Row>
-          </Form>
-        </TopBarWithBorder>
-      </>
+      <TopBar>
+        <SearchBarContainer>
+          <StyledFormControl
+            placeholder={t('Search for tasks')}
+            onChange={(e: any) => onSearchChange(e.currentTarget.value)}
+          />
+          <SearchBarIcon />
+        </SearchBarContainer>
+        <FilterSelectContainer>
+          <StyledFormControl
+            required
+            as="select"
+            onChange={(e: any) =>
+              onFilterChange(parseInt(e.currentTarget.value, 10) as FilterTypes)
+            }
+            value={searchFilter}
+          >
+            <option value={FilterTypes.SHOW_ALL}>{t('Show all')}</option>
+            <option value={FilterTypes.NOT_RATED_BY_ME}>
+              {t('Not rated by me')}
+            </option>
+            <option value={FilterTypes.RATED_BY_ME}>{t('Rated by me')}</option>
+            <option value={FilterTypes.COMPLETED}>{t('Completed')}</option>
+            <option value={FilterTypes.NOT_COMPLETED}>
+              {t('Not completed')}
+            </option>
+          </StyledFormControl>
+        </FilterSelectContainer>
+        <AddNewButtonContainer>
+          <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
+            + <Trans i18nKey="Add new" />
+          </StyledButton>
+        </AddNewButtonContainer>
+      </TopBar>
     );
   };
 
