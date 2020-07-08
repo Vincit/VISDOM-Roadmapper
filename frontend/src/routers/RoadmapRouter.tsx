@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Col } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import {
+  Redirect,
+  Route,
+  Switch,
+  useParams,
+  useRouteMatch,
+} from 'react-router-dom';
 import {
   FullHeightRow,
   PaddinglessCol,
@@ -20,12 +26,25 @@ import { paths } from './paths';
 
 const routes = [
   {
+    path: paths.roadmapRelative.dashboard,
+    component: () => <p>Dashboard page not implemented</p>,
+  },
+  {
+    path: paths.roadmapRelative.users,
+    component: () => <p>Users page not implemented</p>,
+  },
+  {
     path: paths.roadmapRelative.taskList,
     component: TaskListPage,
   },
   {
     path: paths.roadmapRelative.planner,
     component: PlannerPage,
+  },
+  {
+    path: '',
+    component: () => <Redirect to={paths.notFound} />,
+    exact: false,
   },
 ];
 
