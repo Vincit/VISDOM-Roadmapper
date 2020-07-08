@@ -52,5 +52,7 @@ export const english = {
     Title: 'Title',
     Rating: 'Rating',
     'Created on': 'Created on',
+    Name: 'Name',
+    Value: 'Value',
   },
 };

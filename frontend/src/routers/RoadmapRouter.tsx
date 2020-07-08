@@ -16,6 +16,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { PlannerPage } from '../pages/PlannerPage';
 import { TaskListPage } from '../pages/TaskListPage';
+import { UserListPage } from '../pages/UserListPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
@@ -31,7 +32,7 @@ const routes = [
   },
   {
     path: paths.roadmapRelative.users,
-    component: () => <p>Users page not implemented</p>,
+    component: UserListPage,
   },
   {
     path: paths.roadmapRelative.taskList,
