@@ -2,8 +2,8 @@ import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
   PublicUser,
-  RelatedtaskRequest,
-  RelatedtaskResponsePayload,
+  RelatedTaskRequest,
+  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -78,7 +78,7 @@ const patchTaskrating = async (taskrating: TaskratingRequest) => {
   return response.data as Taskrating;
 };
 
-const addRelatedTask = async (relatedTaskRequest: RelatedtaskRequest) => {
+const addRelatedTask = async (relatedTaskRequest: RelatedTaskRequest) => {
   const response = await axios.post(
     `/tasks/${relatedTaskRequest.fromTask}/relatedtasks`,
     { id: relatedTaskRequest.toTask },
@@ -87,7 +87,7 @@ const addRelatedTask = async (relatedTaskRequest: RelatedtaskRequest) => {
   return {
     parentTaskId: relatedTaskRequest.fromTask,
     newRelatedTasks: response.data,
-  } as RelatedtaskResponsePayload;
+  } as RelatedTaskResponsePayload;
 };
 
 const login = async (loginRequest: UserLoginRequest) => {

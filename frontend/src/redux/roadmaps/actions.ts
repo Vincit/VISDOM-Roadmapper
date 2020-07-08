@@ -3,8 +3,8 @@ import { AxiosError } from 'axios';
 import { api } from '../../api/api';
 import {
   PublicUser,
-  RelatedtaskRequest,
-  RelatedtaskResponsePayload,
+  RelatedTaskRequest,
+  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -163,12 +163,12 @@ export const addOrPatchTaskrating = createAsyncThunk<
 );
 
 export const addRelatedtask = createAsyncThunk<
-  RelatedtaskResponsePayload,
-  RelatedtaskRequest,
+  RelatedTaskResponsePayload,
+  RelatedTaskRequest,
   { rejectValue: AxiosError }
 >(
   'roadmaps/addRelatedTask',
-  async (relatedTaskRequest: RelatedtaskRequest, thunkAPI) => {
+  async (relatedTaskRequest: RelatedTaskRequest, thunkAPI) => {
     try {
       return await api.addRelatedTask(relatedTaskRequest);
     } catch (err) {

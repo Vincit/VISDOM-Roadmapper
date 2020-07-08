@@ -1,7 +1,7 @@
 import { Col, Container, Navbar, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 
-export const PaddingLessContainer = styled(Container)`
+export const PaddinglessContainer = styled(Container)`
   padding: 0;
   margin: 0;
 `;

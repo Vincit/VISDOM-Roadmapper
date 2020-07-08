@@ -71,12 +71,12 @@ export interface TaskratingRequest {
   parentTask?: number;
 }
 
-export interface RelatedtaskRequest {
+export interface RelatedTaskRequest {
   fromTask: number;
   toTask: number;
 }
 
-export interface RelatedtaskResponsePayload {
+export interface RelatedTaskResponsePayload {
   newRelatedTasks: number[];
   parentTaskId: number;
 }

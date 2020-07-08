@@ -4,7 +4,7 @@ import React from 'react';
 import { initReactI18next } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 import './App.css';
-import { PaddingLessContainer } from './components/CommonLayoutComponents';
+import { PaddinglessContainer } from './components/CommonLayoutComponents';
 import { ModalRoot } from './components/ModalRoot';
 import { NavBar } from './components/NavBar';
 import { i18config } from './i18/config';
@@ -19,9 +19,9 @@ export const App = () => {
         <ModalRoot />
         <div className="h-100 d-flex flex-column">
           <NavBar />
-          <PaddingLessContainer fluid className="flex-grow-1">
+          <PaddinglessContainer fluid className="flex-grow-1">
             <MainRouter />
-          </PaddingLessContainer>
+          </PaddinglessContainer>
         </div>
       </BrowserRouter>
     </div>

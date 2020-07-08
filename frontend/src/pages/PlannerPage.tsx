@@ -132,15 +132,16 @@ export const PlannerPage = () => {
       return;
     }
 
+    // We need original copy to revert re-ordering if api request doesnt go through
+    const taskListsBackup = {
+      [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
+      [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
+    };
+
     // TODO Use immutability helper to mutate state
     // TODO Perhaps only save lists on exit / save button
     if (source.droppableId === destination.droppableId) {
       const taskListsCopy = {
-        [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
-        [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
-      };
-      // We need original copy to revert re-ordering if api request doesnt go through
-      const taskListsBackup = {
         [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
         [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
       };
@@ -177,15 +178,9 @@ export const PlannerPage = () => {
         source,
         destination,
       );
-
       const taskListsCopy = {
         [ListId.RoadmapTasks]: newLists[ListId.RoadmapTasks],
         [ListId.VersionTasks]: newLists[ListId.VersionTasks],
-      };
-      // We need original copy to revert re-ordering if api request doesnt go through
-      const taskListsBackup = {
-        [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
-        [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
       };
       setTasks(taskListsCopy);
       setDisableDragging(false);

@@ -1,7 +1,7 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
   PublicUser,
-  RelatedtaskResponsePayload,
+  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   RoadmapsState,
@@ -134,7 +134,7 @@ export const DELETE_TASKRATING_FULFILLED = (
 
 export const ADD_RELATED_TASK_FULFILLED = (
   state: RoadmapsState,
-  action: PayloadAction<RelatedtaskResponsePayload>,
+  action: PayloadAction<RelatedTaskResponsePayload>,
 ) => {
   let parentTask: Task | undefined;
   state.roadmaps.forEach((roadmap) => {
