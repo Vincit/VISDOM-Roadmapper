@@ -8,8 +8,9 @@ export const paths = {
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
   roadmapRelative: {
     home: '/',
+    dashboard: '/dashboard',
+    users: '/users',
     taskList: '/tasks',
-    ratings: '/ratings',
     planner: '/planner',
   },
 };
