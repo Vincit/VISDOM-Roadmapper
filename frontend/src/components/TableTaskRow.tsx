@@ -1,13 +1,6 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import {
-  CheckCircle,
-  Circle,
-  InfoCircleFill,
-  PencilSquare,
-  StarFill,
-  TrashFill,
-} from 'react-bootstrap-icons';
+import { CheckCircle, Circle } from 'react-bootstrap-icons';
+import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { StoreDispatchType } from '../redux';
@@ -18,6 +11,10 @@ import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
+import { DeleteButton } from './forms/DeleteButton';
+import { EditButton } from './forms/EditButton';
+import { InfoButton } from './forms/InfoButton';
+import { RatingsButton } from './forms/RatingsButton';
 import { StyledButton } from './forms/StyledButton';
 import { TaskRatingsText } from './TaskRatingsText';
 
@@ -35,6 +32,11 @@ const TaskTd = styled.td<{
   cursor: ${(props) => (props.clickable ? 'pointer' : 'inherit')};
   text-align: ${(props) => (props.rightalign ? 'end' : 'center')};
   white-space: ${(props) => (props.nowrap ? 'nowrap' : 'inherit')};
+`;
+
+const ButtonWrapper = styled.div`
+  display: inline-block;
+  margin: 4px;
 `;
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
@@ -117,45 +119,21 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           (rating) => rating.createdByUser === userInfo?.id,
         ) && (
           <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
-            Rate now
+            <Trans i18nKey="Rate" />
           </StyledButton>
         )}
-        <Button
-          className="m-1"
-          size="sm"
-          variant="primary"
-          aria-label="Task details"
-          onClick={() => taskDetails()}
-        >
-          <InfoCircleFill />
-        </Button>
-        <Button
-          className="m-1"
-          size="sm"
-          variant="warning"
-          aria-label="Task ratings"
-          onClick={() => taskRatingDetails()}
-        >
-          <StarFill />
-        </Button>
-        <Button
-          className="m-1"
-          size="sm"
-          variant="success"
-          aria-label="Edit task"
-          onClick={() => editTask()}
-        >
-          <PencilSquare />
-        </Button>
-        <Button
-          className="m-1"
-          size="sm"
-          variant="danger"
-          aria-label="Delete task"
-          onClick={() => deleteTask()}
-        >
-          <TrashFill />
-        </Button>
+        <ButtonWrapper>
+          <RatingsButton onClick={() => taskRatingDetails()} />
+        </ButtonWrapper>
+        <ButtonWrapper>
+          <InfoButton onClick={() => taskDetails()} />
+        </ButtonWrapper>
+        <ButtonWrapper>
+          <EditButton type="large" onClick={() => editTask()} />
+        </ButtonWrapper>
+        <ButtonWrapper>
+          <DeleteButton onClick={() => deleteTask()} />
+        </ButtonWrapper>
       </TaskTd>
     </tr>
   );

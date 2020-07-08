@@ -6,16 +6,37 @@ interface StyledButtonProps {
 }
 
 export const StyledButton = styled.button<StyledButtonProps>`
+  display: inline-flex;
   border-radius: 16px;
+  font-size: 14px;
+  padding: 8px;
+  padding-left: ${(props) => {
+    switch (props.buttonType) {
+      case 'ratenow':
+        return '16px';
+      default:
+        return '32px';
+    }
+  }};
+  padding-right: ${(props) => {
+    switch (props.buttonType) {
+      case 'ratenow':
+        return '16px';
+      default:
+        return '32px';
+    }
+  }};
+  text-transform: uppercase;
   height: ${(props) => {
     switch (props.buttonType) {
       case 'ratenow':
-        return '24px';
+        return '32px';
       default:
-        return '40px';
+        return '32px';
     }
   }};
 
+  text-align: center;
   justify-content: center;
   align-items: center;
   vertical-align: middle;

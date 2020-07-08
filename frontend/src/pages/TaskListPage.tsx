@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Col, Form, Table } from 'react-bootstrap';
+import { Col, Form, Table } from 'react-bootstrap';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { TopBarWithBorder } from '../components/CommonLayoutComponents';
+import { StyledButton } from '../components/forms/StyledButton';
+import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { TableTaskRow } from '../components/TableTaskRow';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
@@ -118,10 +120,11 @@ export const TaskListPage = () => {
     setSortingType(sorter);
   };
 
-  const onAddNewTaskClick = () => {
+  const onAddNewTaskClick = (e: any) => {
+    e.preventDefault();
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.ADD_TASK_MODAL,
+        modalType: ModalTypes.LOGIN_MODAL,
         modalProps: {},
       }),
     );
@@ -134,17 +137,17 @@ export const TaskListPage = () => {
           <Form className="w-100">
             <Form.Row>
               <Col>
-                <Form.Control
+                <StyledFormControl
                   placeholder={t('Search for tasks')}
-                  onChange={(e) => onSearchChange(e.currentTarget.value)}
+                  onChange={(e: any) => onSearchChange(e.currentTarget.value)}
                 />
                 <SearchBarIcon />
               </Col>
               <Col>
-                <Form.Control
+                <StyledFormControl
                   required
                   as="select"
-                  onChange={(e) =>
+                  onChange={(e: any) =>
                     onFilterChange(
                       parseInt(e.currentTarget.value, 10) as FilterTypes,
                     )
@@ -164,12 +167,12 @@ export const TaskListPage = () => {
                   <option value={FilterTypes.NOT_COMPLETED}>
                     {t('Not completed')}
                   </option>
-                </Form.Control>
+                </StyledFormControl>
               </Col>
-              <Col className="d-flex justify-content-end">
-                <Button variant="primary" onClick={onAddNewTaskClick}>
-                  <Trans i18nKey="Add new task" />
-                </Button>
+              <Col className="d-flex justify-content-end align-items-center">
+                <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
+                  + <Trans i18nKey="Add new" />
+                </StyledButton>
               </Col>
             </Form.Row>
           </Form>
@@ -188,10 +191,10 @@ export const TaskListPage = () => {
 
   const tableHeaders: TableHeader[] = [
     { label: 'Status', sorting: SortingTypes.SORT_STATUS },
-    { label: 'Task name', sorting: SortingTypes.SORT_NAME },
-    { label: 'Task description', sorting: SortingTypes.SORT_DESC },
-    { label: 'Ratings', sorting: SortingTypes.SORT_RATINGS },
-    { label: 'Created in', sorting: SortingTypes.SORT_CREATEDAT },
+    { label: 'Title', sorting: SortingTypes.SORT_NAME },
+    { label: 'Description', sorting: SortingTypes.SORT_DESC },
+    { label: 'Rating', sorting: SortingTypes.SORT_RATINGS },
+    { label: 'Created on', sorting: SortingTypes.SORT_CREATEDAT },
   ];
 
   const renderTasksTable = () => {

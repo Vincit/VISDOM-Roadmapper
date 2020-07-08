@@ -11,7 +11,7 @@ import { PublicUser, Task } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
-import { EditPenButton } from '../forms/EditPenButton';
+import { EditButton } from '../forms/EditButton';
 import { TaskRatingBar } from '../RatingBars';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -139,14 +139,14 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <CommentDiv rightMargin>
               <LabelText>
                 <Trans i18nKey="Your comment" />{' '}
-                <EditPenButton onClick={() => rateTask()} />
+                <EditButton type="small" onClick={() => rateTask()} />
               </LabelText>
               {rating.comment || '-'}
             </CommentDiv>
             <RatingDiv>
               <LabelText>
                 <Trans i18nKey="Your rating" />{' '}
-                <EditPenButton onClick={() => rateTask()} />
+                <EditButton type="small" onClick={() => rateTask()} />
               </LabelText>
               <TaskRatingBar
                 dimension={rating.dimension}
@@ -162,7 +162,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
               <LabelText>
                 <LabelText>
                   <Trans i18nKey="You have not rated this task" />{' '}
-                  <EditPenButton onClick={() => rateTask()} />
+                  <EditButton type="small" onClick={() => rateTask()} />
                 </LabelText>
               </LabelText>
             </CommentDiv>

@@ -14,6 +14,7 @@ export const StyledFormControl = styled(FormControl)<StyledFormControlProps>`
   color: black;
   min-height: 3em;
   max-height: 25em;
+  font-size: 14px;
   height: ${(props) => (props.isTextArea ? '6em' : 'initial')};
   :focus {
     border-color: rgba(50, 50, 50, 0.45);
