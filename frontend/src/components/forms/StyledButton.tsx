@@ -29,8 +29,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
   text-transform: uppercase;
   height: ${(props) => {
     switch (props.buttonType) {
-      case 'ratenow':
-        return '32px';
       default:
         return '32px';
     }
@@ -50,7 +48,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
       case 'cancel':
         return '#aaaaaa';
       case 'ratenow':
-        return '#FF2DF7';
+        return '#202020';
       default:
         return 'black';
     }

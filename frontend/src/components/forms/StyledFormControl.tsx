@@ -6,9 +6,9 @@ interface StyledFormControlProps {
 }
 
 export const StyledFormControl = styled(FormControl)<StyledFormControlProps>`
-  border: 0;
   border-radius: 8px;
   background-color: #f3f3f3;
+  border-color: rgba(0, 0, 0, 0);
   width: 100%;
   padding: 8px;
   color: black;
