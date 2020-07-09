@@ -22,7 +22,7 @@ const Sidebar = styled.div`
   overflow: hidden;
 `;
 
-const SideBarButton = styled(Link)<{ isActive?: boolean }>`
+const SideBarButton = styled(Link)<{ highlight?: boolean }>`
   display: flex;
   flex-direction: column;
   height: 96px;
@@ -32,9 +32,9 @@ const SideBarButton = styled(Link)<{ isActive?: boolean }>`
   text-align: center;
   text-decoration: none;
   user-select: none;
-  background-color: ${(props) => (props.isActive ? '#e3e3e3' : 'inherit')};
+  background-color: ${(props) => (props.highlight ? '#e3e3e3' : 'inherit')};
   :hover {
-    background-color: ${(props) => (props.isActive ? '#e3e3e3' : '#ededed')};
+    background-color: ${(props) => (props.highlight ? '#e3e3e3' : '#ededed')};
     text-decoration: none;
     color: black;
   }
@@ -51,7 +51,7 @@ export const SideBar = () => {
       <Sidebar>
         <SideBarButton
           to={url + paths.roadmapRelative.dashboard}
-          isActive={pathname.startsWith(url + paths.roadmapRelative.dashboard)}
+          highlight={pathname.startsWith(url + paths.roadmapRelative.dashboard)}
         >
           <SideBarIcon>
             <DashboardIcon />
@@ -60,7 +60,7 @@ export const SideBar = () => {
         </SideBarButton>
         <SideBarButton
           to={url + paths.roadmapRelative.taskList}
-          isActive={pathname.startsWith(url + paths.roadmapRelative.taskList)}
+          highlight={pathname.startsWith(url + paths.roadmapRelative.taskList)}
         >
           <SideBarIcon>
             <TasksButtonIcon />
@@ -69,7 +69,7 @@ export const SideBar = () => {
         </SideBarButton>
         <SideBarButton
           to={url + paths.roadmapRelative.users}
-          isActive={pathname.startsWith(url + paths.roadmapRelative.users)}
+          highlight={pathname.startsWith(url + paths.roadmapRelative.users)}
         >
           <SideBarIcon>
             <UsersIcon />
@@ -78,7 +78,7 @@ export const SideBar = () => {
         </SideBarButton>
         <SideBarButton
           to={url + paths.roadmapRelative.planner}
-          isActive={pathname.startsWith(url + paths.roadmapRelative.planner)}
+          highlight={pathname.startsWith(url + paths.roadmapRelative.planner)}
         >
           <SideBarIcon>
             <PlanButtonIcon />
