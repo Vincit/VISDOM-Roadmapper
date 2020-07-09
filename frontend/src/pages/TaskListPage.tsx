@@ -56,6 +56,7 @@ const AddNewButtonContainer = styled.div`
   flex-grow: 1;
   justify-content: flex-end;
   align-items: center;
+  margin-right: 8px;
 `;
 
 const SearchBarIcon = styled(Search)`
