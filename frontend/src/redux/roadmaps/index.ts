@@ -10,6 +10,7 @@ import {
   deleteTaskrating,
   getPublicUsers,
   getRoadmaps,
+  patchPublicUser,
   patchTask,
   patchTaskrating,
 } from './actions';
@@ -23,6 +24,7 @@ import {
   DELETE_TASK_FULFILLED,
   GET_PUBLIC_USERS_FULFILLED,
   GET_ROADMAPS_FULFILLED,
+  PATCH_PUBLIC_USER_FULFILLED,
   PATCH_TASKRATING_FULFILLED,
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
@@ -53,6 +55,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
     builder.addCase(getPublicUsers.fulfilled, GET_PUBLIC_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
+    builder.addCase(patchPublicUser.fulfilled, PATCH_PUBLIC_USER_FULFILLED);
   },
 });
 
@@ -70,4 +73,5 @@ export const roadmapsActions = {
   patchTask,
   patchTaskrating,
   addOrPatchTaskrating,
+  patchPublicUser,
 };

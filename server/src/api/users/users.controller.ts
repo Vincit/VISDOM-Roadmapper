@@ -19,7 +19,6 @@ export const patchUsers: RouteHandlerFnc = async (ctx, _) => {
     ctx.params.id,
     ctx.request.body,
   );
-
   if (!updated) {
     ctx.status = 404;
   } else {

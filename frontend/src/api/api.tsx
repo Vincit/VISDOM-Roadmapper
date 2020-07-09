@@ -2,8 +2,7 @@ import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
   PublicUser,
-  RelatedTaskRequest,
-  RelatedTaskResponsePayload,
+  PublicUserRequest,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -130,6 +129,11 @@ const patchVersion = async (version: VersionRequest) => {
   return response.data as Version;
 };
 
+const patchUser = async (user: PublicUserRequest) => {
+  const response = await axios.patch(`/users/${user.id}`, user);
+  return response.data as PublicUser;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -149,4 +153,5 @@ export const api = {
   addVersion,
   patchVersion,
   deleteVersion,
+  patchUser,
 };

@@ -3,8 +3,7 @@ import { AxiosError } from 'axios';
 import { api } from '../../api/api';
 import {
   PublicUser,
-  RelatedTaskRequest,
-  RelatedTaskResponsePayload,
+  PublicUserRequest,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -176,3 +175,15 @@ export const addRelatedtask = createAsyncThunk<
     }
   },
 );
+
+export const patchPublicUser = createAsyncThunk<
+  PublicUser,
+  PublicUserRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchPublicUser', async (user: PublicUserRequest, thunkAPI) => {
+  try {
+    return await api.patchUser(user);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});

@@ -54,5 +54,6 @@ export const english = {
     'Created on': 'Created on',
     Name: 'Name',
     Value: 'Value',
+    'Rate customer': 'Rate customer',
   },
 };

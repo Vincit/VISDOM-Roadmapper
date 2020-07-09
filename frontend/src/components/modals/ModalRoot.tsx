@@ -11,6 +11,7 @@ import { AddTaskModal } from './AddTaskModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { LoginModal, LoginModalProps } from './LoginModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
+import { RateUserModal, RateUserModalProps } from './RateUserModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
 import {
   TaskRatingsInfoModal,
@@ -24,7 +25,8 @@ type ModalTypeToComponent = {
     | React.FC<LoginModalProps>
     | React.FC<EditTaskModalProps>
     | React.FC<TaskInfoModalProps>
-    | React.FC<TaskRatingsInfoModalProps>;
+    | React.FC<TaskRatingsInfoModalProps>
+    | React.FC<RateUserModalProps>;
 };
 
 const Modals: ModalTypeToComponent = {
@@ -34,6 +36,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.EDIT_TASK_MODAL]: EditTaskModal,
   [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
+  [ModalTypes.RATE_USER_MODAL]: RateUserModal,
 };
 
 const StyledModal = Modal.styled`

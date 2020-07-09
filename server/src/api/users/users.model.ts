@@ -1,10 +1,10 @@
 import {
   Model,
+  ModelOptions,
   Modifiers,
   Pojo,
   QueryContext,
   ValidationError,
-  ModelOptions,
 } from 'objection';
 import objectionPassword from 'objection-password';
 import { UserType } from 'src/types/customTypes';
@@ -43,7 +43,11 @@ export default class User extends Password(Model) {
   };
 
   customValidation = (context: QueryContext) => {
-    if (this.customerValue && this.type !== UserType.CustomerUser) {
+    if (
+      this.customerValue &&
+      this.type !== undefined &&
+      this.type !== UserType.CustomerUser
+    ) {
       throw new ValidationError({
         message:
           'Customervalue can only be assigned to users with type CustomerUser',

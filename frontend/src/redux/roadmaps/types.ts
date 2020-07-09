@@ -81,3 +81,10 @@ export interface RelatedTaskResponsePayload {
   newRelatedTasks: number[];
   parentTaskId: number;
 }
+
+export interface PublicUserRequest {
+  id?: number;
+  username?: string;
+  type?: UserType;
+  customerValue?: number;
+}
