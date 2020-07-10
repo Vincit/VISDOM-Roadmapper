@@ -55,5 +55,6 @@ export const english = {
     Name: 'Name',
     Value: 'Value',
     'Rate customer': 'Rate customer',
+    milestones: 'milestones',
   },
 };

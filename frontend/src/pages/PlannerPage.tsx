@@ -4,33 +4,88 @@ import {
   DraggableLocation,
   DropResult,
 } from 'react-beautiful-dnd';
-import { Button, Col } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import {
-  ColumnHeader,
-  Divider,
-  PaddinglessRow,
-  TopBarWithBorder,
-} from '../components/CommonLayoutComponents';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
+import { DeleteButton } from '../components/forms/DeleteButton';
 import { SortableTaskList } from '../components/SortableTaskList';
+import { ReactComponent as PlusIcon } from '../icons/plus_icon.svg';
 import { StoreDispatchType } from '../redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { versionsActions } from '../redux/versions';
-import {
-  roadmapsVersionsSelector,
-  selectedVersionSelector,
-} from '../redux/versions/selectors';
+import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 
-const ListContainer = styled.div`
-  flex-grow: 1;
-  overflow-y: auto;
+const GraphPlaceHolder = styled.div`
+  border-radius: 16px;
+  background-color: rgb(225, 225, 225);
+  min-width: 100%;
+  min-height: 550px;
 `;
+
+const ColumnHeader = styled.span`
+  text-align: left;
+  border-bottom: 1px solid black;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: bold;
+  padding-top: 16px;
+  padding-bottom: 24px;
+`;
+
+const VersionHeader = styled.span`
+  display: flex;
+  text-align: left;
+  border-bottom: 1px solid black;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+`;
+
+const VersionColumn = styled(LayoutCol)`
+  padding: 8px;
+  min-height: 400px;
+  width: 50%;
+  overflow-y: visible;
+`;
+
+const DeleteButtonWrapper = styled.div`
+  margin-left: auto;
+`;
+
+const ListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  min-height: 150px;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: #f3f3f3;
+`;
+
+const AddVersionWrapper = styled(ListWrapper)`
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0);
+  border: 1px dashed black;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  svg {
+    margin: 4px;
+  }
+`;
+
+interface VersionListsObject {
+  [K: string]: Task[];
+}
+
 // Function to help with reordering item in list
 const reorderList = (list: Task[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -54,173 +109,148 @@ const moveBetweenLists = (
   destClone.splice(droppableDestination.index, 0, removed);
 
   return {
-    [droppableSource.droppableId as ListId]: sourceClone,
-    [droppableDestination.droppableId as ListId]: destClone,
+    [droppableSource.droppableId]: sourceClone,
+    [droppableDestination.droppableId]: destClone,
   };
 };
 
-enum ListId {
-  RoadmapTasks = 'ROADMAP_TASKS',
-  VersionTasks = 'VERSION_TASKS',
-}
+const copyVersionLists = (originalLists: VersionListsObject) => {
+  const copyList: VersionListsObject = {};
+  Object.keys(originalLists).forEach((key) => {
+    copyList[key] = [...originalLists[key]];
+  });
+  return copyList;
+};
+
+const ROADMAP_LIST_ID = '-1';
 
 export const PlannerPage = () => {
-  const dispatch = useDispatch<StoreDispatchType>();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
-  );
+  )!;
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
     roadmapsVersionsSelector,
     shallowEqual,
   );
-  const currentVersion = useSelector<RootState, Version | undefined>(
-    selectedVersionSelector,
-    shallowEqual,
-  );
-
-  const [taskLists, setTasks] = useState({
-    [ListId.RoadmapTasks]: [] as Task[],
-    [ListId.VersionTasks]: [] as Task[],
-  });
-
-  const [disableDragging, setDisableDragging] = useState(false);
-
-  useEffect(() => {
-    if (roadmapsVersions === undefined) {
-      dispatch(versionsActions.getVersions());
-    }
-  }, [roadmapsVersions, dispatch]);
-
-  useEffect(() => {
-    setDisableDragging(true);
-    let roadmapTasks = [] as Task[];
-    roadmapTasks = currentRoadmap!.tasks;
-    setTasks(() => {
-      return {
-        [ListId.RoadmapTasks]: roadmapTasks.filter((task) => {
-          if (!currentVersion) return true; // Show all tasks in this list if no version selected
-          return !currentVersion.tasks.includes(task.id);
-        }),
-        [ListId.VersionTasks]: roadmapTasks
-          .filter((task) => {
-            if (!currentVersion) return false; // Show no tasks here if no version selected
-            return currentVersion.tasks.includes(task.id);
-          })
-          .sort(
-            (a, b) =>
-              currentVersion!.tasks.indexOf(a.id) -
-              currentVersion!.tasks.indexOf(b.id),
-          ),
-      };
-    });
-    setDisableDragging(false);
-  }, [currentRoadmap, currentVersion]);
+  const dispatch = useDispatch<StoreDispatchType>();
+  const [versionLists, setVersionLists] = useState<VersionListsObject>({});
+  const [disableDrag, setDisableDrag] = useState(false);
+  const [disableUpdates, setDisableUpdates] = useState(false);
 
   const onDragStart = () => {
-    setDisableDragging(true);
+    setDisableDrag(true);
   };
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragReorder = async (result: DropResult) => {
     const { source, destination } = result;
+    const copyLists = copyVersionLists(versionLists);
+
+    // Reordering inside one list
+    copyLists[source!.droppableId] = reorderList(
+      copyLists[source!.droppableId],
+      source!.index,
+      destination!.index,
+    );
+
+    setVersionLists(copyLists);
+    if (destination?.droppableId === ROADMAP_LIST_ID) return Promise.resolve();
+
+    const res = await dispatch(
+      versionsActions.patchVersion({
+        id: +source.droppableId,
+        tasks: copyLists[source!.droppableId].map((task) => task.id),
+      }),
+    );
+    if (versionsActions.patchVersion.rejected.match(res)) {
+      return Promise.reject();
+    }
+    return Promise.resolve();
+  };
+
+  const onDragMoveToList = async (result: DropResult) => {
+    const { source, destination } = result;
+    const copyLists = copyVersionLists(versionLists);
+
+    // Moving from one list to another
+    Object.assign(
+      copyLists,
+      moveBetweenLists(
+        copyLists[source!.droppableId],
+        copyLists[destination!.droppableId],
+        source!,
+        destination!,
+      ),
+    );
+    setVersionLists(copyLists);
+
+    setDisableUpdates(true);
+    if (destination?.droppableId !== ROADMAP_LIST_ID) {
+      // If moving to another version -> add to new version
+      const addRes = await dispatch(
+        versionsActions.addTaskToVersion({
+          version: { id: +destination!.droppableId! },
+          task: {
+            id: +result.draggableId,
+          },
+          index: destination!.index,
+        }),
+      );
+      if (versionsActions.addTaskToVersion.rejected.match(addRes)) {
+        setDisableUpdates(false);
+        return Promise.reject();
+      }
+    }
+
+    if (source?.droppableId !== ROADMAP_LIST_ID) {
+      // If moving from another version -> remove from previous version
+      const removeRes = await dispatch(
+        versionsActions.removeTaskFromVersion({
+          version: { id: +source!.droppableId! },
+          task: {
+            id: +result.draggableId,
+          },
+        }),
+      );
+      if (versionsActions.removeTaskFromVersion.rejected.match(removeRes)) {
+        setDisableUpdates(false);
+        return Promise.reject();
+      }
+    }
+    setDisableUpdates(false);
+
+    return Promise.resolve();
+  };
+
+  const onDragEnd = async (result: DropResult) => {
+    const { source, destination } = result;
+
+    // Ignore drag if dropping in same position
     if (
       !destination ||
       (source.index === destination.index &&
         source.droppableId === destination.droppableId)
     ) {
-      setDisableDragging(false);
+      setDisableDrag(false);
       return;
     }
 
-    // We need original copy to revert re-ordering if api request doesnt go through
-    const taskListsBackup = {
-      [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
-      [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
-    };
-
-    // TODO Use immutability helper to mutate state
-    // TODO Perhaps only save lists on exit / save button
+    // Backup list that is not mutated, used for reverting action if api request fails
+    const backupLists = copyVersionLists(versionLists);
+    let res: Promise<void> | undefined;
     if (source.droppableId === destination.droppableId) {
-      const taskListsCopy = {
-        [ListId.RoadmapTasks]: taskLists[ListId.RoadmapTasks],
-        [ListId.VersionTasks]: taskLists[ListId.VersionTasks],
-      };
-      taskListsCopy[source.droppableId as ListId] = reorderList(
-        taskListsCopy[source.droppableId as ListId],
-        source.index,
-        destination.index,
-      );
-      // Always initially re-order lists before request is finished
-      setTasks(taskListsCopy);
-      if (source.droppableId === ListId.VersionTasks) {
-        // If we are re-ordering a versions tasks
-        setDisableDragging(true);
-        dispatch(
-          versionsActions.patchVersion({
-            id: currentVersion!.id,
-            tasks: taskListsCopy[ListId.VersionTasks].map((task) => task.id),
-          }),
-        ).then((res) => {
-          // Revert task re-ordering if request fails
-          if (versionsActions.patchVersion.rejected.match(res)) {
-            setDisableDragging(false);
-            setTasks(taskListsBackup);
-          }
-        });
-      } else {
-        setDisableDragging(false);
-      }
+      res = onDragReorder(result);
     } else {
-      // TODO dispatch add&remove task from version actions
-      const newLists = moveBetweenLists(
-        taskLists[source.droppableId as ListId],
-        taskLists[destination.droppableId as ListId],
-        source,
-        destination,
-      );
-      const taskListsCopy = {
-        [ListId.RoadmapTasks]: newLists[ListId.RoadmapTasks],
-        [ListId.VersionTasks]: newLists[ListId.VersionTasks],
-      };
-      setTasks(taskListsCopy);
-      setDisableDragging(false);
-      if (destination.droppableId === ListId.VersionTasks) {
-        dispatch(
-          versionsActions.addTaskToVersion({
-            version: currentVersion!,
-            task: {
-              id: +result.draggableId,
-            },
-            index: destination.index,
-          }),
-        ).then((res) => {
-          // Revert task re-ordering if request fails
-          if (versionsActions.addTaskToVersion.rejected.match(res)) {
-            setDisableDragging(false);
-            setTasks(taskListsBackup);
-          }
-        });
-      } else {
-        dispatch(
-          versionsActions.removeTaskFromVersion({
-            version: currentVersion!,
-            task: {
-              id: +result.draggableId,
-            },
-          }),
-        ).then((res) => {
-          // Revert task re-ordering if request fails
-          if (versionsActions.removeTaskFromVersion.rejected.match(res)) {
-            setDisableDragging(false);
-            setTasks(taskListsBackup);
-          }
-        });
-      }
+      res = onDragMoveToList(result);
     }
-  };
 
-  const selectVersion = (id: number | undefined) => {
-    dispatch(versionsActions.selectVersionId(id));
+    try {
+      await res;
+      setDisableDrag(false);
+    } catch (e) {
+      setVersionLists(backupLists);
+      setDisableDrag(false);
+    }
   };
 
   const deleteVersion = (id: number) => {
@@ -235,110 +265,94 @@ export const PlannerPage = () => {
     );
   };
 
-  const renderTopbar = () => {
+  useEffect(() => {
+    if (disableUpdates) return;
+    if (roadmapsVersions === undefined) {
+      dispatch(versionsActions.getVersions());
+    } else {
+      const newVersionLists: VersionListsObject = {};
+      newVersionLists[ROADMAP_LIST_ID] = [];
+      currentRoadmap.tasks.forEach((t) => {
+        let foundVersion = false;
+
+        // Try to find version with this tasks id
+        roadmapsVersions.forEach((v) => {
+          if (!newVersionLists[v.id]) newVersionLists[v.id] = [];
+          if (v.tasks.includes(t.id)) {
+            newVersionLists[v.id].push(t);
+            newVersionLists[v.id].sort(
+              (a, b) => v.tasks.indexOf(a.id) - v.tasks.indexOf(b.id),
+            );
+            foundVersion = true;
+          }
+        });
+
+        // If no version for task is found, add to roadmaps tasklist (unversioned tasks)
+        if (!foundVersion) {
+          newVersionLists[ROADMAP_LIST_ID].push(t);
+        }
+      });
+
+      setVersionLists(newVersionLists);
+    }
+  }, [dispatch, roadmapsVersions, currentRoadmap.tasks, disableUpdates]);
+
+  const renderVersionLists = () => {
     return (
-      <TopBarWithBorder className="justify-content-start">
-        <Button onClick={() => selectVersion(undefined)} className="m-1">
-          <Trans i18nKey="Roadmap View" />
-        </Button>
+      <>
         {roadmapsVersions &&
-          roadmapsVersions.map((version) => (
-            <Button
-              key={version.id}
-              onClick={() => {
-                selectVersion(version.id);
-              }}
-              onContextMenu={(
-                e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-              ) => {
-                e.preventDefault();
-                deleteVersion(version.id);
-              }}
-              className="m-1"
-            >
-              {version.name}
-            </Button>
-          ))}
-        <Button onClick={() => addVersion()} variant="success" className="m-1">
-          + Add new version
-        </Button>
-      </TopBarWithBorder>
-    );
-  };
-
-  const renderRoadmapList = () => {
-    return (
-      <PaddinglessRow
-        className={currentVersion ? 'h-50 mh-50 bottomborder' : 'flex-grow-1'}
-      >
-        <Col xs={5} className="h-100 mh-100 d-flex flex-column">
-          <ColumnHeader>
-            {`${currentRoadmap?.name} `}
-            <Trans i18nKey="task list" />
-            <Divider />
-          </ColumnHeader>
-          <ListContainer>
-            <SortableTaskList
-              listId={ListId.RoadmapTasks}
-              tasks={taskLists[ListId.RoadmapTasks]}
-              disableDragging={disableDragging}
-            />
-          </ListContainer>
-        </Col>
-
-        <Col>
-          <ColumnHeader>
-            {`${currentRoadmap?.name} `}
-            <Divider />
-          </ColumnHeader>
-        </Col>
-      </PaddinglessRow>
-    );
-  };
-
-  const renderVersionList = () => {
-    return (
-      <PaddinglessRow className="h-50 mh-50">
-        <Col xs={5} className="h-100 mh-100 d-flex flex-column">
-          <ColumnHeader>
-            {`${currentVersion?.name} `}
-            <Trans i18nKey="task list" />
-            <Divider />
-          </ColumnHeader>
-          <ListContainer>
-            <SortableTaskList
-              listId={ListId.VersionTasks}
-              tasks={taskLists[ListId.VersionTasks]}
-              disableDragging={disableDragging}
-            />
-          </ListContainer>
-        </Col>
-
-        <Col>
-          <ColumnHeader>
-            {`${currentRoadmap?.name} `}
-            <Divider />
-          </ColumnHeader>
-        </Col>
-      </PaddinglessRow>
+          roadmapsVersions.map((version) => {
+            return (
+              <ListWrapper key={version.id}>
+                <VersionHeader>
+                  {version.name}
+                  <DeleteButtonWrapper>
+                    <DeleteButton onClick={() => deleteVersion(version.id)} />
+                  </DeleteButtonWrapper>
+                </VersionHeader>
+                <SortableTaskList
+                  listId={`${version.id}`}
+                  tasks={versionLists[version.id] || []}
+                  disableDragging={disableDrag}
+                />
+              </ListWrapper>
+            );
+          })}
+        <AddVersionWrapper onClick={addVersion}>
+          <span>
+            <PlusIcon />
+            <Trans i18nKey="Add new" />
+          </span>
+        </AddVersionWrapper>
+      </>
     );
   };
 
   return (
     <>
-      {roadmapsVersions ? (
-        <div className="h-100 d-flex flex-column">
-          <PaddinglessRow>{renderTopbar()}</PaddinglessRow>
-          <div className="flex-grow-1">
-            <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-              {renderRoadmapList()}
-              {currentVersion && renderVersionList()}
-            </DragDropContext>
-          </div>
-        </div>
-      ) : (
-        <LoadingSpinner />
-      )}
+      <GraphPlaceHolder />
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        <LayoutRow>
+          <VersionColumn>
+            <ColumnHeader>
+              {currentRoadmap.name} <Trans i18nKey="task list" />
+            </ColumnHeader>
+            <ListWrapper>
+              <SortableTaskList
+                listId={ROADMAP_LIST_ID}
+                tasks={versionLists[ROADMAP_LIST_ID] || []}
+                disableDragging={false}
+              />
+            </ListWrapper>
+          </VersionColumn>
+          <VersionColumn>
+            <ColumnHeader>
+              {currentRoadmap.name} <Trans i18nKey="milestones" />
+            </ColumnHeader>
+            {renderVersionLists()}
+          </VersionColumn>
+        </LayoutRow>
+      </DragDropContext>
     </>
   );
 };

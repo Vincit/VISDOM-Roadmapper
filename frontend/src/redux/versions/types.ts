@@ -20,11 +20,11 @@ export interface VersionRequest {
 
 export interface AddTaskToVersionRequest {
   task: TaskRequest;
-  version: Version;
+  version: VersionRequest;
   index: number;
 }
 
 export interface RemoveTaskFromVersionRequest {
   task: TaskRequest;
-  version: Version;
+  version: VersionRequest;
 }

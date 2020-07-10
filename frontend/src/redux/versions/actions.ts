@@ -71,7 +71,13 @@ export const addTaskToVersion = createAsyncThunk<
 >(
   'versions/addTaskToVersion',
   async (request: AddTaskToVersionRequest, thunkAPI) => {
-    const versionCopy = { ...request.version };
+    const state = thunkAPI.getState() as RootState;
+    if (state.versions.versions === undefined)
+      throw new Error('Versions not fetched yet!');
+
+    const versionCopy = {
+      ...state.versions.versions.find((ver) => ver.id === request.version.id)!,
+    };
     versionCopy.tasks = [...versionCopy.tasks];
     versionCopy.tasks.splice(request.index, 0, request.task.id!);
     try {
@@ -93,7 +99,12 @@ export const removeTaskFromVersion = createAsyncThunk<
 >(
   'versions/removeTaskFromVersion',
   async (request: RemoveTaskFromVersionRequest, thunkAPI) => {
-    const versionCopy = { ...request.version };
+    const state = thunkAPI.getState() as RootState;
+    if (state.versions.versions === undefined)
+      throw new Error('Versions not fetched yet!');
+    const versionCopy = {
+      ...state.versions.versions.find((ver) => ver.id === request.version.id)!,
+    };
     versionCopy.tasks = versionCopy.tasks.filter(
       (taskId) => taskId !== request.task.id,
     );
