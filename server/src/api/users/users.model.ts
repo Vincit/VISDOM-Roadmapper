@@ -1,11 +1,4 @@
-import {
-  Model,
-  ModelOptions,
-  Modifiers,
-  Pojo,
-  QueryContext,
-  ValidationError,
-} from 'objection';
+import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
 import { UserType } from 'src/types/customTypes';
 
@@ -42,28 +35,12 @@ export default class User extends Password(Model) {
     },
   };
 
-  customValidation = (context: QueryContext) => {
-    if (
-      this.customerValue &&
-      this.type !== undefined &&
-      this.type !== UserType.CustomerUser
-    ) {
-      throw new ValidationError({
-        message:
-          'Customervalue can only be assigned to users with type CustomerUser',
-        type: 'CustomerValueError',
-      });
-    }
-  };
-
   async $beforeInsert(context: QueryContext): Promise<void> {
     await super.$beforeInsert(context);
-    this.customValidation(context);
   }
 
   async $beforeUpdate(opt: ModelOptions, context: QueryContext): Promise<void> {
     await super.$beforeUpdate(opt, context);
-    this.customValidation(context);
   }
 
   $formatJson(json: Pojo): Pojo {
