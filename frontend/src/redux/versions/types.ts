@@ -8,7 +8,6 @@ export interface Version {
 }
 
 export interface VersionsState {
-  selectedVersionId: number | undefined;
   versions: Version[] | undefined;
 }
 

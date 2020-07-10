@@ -12,21 +12,17 @@ import {
   DELETE_VERSION_FULFILLED,
   GET_VERSIONS_FULFILLED,
   PATCH_VERSION_FULFILLED,
-  SELECT_VERSION_ID,
 } from './reducers';
 import { VersionsState } from './types';
 
 const initialState: VersionsState = {
-  selectedVersionId: undefined,
   versions: undefined,
 };
 
 export const versionsSlice = createSlice({
   name: 'versions',
   initialState,
-  reducers: {
-    selectVersionId: SELECT_VERSION_ID,
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(addVersion.fulfilled, ADD_VERSION_FULFILLED);
     builder.addCase(getVersions.fulfilled, GET_VERSIONS_FULFILLED);

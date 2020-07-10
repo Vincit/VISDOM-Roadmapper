@@ -16,13 +16,6 @@ export const ADD_VERSION_FULFILLED: CaseReducer<
   state.versions.push(action.payload);
 };
 
-export const SELECT_VERSION_ID: CaseReducer<
-  VersionsState,
-  PayloadAction<number | undefined>
-> = (state, action) => {
-  state.selectedVersionId = action.payload;
-};
-
 export const DELETE_VERSION_FULFILLED = (
   state: VersionsState,
   action: PayloadAction<VersionRequest>,
