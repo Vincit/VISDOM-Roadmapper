@@ -4,6 +4,8 @@ import { api } from '../../api/api';
 import {
   PublicUser,
   PublicUserRequest,
+  RelatedTaskRequest,
+  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   Task,

@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import {
   PublicUser,
   PublicUserRequest,
+  RelatedTaskRequest,
+  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   Task,
