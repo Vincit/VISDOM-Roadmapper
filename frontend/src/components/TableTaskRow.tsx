@@ -11,6 +11,7 @@ import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
+import { StyledTd } from './CommonLayoutComponents';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { InfoButton } from './forms/InfoButton';
@@ -22,23 +23,9 @@ interface TableTaskRowProps {
   task: Task;
 }
 
-const TaskTd = styled.td<{
-  clickable?: boolean;
-  rightalign?: boolean;
-  nowrap?: boolean;
-}>`
-  vertical-align: middle !important;
-  max-width: 30em;
-  cursor: ${(props) => (props.clickable ? 'pointer' : 'inherit')};
-  text-align: ${(props) => (props.rightalign ? 'end' : 'center')};
-  white-space: ${(props) => (props.nowrap ? 'nowrap' : 'inherit')};
-`;
-
-const ButtonsWrapper = styled.div`
-  svg {
-    display: inline-block;
-    margin: 4px;
-  }
+const ButtonWrapper = styled.div`
+  display: inline-block;
+  margin: 4px;
 `;
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
@@ -103,34 +90,38 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
 
   return (
     <tr>
-      <TaskTd clickable onClick={() => toggleTaskCompleted()}>
+      <StyledTd
+        clickable
+        textAlign="center"
+        onClick={() => toggleTaskCompleted()}
+      >
         {completed ? <CheckCircle /> : <Circle />}
-      </TaskTd>
-      <TaskTd>{name}</TaskTd>
-      <TaskTd>
+      </StyledTd>
+      <StyledTd>{name}</StyledTd>
+      <StyledTd>
         {description.length > 75
           ? `${description.slice(0, 75)}...`
           : description}
-      </TaskTd>
-      <TaskTd>
+      </StyledTd>
+      <StyledTd nowrap>
         <TaskRatingsText task={task} />
-      </TaskTd>
-      <TaskTd>{new Date(createdAt).toLocaleDateString()}</TaskTd>
-      <TaskTd rightalign nowrap>
-        <ButtonsWrapper>
-          {!task.ratings.find(
-            (rating) => rating.createdByUser === userInfo?.id,
-          ) && (
-            <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
-              <Trans i18nKey="Rate" />
-            </StyledButton>
-          )}
+      </StyledTd>
+      <StyledTd>{new Date(createdAt).toLocaleDateString()}</StyledTd>
+      <StyledTd textAlign="end" nowrap>
+        {!task.ratings.find(
+          (rating) => rating.createdByUser === userInfo?.id,
+        ) && (
+          <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
+            <Trans i18nKey="Rate" />
+          </StyledButton>
+        )}
+        <ButtonWrapper>
           <RatingsButton onClick={() => taskRatingDetails()} />
           <InfoButton onClick={() => taskDetails()} />
           <EditButton type="large" onClick={() => editTask()} />
           <DeleteButton onClick={() => deleteTask()} />
-        </ButtonsWrapper>
-      </TaskTd>
+        </ButtonWrapper>
+      </StyledTd>
     </tr>
   );
 };

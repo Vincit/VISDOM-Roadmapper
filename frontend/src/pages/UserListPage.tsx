@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import {
+  HeaderSpan,
+  SearchBarContainer,
+  StyledTable,
+  StyledTh,
+  TopBar,
+} from '../components/CommonLayoutComponents';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { TableUserRow } from '../components/TableUserRow';
 import { StoreDispatchType } from '../redux/index';
@@ -13,57 +18,6 @@ import { PublicUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { UserType } from '../redux/user/types';
 import { SortingOrders, SortingTypes, sortUsers } from '../utils/UserUtils';
-
-const SortAscendingIcon = styled(ArrowUpCircle)`
-  position: absolute;
-  right: -1.6em;
-  width: 1.2em;
-  height: 1.2em;
-  top: 0.2em;
-`;
-
-const SortDescendingIcon = styled(ArrowDownCircle)`
-  position: absolute;
-  right: -1.6em;
-  width: 1.2em;
-  height: 1.2em;
-  top: 0.2em;
-`;
-
-const SearchBarIcon = styled(Search)`
-  position: absolute;
-  top: 0.8em;
-  right: 1em;
-`;
-
-const IconTextDiv = styled.div`
-  position: relative;
-  width: auto;
-  display: inline-block;
-`;
-
-const ClickableHeader = styled.th`
-  position: relative;
-  cursor: pointer;
-  user-select: none;
-`;
-
-const TopBar = styled.div`
-  display: flex;
-  justify-content: start;
-  vertical-align: middle;
-  border-bottom: 1px solid black;
-  padding: 8px;
-  padding-left: 16px;
-`;
-
-const SearchBarContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  max-width: 20em;
-  min-width: 10em;
-`;
 
 interface TableHeader {
   label: string;
@@ -122,9 +76,9 @@ export const UserListPage = () => {
 
   const renderSortingArrow = () => {
     return sortingOrder === SortingOrders.ASCENDING ? (
-      <SortAscendingIcon />
+      <ArrowUpCircle />
     ) : (
-      <SortDescendingIcon />
+      <ArrowDownCircle />
     );
   };
 
@@ -136,7 +90,7 @@ export const UserListPage = () => {
             placeholder={t('Search for users')}
             onChange={(e: any) => onSearchChange(e.currentTarget.value)}
           />
-          <SearchBarIcon />
+          <Search />
         </SearchBarContainer>
       </TopBar>
     );
@@ -149,22 +103,24 @@ export const UserListPage = () => {
 
   const renderUsersTable = () => {
     return (
-      <Table>
+      <StyledTable>
         <thead>
           <tr>
             {tableHeaders.map((header) => {
               return (
-                <ClickableHeader
+                <StyledTh
+                  textAlign="left"
+                  clickable
                   key={header.label}
                   onClick={() => onSortingChange(header.sorting)}
                 >
-                  <IconTextDiv>
+                  <HeaderSpan>
                     <Trans i18nKey={header.label} />
                     {sortingType === header.sorting
                       ? renderSortingArrow()
                       : null}
-                  </IconTextDiv>
-                </ClickableHeader>
+                  </HeaderSpan>
+                </StyledTh>
               );
             })}
           </tr>
@@ -174,7 +130,7 @@ export const UserListPage = () => {
             <TableUserRow key={user.id} user={user} />
           ))}
         </tbody>
-      </Table>
+      </StyledTable>
     );
   };
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Col } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Redirect,
@@ -8,10 +7,8 @@ import {
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
-import {
-  FullHeightRow,
-  PaddinglessCol,
-} from '../components/CommonLayoutComponents';
+import styled from 'styled-components';
+import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { PlannerPage } from '../pages/PlannerPage';
@@ -24,6 +21,10 @@ import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
+
+const RoadmapPageContainer = styled(LayoutCol)`
+  padding: 16px;
+`;
 
 const routes = [
   {
@@ -78,16 +79,16 @@ const RoadmapRouterComponent = () => {
     if (!isLoading && !currentRoadmap)
       return (
         <>
-          <FullHeightRow>
-            <Col>Roadmap not found!</Col>
-          </FullHeightRow>
+          <LayoutRow>
+            <LayoutCol>Roadmap not found!</LayoutCol>
+          </LayoutRow>
         </>
       );
     if (!isLoading) {
       return (
-        <FullHeightRow>
+        <LayoutRow overflowY="auto">
           <SideBar />
-          <PaddinglessCol className="h-100">
+          <RoadmapPageContainer>
             <Switch>
               {routes.map((route) => (
                 <Route
@@ -97,8 +98,8 @@ const RoadmapRouterComponent = () => {
                 />
               ))}
             </Switch>
-          </PaddinglessCol>
-        </FullHeightRow>
+          </RoadmapPageContainer>
+        </LayoutRow>
       );
     }
     return <LoadingSpinner />;

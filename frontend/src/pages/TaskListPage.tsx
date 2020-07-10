@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { Table } from 'react-bootstrap';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import {
+  HeaderSpan,
+  SearchBarContainer,
+  StyledTable,
+  StyledTh,
+  TopBar,
+} from '../components/CommonLayoutComponents';
 import { StyledButton } from '../components/forms/StyledButton';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { TableTaskRow } from '../components/TableTaskRow';
@@ -23,23 +29,6 @@ import {
   sortTasks,
 } from '../utils/TaskUtils';
 
-const TopBar = styled.div`
-  display: flex;
-  justify-content: start;
-  vertical-align: middle;
-  border-bottom: 1px solid black;
-  padding: 8px;
-  padding-left: 16px;
-`;
-
-const SearchBarContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  max-width: 20em;
-  min-width: 10em;
-`;
-
 const FilterSelectContainer = styled.div`
   position: relative;
   display: flex;
@@ -57,40 +46,6 @@ const AddNewButtonContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-right: 8px;
-`;
-
-const SearchBarIcon = styled(Search)`
-  position: absolute;
-  top: 0.8em;
-  right: 1em;
-`;
-
-const SortAscendingIcon = styled(ArrowUpCircle)`
-  position: absolute;
-  right: -1.6em;
-  width: 1.2em;
-  height: 1.2em;
-  top: 0.2em;
-`;
-
-const SortDescendingIcon = styled(ArrowDownCircle)`
-  position: absolute;
-  right: -1.6em;
-  width: 1.2em;
-  height: 1.2em;
-  top: 0.2em;
-`;
-
-const ClickableHeader = styled.th`
-  position: relative;
-  cursor: pointer;
-  user-select: none;
-`;
-
-const IconTextDiv = styled.div`
-  position: relative;
-  width: auto;
-  display: inline-block;
 `;
 
 interface TableHeader {
@@ -173,7 +128,7 @@ export const TaskListPage = () => {
             placeholder={t('Search for tasks')}
             onChange={(e: any) => onSearchChange(e.currentTarget.value)}
           />
-          <SearchBarIcon />
+          <Search />
         </SearchBarContainer>
         <FilterSelectContainer>
           <StyledFormControl
@@ -206,9 +161,9 @@ export const TaskListPage = () => {
 
   const renderSortingArrow = () => {
     return sortingOrder === SortingOrders.ASCENDING ? (
-      <SortAscendingIcon />
+      <ArrowUpCircle />
     ) : (
-      <SortDescendingIcon />
+      <ArrowDownCircle />
     );
   };
 
@@ -222,22 +177,23 @@ export const TaskListPage = () => {
 
   const renderTasksTable = () => {
     return (
-      <Table>
+      <StyledTable>
         <thead>
           <tr>
             {tableHeaders.map((header) => {
               return (
-                <ClickableHeader
+                <StyledTh
+                  clickable
                   key={header.label}
                   onClick={() => onSortingChange(header.sorting)}
                 >
-                  <IconTextDiv>
+                  <HeaderSpan>
                     <Trans i18nKey={header.label} />
                     {sortingType === header.sorting
                       ? renderSortingArrow()
                       : null}
-                  </IconTextDiv>
-                </ClickableHeader>
+                  </HeaderSpan>
+                </StyledTh>
               );
             })}
           </tr>
@@ -247,7 +203,7 @@ export const TaskListPage = () => {
             <TableTaskRow key={task.id} task={task} />
           ))}
         </tbody>
-      </Table>
+      </StyledTable>
     );
   };
 

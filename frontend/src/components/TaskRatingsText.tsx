@@ -17,13 +17,13 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
   return (
     <>
       {renderBusinessVal && (
-        <span className="mr-1">
+        <span className="mr-1 font-weight-bold">
           {averageBusinessVal}
           <StarFill />
         </span>
       )}
       {renderWorkVal && (
-        <span>
+        <span className="mr-1 font-weight-bold">
           {averageWorkVal}
           <Wrench />
         </span>

@@ -17,7 +17,6 @@ const Sidebar = styled.div`
   min-width: 96px !important;
   max-width: 96px !important;
   min-height: 100%;
-  border-right: solid 1px #000;
   background-color: #f3f3f3;
   overflow: hidden;
 `;
