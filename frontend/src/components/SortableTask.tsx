@@ -1,70 +1,70 @@
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { StarFill, Wrench } from 'react-bootstrap-icons';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { StoreDispatchType } from '../redux';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../redux/modals/types';
+import { Task } from '../redux/roadmaps/types';
+import { InfoButton } from './forms/InfoButton';
+import { RatingsButton } from './forms/RatingsButton';
+import { TaskRatingsText } from './TaskRatingsText';
 
-const TaskDiv = styled.div<{ loadingCursor?: boolean }>`
+const TaskDiv = styled.div`
+  display: flex;
   border: 1px solid black;
   padding: 5px;
   margin-bottom: 5px;
   background-color: white !important;
   user-select: none;
-  cursor: ${(props) => (props.loadingCursor ? 'wait !important' : 'auto')};
 `;
 
-const Styles = styled.div`
-  .icon {
-    height: 0.9em;
-    width: 0.9em;
-    position: relative;
-    top: -0.125em;
-  }
-  .aligncenter {
-    vertical-align: middle;
-  }
+const LeftSideDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 `;
 
-const renderTaskRatings = (task: Task) => {
-  const averageBusinessVal = calcTaskAverageRating(
-    TaskRatingDimension.BusinessValue,
-    task,
-  );
-  const averageWorkVal = calcTaskAverageRating(
-    TaskRatingDimension.RequiredWork,
-    task,
-  );
-  const renderBusinessVal = averageBusinessVal >= 0;
-  const renderWorkVal = averageWorkVal >= 0;
-  return (
-    <>
-      {renderBusinessVal && (
-        <span className="m-1 aligncenter">
-          <StarFill className="icon" />
-          {averageBusinessVal}
-        </span>
-      )}
-      {renderWorkVal && (
-        <span
-          className={
-            renderBusinessVal ? 'm-1 ml-2 aligncenter' : 'm-1 aligncenter'
-          }
-        >
-          <Wrench className="icon" />
-          {averageWorkVal}
-        </span>
-      )}
-      {!renderWorkVal && !renderBusinessVal && <span>-</span>}
-    </>
-  );
-};
+const RightSideDiv = styled.div`
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  svg {
+    margin-left: 8px;
+  }
+`;
 
 export const SortableTask: React.FC<{
   task: Task;
   index: number;
   disableDragging: boolean;
 }> = ({ task, index, disableDragging }) => {
+  const dispatch = useDispatch<StoreDispatchType>();
+
+  const taskRatingDetails = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
+  const taskDetails = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.TASK_INFO_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
   return (
     <Draggable
       key={task.id}
@@ -73,18 +73,22 @@ export const SortableTask: React.FC<{
       isDragDisabled={disableDragging}
     >
       {(provided) => (
-        <Styles>
-          <TaskDiv
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-          >
-            <div className="text-left aligncenter">{task.name}</div>
-            <div className="text-left aligncenter">
-              {renderTaskRatings(task)}
+        <TaskDiv
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <LeftSideDiv>
+            {task.name}
+            <div>
+              <TaskRatingsText task={task} />
             </div>
-          </TaskDiv>
-        </Styles>
+          </LeftSideDiv>
+          <RightSideDiv>
+            <RatingsButton onClick={() => taskRatingDetails()} />
+            <InfoButton onClick={() => taskDetails()} />
+          </RightSideDiv>
+        </TaskDiv>
       )}
     </Draggable>
   );
