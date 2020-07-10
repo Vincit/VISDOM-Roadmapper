@@ -1,7 +1,7 @@
 import * as Knex from 'knex';
-import User from '../api/users/users.model';
-import Roadmap from '../api/roadmaps/roadmaps.model';
 import { Model } from 'objection';
+import Roadmap from '../api/roadmaps/roadmaps.model';
+import User from '../api/users/users.model';
 import { UserType } from '../types/customTypes';
 
 export async function seed(knex: Knex): Promise<any> {
@@ -105,6 +105,24 @@ const createTestUsers = async () => {
     type: UserType.CustomerUser,
     password: 'test',
     customerValue: 1000000,
+  });
+  await User.query().insert({
+    username: 'CustomerPerson3',
+    email: 'customer3@webuystuff.com',
+    type: UserType.CustomerUser,
+    password: 'test',
+  });
+  await User.query().insert({
+    username: 'CustomerPerson4',
+    email: 'customer4@webuystuff.com',
+    type: UserType.CustomerUser,
+    password: 'test',
+  });
+  await User.query().insert({
+    username: 'CustomerPerson5',
+    email: 'customer5@webuystuff.com',
+    type: UserType.CustomerUser,
+    password: 'test',
   });
   await User.query().insert({
     username: 'AdminPerson1',
