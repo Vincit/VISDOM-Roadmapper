@@ -39,8 +39,9 @@ export const RoadmapSelectorWidget = () => {
           {roadmaps &&
             roadmaps.map((roadmap) => (
               <Link
+                key={roadmap.id}
                 className="dropdown-item"
-                to={`${paths.roadmapHome}/${roadmap.id}`}
+                to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
                 onClick={toggleDropdown} // Close dropdown manually because clicking on react <Link> does not close it
               >
                 {roadmap.name}

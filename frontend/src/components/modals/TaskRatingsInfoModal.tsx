@@ -135,7 +135,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
     return (
       <>
         {userRatings.map((rating) => (
-          <UserRatingDiv>
+          <UserRatingDiv key={rating.id}>
             <CommentDiv rightMargin>
               <LabelText>
                 <Trans i18nKey="Your comment" />{' '}
@@ -181,7 +181,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
     return (
       <>
         {teamRatings.map((rating) => (
-          <TeamRatingDiv>
+          <TeamRatingDiv key={rating.id}>
             <RatingDiv>
               <TeamRatingUsername>
                 @

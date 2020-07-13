@@ -21,7 +21,7 @@ const Sidebar = styled.div`
   overflow: hidden;
 `;
 
-const SideBarButton = styled(Link)<{ highlight?: boolean }>`
+const SideBarButton = styled(Link)<{ highlight: number }>`
   display: flex;
   flex-direction: column;
   height: 96px;
@@ -50,7 +50,9 @@ export const SideBar = () => {
       <Sidebar>
         <SideBarButton
           to={url + paths.roadmapRelative.dashboard}
-          highlight={pathname.startsWith(url + paths.roadmapRelative.dashboard)}
+          highlight={
+            pathname.startsWith(url + paths.roadmapRelative.dashboard) ? 1 : 0
+          }
         >
           <SideBarIcon>
             <DashboardIcon />
@@ -59,7 +61,9 @@ export const SideBar = () => {
         </SideBarButton>
         <SideBarButton
           to={url + paths.roadmapRelative.taskList}
-          highlight={pathname.startsWith(url + paths.roadmapRelative.taskList)}
+          highlight={
+            pathname.startsWith(url + paths.roadmapRelative.taskList) ? 1 : 0
+          }
         >
           <SideBarIcon>
             <TasksButtonIcon />
@@ -68,7 +72,9 @@ export const SideBar = () => {
         </SideBarButton>
         <SideBarButton
           to={url + paths.roadmapRelative.users}
-          highlight={pathname.startsWith(url + paths.roadmapRelative.users)}
+          highlight={
+            pathname.startsWith(url + paths.roadmapRelative.users) ? 1 : 0
+          }
         >
           <SideBarIcon>
             <UsersIcon />
@@ -77,7 +83,9 @@ export const SideBar = () => {
         </SideBarButton>
         <SideBarButton
           to={url + paths.roadmapRelative.planner}
-          highlight={pathname.startsWith(url + paths.roadmapRelative.planner)}
+          highlight={
+            pathname.startsWith(url + paths.roadmapRelative.planner) ? 1 : 0
+          }
         >
           <SideBarIcon>
             <PlanButtonIcon />
