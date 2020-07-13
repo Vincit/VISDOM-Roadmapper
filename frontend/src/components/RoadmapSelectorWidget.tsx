@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavDropdown } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { roadmapsSelector } from '../redux/roadmaps/selectors';
@@ -11,7 +11,7 @@ import { paths } from '../routers/paths';
 import { StyledNavDropdown } from './forms/StyledNavDropdown';
 
 export const RoadmapSelectorWidget = () => {
-  const history = useHistory();
+  const dropdownRef = useRef<HTMLDivElement>();
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,
@@ -22,21 +22,29 @@ export const RoadmapSelectorWidget = () => {
     if (!roadmaps) dispatch(roadmapsActions.getRoadmaps());
   }, [dispatch, roadmaps]);
 
-  const selectRoadmap = (id: number) => {
-    history.push(`${paths.roadmapHome}/${id}`);
+  const toggleDropdown = () => {
+    dropdownRef!.current!.click();
   };
 
   return (
-    <StyledNavDropdown id="roadmapselector" title="Select roadmap">
+    <StyledNavDropdown
+      id="roadmapselector"
+      title="Select roadmap"
+      ref={dropdownRef}
+    >
       {!roadmaps || roadmaps.length === 0 ? (
         <NavDropdown.Item>No roadmaps available</NavDropdown.Item>
       ) : (
         <>
           {roadmaps &&
             roadmaps.map((roadmap) => (
-              <NavDropdown.Item onClick={() => selectRoadmap(roadmap.id)}>
+              <Link
+                className="dropdown-item"
+                to={`${paths.roadmapHome}/${roadmap.id}`}
+                onClick={toggleDropdown} // Close dropdown manually because clicking on react <Link> does not close it
+              >
                 {roadmap.name}
-              </NavDropdown.Item>
+              </Link>
             ))}
         </>
       )}

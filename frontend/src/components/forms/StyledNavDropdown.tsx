@@ -11,14 +11,24 @@ export const StyledNavDropdown = styled(NavDropdown)`
   margin-top: auto;
   margin-bottom: auto;
 
+  .dropdown-menu {
+    width: 100%;
+  }
+
   .dropdown-toggle {
     color: white !important;
-    padding-bottom: 10px;
-    padding: 0;
-    padding-top: 7px;
+    padding: 7px 0px 10px;
   }
+
   a {
+    width: 100%;
     font-size: 14px !important;
     line-height: 20px !important;
+    text-decoration: none;
+    color: black;
+    :hover {
+      text-decoration: none;
+      color: black;
+    }
   }
 `;
