@@ -12,23 +12,21 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
     TaskRatingDimension.RequiredWork,
     task,
   );
-  const renderBusinessVal = averageBusinessVal >= 0;
-  const renderWorkVal = averageWorkVal >= 0;
   return (
     <>
-      {renderBusinessVal && (
+      {averageBusinessVal && (
         <span className="mr-1 font-weight-bold">
           {averageBusinessVal}
           <StarFill />
         </span>
       )}
-      {renderWorkVal && (
+      {averageWorkVal && (
         <span className="mr-1 font-weight-bold">
           {averageWorkVal}
           <Wrench />
         </span>
       )}
-      {!renderWorkVal && !renderBusinessVal && <span>-</span>}
+      {!averageWorkVal && !averageBusinessVal && <span>-</span>}
     </>
   );
 };

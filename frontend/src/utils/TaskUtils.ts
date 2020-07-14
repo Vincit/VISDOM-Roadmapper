@@ -1,3 +1,4 @@
+import { DraggableLocation } from 'react-beautiful-dnd';
 import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
 
 export enum FilterTypes {
@@ -37,7 +38,7 @@ export const calcTaskAverageRating = (
   if (count > 0) {
     return sum / count;
   }
-  return -1;
+  return undefined;
 };
 
 export const calcTaskPriority = (task: Task) => {
@@ -45,12 +46,12 @@ export const calcTaskPriority = (task: Task) => {
     TaskRatingDimension.BusinessValue,
     task,
   );
-  if (avgBusinessRating < 0) return -2;
+  if (!avgBusinessRating) return -2;
   const avgWorkRating = calcTaskAverageRating(
     TaskRatingDimension.RequiredWork,
     task,
   );
-  if (avgWorkRating < 0) return -1;
+  if (!avgWorkRating) return -1;
 
   return avgBusinessRating / avgWorkRating;
 };
@@ -143,4 +144,36 @@ export const sortTasks = (
   }
 
   return tasks;
+};
+
+// Function to help with reordering item in list
+export const reorderList = (
+  list: Task[],
+  startIndex: number,
+  endIndex: number,
+) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+// Function to help move items between lists
+export const dragDropBetweenLists = (
+  source: Task[],
+  destination: Task[],
+  droppableSource: DraggableLocation,
+  droppableDestination: DraggableLocation,
+) => {
+  const sourceClone = Array.from(source);
+  const destClone = Array.from(destination);
+  const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+  destClone.splice(droppableDestination.index, 0, removed);
+
+  return {
+    [droppableSource.droppableId]: sourceClone,
+    [droppableDestination.droppableId]: destClone,
+  };
 };

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  DragDropContext,
-  DraggableLocation,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { DeleteButton } from '../components/forms/DeleteButton';
+import { PlannerChart } from '../components/PlannerChart';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { ReactComponent as PlusIcon } from '../icons/plus_icon.svg';
 import { StoreDispatchType } from '../redux';
@@ -18,13 +15,7 @@ import { RootState } from '../redux/types';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
-
-const GraphPlaceHolder = styled.div`
-  border-radius: 16px;
-  background-color: rgb(225, 225, 225);
-  min-width: 100%;
-  min-height: 550px;
-`;
+import { dragDropBetweenLists, reorderList } from '../utils/TaskUtils';
 
 const ColumnHeader = styled.span`
   text-align: left;
@@ -85,34 +76,6 @@ const AddVersionWrapper = styled(ListWrapper)`
 interface VersionListsObject {
   [K: string]: Task[];
 }
-
-// Function to help with reordering item in list
-const reorderList = (list: Task[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
-// Function to help move items between lists
-const moveBetweenLists = (
-  source: Task[],
-  destination: Task[],
-  droppableSource: DraggableLocation,
-  droppableDestination: DraggableLocation,
-) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  return {
-    [droppableSource.droppableId]: sourceClone,
-    [droppableDestination.droppableId]: destClone,
-  };
-};
 
 const copyVersionLists = (originalLists: VersionListsObject) => {
   const copyList: VersionListsObject = {};
@@ -175,7 +138,7 @@ export const PlannerPage = () => {
     // Moving from one list to another
     Object.assign(
       copyLists,
-      moveBetweenLists(
+      dragDropBetweenLists(
         copyLists[source!.droppableId],
         copyLists[destination!.droppableId],
         source!,
@@ -328,9 +291,23 @@ export const PlannerPage = () => {
     );
   };
 
+  const chartVersions = Object.keys(versionLists)
+    .filter(
+      (key) =>
+        key !== ROADMAP_LIST_ID &&
+        versionLists[key].length > 0 &&
+        roadmapsVersions!.find((ver) => ver.id === +key),
+    )
+    .map((key) => {
+      return {
+        name: roadmapsVersions!.find((ver) => ver.id === +key)!.name,
+        tasks: versionLists[key],
+      };
+    });
+
   return (
     <>
-      <GraphPlaceHolder />
+      {versionLists['-1'] && <PlannerChart versions={chartVersions} />}
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <LayoutRow>
           <VersionColumn>
