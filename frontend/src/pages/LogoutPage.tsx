@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
 import { userActions } from '../redux/user';
@@ -21,5 +23,18 @@ export const LogoutPage = () => {
     }
   }, [dispatch, userInfo]);
 
-  return <>{!userInfo && <Redirect to={paths.home} />}</>;
+  return (
+    <>
+      {!userInfo ? (
+        <Redirect to={paths.home} />
+      ) : (
+        <>
+          <p>
+            <Trans i18nKey="Logging out" />
+          </p>
+          <LoadingSpinner />
+        </>
+      )}
+    </>
+  );
 };
