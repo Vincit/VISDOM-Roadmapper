@@ -6,6 +6,7 @@ import { Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledButton } from '../components/forms/StyledButton';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { StoreDispatchType } from '../redux';
@@ -34,8 +35,8 @@ export const LoginPage = () => {
     username: '',
     password: '',
   });
-  const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -43,14 +44,15 @@ export const LoginPage = () => {
     event.stopPropagation();
 
     if (form.checkValidity()) {
+      setIsLoading(true);
       dispatch(
         userActions.login({
           username: formValues.username,
           password: formValues.password,
         }),
       ).then((res) => {
+        setIsLoading(false);
         if (userActions.login.rejected.match(res)) {
-          setHasError(true);
           if (res.payload) {
             if (res.payload.response?.status === 401) {
               setErrorMessage(t('Invalid username or password'));
@@ -103,17 +105,21 @@ export const LoginPage = () => {
               />
             </Form.Group>
             <Alert
-              show={hasError}
+              show={errorMessage.length > 0}
               variant="danger"
               dismissible
-              onClose={() => setHasError(false)}
+              onClose={() => setErrorMessage('')}
             >
               {errorMessage}
             </Alert>
 
-            <StyledButton buttonType="submit" type="submit">
-              <Trans i18nKey="Submit" />
-            </StyledButton>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StyledButton buttonType="submit" type="submit">
+                <Trans i18nKey="Submit" />
+              </StyledButton>
+            )}
           </Form>
         </ModalContent>
       </FormDiv>

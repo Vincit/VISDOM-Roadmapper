@@ -14,6 +14,7 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
@@ -28,8 +29,8 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
     name: '',
     description: '',
   });
-  const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
   );
@@ -48,6 +49,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
     event.stopPropagation();
 
     if (form.checkValidity()) {
+      setIsLoading(true);
       const req: TaskRequest = {
         name: formValues.name,
         description: formValues.description,
@@ -56,8 +58,8 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
       };
 
       dispatch(roadmapsActions.addTask(req)).then((res) => {
+        setIsLoading(false);
         if (roadmapsActions.addTask.rejected.match(res)) {
-          setHasError(true);
           if (res.payload) {
             setErrorMessage(res.payload.message);
           }
@@ -119,10 +121,10 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
             />
           </Form.Group>
           <Alert
-            show={hasError}
+            show={errorMessage.length > 0}
             variant="danger"
             dismissible
-            onClose={() => setHasError(false)}
+            onClose={() => setErrorMessage('')}
           >
             {errorMessage}
           </Alert>
@@ -134,9 +136,13 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
             </StyledButton>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
-            <StyledButton fullWidth buttonType="submit" type="submit">
-              <Trans i18nKey="Add" />
-            </StyledButton>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StyledButton fullWidth buttonType="submit" type="submit">
+                <Trans i18nKey="Add" />
+              </StyledButton>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>

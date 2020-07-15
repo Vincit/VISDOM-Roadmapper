@@ -13,13 +13,14 @@ import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { StyledButton } from '../forms/StyledButton';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { TaskRatingWidget } from '../TaskRatingWidget';
+import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
-import { TaskRatingWidget } from '../TaskRatingWidget';
-import { ModalProps } from '../types';
 
 export interface RateTaskModalProps extends ModalProps {
   task: Task;
@@ -33,7 +34,7 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
-  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -72,28 +73,29 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
     event.preventDefault();
     event.stopPropagation();
     if (!workRatingModified && !businessRatingModified) {
-      setHasError(true);
       setErrorMessage(t('Please input a rating before submitting'));
       return;
     }
 
     if (businessRatingModified) {
+      setIsLoading(true);
       const res = await dispatch(
         roadmapsActions.addOrPatchTaskrating(businessValueRating),
       );
+      setIsLoading(false);
       if (roadmapsActions.addOrPatchTaskrating.rejected.match(res)) {
-        setHasError(true);
         if (res.payload?.message) setErrorMessage(res.payload.message);
         return;
       }
     }
 
     if (workRatingModified) {
+      setIsLoading(true);
       const res = await dispatch(
         roadmapsActions.addOrPatchTaskrating(requiredWorkRating),
       );
+      setIsLoading(false);
       if (roadmapsActions.addOrPatchTaskrating.rejected.match(res)) {
-        setHasError(true);
         if (res.payload?.message) setErrorMessage(res.payload.message);
         return;
       }
@@ -154,10 +156,10 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
             }}
           />
           <Alert
-            show={hasError}
+            show={errorMessage.length > 0}
             variant="danger"
             dismissible
-            onClose={() => setHasError(false)}
+            onClose={() => setErrorMessage('')}
           >
             {errorMessage}
           </Alert>
@@ -169,9 +171,13 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
             </StyledButton>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
-            <StyledButton fullWidth buttonType="submit" type="submit">
-              <Trans i18nKey="Submit" />
-            </StyledButton>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StyledButton fullWidth buttonType="submit" type="submit">
+                <Trans i18nKey="Submit" />
+              </StyledButton>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>

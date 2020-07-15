@@ -11,12 +11,13 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
-import { ModalProps } from '../types';
 
 export interface EditTaskModalProps extends ModalProps {
   task: Task;
@@ -32,8 +33,8 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
     name: task.name,
     description: task.description,
   });
-  const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -49,6 +50,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
     event.stopPropagation();
 
     if (form.checkValidity()) {
+      setIsLoading(true);
       const req: TaskRequest = {
         id: task.id,
         name: formValues.name,
@@ -57,8 +59,8 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
       };
 
       dispatch(roadmapsActions.patchTask(req)).then((res) => {
+        setIsLoading(false);
         if (roadmapsActions.patchTask.rejected.match(res)) {
-          setHasError(true);
           if (res.payload) {
             setErrorMessage(res.payload.message);
           }
@@ -112,10 +114,10 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
             />
           </Form.Group>
           <Alert
-            show={hasError}
+            show={errorMessage.length > 0}
             variant="danger"
             dismissible
-            onClose={() => setHasError(false)}
+            onClose={() => setErrorMessage('')}
           >
             {errorMessage}
           </Alert>
@@ -127,9 +129,13 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
             </StyledButton>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
-            <StyledButton fullWidth buttonType="submit" type="submit">
-              <Trans i18nKey="Save" />
-            </StyledButton>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StyledButton fullWidth buttonType="submit" type="submit">
+                <Trans i18nKey="Save" />
+              </StyledButton>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>
