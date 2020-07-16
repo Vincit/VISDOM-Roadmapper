@@ -34,9 +34,11 @@ const TaskTd = styled.td<{
   white-space: ${(props) => (props.nowrap ? 'nowrap' : 'inherit')};
 `;
 
-const ButtonWrapper = styled.div`
-  display: inline-block;
-  margin: 4px;
+const ButtonsWrapper = styled.div`
+  svg {
+    display: inline-block;
+    margin: 4px;
+  }
 `;
 
 export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
@@ -115,25 +117,19 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       </TaskTd>
       <TaskTd>{new Date(createdAt).toLocaleDateString()}</TaskTd>
       <TaskTd rightalign nowrap>
-        {!task.ratings.find(
-          (rating) => rating.createdByUser === userInfo?.id,
-        ) && (
-          <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
-            <Trans i18nKey="Rate" />
-          </StyledButton>
-        )}
-        <ButtonWrapper>
+        <ButtonsWrapper>
+          {!task.ratings.find(
+            (rating) => rating.createdByUser === userInfo?.id,
+          ) && (
+            <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
+              <Trans i18nKey="Rate" />
+            </StyledButton>
+          )}
           <RatingsButton onClick={() => taskRatingDetails()} />
-        </ButtonWrapper>
-        <ButtonWrapper>
           <InfoButton onClick={() => taskDetails()} />
-        </ButtonWrapper>
-        <ButtonWrapper>
           <EditButton type="large" onClick={() => editTask()} />
-        </ButtonWrapper>
-        <ButtonWrapper>
           <DeleteButton onClick={() => deleteTask()} />
-        </ButtonWrapper>
+        </ButtonsWrapper>
       </TaskTd>
     </tr>
   );

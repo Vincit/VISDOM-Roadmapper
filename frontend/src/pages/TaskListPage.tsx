@@ -124,7 +124,7 @@ export const TaskListPage = () => {
     e.preventDefault();
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.LOGIN_MODAL,
+        modalType: ModalTypes.ADD_TASK_MODAL,
         modalProps: {},
       }),
     );
