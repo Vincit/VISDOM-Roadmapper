@@ -36,11 +36,15 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     shallowEqual,
   );
 
-  const deleteTask = () => {
+  const deleteTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(roadmapsActions.deleteTask({ id, roadmapId }));
   };
 
-  const editTask = () => {
+  const editTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.EDIT_TASK_MODAL,
@@ -51,7 +55,9 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const rateTask = () => {
+  const rateTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.RATE_TASK_MODAL,
@@ -62,7 +68,9 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const taskRatingDetails = () => {
+  const taskRatingDetailsClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
@@ -73,7 +81,9 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const taskDetails = () => {
+  const taskDetailsClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.TASK_INFO_MODAL,
@@ -84,17 +94,15 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const toggleTaskCompleted = () => {
+  const toggleCompletedClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(roadmapsActions.patchTask({ id, completed: !completed }));
   };
 
   return (
     <tr>
-      <StyledTd
-        clickable
-        textAlign="center"
-        onClick={() => toggleTaskCompleted()}
-      >
+      <StyledTd clickable textAlign="center" onClick={toggleCompletedClicked}>
         {completed ? <CheckCircle /> : <Circle />}
       </StyledTd>
       <StyledTd>{name}</StyledTd>
@@ -111,15 +119,29 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         {!task.ratings.find(
           (rating) => rating.createdByUser === userInfo?.id,
         ) && (
-          <StyledButton buttonType="ratenow" onClick={() => rateTask()}>
-            <Trans i18nKey="Rate" />
-          </StyledButton>
+          <a
+            href={`?openModal=${ModalTypes.TASK_RATINGS_INFO_MODAL}&modalTask=${task.id}`}
+          >
+            <StyledButton buttonType="ratenow" onClick={rateTaskClicked}>
+              <Trans i18nKey="Rate" />
+            </StyledButton>
+          </a>
         )}
         <ButtonWrapper>
-          <RatingsButton onClick={() => taskRatingDetails()} />
-          <InfoButton onClick={() => taskDetails()} />
-          <EditButton type="large" onClick={() => editTask()} />
-          <DeleteButton onClick={() => deleteTask()} />
+          <RatingsButton
+            onClick={taskRatingDetailsClicked}
+            href={`?openModal=${ModalTypes.TASK_RATINGS_INFO_MODAL}&modalTask=${task.id}`}
+          />
+          <InfoButton
+            onClick={taskDetailsClicked}
+            href={`?openModal=${ModalTypes.TASK_INFO_MODAL}&modalTask=${task.id}`}
+          />
+          <EditButton
+            type="large"
+            onClick={editTaskClicked}
+            href={`?openModal=${ModalTypes.EDIT_TASK_MODAL}&modalTask=${task.id}`}
+          />
+          <DeleteButton onClick={deleteTaskClicked} />
         </ButtonWrapper>
       </StyledTd>
     </tr>

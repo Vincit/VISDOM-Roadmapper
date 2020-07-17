@@ -10,6 +10,14 @@ const StyledRatingsIcon = styled(RatingsIcon)`
 
 export const RatingsButton: React.FC<{
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
-}> = ({ onClick }) => {
+  href?: string;
+}> = ({ onClick, href }) => {
+  if (href && href.length > 0) {
+    return (
+      <a href={href}>
+        <StyledRatingsIcon onClick={onClick} />
+      </a>
+    );
+  }
   return <StyledRatingsIcon onClick={onClick} />;
 };

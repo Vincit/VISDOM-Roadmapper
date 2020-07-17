@@ -32,6 +32,7 @@ export const TopBar = styled.div`
 `;
 
 export const StyledTable = styled.table`
+  width: 100%;
   thead {
     border-bottom: 1px solid rgb(0, 0, 0, 0.1);
   }

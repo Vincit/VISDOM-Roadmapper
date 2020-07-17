@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as EditIcon } from '../../icons/edit_icon.svg';
 
-const StyledEditICon = styled(EditIcon)<{ type: 'small' | 'large' }>`
+const StyledEditIcon = styled(EditIcon)<{ type: 'small' | 'large' }>`
   path {
     fill: black;
     opacity: 0.25;
@@ -15,6 +15,15 @@ const StyledEditICon = styled(EditIcon)<{ type: 'small' | 'large' }>`
 export const EditButton: React.FC<{
   type: 'small' | 'large';
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
-}> = ({ type, onClick }) => {
-  return <StyledEditICon type={type} onClick={onClick} />;
+  href?: string;
+}> = ({ type, href, onClick }) => {
+  if (href && href.length > 0) {
+    return (
+      <a href={href}>
+        <StyledEditIcon type={type} onClick={onClick} />
+      </a>
+    );
+  }
+
+  return <StyledEditIcon type={type} onClick={onClick} />;
 };

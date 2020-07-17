@@ -43,7 +43,9 @@ export const SortableTask: React.FC<{
 }> = ({ task, index, disableDragging }) => {
   const dispatch = useDispatch<StoreDispatchType>();
 
-  const taskRatingDetails = () => {
+  const taskRatingDetailsClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
@@ -54,7 +56,9 @@ export const SortableTask: React.FC<{
     );
   };
 
-  const taskDetails = () => {
+  const taskDetailsClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.TASK_INFO_MODAL,
@@ -85,8 +89,14 @@ export const SortableTask: React.FC<{
             </div>
           </LeftSideDiv>
           <RightSideDiv>
-            <RatingsButton onClick={() => taskRatingDetails()} />
-            <InfoButton onClick={() => taskDetails()} />
+            <RatingsButton
+              onClick={taskRatingDetailsClicked}
+              href={`?openModal=${ModalTypes.TASK_RATINGS_INFO_MODAL}&modalTask=${task.id}`}
+            />
+            <InfoButton
+              onClick={taskDetailsClicked}
+              href={`?openModal=${ModalTypes.TASK_INFO_MODAL}&modalTask=${task.id}`}
+            />
           </RightSideDiv>
         </TaskDiv>
       )}

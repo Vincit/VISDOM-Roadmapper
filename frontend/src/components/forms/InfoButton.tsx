@@ -10,6 +10,14 @@ const StyledInfoIcon = styled(InfoIcon)`
 
 export const InfoButton: React.FC<{
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
-}> = ({ onClick }) => {
+  href?: string;
+}> = ({ onClick, href }) => {
+  if (href && href.length > 0) {
+    return (
+      <a href={href}>
+        <StyledInfoIcon onClick={onClick} />
+      </a>
+    );
+  }
   return <StyledInfoIcon onClick={onClick} />;
 };
