@@ -10,11 +10,11 @@ export enum ModalTypes {
 
 export interface ShowModalPayload {
   modalType: ModalTypes;
-  modalProps: Object;
+  modalProps: { [K in any]: any };
 }
 
 export interface ModalsState {
   showModal: boolean;
   currentModal: ModalTypes;
-  modalProps: Object;
+  modalProps: { [K in any]: any };
 }

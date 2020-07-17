@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import Modal, { ModalProvider } from 'styled-react-modal';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals/index';
@@ -56,11 +57,38 @@ export const ModalRoot = () => {
     modalStateSelector,
     shallowEqual,
   );
+  const history = useHistory();
+  const { pathname } = useLocation();
   const ChosenModal = Modals[modalsState.currentModal] as React.FC<ModalProps>;
 
   const onRequestClose = useCallback(() => {
     dispatch(modalsActions.hideModal());
-  }, [dispatch]);
+    // Remove query params from url when modal is closed
+    history.replace(pathname);
+  }, [dispatch, pathname, history]);
+
+  useEffect(() => {
+    // Add query params to url when url-supported modal is opened
+    if (
+      modalsState.currentModal !== ModalTypes.TASK_INFO_MODAL &&
+      modalsState.currentModal !== ModalTypes.TASK_RATINGS_INFO_MODAL &&
+      modalsState.currentModal !== ModalTypes.EDIT_TASK_MODAL &&
+      modalsState.currentModal !== ModalTypes.RATE_TASK_MODAL
+    )
+      return;
+    if (!modalsState.showModal) return;
+    let queryString = `?openModal=${modalsState.currentModal}`;
+    if (modalsState.modalProps.task) {
+      queryString += `&modalTask=${modalsState.modalProps.task.id}`;
+    }
+    history.replace(pathname + queryString);
+  }, [
+    modalsState.showModal,
+    modalsState.modalProps,
+    modalsState.currentModal,
+    history,
+    pathname,
+  ]);
 
   return (
     <ModalProvider>

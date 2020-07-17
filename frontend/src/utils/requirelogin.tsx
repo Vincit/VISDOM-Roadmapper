@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Redirect, useRouteMatch } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
 import { userActions } from '../redux/user';
@@ -15,19 +15,27 @@ export function requireLogin<T>(Component: React.ComponentType<T>) {
       userInfoSelector,
       shallowEqual,
     );
-    const [haveUserInfo, setHaveUserInfo] = useState(false);
+    const [loadedUserInfo, setLoadedUserInfo] = useState(false);
     useEffect(() => {
-      if (userInfo === undefined) {
-        dispatch(userActions.getUserInfo());
+      if (userInfo === undefined && !loadedUserInfo) {
+        dispatch(userActions.getUserInfo()).then(() => {
+          setLoadedUserInfo(true);
+        });
       } else {
-        setHaveUserInfo(true);
+        setLoadedUserInfo(true);
       }
-    }, [userInfo, dispatch]);
-    const { url } = useRouteMatch();
+    }, [userInfo, dispatch, loadedUserInfo]);
+    const { pathname, search } = useLocation();
 
-    if (!haveUserInfo) return null;
+    if (!loadedUserInfo) return null;
     if (userInfo) return <Component {...props} />;
-    return <Redirect to={`${paths.loginPage}?redirectTo=${url}`} />;
+    return (
+      <Redirect
+        to={`${paths.loginPage}?redirectTo=${encodeURIComponent(
+          pathname + search,
+        )}`}
+      />
+    );
   };
 
   return Inner;
