@@ -2,6 +2,7 @@ import * as Knex from 'knex';
 import { Model } from 'objection';
 import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
+import Version from '../api/versions/versions.model';
 import { UserType } from '../types/customTypes';
 
 export async function seed(knex: Knex): Promise<any> {
@@ -63,6 +64,7 @@ const createTestRoadmap = async () => {
 };
 
 const clearData = async () => {
+  await Version.query().delete();
   await User.query().delete();
   await Roadmap.query().delete();
 };
