@@ -6,6 +6,7 @@ export enum ModalTypes {
   TASK_INFO_MODAL = 'TASK_INFO_MODAL',
   TASK_RATINGS_INFO_MODAL = 'TASK_RATINGS_INFO_MODAL',
   RATE_USER_MODAL = 'RATE_USER_MODAL',
+  ADD_VERSION_MODAL = 'ADD_VERSION_MODAL',
 }
 
 export interface ShowModalPayload {

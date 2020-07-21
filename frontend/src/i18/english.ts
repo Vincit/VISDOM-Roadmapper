@@ -56,5 +56,7 @@ export const english = {
     Value: 'Value',
     'Rate customer': 'Rate customer',
     milestones: 'milestones',
+    'Add milestone': 'Add milestone',
+    'Milestone name': 'Milestone name',
   },
 };

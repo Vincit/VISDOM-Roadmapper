@@ -9,6 +9,8 @@ import { PlannerChart } from '../components/PlannerChart';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { ReactComponent as PlusIcon } from '../icons/plus_icon.svg';
 import { StoreDispatchType } from '../redux';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../redux/modals/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -222,8 +224,9 @@ export const PlannerPage = () => {
 
   const addVersion = () => {
     dispatch(
-      versionsActions.addVersion({
-        name: `Version ${Math.floor(Math.random() * 999999)}`,
+      modalsActions.showModal({
+        modalType: ModalTypes.ADD_VERSION_MODAL,
+        modalProps: {},
       }),
     );
   };

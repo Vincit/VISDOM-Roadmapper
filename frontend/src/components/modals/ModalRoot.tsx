@@ -9,6 +9,7 @@ import { ModalsState, ModalTypes } from '../../redux/modals/types';
 import { RootState } from '../../redux/types';
 import { ModalProps } from '../types';
 import { AddTaskModal } from './AddTaskModal';
+import { AddVersionModal } from './AddVersionModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { LoginModal, LoginModalProps } from './LoginModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
@@ -38,6 +39,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
   [ModalTypes.RATE_USER_MODAL]: RateUserModal,
+  [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
 };
 
 const StyledModal = Modal.styled`
