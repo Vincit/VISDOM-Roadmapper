@@ -4,8 +4,11 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
-import { publicUsersSelector } from '../../redux/roadmaps/selectors';
-import { PublicUser, Task } from '../../redux/roadmaps/types';
+import {
+  publicUsersSelector,
+  taskSelector,
+} from '../../redux/roadmaps/selectors';
+import { PublicUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { TaskRatingsText } from '../TaskRatingsText';
 import { ModalProps } from '../types';
@@ -15,7 +18,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalHeader } from './modalparts/ModalHeader';
 
 export interface TaskInfoModalProps extends ModalProps {
-  task: Task;
+  taskId: number;
 }
 
 const TaskNameText = styled.span`
@@ -47,8 +50,9 @@ const LabelText = styled.p`
 
 export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
   closeModal,
-  task,
+  taskId,
 }) => {
+  const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
     publicUsersSelector,

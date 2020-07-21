@@ -4,8 +4,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
+import { taskSelector } from '../../redux/roadmaps/selectors';
 import {
-  Task,
   TaskRatingDimension,
   TaskratingRequest,
 } from '../../redux/roadmaps/types';
@@ -23,15 +23,16 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 
 export interface RateTaskModalProps extends ModalProps {
-  task: Task;
+  taskId: number;
   cameFromTaskCreation?: boolean;
 }
 
 export const RateTaskModal: React.FC<RateTaskModalProps> = ({
   closeModal,
-  task,
+  taskId,
   cameFromTaskCreation,
 }) => {
+  const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);

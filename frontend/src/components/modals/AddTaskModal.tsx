@@ -69,7 +69,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
             modalsActions.showModal({
               modalType: ModalTypes.RATE_TASK_MODAL,
               modalProps: {
-                task: res.payload,
+                taskId: res.payload.id,
                 cameFromTaskCreation: true,
               },
             }),

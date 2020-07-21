@@ -1,15 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import React from 'react';
 import { Trans } from 'react-i18next';
-import { UserInfo, UserType } from '../redux/user/types';
-import { StoreDispatchType } from '../redux/index';
-import { modalsActions } from '../redux/modals';
-import { userInfoSelector, loggedInSelector } from '../redux/user/selectors';
-import { ModalTypes } from '../redux/modals/types';
+import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
+import { loggedInSelector, userInfoSelector } from '../redux/user/selectors';
+import { UserInfo, UserType } from '../redux/user/types';
 
 export const UserInfoCard = () => {
-  const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -18,20 +14,6 @@ export const UserInfoCard = () => {
     loggedInSelector,
     shallowEqual,
   );
-
-  useEffect(() => {
-    if (!loggedIn) {
-      dispatch(
-        modalsActions.showModal({
-          modalType: ModalTypes.LOGIN_MODAL,
-          modalProps: {
-            username: 'BusinessPerson1',
-            password: 'test',
-          },
-        }),
-      );
-    }
-  }, [dispatch, loggedIn]);
 
   return (
     <div>

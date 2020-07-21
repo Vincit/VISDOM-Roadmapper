@@ -66,67 +66,34 @@ const RoadmapRouterComponent = () => {
   const [useEffectFinished, setUseEffectFinished] = useState(false);
 
   // Parse query params
-  const queryModal = query.get('openModal');
-  let queryTask: number | undefined;
-  queryTask = parseInt(query.get('modalTask')!, 10);
-  if (!Number.isInteger(queryTask)) queryTask = undefined;
+  let queryModal = query.get('openModal');
+  if (
+    !queryModal ||
+    !Object.values(ModalTypes).includes(queryModal as ModalTypes)
+  ) {
+    queryModal = null;
+  }
+  let queryProps = query.get('modalProps');
+  try {
+    queryProps = JSON.parse(queryProps!);
+  } catch (e) {
+    console.log(e);
+    queryProps = null;
+  }
 
   useEffect(() => {
     // Open modals for corresponding query params
     if (!queryModal) return;
-    if (!queryTask) return;
+    if (!queryProps) return;
     if (!currentRoadmap) return;
 
-    const modalTask = currentRoadmap.tasks.find(
-      (task) => task.id === queryTask,
+    dispatch(
+      modalsActions.showModal({
+        modalType: queryModal as ModalTypes,
+        modalProps: queryProps as any,
+      }),
     );
-    if (!modalTask) return;
-
-    switch (queryModal) {
-      case ModalTypes.TASK_INFO_MODAL:
-        dispatch(
-          modalsActions.showModal({
-            modalType: ModalTypes.TASK_INFO_MODAL,
-            modalProps: {
-              task: modalTask,
-            },
-          }),
-        );
-        break;
-      case ModalTypes.TASK_RATINGS_INFO_MODAL:
-        dispatch(
-          modalsActions.showModal({
-            modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
-            modalProps: {
-              task: modalTask,
-            },
-          }),
-        );
-        break;
-      case ModalTypes.EDIT_TASK_MODAL:
-        dispatch(
-          modalsActions.showModal({
-            modalType: ModalTypes.EDIT_TASK_MODAL,
-            modalProps: {
-              task: modalTask,
-            },
-          }),
-        );
-        break;
-      case ModalTypes.RATE_TASK_MODAL:
-        dispatch(
-          modalsActions.showModal({
-            modalType: ModalTypes.RATE_TASK_MODAL,
-            modalProps: {
-              task: modalTask,
-            },
-          }),
-        );
-        break;
-      default:
-        break;
-    }
-  }, [queryModal, queryTask, currentRoadmap, dispatch]);
+  }, [queryModal, queryProps, currentRoadmap, dispatch]);
 
   useEffect(() => {
     // Try to select roadmap given in route parameters

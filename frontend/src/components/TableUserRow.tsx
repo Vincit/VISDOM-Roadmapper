@@ -20,7 +20,7 @@ export const TableUserRow: React.FC<TableUserRowProps> = ({ user }) => {
       modalsActions.showModal({
         modalType: ModalTypes.RATE_USER_MODAL,
         modalProps: {
-          user,
+          userId: user.id,
         },
       }),
     );

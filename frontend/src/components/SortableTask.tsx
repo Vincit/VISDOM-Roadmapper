@@ -50,7 +50,7 @@ export const SortableTask: React.FC<{
       modalsActions.showModal({
         modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );
@@ -63,7 +63,7 @@ export const SortableTask: React.FC<{
       modalsActions.showModal({
         modalType: ModalTypes.TASK_INFO_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );
@@ -91,11 +91,19 @@ export const SortableTask: React.FC<{
           <RightSideDiv>
             <RatingsButton
               onClick={taskRatingDetailsClicked}
-              href={`?openModal=${ModalTypes.TASK_RATINGS_INFO_MODAL}&modalTask=${task.id}`}
+              href={`?openModal=${
+                ModalTypes.TASK_RATINGS_INFO_MODAL
+              }&modalProps=${encodeURIComponent(
+                JSON.stringify({ taskId: task.id }),
+              )}`}
             />
             <InfoButton
               onClick={taskDetailsClicked}
-              href={`?openModal=${ModalTypes.TASK_INFO_MODAL}&modalTask=${task.id}`}
+              href={`?openModal=${
+                ModalTypes.TASK_INFO_MODAL
+              }&modalProps=${encodeURIComponent(
+                JSON.stringify({ taskId: task.id }),
+              )}`}
             />
           </RightSideDiv>
         </TaskDiv>

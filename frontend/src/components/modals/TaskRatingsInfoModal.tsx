@@ -6,8 +6,11 @@ import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals';
 import { ModalTypes } from '../../redux/modals/types';
 import { roadmapsActions } from '../../redux/roadmaps';
-import { publicUsersSelector } from '../../redux/roadmaps/selectors';
-import { PublicUser, Task } from '../../redux/roadmaps/types';
+import {
+  publicUsersSelector,
+  taskSelector,
+} from '../../redux/roadmaps/selectors';
+import { PublicUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
@@ -19,7 +22,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalHeader } from './modalparts/ModalHeader';
 
 export interface TaskRatingsInfoModalProps extends ModalProps {
-  task: Task;
+  taskId: number;
 }
 
 const TaskNameText = styled.span`
@@ -100,8 +103,9 @@ const TeamRatingBarContainer = styled.div`
 
 export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
   closeModal,
-  task,
+  taskId,
 }) => {
+  const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
     publicUsersSelector,
@@ -117,7 +121,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
       modalsActions.showModal({
         modalType: ModalTypes.RATE_TASK_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );

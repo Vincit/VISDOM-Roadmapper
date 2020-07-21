@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
-import { PublicUser, PublicUserRequest } from '../../redux/roadmaps/types';
+import { userSelector } from '../../redux/roadmaps/selectors';
+import { PublicUserRequest } from '../../redux/roadmaps/types';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
 import { ModalProps } from '../types';
@@ -16,18 +17,24 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 
 export interface RateUserModalProps extends ModalProps {
-  user: PublicUser;
+  userId: number;
 }
 
 export const RateUserModal: React.FC<RateUserModalProps> = ({
   closeModal,
-  user,
+  userId,
 }) => {
+  const user = useSelector(userSelector(userId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [userValue, setUserValue] = useState(user.customerValue || 0);
+  const [userValue, setUserValue] = useState(user?.customerValue || 0);
 
+  useEffect(() => {
+    if (user) setUserValue(user?.customerValue || 0);
+  }, [user]);
+
+  if (!user) return null;
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();

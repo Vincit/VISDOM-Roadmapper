@@ -11,7 +11,6 @@ import { ModalProps } from '../types';
 import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
-import { LoginModal, LoginModalProps } from './LoginModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RateUserModal, RateUserModalProps } from './RateUserModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
@@ -24,7 +23,6 @@ type ModalTypeToComponent = {
   [K in ModalTypes]:
     | React.FC<ModalProps>
     | React.FC<RateTaskModalProps>
-    | React.FC<LoginModalProps>
     | React.FC<EditTaskModalProps>
     | React.FC<TaskInfoModalProps>
     | React.FC<TaskRatingsInfoModalProps>
@@ -33,7 +31,6 @@ type ModalTypeToComponent = {
 
 const Modals: ModalTypeToComponent = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
-  [ModalTypes.LOGIN_MODAL]: LoginModal,
   [ModalTypes.RATE_TASK_MODAL]: RateTaskModal,
   [ModalTypes.EDIT_TASK_MODAL]: EditTaskModal,
   [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
@@ -60,7 +57,7 @@ export const ModalRoot = () => {
     shallowEqual,
   );
   const history = useHistory();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const ChosenModal = Modals[modalsState.currentModal] as React.FC<ModalProps>;
 
   const onRequestClose = useCallback(() => {
@@ -70,26 +67,22 @@ export const ModalRoot = () => {
   }, [dispatch, pathname, history]);
 
   useEffect(() => {
-    // Add query params to url when url-supported modal is opened
-    if (
-      modalsState.currentModal !== ModalTypes.TASK_INFO_MODAL &&
-      modalsState.currentModal !== ModalTypes.TASK_RATINGS_INFO_MODAL &&
-      modalsState.currentModal !== ModalTypes.EDIT_TASK_MODAL &&
-      modalsState.currentModal !== ModalTypes.RATE_TASK_MODAL
-    )
-      return;
+    // Add query params to url on open
     if (!modalsState.showModal) return;
     let queryString = `?openModal=${modalsState.currentModal}`;
-    if (modalsState.modalProps.task) {
-      queryString += `&modalTask=${modalsState.modalProps.task.id}`;
+    if (modalsState.modalProps) {
+      queryString += `&modalProps=${encodeURIComponent(
+        JSON.stringify(modalsState.modalProps),
+      )}`;
     }
-    history.replace(pathname + queryString);
+    if (!search.includes(queryString)) history.replace(pathname + queryString);
   }, [
     modalsState.showModal,
     modalsState.modalProps,
     modalsState.currentModal,
     history,
     pathname,
+    search,
   ]);
 
   return (

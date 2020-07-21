@@ -49,7 +49,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       modalsActions.showModal({
         modalType: ModalTypes.EDIT_TASK_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );
@@ -62,7 +62,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       modalsActions.showModal({
         modalType: ModalTypes.RATE_TASK_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );
@@ -75,7 +75,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       modalsActions.showModal({
         modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );
@@ -88,7 +88,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       modalsActions.showModal({
         modalType: ModalTypes.TASK_INFO_MODAL,
         modalProps: {
-          task,
+          taskId: task.id,
         },
       }),
     );
@@ -120,7 +120,11 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           (rating) => rating.createdByUser === userInfo?.id,
         ) && (
           <a
-            href={`?openModal=${ModalTypes.TASK_RATINGS_INFO_MODAL}&modalTask=${task.id}`}
+            href={`?openModal=${
+              ModalTypes.TASK_RATINGS_INFO_MODAL
+            }&modalProps=${encodeURIComponent(
+              JSON.stringify({ taskId: task.id }),
+            )}`}
           >
             <StyledButton buttonType="ratenow" onClick={rateTaskClicked}>
               <Trans i18nKey="Rate" />
@@ -130,16 +134,28 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         <ButtonWrapper>
           <RatingsButton
             onClick={taskRatingDetailsClicked}
-            href={`?openModal=${ModalTypes.TASK_RATINGS_INFO_MODAL}&modalTask=${task.id}`}
+            href={`?openModal=${
+              ModalTypes.TASK_RATINGS_INFO_MODAL
+            }&modalProps=${encodeURIComponent(
+              JSON.stringify({ taskId: task.id }),
+            )}`}
           />
           <InfoButton
             onClick={taskDetailsClicked}
-            href={`?openModal=${ModalTypes.TASK_INFO_MODAL}&modalTask=${task.id}`}
+            href={`?openModal=${
+              ModalTypes.TASK_INFO_MODAL
+            }&modalProps=${encodeURIComponent(
+              JSON.stringify({ taskId: task.id }),
+            )}`}
           />
           <EditButton
             type="large"
             onClick={editTaskClicked}
-            href={`?openModal=${ModalTypes.EDIT_TASK_MODAL}&modalTask=${task.id}`}
+            href={`?openModal=${
+              ModalTypes.EDIT_TASK_MODAL
+            }&modalProps=${encodeURIComponent(
+              JSON.stringify({ taskId: task.id }),
+            )}`}
           />
           <DeleteButton onClick={deleteTaskClicked} />
         </ButtonWrapper>

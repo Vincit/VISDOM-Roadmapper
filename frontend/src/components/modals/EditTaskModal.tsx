@@ -4,7 +4,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
-import { Task, TaskRequest } from '../../redux/roadmaps/types';
+import { taskSelector } from '../../redux/roadmaps/selectors';
+import { TaskRequest } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
@@ -20,13 +21,14 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 
 export interface EditTaskModalProps extends ModalProps {
-  task: Task;
+  taskId: number;
 }
 
 export const EditTaskModal: React.FC<EditTaskModalProps> = ({
   closeModal,
-  task,
+  taskId,
 }) => {
+  const task = useSelector(taskSelector(taskId))!;
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [formValues, setFormValues] = useState({
