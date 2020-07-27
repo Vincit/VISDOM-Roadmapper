@@ -1,5 +1,6 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
-import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import { PublicUser, Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import { UserType } from '../redux/user/types';
 
 export enum FilterTypes {
   SHOW_ALL,
@@ -176,4 +177,64 @@ export const dragDropBetweenLists = (
     [droppableSource.droppableId]: sourceClone,
     [droppableDestination.droppableId]: destClone,
   };
+};
+export const calcTaskValueSum = (task: Task) => {
+  let ratingValuesSum = 0;
+  task.ratings.forEach((rating) => {
+    if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
+    ratingValuesSum += rating.value;
+  });
+
+  return ratingValuesSum;
+};
+
+export const calcTaskWeightedValueSum = (
+  task: Task,
+  allUsers: PublicUser[],
+) => {
+  let customerValuesSum = 0;
+  allUsers.forEach((user) => {
+    if (user.type === UserType.CustomerUser) {
+      if (user.customerValue) {
+        customerValuesSum += user.customerValue;
+      }
+    }
+  });
+
+  let ratingValuesSum = 0;
+  task.ratings.forEach((rating) => {
+    if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
+    const ratingCreator = allUsers.find(
+      (user) => user.id === rating.createdByUser,
+    );
+
+    const ratingCreatorValue = ratingCreator?.customerValue || 0;
+
+    let ratingWeight = 0;
+    if (ratingCreator?.type !== UserType.CustomerUser) ratingWeight = 1;
+
+    if (ratingCreatorValue > 0 && customerValuesSum > 0) {
+      ratingWeight = ratingCreatorValue / customerValuesSum;
+    }
+    ratingValuesSum += rating.value * ratingWeight;
+  });
+
+  return ratingValuesSum;
+};
+
+export const calcWeightedTaskPriority = (
+  task: Task,
+  allUsers: PublicUser[],
+) => {
+  const weightedValue = calcTaskWeightedValueSum(task, allUsers);
+  if (!weightedValue) return -2;
+
+  const avgWorkRating = calcTaskAverageRating(
+    TaskRatingDimension.RequiredWork,
+    task,
+  );
+
+  if (!avgWorkRating) return -1;
+
+  return weightedValue / avgWorkRating;
 };

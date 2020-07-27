@@ -11,13 +11,20 @@ import { ReactComponent as PlusIcon } from '../icons/plus_icon.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, Task } from '../redux/roadmaps/types';
+import {
+  chosenRoadmapSelector,
+  publicUsersSelector,
+} from '../redux/roadmaps/selectors';
+import { PublicUser, Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
-import { dragDropBetweenLists, reorderList } from '../utils/TaskUtils';
+import {
+  calcWeightedTaskPriority,
+  dragDropBetweenLists,
+  reorderList,
+} from '../utils/TaskUtils';
 
 const ColumnHeader = styled.span`
   text-align: left;
@@ -96,6 +103,10 @@ export const PlannerPage = () => {
   )!;
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
     roadmapsVersionsSelector,
+    shallowEqual,
+  );
+  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
+    publicUsersSelector,
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();
@@ -246,9 +257,6 @@ export const PlannerPage = () => {
           if (!newVersionLists[v.id]) newVersionLists[v.id] = [];
           if (v.tasks.includes(t.id)) {
             newVersionLists[v.id].push(t);
-            newVersionLists[v.id].sort(
-              (a, b) => v.tasks.indexOf(a.id) - v.tasks.indexOf(b.id),
-            );
             foundVersion = true;
           }
         });
@@ -259,9 +267,27 @@ export const PlannerPage = () => {
         }
       });
 
+      // Sort tasks
+      roadmapsVersions.forEach((v) =>
+        newVersionLists[v.id].sort(
+          (a, b) => v.tasks.indexOf(a.id) - v.tasks.indexOf(b.id),
+        ),
+      );
+      newVersionLists[ROADMAP_LIST_ID].sort(
+        (a, b) =>
+          calcWeightedTaskPriority(b, publicUsers!) -
+          calcWeightedTaskPriority(a, publicUsers!),
+      );
+
       setVersionLists(newVersionLists);
     }
-  }, [dispatch, roadmapsVersions, currentRoadmap.tasks, disableUpdates]);
+  }, [
+    dispatch,
+    roadmapsVersions,
+    currentRoadmap.tasks,
+    disableUpdates,
+    publicUsers,
+  ]);
 
   const renderVersionLists = () => {
     return (

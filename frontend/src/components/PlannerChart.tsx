@@ -12,10 +12,22 @@ import {
   YAxis,
 } from 'recharts';
 import styled from 'styled-components';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import {
+  chosenRoadmapSelector,
+  publicUsersSelector,
+} from '../redux/roadmaps/selectors';
+import {
+  PublicUser,
+  Roadmap,
+  Task,
+  TaskRatingDimension,
+} from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { calcTaskAverageRating, calcTaskPriority } from '../utils/TaskUtils';
+import {
+  calcTaskAverageRating,
+  calcTaskValueSum,
+  calcWeightedTaskPriority,
+} from '../utils/TaskUtils';
 import { StyledButton } from './forms/StyledButton';
 
 const GraphWrapper = styled.div`
@@ -57,6 +69,10 @@ export const PlannerChart: React.FC<{
     shallowEqual,
   )!;
   const [savedData, setSavedData] = useState<any[] | undefined>(undefined);
+  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
+    publicUsersSelector,
+    shallowEqual,
+  );
 
   const graphTaskLists = [...versions];
   const versionKeyNames = graphTaskLists.map((ver) => ver.name);
@@ -66,7 +82,9 @@ export const PlannerChart: React.FC<{
     graphTaskLists.unshift({
       name: DataKeys.OptimalRoadmap,
       tasks: [...currentRoadmap.tasks].sort(
-        (a, b) => calcTaskPriority(b) - calcTaskPriority(a),
+        (a, b) =>
+          calcWeightedTaskPriority(b, publicUsers!) -
+          calcWeightedTaskPriority(a, publicUsers!),
       ),
     });
   }
@@ -88,8 +106,7 @@ export const PlannerChart: React.FC<{
         ...tasks.map((task) => {
           const work =
             calcTaskAverageRating(TaskRatingDimension.RequiredWork, task) || 0;
-          const value =
-            calcTaskAverageRating(TaskRatingDimension.BusinessValue, task) || 0;
+          const value = calcTaskValueSum(task);
           workSum += work;
           valueSum += value;
 

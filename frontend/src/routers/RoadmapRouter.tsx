@@ -19,8 +19,11 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
 import { roadmapsActions } from '../redux/roadmaps';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
+import {
+  chosenRoadmapSelector,
+  publicUsersSelector,
+} from '../redux/roadmaps/selectors';
+import { PublicUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
@@ -62,8 +65,13 @@ const RoadmapRouterComponent = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [useEffectFinished, setUseEffectFinished] = useState(false);
+  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
+    publicUsersSelector,
+    shallowEqual,
+  );
 
   // Parse query params
   let queryModal = query.get('openModal');
@@ -77,7 +85,6 @@ const RoadmapRouterComponent = () => {
   try {
     queryProps = JSON.parse(queryProps!);
   } catch (e) {
-    console.log(e);
     queryProps = null;
   }
 
@@ -101,17 +108,23 @@ const RoadmapRouterComponent = () => {
       dispatch(roadmapsActions.selectCurrentRoadmap(+roadmapId));
     }
     if (!currentRoadmap) {
-      setIsLoading(true);
+      setIsLoadingRoadmap(true);
       dispatch(roadmapsActions.getRoadmaps()).then(() => {
-        setIsLoading(false);
+        setIsLoadingRoadmap(false);
+      });
+    }
+    if (!publicUsers) {
+      setIsLoadingUsers(true);
+      dispatch(roadmapsActions.getPublicUsers()).then(() => {
+        setIsLoadingUsers(false);
       });
     }
     setUseEffectFinished(true);
-  }, [currentRoadmap, roadmapId, dispatch]);
+  }, [currentRoadmap, roadmapId, dispatch, publicUsers]);
 
   const renderOrRedirect = () => {
     if (!useEffectFinished) return;
-    if (!isLoading && !currentRoadmap)
+    if (!isLoadingRoadmap && !currentRoadmap)
       return (
         <>
           <LayoutRow>
@@ -119,7 +132,7 @@ const RoadmapRouterComponent = () => {
           </LayoutRow>
         </>
       );
-    if (!isLoading) {
+    if (!isLoadingRoadmap && !isLoadingUsers) {
       return (
         <LayoutRow overflowY="auto">
           <SideBar />
