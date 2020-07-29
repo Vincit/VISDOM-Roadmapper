@@ -9,6 +9,7 @@ import { userSelector } from '../../redux/roadmaps/selectors';
 import { PublicUserRequest } from '../../redux/roadmaps/types';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
@@ -27,6 +28,7 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
   const user = useSelector(userSelector(userId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [userValue, setUserValue] = useState(user?.customerValue || 0);
 
@@ -46,7 +48,9 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
         customerValue: userValue,
       };
 
+      setIsLoading(true);
       dispatch(roadmapsActions.patchPublicUser(req)).then((res) => {
+        setIsLoading(false);
         if (roadmapsActions.patchPublicUser.rejected.match(res)) {
           setHasError(true);
           if (res.payload) {
@@ -102,9 +106,13 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
             </StyledButton>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
-            <StyledButton fullWidth buttonType="submit" type="submit">
-              <Trans i18nKey="Save" />
-            </StyledButton>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StyledButton fullWidth buttonType="submit" type="submit">
+                <Trans i18nKey="Save" />
+              </StyledButton>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>
