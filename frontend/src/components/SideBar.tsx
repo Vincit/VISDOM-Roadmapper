@@ -1,11 +1,15 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
 import { ReactComponent as PlanButtonIcon } from '../icons/sidebar_plan.svg';
 import { ReactComponent as TasksButtonIcon } from '../icons/sidebar_tasks.svg';
 import { ReactComponent as UsersIcon } from '../icons/users_icon.svg';
+import { RootState } from '../redux/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo, UserType } from '../redux/user/types';
 import { paths } from '../routers/paths';
 
 const Sidebar = styled.div`
@@ -44,6 +48,10 @@ const SideBarIcon = styled.div``;
 export const SideBar = () => {
   const { url } = useRouteMatch();
   const { pathname } = useLocation();
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
 
   return (
     <>
@@ -81,17 +89,19 @@ export const SideBar = () => {
           </SideBarIcon>
           <Trans i18nKey="Users" />
         </SideBarButton>
-        <SideBarButton
-          to={url + paths.roadmapRelative.planner}
-          highlight={
-            pathname.startsWith(url + paths.roadmapRelative.planner) ? 1 : 0
-          }
-        >
-          <SideBarIcon>
-            <PlanButtonIcon />
-          </SideBarIcon>
-          <Trans i18nKey="Plan" />
-        </SideBarButton>
+        {userInfo!.type === UserType.AdminUser && (
+          <SideBarButton
+            to={url + paths.roadmapRelative.planner}
+            highlight={
+              pathname.startsWith(url + paths.roadmapRelative.planner) ? 1 : 0
+            }
+          >
+            <SideBarIcon>
+              <PlanButtonIcon />
+            </SideBarIcon>
+            <Trans i18nKey="Plan" />
+          </SideBarButton>
+        )}
       </Sidebar>
     </>
   );

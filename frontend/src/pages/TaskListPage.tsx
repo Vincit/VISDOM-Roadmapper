@@ -20,7 +20,7 @@ import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { UserInfo, UserType } from '../redux/user/types';
 import {
   filterTasks,
   FilterTypes,
@@ -151,9 +151,11 @@ export const TaskListPage = () => {
           </StyledFormControl>
         </FilterSelectContainer>
         <AddNewButtonContainer>
-          <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
-            + <Trans i18nKey="Add new" />
-          </StyledButton>
+          {userInfo!.type === UserType.AdminUser && (
+            <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
+              + <Trans i18nKey="Add new" />
+            </StyledButton>
+          )}
         </AddNewButtonContainer>
       </TopBar>
     );

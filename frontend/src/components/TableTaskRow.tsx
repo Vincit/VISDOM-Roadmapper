@@ -10,7 +10,7 @@ import { roadmapsActions } from '../redux/roadmaps/index';
 import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { UserInfo, UserType } from '../redux/user/types';
 import { StyledTd } from './CommonLayoutComponents';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
@@ -148,16 +148,20 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
               JSON.stringify({ taskId: task.id }),
             )}`}
           />
-          <EditButton
-            type="large"
-            onClick={editTaskClicked}
-            href={`?openModal=${
-              ModalTypes.EDIT_TASK_MODAL
-            }&modalProps=${encodeURIComponent(
-              JSON.stringify({ taskId: task.id }),
-            )}`}
-          />
-          <DeleteButton onClick={deleteTaskClicked} />
+          {userInfo!.type === UserType.AdminUser && (
+            <>
+              <EditButton
+                type="large"
+                onClick={editTaskClicked}
+                href={`?openModal=${
+                  ModalTypes.EDIT_TASK_MODAL
+                }&modalProps=${encodeURIComponent(
+                  JSON.stringify({ taskId: task.id }),
+                )}`}
+              />
+              <DeleteButton onClick={deleteTaskClicked} />
+            </>
+          )}
         </ButtonWrapper>
       </StyledTd>
     </tr>

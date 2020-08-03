@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
+import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { TaskRatingDimension } from '../redux/roadmaps/types';
+import { RootState } from '../redux/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo, UserType } from '../redux/user/types';
 import { TaskRatingBar } from './RatingBars';
 
 const CommentButton = styled(ChatDots)`
@@ -70,6 +74,10 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
   onRequiredWorkRatingChange,
 }) => {
   const { t } = useTranslation();
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
   const [businessValueRating, setBusinessValueRating] = useState(
     initialBusinessValueRating || {
       value: 0,
@@ -127,30 +135,39 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
   const renderRatingBars = () => {
     return (
       <>
-        <Form.Group>
-          <div className="d-flex justify-content-around">
-            <TaskRatingBar
-              dimension={TaskRatingDimension.BusinessValue}
-              initialValue={businessValueRating.value}
-              onChange={businessValueChanged}
-            />
-            <CommentButton
-              onClick={() => openCommentBox(TaskRatingDimension.BusinessValue)}
-            />
-          </div>
-        </Form.Group>
-        <Form.Group>
-          <div className="d-flex justify-content-around">
-            <TaskRatingBar
-              dimension={TaskRatingDimension.RequiredWork}
-              initialValue={requiredWorkRating.value}
-              onChange={requiredWorkValueChanged}
-            />
-            <CommentButton
-              onClick={() => openCommentBox(TaskRatingDimension.RequiredWork)}
-            />
-          </div>
-        </Form.Group>
+        {userInfo!.type !== UserType.DeveloperUser && (
+          <Form.Group>
+            <div className="d-flex justify-content-around">
+              <TaskRatingBar
+                dimension={TaskRatingDimension.BusinessValue}
+                initialValue={businessValueRating.value}
+                onChange={businessValueChanged}
+              />
+              <CommentButton
+                onClick={() =>
+                  openCommentBox(TaskRatingDimension.BusinessValue)
+                }
+              />
+            </div>
+          </Form.Group>
+        )}
+        {userInfo!.type !== UserType.CustomerUser &&
+          userInfo!.type !== UserType.BusinessUser && (
+            <Form.Group>
+              <div className="d-flex justify-content-around">
+                <TaskRatingBar
+                  dimension={TaskRatingDimension.RequiredWork}
+                  initialValue={requiredWorkRating.value}
+                  onChange={requiredWorkValueChanged}
+                />
+                <CommentButton
+                  onClick={() =>
+                    openCommentBox(TaskRatingDimension.RequiredWork)
+                  }
+                />
+              </div>
+            </Form.Group>
+          )}
       </>
     );
   };
