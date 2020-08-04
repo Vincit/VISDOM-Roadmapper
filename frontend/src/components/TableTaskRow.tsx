@@ -115,7 +115,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         <TaskRatingsText task={task} />
       </StyledTd>
       <StyledTd>{new Date(createdAt).toLocaleDateString()}</StyledTd>
-      <StyledTd textAlign="end" nowrap>
+      <StyledTd textAlign="end" nowrap width="202px">
         {!task.ratings.find(
           (rating) => rating.createdByUser === userInfo?.id,
         ) && (

@@ -51,6 +51,8 @@ const AddNewButtonContainer = styled.div`
 interface TableHeader {
   label: string;
   sorting: SortingTypes;
+  textAlign?: 'end' | 'left' | 'center';
+  width?: string;
 }
 
 export const TaskListPage = () => {
@@ -170,11 +172,20 @@ export const TaskListPage = () => {
   };
 
   const tableHeaders: TableHeader[] = [
-    { label: 'Status', sorting: SortingTypes.SORT_STATUS },
+    {
+      label: 'Status',
+      sorting: SortingTypes.SORT_STATUS,
+      textAlign: 'center',
+      width: '1em',
+    },
     { label: 'Title', sorting: SortingTypes.SORT_NAME },
     { label: 'Description', sorting: SortingTypes.SORT_DESC },
-    { label: 'Rating', sorting: SortingTypes.SORT_RATINGS },
-    { label: 'Created on', sorting: SortingTypes.SORT_CREATEDAT },
+    {
+      label: 'Rating',
+      sorting: SortingTypes.SORT_RATINGS,
+      width: '1em',
+    },
+    { label: 'Created on', sorting: SortingTypes.SORT_CREATEDAT, width: '2em' },
   ];
 
   const renderTasksTable = () => {
@@ -188,6 +199,8 @@ export const TaskListPage = () => {
                   clickable
                   key={header.label}
                   onClick={() => onSortingChange(header.sorting)}
+                  textAlign={header.textAlign}
+                  width={header.width}
                 >
                   <HeaderSpan>
                     <Trans i18nKey={header.label} />

@@ -41,12 +41,14 @@ export const StyledTable = styled.table`
 export const StyledTh = styled.th<{
   clickable?: boolean;
   textAlign?: 'end' | 'left' | 'center';
+  width?: string;
 }>`
   font-style: normal;
   font-size: 16px;
   line-height: 19px;
   padding: 16px;
   vertical-align: middle;
+  width: ${(props) => (props.width ? props.width : 'auto')};
   text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
   ${(props) =>
     props.clickable &&
@@ -61,11 +63,13 @@ export const StyledTd = styled.td<{
   clickable?: boolean;
   nowrap?: boolean;
   textAlign?: 'end' | 'left' | 'center';
+  width?: string;
 }>`
   border-bottom: 1px solid rgb(0, 0, 0, 0.1);
   padding: 16px;
   vertical-align: middle;
   max-width: 30em;
+  width: ${(props) => (props.width ? props.width : 'auto')};
   cursor: ${(props) => (props.clickable ? 'pointer' : 'inherit')};
   text-align: ${(props) => (props.textAlign ? props.textAlign : 'left')};
   white-space: ${(props) => (props.nowrap ? 'nowrap' : 'inherit')};
