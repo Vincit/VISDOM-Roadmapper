@@ -1,7 +1,8 @@
 import cors from '@koa/cors';
+import KoaRouter from '@koa/router';
 import Dotenv from 'dotenv';
 import Knex from 'knex';
-import Koa from 'koa';
+import Koa, { Context, DefaultState } from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import passport from 'koa-passport';
 import session from 'koa-session';
@@ -14,6 +15,7 @@ import userRouter from './api/users/users.routes';
 import versionsRouter from './api/versions/versions.routes';
 import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
+
 Dotenv.config();
 
 export const knex = Knex(knexConfig);
@@ -34,19 +36,26 @@ const createServer = async () => {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-
   app.use(errorHandler);
   app.use(koaBodyParser());
-  app.use(userRouter.routes());
-  app.use(userRouter.allowedMethods());
-  app.use(roadmapRouter.routes());
-  app.use(roadmapRouter.allowedMethods());
-  app.use(tasksRouter.routes());
-  app.use(tasksRouter.allowedMethods());
-  app.use(taskratingRouter.routes());
-  app.use(taskratingRouter.allowedMethods());
-  app.use(versionsRouter.routes());
-  app.use(versionsRouter.allowedMethods());
+
+  const rootRouter = new KoaRouter<DefaultState, Context>();
+  rootRouter.use(userRouter.routes());
+  rootRouter.use(userRouter.allowedMethods());
+  rootRouter.use(roadmapRouter.routes());
+  rootRouter.use(roadmapRouter.allowedMethods());
+  rootRouter.use(tasksRouter.routes());
+  rootRouter.use(tasksRouter.allowedMethods());
+  rootRouter.use(taskratingRouter.routes());
+  rootRouter.use(taskratingRouter.allowedMethods());
+  rootRouter.use(versionsRouter.routes());
+  rootRouter.use(versionsRouter.allowedMethods());
+  rootRouter.get('/', (ctx, next) => {
+    ctx.status = 200;
+    ctx.body = '';
+  });
+  app.use(rootRouter.routes());
+  app.use(rootRouter.allowedMethods());
 
   const port = process.env.SERVER_PORT;
   const server = app.listen(port, () => {

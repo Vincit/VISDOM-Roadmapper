@@ -19,11 +19,11 @@ services:
       - 5000:5000
     environment:
       - NODE_ENV=test
-      - KNEX_PORT=5432
-      - KNEX_HOST=roadmapper-database
-      - KNEX_DATABASE=roadmapper-db
-      - KNEX_USER=testuser
-      - KNEX_PASSWORD=testpassword
+      - RDS_PORT=5432
+      - RDS_HOSTNAME=roadmapper-database
+      - RDS_DB_NAME=roadmapper-db
+      - RDS_USERNAME=testuser
+      - RDS_PASSWORD=testpassword
       - SESSION_SECRET=!top!secret!session!secret!
       - CORS_ORIGIN=http://localhost:3000
       - SERVER_PORT=5000
