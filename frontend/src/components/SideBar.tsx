@@ -28,8 +28,10 @@ const Sidebar = styled.div`
 const SideBarButton = styled(Link)<{ highlight: number }>`
   display: flex;
   flex-direction: column;
-  height: 96px;
-  width: 96px;
+  max-height: 96px;
+  min-height: 96px;
+  max-width: 96px;
+  min-width: 96px;
   justify-content: center;
   color: black;
   text-align: center;
