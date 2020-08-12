@@ -131,7 +131,12 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
         </ModalContent>
         <ModalFooter>
           <ModalFooterButtonDiv rightmargin>
-            <StyledButton fullWidth buttonType="cancel" onClick={closeModal}>
+            <StyledButton
+              fullWidth
+              buttonType="cancel"
+              onClick={closeModal}
+              type="button"
+            >
               <Trans i18nKey="Cancel" />
             </StyledButton>
           </ModalFooterButtonDiv>
