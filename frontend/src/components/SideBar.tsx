@@ -80,29 +80,31 @@ export const SideBar = () => {
           </SideBarIcon>
           <Trans i18nKey="Tasks" />
         </SideBarButton>
-        <SideBarButton
-          to={url + paths.roadmapRelative.users}
-          highlight={
-            pathname.startsWith(url + paths.roadmapRelative.users) ? 1 : 0
-          }
-        >
-          <SideBarIcon>
-            <UsersIcon />
-          </SideBarIcon>
-          <Trans i18nKey="Users" />
-        </SideBarButton>
         {userInfo!.type === UserType.AdminUser && (
-          <SideBarButton
-            to={url + paths.roadmapRelative.planner}
-            highlight={
-              pathname.startsWith(url + paths.roadmapRelative.planner) ? 1 : 0
-            }
-          >
-            <SideBarIcon>
-              <PlanButtonIcon />
-            </SideBarIcon>
-            <Trans i18nKey="Plan" />
-          </SideBarButton>
+          <>
+            <SideBarButton
+              to={url + paths.roadmapRelative.users}
+              highlight={
+                pathname.startsWith(url + paths.roadmapRelative.users) ? 1 : 0
+              }
+            >
+              <SideBarIcon>
+                <UsersIcon />
+              </SideBarIcon>
+              <Trans i18nKey="Users" />
+            </SideBarButton>
+            <SideBarButton
+              to={url + paths.roadmapRelative.planner}
+              highlight={
+                pathname.startsWith(url + paths.roadmapRelative.planner) ? 1 : 0
+              }
+            >
+              <SideBarIcon>
+                <PlanButtonIcon />
+              </SideBarIcon>
+              <Trans i18nKey="Plan" />
+            </SideBarButton>
+          </>
         )}
       </Sidebar>
     </>
