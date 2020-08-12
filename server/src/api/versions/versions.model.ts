@@ -1,4 +1,5 @@
 import { Model, Pojo } from 'objection';
+import Roadmap from '../roadmaps/roadmaps.model';
 
 export default class Version extends Model {
   id!: number;
@@ -18,6 +19,19 @@ export default class Version extends Model {
       name: { type: 'string', minLength: 1, maxLength: 75 },
     },
   };
+
+  static get relationMappings() {
+    return {
+      belongsToRoadmap: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Roadmap,
+        join: {
+          from: 'versions.roadmapId',
+          to: 'roadmaps.id',
+        },
+      },
+    };
+  }
 
   $parseDatabaseJson(json: Pojo): Pojo {
     json = super.$parseDatabaseJson(json);
