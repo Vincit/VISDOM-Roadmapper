@@ -38,6 +38,17 @@ export const StyledTable = styled.table`
   }
 `;
 
+export const StyledTr = styled.tr<{
+  clickable?: boolean;
+}>`
+  ${(props) =>
+    props.clickable &&
+    css`
+      cursor: pointer;
+      user-select: none;
+    `}
+`;
+
 export const StyledTh = styled.th<{
   clickable?: boolean;
   textAlign?: 'end' | 'left' | 'center';

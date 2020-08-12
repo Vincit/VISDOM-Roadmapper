@@ -11,7 +11,7 @@ import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo, UserType } from '../redux/user/types';
-import { StyledTd } from './CommonLayoutComponents';
+import { StyledTd, StyledTr } from './CommonLayoutComponents';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { InfoButton } from './forms/InfoButton';
@@ -101,7 +101,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   };
 
   return (
-    <tr>
+    <StyledTr clickable onClick={taskDetailsClicked}>
       <StyledTd clickable textAlign="center" onClick={toggleCompletedClicked}>
         {completed ? <CheckCircle /> : <Circle />}
       </StyledTd>
@@ -164,6 +164,6 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           )}
         </ButtonWrapper>
       </StyledTd>
-    </tr>
+    </StyledTr>
   );
 };
