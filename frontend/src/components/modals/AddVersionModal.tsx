@@ -8,6 +8,7 @@ import { roadmapsActions } from '../../redux/roadmaps/index';
 import { versionsActions } from '../../redux/versions';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
@@ -20,6 +21,7 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [versionName, setVersionName] = useState('');
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -28,11 +30,13 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
     event.stopPropagation();
 
     if (form.checkValidity()) {
+      setIsLoading(true);
       dispatch(
         versionsActions.addVersion({
           name: versionName,
         }),
       ).then((res) => {
+        setIsLoading(false);
         if (roadmapsActions.patchPublicUser.rejected.match(res)) {
           setHasError(true);
           if (res.payload) {
@@ -90,9 +94,13 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
             </StyledButton>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
-            <StyledButton fullWidth buttonType="submit" type="submit">
-              <Trans i18nKey="Submit" />
-            </StyledButton>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StyledButton fullWidth buttonType="submit" type="submit">
+                <Trans i18nKey="Add" />
+              </StyledButton>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>
