@@ -91,7 +91,7 @@ export const SideBar = () => {
               <SideBarIcon>
                 <UsersIcon />
               </SideBarIcon>
-              <Trans i18nKey="Users" />
+              <Trans i18nKey="Stakeholders" />
             </SideBarButton>
             <SideBarButton
               to={url + paths.roadmapRelative.planner}
