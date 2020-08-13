@@ -185,7 +185,11 @@ export const TaskListPage = () => {
       sorting: SortingTypes.SORT_RATINGS,
       width: '1em',
     },
-    { label: 'Created on', sorting: SortingTypes.SORT_CREATEDAT, width: '2em' },
+    {
+      label: 'Created on',
+      sorting: SortingTypes.SORT_CREATEDAT,
+      width: '8em',
+    },
   ];
 
   const renderTasksTable = () => {
