@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -105,6 +110,9 @@ export const PlannerPage = () => {
     roadmapsVersionsSelector,
     shallowEqual,
   );
+  const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
+    undefined | Version[]
+  >(undefined);
   const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
     publicUsersSelector,
     shallowEqual,
@@ -198,6 +206,58 @@ export const PlannerPage = () => {
     return Promise.resolve();
   };
 
+  const onTaskDragEnd = async (result: DropResult) => {
+    const { source, destination } = result;
+
+    // Backup list that is not mutated, used for reverting action if api request fails
+    const backupLists = copyVersionLists(versionLists);
+    let res: Promise<void> | undefined;
+    if (source.droppableId === destination!.droppableId) {
+      res = onDragReorder(result);
+    } else {
+      res = onDragMoveToList(result);
+    }
+
+    try {
+      await res;
+      setDisableDrag(false);
+    } catch (e) {
+      setVersionLists(backupLists);
+      setDisableDrag(false);
+    }
+  };
+
+  const onVersionDragEnd = async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    const dragVersionId = parseInt(draggableId.match(/\d+/)![0], 10);
+    const versionsCopy = roadmapsVersionsLocal!
+      .map((ver) => {
+        if (ver.sortingRank > source.index) {
+          return { ...ver, sortingRank: ver.sortingRank - 1 };
+        }
+        return ver;
+      })
+      .map((ver) => {
+        if (ver.id === dragVersionId) {
+          return { ...ver, sortingRank: destination!.index };
+        }
+        if (ver.sortingRank >= destination!.index) {
+          return { ...ver, sortingRank: ver.sortingRank + 1 };
+        }
+        return ver;
+      })
+      .sort((a, b) => a.sortingRank - b.sortingRank);
+    setRoadmapsVersionsLocal(versionsCopy);
+    dispatch(
+      versionsActions.patchVersion({
+        id: dragVersionId,
+        sortingRank: destination!.index,
+      }),
+    ).then(() => {
+      setDisableDrag(false);
+    });
+  };
+
   const onDragEnd = async (result: DropResult) => {
     const { source, destination } = result;
 
@@ -211,21 +271,10 @@ export const PlannerPage = () => {
       return;
     }
 
-    // Backup list that is not mutated, used for reverting action if api request fails
-    const backupLists = copyVersionLists(versionLists);
-    let res: Promise<void> | undefined;
-    if (source.droppableId === destination.droppableId) {
-      res = onDragReorder(result);
-    } else {
-      res = onDragMoveToList(result);
-    }
-
-    try {
-      await res;
-      setDisableDrag(false);
-    } catch (e) {
-      setVersionLists(backupLists);
-      setDisableDrag(false);
+    if (result.type === 'TASKS') {
+      await onTaskDragEnd(result);
+    } else if (result.type === 'VERSIONS') {
+      await onVersionDragEnd(result);
     }
   };
 
@@ -243,8 +292,13 @@ export const PlannerPage = () => {
   };
 
   useEffect(() => {
+    // Keeping a local copy of versions so we can immediately update this state on drag&drop, then get backend updated state from redux later
+    setRoadmapsVersionsLocal(roadmapsVersions);
+  }, [roadmapsVersions]);
+
+  useEffect(() => {
     if (disableUpdates) return;
-    if (roadmapsVersions === undefined) {
+    if (roadmapsVersionsLocal === undefined) {
       dispatch(versionsActions.getVersions());
     } else {
       const newVersionLists: VersionListsObject = {};
@@ -253,7 +307,7 @@ export const PlannerPage = () => {
         let foundVersion = false;
 
         // Try to find version with this tasks id
-        roadmapsVersions.forEach((v) => {
+        roadmapsVersionsLocal.forEach((v) => {
           if (!newVersionLists[v.id]) newVersionLists[v.id] = [];
           if (v.tasks.includes(t.id)) {
             newVersionLists[v.id].push(t);
@@ -268,7 +322,7 @@ export const PlannerPage = () => {
       });
 
       // Sort tasks
-      roadmapsVersions.forEach((v) =>
+      roadmapsVersionsLocal.forEach((v) =>
         newVersionLists[v.id].sort(
           (a, b) => v.tasks.indexOf(a.id) - v.tasks.indexOf(b.id),
         ),
@@ -283,7 +337,7 @@ export const PlannerPage = () => {
     }
   }, [
     dispatch,
-    roadmapsVersions,
+    roadmapsVersionsLocal,
     currentRoadmap.tasks,
     disableUpdates,
     publicUsers,
@@ -292,24 +346,45 @@ export const PlannerPage = () => {
   const renderVersionLists = () => {
     return (
       <>
-        {roadmapsVersions &&
-          roadmapsVersions.map((version) => {
-            return (
-              <ListWrapper key={version.id}>
-                <VersionHeader>
-                  {version.name}
-                  <DeleteButtonWrapper>
-                    <DeleteButton onClick={() => deleteVersion(version.id)} />
-                  </DeleteButtonWrapper>
-                </VersionHeader>
-                <SortableTaskList
-                  listId={`${version.id}`}
-                  tasks={versionLists[version.id] || []}
-                  disableDragging={disableDrag}
-                />
-              </ListWrapper>
-            );
-          })}
+        <Droppable droppableId="roadmapVersions" type="VERSIONS">
+          {(droppableProvided) => (
+            <div ref={droppableProvided.innerRef}>
+              {roadmapsVersionsLocal!.map((version, index) => {
+                return (
+                  <Draggable
+                    key={`ver-${version.id}`}
+                    draggableId={`ver-${version.id}`}
+                    index={index}
+                    isDragDisabled={disableDrag}
+                  >
+                    {(draggableProvided) => (
+                      <ListWrapper
+                        ref={draggableProvided.innerRef}
+                        {...draggableProvided.draggableProps}
+                      >
+                        <VersionHeader {...draggableProvided.dragHandleProps}>
+                          {version.name}
+                          <DeleteButtonWrapper>
+                            <DeleteButton
+                              onClick={() => deleteVersion(version.id)}
+                            />
+                          </DeleteButtonWrapper>
+                        </VersionHeader>
+                        <SortableTaskList
+                          listId={`${version.id}`}
+                          tasks={versionLists[version.id] || []}
+                          disableDragging={disableDrag}
+                        />
+                      </ListWrapper>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {droppableProvided.placeholder}
+            </div>
+          )}
+        </Droppable>
+
         <AddVersionWrapper onClick={addVersion}>
           <span>
             <PlusIcon />
@@ -325,14 +400,17 @@ export const PlannerPage = () => {
       (key) =>
         key !== ROADMAP_LIST_ID &&
         versionLists[key].length > 0 &&
-        roadmapsVersions!.find((ver) => ver.id === +key),
+        roadmapsVersionsLocal!.find((ver) => ver.id === +key),
     )
     .map((key) => {
+      const version = roadmapsVersionsLocal!.find((ver) => ver.id === +key)!;
       return {
-        name: roadmapsVersions!.find((ver) => ver.id === +key)!.name,
+        name: version!.name,
+        sortingRank: version.sortingRank,
         tasks: versionLists[key],
       };
-    });
+    })
+    .sort((a, b) => a.sortingRank - b.sortingRank);
 
   return (
     <>
@@ -355,7 +433,7 @@ export const PlannerPage = () => {
             <ColumnHeader>
               {currentRoadmap.name} <Trans i18nKey="milestones" />
             </ColumnHeader>
-            {renderVersionLists()}
+            {roadmapsVersionsLocal && renderVersionLists()}
           </VersionColumn>
         </LayoutRow>
       </DragDropContext>

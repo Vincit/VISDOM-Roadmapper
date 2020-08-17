@@ -10,7 +10,7 @@ export const roadmapsVersionsSelector = (
     return undefined;
   }
   if (!state.versions.versions) return undefined;
-  return state.versions.versions.filter(
-    (version) => version.roadmapId === chosenRoadmapId,
-  );
+  return state.versions.versions
+    .filter((version) => version.roadmapId === chosenRoadmapId)
+    .sort((a, b) => a.sortingRank - b.sortingRank);
 };

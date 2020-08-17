@@ -6,6 +6,7 @@ export default class Version extends Model {
   roadmapId!: number;
   name!: string;
   tasks!: number[];
+  sortingRank!: number;
 
   static tableName = 'versions';
 
@@ -47,9 +48,8 @@ export default class Version extends Model {
     json = super.$parseDatabaseJson(json);
     if (json.tasks) {
       json.tasks = JSON.stringify(json.tasks);
-    } else {
-      json.tasks = JSON.stringify([]);
     }
+
     return json;
   }
 }

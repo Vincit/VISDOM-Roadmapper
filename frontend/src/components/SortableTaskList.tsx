@@ -26,7 +26,7 @@ export const SortableTaskList: React.FC<{
   disableDragging: boolean;
 }> = ({ listId, tasks, disableDragging }) => {
   return (
-    <Droppable droppableId={listId}>
+    <Droppable droppableId={listId} type="TASKS">
       {(provided, snapshot) => (
         <ListDiv
           ref={provided.innerRef}

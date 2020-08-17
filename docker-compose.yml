@@ -4,6 +4,7 @@ services:
   roadmapper-database:
     build: ./postgres
     container_name: roadmapper-db
+    command: ["postgres", "-c", "log_statement=all"]
     environment:
       - POSTGRES_DB=roadmapper-db
       - POSTGRES_USER=testuser

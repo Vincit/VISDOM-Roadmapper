@@ -5,6 +5,7 @@ export interface Version {
   id: number;
   name: string;
   tasks: number[];
+  sortingRank: number;
 }
 
 export interface VersionsState {
@@ -16,6 +17,7 @@ export interface VersionRequest {
   id?: number;
   name?: string;
   tasks?: number[];
+  sortingRank?: number;
 }
 
 export interface AddTaskToVersionRequest {
