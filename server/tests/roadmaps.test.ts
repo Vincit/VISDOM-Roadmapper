@@ -34,11 +34,6 @@ describe('Test /roadmaps/ api', function () {
       expect(res.body[0].tasks[0]).to.have.property('createdByUser');
       expect(res.body[0].tasks[0]).to.have.property('ratings');
       expect(res.body[0].tasks[0]).to.have.property('relatedTasks');
-      expect(res.body[0].tasks[1].ratings[0]).to.have.property('id');
-      expect(res.body[0].tasks[1].ratings[0]).to.have.property('dimension');
-      expect(res.body[0].tasks[1].ratings[0]).to.have.property('value');
-      expect(res.body[0].tasks[1].ratings[0]).to.have.property('parentTask');
-      expect(res.body[0].tasks[1].ratings[0]).to.have.property('createdByUser');
     });
   });
 
