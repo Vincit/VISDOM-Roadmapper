@@ -27,7 +27,14 @@ const createServer = async () => {
   Model.knex(knex);
 
   app.keys = [process.env.SESSION_SECRET!];
-  app.use(session({}, app));
+  app.use(
+    session(
+      {
+        sameSite: 'none',
+      },
+      app,
+    ),
+  );
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
