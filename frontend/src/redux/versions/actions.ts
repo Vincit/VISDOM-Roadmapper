@@ -11,18 +11,19 @@ import {
 } from './types';
 
 export const addVersion = createAsyncThunk<
-  Version,
+  Version[],
   VersionRequest,
   { rejectValue: AxiosError }
 >('versions/addVersion', async (version: VersionRequest, thunkAPI) => {
   try {
-    return await api.addVersion({
+    await api.addVersion({
       roadmapId:
         version.roadmapId ||
         chosenRoadmapIdSelector(thunkAPI.getState() as RootState)!,
       name: version.name,
       tasks: [],
     });
+    return await api.getVersions();
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -41,31 +42,33 @@ export const getVersions = createAsyncThunk<
 });
 
 export const patchVersion = createAsyncThunk<
-  Version,
+  Version[],
   VersionRequest,
   { rejectValue: AxiosError }
 >('versions/patchVersion', async (version: VersionRequest, thunkAPI) => {
   try {
-    return await api.patchVersion(version);
+    await api.patchVersion(version);
+    return await api.getVersions();
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
 });
 
 export const deleteVersion = createAsyncThunk<
-  VersionRequest,
+  Version[],
   VersionRequest,
   { rejectValue: AxiosError }
 >('versions/deleteVersion', async (version: VersionRequest, thunkAPI) => {
   try {
-    return await api.deleteVersion(version);
+    await api.deleteVersion(version);
+    return await api.getVersions();
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
 });
 
 export const addTaskToVersion = createAsyncThunk<
-  Version,
+  Version[],
   AddTaskToVersionRequest,
   { rejectValue: AxiosError }
 >(
@@ -93,7 +96,7 @@ export const addTaskToVersion = createAsyncThunk<
 );
 
 export const removeTaskFromVersion = createAsyncThunk<
-  Version,
+  Version[],
   RemoveTaskFromVersionRequest,
   { rejectValue: AxiosError }
 >(

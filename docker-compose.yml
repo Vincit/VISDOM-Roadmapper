@@ -4,6 +4,7 @@ services:
   roadmapper-database:
     build: ./postgres
     container_name: roadmapper-db
+    command: ["postgres", "-c", "log_statement=all"]
     environment:
       - POSTGRES_DB=roadmapper-db
       - POSTGRES_USER=testuser
@@ -18,7 +19,7 @@ services:
     ports:
       - 5000:5000
     environment:
-      - NODE_ENV=test
+      - NODE_ENV=development
       - RDS_PORT=5432
       - RDS_HOSTNAME=roadmapper-database
       - RDS_DB_NAME=roadmapper-db

@@ -27,7 +27,18 @@ const createServer = async () => {
   Model.knex(knex);
 
   app.keys = [process.env.SESSION_SECRET!];
-  app.use(session({}, app));
+  app.proxy = process.env.NODE_ENV === 'production'; // Trust load balancer
+  app.use(
+    session(
+      process.env.NODE_ENV === 'production'
+        ? {
+            sameSite: 'none',
+            secure: true,
+          }
+        : {},
+      app,
+    ),
+  );
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,

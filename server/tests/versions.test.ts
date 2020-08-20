@@ -12,6 +12,7 @@ describe('Test /versions/ api', function () {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
         tasks: [1, 2],
+        sortingRank: 0,
       };
       await Version.query().insert(testVersion);
       const res = await chai.request(app).get('/versions/');
@@ -28,6 +29,7 @@ describe('Test /versions/ api', function () {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
         tasks: [1, 2],
+        sortingRank: 0,
       };
       const res = await chai.request(app).get('/versions/');
       const lenBefore = res.body.length;
@@ -53,6 +55,7 @@ describe('Test /versions/ api', function () {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
         tasks: [1, 2],
+        sortingRank: 0,
       };
       await Version.query().insert(testVersion);
       const res = await chai.request(app).get('/versions/');
@@ -68,12 +71,13 @@ describe('Test /versions/ api', function () {
     });
   });
 
-  describe('PATCH /users/', function () {
-    it('Should patch user', async function () {
+  describe('PATCH /versions/', function () {
+    it('Should patch version', async function () {
       const testVersion = {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
         tasks: [1, 2],
+        sortingRank: 0,
       };
       await Version.query().insert(testVersion);
       const firstVersionId = (await Version.query().first()).id;

@@ -1,5 +1,5 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { Version, VersionRequest, VersionsState } from './types';
+import { Version, VersionsState } from './types';
 
 export const GET_VERSIONS_FULFILLED = (
   state: VersionsState,
@@ -10,28 +10,21 @@ export const GET_VERSIONS_FULFILLED = (
 
 export const ADD_VERSION_FULFILLED: CaseReducer<
   VersionsState,
-  PayloadAction<Version>
+  PayloadAction<Version[]>
 > = (state, action) => {
-  if (!state.versions) state.versions = [];
-  state.versions.push(action.payload);
+  state.versions = action.payload;
 };
 
 export const DELETE_VERSION_FULFILLED = (
   state: VersionsState,
-  action: PayloadAction<VersionRequest>,
+  action: PayloadAction<Version[]>,
 ) => {
-  state.versions = state.versions?.filter(
-    (version) => version.id !== action.payload.id,
-  );
+  state.versions = action.payload;
 };
 
 export const PATCH_VERSION_FULFILLED = (
   state: VersionsState,
-  action: PayloadAction<Version>,
+  action: PayloadAction<Version[]>,
 ) => {
-  const updateVersion = state.versions?.find(
-    (version) => version.id === action.payload.id,
-  );
-
-  Object.assign(updateVersion, action.payload);
+  state.versions = action.payload;
 };
