@@ -59,5 +59,6 @@ export const english = {
     'Add milestone': 'Add milestone',
     'Milestone name': 'Milestone name',
     Stakeholders: 'Stakeholders',
+    'Avg. Rating': 'Avg. Rating',
   },
 };

@@ -74,7 +74,7 @@ const NavbarDivider = styled.div`
 const NavbarLink = styled(Link)`
   display: flex;
   align-items: center;
-  font-family: Roboto;
+  font-family: Work Sans;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
