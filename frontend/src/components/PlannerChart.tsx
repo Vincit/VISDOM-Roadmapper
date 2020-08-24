@@ -35,12 +35,12 @@ const GraphWrapper = styled.div`
   flex-direction: column;
   border-radius: 16px;
   background-color: rgb(247, 247, 247);
-  padding-bottom: 16px;
 `;
 
 const ButtonsBar = styled.div`
   display: flex;
   margin-left: 46px;
+  padding-bottom: 16px;
 `;
 
 const LockIcon = styled.div`
@@ -63,7 +63,8 @@ enum DataKeys {
 
 export const PlannerChart: React.FC<{
   versions: { name: string; tasks: Task[] }[];
-}> = ({ versions }) => {
+  hideButtons?: boolean;
+}> = ({ versions, hideButtons }) => {
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
@@ -231,12 +232,14 @@ export const PlannerChart: React.FC<{
           <Legend verticalAlign="bottom" />
         </LineChart>
       </ResponsiveContainer>
-      <ButtonsBar>
-        <StyledButton buttonType="submit" onClick={toggleSavedData}>
-          <LockIcon>{savedData ? <LockFill /> : <UnlockFill />}</LockIcon>
-          Compare these versions
-        </StyledButton>
-      </ButtonsBar>
+      {!hideButtons && (
+        <ButtonsBar>
+          <StyledButton buttonType="submit" onClick={toggleSavedData}>
+            <LockIcon>{savedData ? <LockFill /> : <UnlockFill />}</LockIcon>
+            Compare these versions
+          </StyledButton>
+        </ButtonsBar>
+      )}
     </GraphWrapper>
   );
 };
