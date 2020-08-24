@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
+import { DashboardPage } from '../pages/DashboardPage';
 import { PlannerPage } from '../pages/PlannerPage';
 import { TaskListPage } from '../pages/TaskListPage';
 import { UserListPage } from '../pages/UserListPage';
@@ -35,7 +36,7 @@ const RoadmapPageContainer = styled(LayoutCol)`
 const routes = [
   {
     path: paths.roadmapRelative.dashboard,
-    component: () => <p>Dashboard page not implemented</p>,
+    component: DashboardPage,
   },
   {
     path: paths.roadmapRelative.users,
