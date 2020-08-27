@@ -1,6 +1,6 @@
 import passport from 'koa-passport';
-import User from '../api/users/users.model';
 import * as passportLocal from 'passport-local';
+import User from '../api/users/users.model';
 
 const fetchUserById = async (id: number) => {
   return await User.query().findById(id).first();
@@ -18,9 +18,9 @@ const addAuthToPassport = () => {
   passport.deserializeUser(async (id: number, done) => {
     try {
       const user = await fetchUserById(id);
-      done(null, user);
+      done(null, user ? user : false);
     } catch (err) {
-      done(err);
+      done(err, false);
     }
   });
 
@@ -37,7 +37,7 @@ const addAuthToPassport = () => {
           return done(null, false);
         }
       } catch (err) {
-        done(err);
+        done(err, false);
       }
     }),
   );
