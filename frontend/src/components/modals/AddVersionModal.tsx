@@ -4,7 +4,6 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps/index';
 import { versionsActions } from '../../redux/versions';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
@@ -37,7 +36,7 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
         }),
       ).then((res) => {
         setIsLoading(false);
-        if (roadmapsActions.patchPublicUser.rejected.match(res)) {
+        if (versionsActions.addVersion.rejected.match(res)) {
           setHasError(true);
           if (res.payload) {
             setErrorMessage(res.payload.message);
