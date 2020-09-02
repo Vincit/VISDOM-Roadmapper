@@ -1,8 +1,8 @@
-import { server, knex } from '../src/server';
+import { knex, server } from '../src/server';
 
 before(async () => {
   app = await server;
-  await knex.migrate.up();
+  await knex.migrate.latest();
 });
 
 beforeEach(async () => {

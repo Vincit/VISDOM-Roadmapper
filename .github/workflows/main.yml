@@ -1,21 +1,5 @@
 name: Continuous integration
 on: push
-env:
-    POSTGRES_DB: "roadmapper-db"
-    POSTGRES_USER: "testuser"
-    POSTGRES_PASSWORD: "testpassword"
-    NODE_ENV: "test"
-    RDS_PORT: "5432"
-    RDS_HOSTNAME: "postgres"
-    RDS_DB_NAME: "roadmapper-db"
-    RDS_USERNAME: "testuser"
-    RDS_PASSWORD: "testpassword"
-    SESSION_SECRET: "!top!secret!session!secret!"
-    CORS_ORIGIN: "http://localhost:3000"
-    SERVER_PORT: "5000"
-    CHOKIDAR_USEPOLLING: "true"
-    REACT_APP_API_BASE_URL: "http://localhost:5000/"
-
 jobs:
   build-and-test:
     name: Test
@@ -31,33 +15,31 @@ jobs:
           --health-retries 5
 
         env:
-          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: "roadmapper-db"
+          POSTGRES_USER: "testuser"
+          POSTGRES_PASSWORD: "testpassword"
 
         ports:
           - 5432:5432
-
-        ports:
-          - 5000:5000
-          - 8000:8000
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: '12'
-      - run: cd server && yarn && yarn test
+          node-version: "12"
+      - run: cd server && yarn install --frozen-lockfile && yarn test
         env:
-            POSTGRES_DB: "roadmapper-db"
-            POSTGRES_USER: "testuser"
-            POSTGRES_PASSWORD: "testpassword"
-            NODE_ENV: "test"
-            RDS_PORT: "5432"
-            RDS_HOSTNAME: "postgres"
-            RDS_DB_NAME: "roadmapper-db"
-            RDS_USERNAME: "testuser"
-            RDS_PASSWORD: "testpassword"
-            SESSION_SECRET: "!top!secret!session!secret!"
-            CORS_ORIGIN: "http://localhost:3000"
-            SERVER_PORT: "5000"
-            CHOKIDAR_USEPOLLING: "true"
-            REACT_APP_API_BASE_URL: "http://localhost:5000/"
+          POSTGRES_DB: "roadmapper-db"
+          POSTGRES_USER: "testuser"
+          POSTGRES_PASSWORD: "testpassword"
+          NODE_ENV: "test"
+          RDS_PORT: "5432"
+          RDS_HOSTNAME: "localhost"
+          RDS_DB_NAME: "roadmapper-db"
+          RDS_USERNAME: "testuser"
+          RDS_PASSWORD: "testpassword"
+          SESSION_SECRET: "!top!secret!session!secret!"
+          CORS_ORIGIN: "http://localhost:3000"
+          SERVER_PORT: "5000"
+          CHOKIDAR_USEPOLLING: "true"
+          REACT_APP_API_BASE_URL: "http://localhost:5000/"
