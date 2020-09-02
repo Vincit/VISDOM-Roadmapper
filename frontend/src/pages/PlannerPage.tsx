@@ -425,7 +425,7 @@ export const PlannerPage = () => {
               <SortableTaskList
                 listId={ROADMAP_LIST_ID}
                 tasks={versionLists[ROADMAP_LIST_ID] || []}
-                disableDragging={false}
+                disableDragging={disableDrag}
               />
             </ListWrapper>
           </VersionColumn>
