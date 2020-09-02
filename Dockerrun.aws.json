@@ -1,0 +1,15 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "registry.gitlab.com/vincit/visdom/roadmapper:latest"
+  },
+  "Authentication": {
+    "Bucket": "roadmapper-docker",
+    "Key": ".dockerconfig"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "5000"
+    }
+  ]
+}
