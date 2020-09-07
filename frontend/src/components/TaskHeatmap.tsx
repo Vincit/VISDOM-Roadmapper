@@ -53,6 +53,9 @@ const OuterContainer = styled.div`
   padding-left: 16px;
   padding-top: 16px;
   background-color: rgb(247, 247, 247);
+  min-width: 386px;
+  min-height: 423px;
+  text-align: start;
 
   .xaxismin {
     font-family: IBM Plex Mono;

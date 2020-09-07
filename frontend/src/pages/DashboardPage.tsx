@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapOverview } from '../components/RoadmapOverview';
 import { TaskHeatmap } from '../components/TaskHeatmap';
+import { TaskTable } from '../components/TaskTable';
 import { StoreDispatchType } from '../redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
@@ -26,10 +28,14 @@ const OverviewHeader = styled.div`
     font-family: Ibm Plex Mono;
     font-size: 15px;
   }
+  .welcomemessage {
+    font-size: 24px;
+    line-height: 32px;
+  }
 `;
 
 const ChartWrapper = styled.div`
-  width: 840px;
+  width: 860px;
   margin-left: 16px;
 `;
 
@@ -49,9 +55,14 @@ const TaskCountSpan = styled.span`
   text-decoration: underline;
 `;
 
-const WelcomeMessageWrapper = styled.p`
-  font-size: 24px;
-  line-height: 32px;
+const TaskTableWrapper = styled.div`
+  .header {
+    font-size: 24px;
+    line-height: 32px;
+    text-align: start;
+    font-weight: 600;
+    margin-top: 16px;
+  }
 `;
 
 export const DashboardPage = () => {
@@ -76,12 +87,12 @@ export const DashboardPage = () => {
     }[]
   >([]);
 
-  const getUnratedTasksCount = () => {
-    if (!currentRoadmap) return 0;
+  const getUnratedTasks = () => {
+    if (!currentRoadmap) return [];
     return currentRoadmap.tasks.filter(
       (task) =>
         !task.ratings.find((rating) => rating.createdByUser === userInfo!.id),
-    ).length;
+    );
   };
 
   // TODO move duplicate version organizing / charting logic into custom hook
@@ -130,21 +141,29 @@ export const DashboardPage = () => {
   }, [dispatch, roadmapsVersions, currentRoadmap]);
 
   return (
-    <OverviewHeader>
-      <WelcomeMessageWrapper>
-        Welcome <UsernameSpan>@{userInfo!.username}</UsernameSpan>
-      </WelcomeMessageWrapper>
-      <p className="taskmessage">
-        You have <TaskCountSpan>{getUnratedTasksCount()}</TaskCountSpan> new
-        tasks to rate →
-      </p>
-      <RoadmapOverview />
+    <>
+      <OverviewHeader>
+        <p className="welcomemessage">
+          Welcome <UsernameSpan>@{userInfo!.username}</UsernameSpan>
+        </p>
+        <p className="taskmessage">
+          You have <TaskCountSpan>{getUnratedTasks().length}</TaskCountSpan> new
+          tasks to rate →
+        </p>
+        <RoadmapOverview />
+      </OverviewHeader>
       <ChartFlexbox>
         <TaskHeatmap />
         <ChartWrapper>
           <PlannerChart versions={chartVersionLists} hideButtons />
         </ChartWrapper>
       </ChartFlexbox>
-    </OverviewHeader>
+      <TaskTableWrapper>
+        <p className="header">
+          <Trans i18nKey="Unrated tasks" />
+        </p>
+        <TaskTable tasks={getUnratedTasks()} nofilter />
+      </TaskTableWrapper>
+    </>
   );
 };
