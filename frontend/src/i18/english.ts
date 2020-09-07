@@ -61,5 +61,6 @@ export const english = {
     Stakeholders: 'Stakeholders',
     'Avg. Rating': 'Avg. Rating',
     'Your unrated tasks': 'Your unrated tasks',
+    'Roadmap completion': 'Roadmap completion',
   },
 };
