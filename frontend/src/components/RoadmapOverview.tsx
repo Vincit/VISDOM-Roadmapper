@@ -91,14 +91,24 @@ export const RoadmapOverview = () => {
         <Trans i18nKey="Avg. Rating" />
         <DataNumberWrapper>
           <BusinessValueFilled />
-          {roadmapAverageRating(TaskRatingDimension.BusinessValue)}
+          {roadmapAverageRating(
+            TaskRatingDimension.BusinessValue,
+          ).toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          })}
         </DataNumberWrapper>
       </DataEntryWrapper>
       <DataEntryWrapper>
         <Trans i18nKey="Avg. Rating" />
         <DataNumberWrapper>
           <RequiredWorkFilled />
-          {roadmapAverageRating(TaskRatingDimension.RequiredWork)}
+          {roadmapAverageRating(
+            TaskRatingDimension.RequiredWork,
+          ).toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          })}
         </DataNumberWrapper>
       </DataEntryWrapper>
     </DataFlexbox>

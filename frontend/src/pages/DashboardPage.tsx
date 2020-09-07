@@ -3,6 +3,7 @@ import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { PlannerChart } from '../components/PlannerChart';
+import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
 import { TaskHeatmap } from '../components/TaskHeatmap';
 import { TaskTable } from '../components/TaskTable';
@@ -35,14 +36,21 @@ const OverviewHeader = styled.div`
 `;
 
 const ChartWrapper = styled.div`
-  width: 860px;
-  margin-left: 16px;
+  min-width: 840px;
+  width: 840px;
+  margin-right: 16px;
+  margin-top: 16px;
+`;
+
+const MeterWrapper = styled.div`
+  margin-right: 16px;
+  margin-top: 16px;
 `;
 
 const ChartFlexbox = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 16px;
+  flex-wrap: wrap;
 `;
 
 const UsernameSpan = styled.span`
@@ -153,10 +161,15 @@ export const DashboardPage = () => {
         <RoadmapOverview />
       </OverviewHeader>
       <ChartFlexbox>
-        <TaskHeatmap />
+        <MeterWrapper>
+          <TaskHeatmap />
+        </MeterWrapper>
         <ChartWrapper>
           <PlannerChart versions={chartVersionLists} hideButtons />
         </ChartWrapper>
+        <MeterWrapper>
+          <RoadmapCompletionMeter />
+        </MeterWrapper>
       </ChartFlexbox>
       <TaskTableWrapper>
         <p className="header">
