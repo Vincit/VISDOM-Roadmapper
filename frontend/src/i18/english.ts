@@ -60,5 +60,6 @@ export const english = {
     'Milestone name': 'Milestone name',
     Stakeholders: 'Stakeholders',
     'Avg. Rating': 'Avg. Rating',
+    'Your unrated tasks': 'Your unrated tasks',
   },
 };
