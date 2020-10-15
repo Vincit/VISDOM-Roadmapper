@@ -9,6 +9,7 @@ export default class Task extends Model {
   description!: string;
   completed!: boolean;
   createdAt!: string;
+  jiraId!: number;
 
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
@@ -34,7 +35,9 @@ export default class Task extends Model {
 
   async $beforeInsert(context: QueryContext): Promise<void> {
     await super.$beforeInsert(context);
-    this.createdAt = new Date().toJSON();
+    if (!this.createdAt) {
+      this.createdAt = new Date().toJSON();
+    }
   }
 
   static get relationMappings() {
