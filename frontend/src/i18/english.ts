@@ -62,5 +62,7 @@ export const english = {
     'Avg. Rating': 'Avg. Rating',
     'Your unrated tasks': 'Your unrated tasks',
     'Roadmap completion': 'Roadmap completion',
+    Import: 'Import',
+    'Import Jira tasks': 'Import Jira tasks',
   },
 };

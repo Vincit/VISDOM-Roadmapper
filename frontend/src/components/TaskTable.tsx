@@ -118,6 +118,16 @@ export const TaskTable: React.FC<{
     );
   };
 
+  const onImportTasksClick = (e: any) => {
+    e.preventDefault();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.IMPORT_TASKS_MODAL,
+        modalProps: {},
+      }),
+    );
+  };
+
   const renderTopbar = () => {
     return (
       <TopBar>
@@ -160,9 +170,14 @@ export const TaskTable: React.FC<{
         </FilterSelectContainer>
         <AddNewButtonContainer>
           {userInfo!.type === UserType.AdminUser && (
-            <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
-              + <Trans i18nKey="Add new" />
-            </StyledButton>
+            <>
+              <StyledButton buttonType="submit" onClick={onImportTasksClick}>
+                + <Trans i18nKey="Import" />
+              </StyledButton>
+              <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
+                + <Trans i18nKey="Add new" />
+              </StyledButton>
+            </>
           )}
         </AddNewButtonContainer>
       </TopBar>

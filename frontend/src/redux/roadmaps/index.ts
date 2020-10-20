@@ -10,6 +10,7 @@ import {
   deleteTaskrating,
   getPublicUsers,
   getRoadmaps,
+  importJiraBoard,
   patchPublicUser,
   patchTask,
   patchTaskrating,
@@ -56,6 +57,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(getPublicUsers.fulfilled, GET_PUBLIC_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
     builder.addCase(patchPublicUser.fulfilled, PATCH_PUBLIC_USER_FULFILLED);
+    builder.addCase(importJiraBoard.fulfilled, GET_ROADMAPS_FULFILLED);
   },
 });
 
@@ -74,4 +76,5 @@ export const roadmapsActions = {
   patchTaskrating,
   addOrPatchTaskrating,
   patchPublicUser,
+  importJiraBoard,
 };

@@ -22,6 +22,12 @@ export const taskSelector = (id: number) => {
     roadmap?.tasks.find((task) => task.id === id),
   );
 };
+export const allTasksSelector = () => {
+  return createSelector(
+    chosenRoadmapSelector,
+    (roadmap) => roadmap?.tasks || [],
+  );
+};
 
 export const publicUsersSelector = createSelector(
   (state: RootState) => state.roadmaps.allUsers,
