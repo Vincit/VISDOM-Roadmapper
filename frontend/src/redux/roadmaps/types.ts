@@ -88,3 +88,9 @@ export interface PublicUserRequest {
   type?: UserType;
   customerValue?: number;
 }
+
+export interface ImportBoardRequest {
+  boardId: number;
+  createdByUser: number;
+  roadmapId: number;
+}

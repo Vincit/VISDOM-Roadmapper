@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { api } from '../../api/api';
 import {
+  ImportBoardRequest,
   PublicUser,
   PublicUserRequest,
   RelatedTaskRequest,
@@ -189,3 +190,19 @@ export const patchPublicUser = createAsyncThunk<
     return thunkAPI.rejectWithValue(err);
   }
 });
+
+export const importJiraBoard = createAsyncThunk<
+  Roadmap[],
+  ImportBoardRequest,
+  { rejectValue: AxiosError }
+>(
+  'roadmaps/importJiraBoard',
+  async (importBoardRequest: ImportBoardRequest, thunkAPI) => {
+    try {
+      await api.importJiraBoard(importBoardRequest);
+      return await api.getRoadmaps();
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);

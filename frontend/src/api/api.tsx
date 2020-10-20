@@ -1,6 +1,7 @@
 import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
+  ImportBoardRequest,
   PublicUser,
   PublicUserRequest,
   RelatedTaskRequest,
@@ -12,6 +13,7 @@ import {
   TaskratingRequest,
   TaskRequest,
 } from '../redux/roadmaps/types';
+import { JiraBoard } from '../redux/types';
 import { UserInfo, UserLoginRequest } from '../redux/user/types';
 import { Version, VersionRequest } from '../redux/versions/types';
 
@@ -136,6 +138,16 @@ const patchUser = async (user: PublicUserRequest) => {
   return response.data as PublicUser;
 };
 
+const getJiraBoards = async () => {
+  const response = await axios.get('/jira/boards');
+  return response.data as JiraBoard[];
+};
+
+const importJiraBoard = async (request: ImportBoardRequest) => {
+  await axios.post('/jira/importboard', request);
+  return true;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -156,4 +168,6 @@ export const api = {
   patchVersion,
   deleteVersion,
   patchUser,
+  getJiraBoards,
+  importJiraBoard,
 };

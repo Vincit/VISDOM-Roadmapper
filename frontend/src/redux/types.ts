@@ -9,3 +9,8 @@ export interface RootState {
   modals: ModalsState;
   versions: VersionsState;
 }
+
+export interface JiraBoard {
+  id: number;
+  name: string;
+}

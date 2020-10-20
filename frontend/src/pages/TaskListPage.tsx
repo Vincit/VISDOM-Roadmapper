@@ -1,14 +1,9 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { TaskTable } from '../components/TaskTable';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { allTasksSelector } from '../redux/roadmaps/selectors';
 
 export const TaskListPage = () => {
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  return <TaskTable tasks={currentRoadmap!.tasks} />;
+  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  return <TaskTable tasks={tasks} />;
 };
