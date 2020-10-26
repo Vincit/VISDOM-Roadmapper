@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const LayoutRow = styled.div<{
   overflowY?: 'scroll' | 'visible' | 'auto';
+  overflowX?: 'scroll' | 'visible' | 'auto';
 }>`
   display: flex;
   flex-direction: row;
@@ -9,10 +10,12 @@ export const LayoutRow = styled.div<{
   padding: 0;
   margin: 0;
   overflow-y: ${(props) => (props.overflowY ? props.overflowY : 'visible')};
+  overflow-x: ${(props) => (props.overflowX ? props.overflowX : 'auto')};
 `;
 
 export const LayoutCol = styled.div<{
   overflowY?: 'scroll' | 'visible' | 'auto';
+  overflowX?: 'scroll' | 'visible' | 'auto';
 }>`
   display: flex;
   flex-direction: column;
@@ -20,6 +23,7 @@ export const LayoutCol = styled.div<{
   padding: 0;
   margin: 0;
   overflow-y: ${(props) => (props.overflowY ? props.overflowY : 'auto')};
+  overflow-x: ${(props) => (props.overflowX ? props.overflowX : 'auto')};
 `;
 
 export const TopBar = styled.div`

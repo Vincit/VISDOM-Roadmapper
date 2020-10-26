@@ -13,8 +13,9 @@ import { TaskRatingsText } from './TaskRatingsText';
 const TaskDiv = styled.div`
   display: flex;
   border: 1px solid black;
+  border-radius: 8px;
   padding: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   background-color: white;
   user-select: none;
 `;

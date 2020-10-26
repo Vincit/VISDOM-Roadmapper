@@ -13,7 +13,7 @@ import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { DashboardPage } from '../pages/DashboardPage';
-import { PlannerPage } from '../pages/PlannerPage';
+import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { TaskListPage } from '../pages/TaskListPage';
 import { UserListPage } from '../pages/UserListPage';
 import { StoreDispatchType } from '../redux';
@@ -48,7 +48,7 @@ const routes = [
   },
   {
     path: paths.roadmapRelative.planner,
-    component: PlannerPage,
+    component: MilestonesEditor,
   },
   {
     path: '',
@@ -135,9 +135,9 @@ const RoadmapRouterComponent = () => {
       );
     if (!isLoadingRoadmap && !isLoadingUsers) {
       return (
-        <LayoutRow overflowY="auto">
+        <LayoutRow overflowY="auto" overflowX="auto">
           <SideBar />
-          <RoadmapPageContainer>
+          <RoadmapPageContainer overflowY="auto" overflowX="auto">
             <Switch>
               {routes.map((route) => (
                 <Route
