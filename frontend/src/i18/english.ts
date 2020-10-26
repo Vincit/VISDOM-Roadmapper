@@ -64,5 +64,6 @@ export const english = {
     'Roadmap completion': 'Roadmap completion',
     Import: 'Import',
     'Import Jira tasks': 'Import Jira tasks',
+    'Unassigned tasks': 'Unassigned tasks',
   },
 };
