@@ -30,11 +30,14 @@ import {
   reorderList,
 } from '../utils/TaskUtils';
 
-const AddVersionWrapper = styled.div`
-  width: 150px;
+const HorizontalScroller = styled(LayoutRow)`
+  margin-left: 8px;
+`;
+
+const AddVersionButton = styled.div`
+  width: 250px;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0);
-  border: 1px dashed black;
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
@@ -43,6 +46,7 @@ const AddVersionWrapper = styled.div`
     margin: 4px;
   }
 `;
+
 const Toolbar = styled.div`
   padding: 8px;
   border-bottom: 1px solid black;
@@ -54,14 +58,20 @@ const UnassignedTasksCol = styled(LayoutCol)`
   max-width: 350px;
   min-width: 350px;
   overflow-y: visible;
+  overflow-x: visible;
+  margin-bottom: 16px;
+  background-color: rgba(0, 0, 0, 0);
 `;
 
 const MilestoneCol = styled(LayoutCol)`
   min-width: 350px;
   max-width: 350px;
   overflow-y: visible;
+  overflow-x: visible;
+  background-color: rgba(0, 0, 0, 0);
   border-radius: 8px;
   margin-left: 16px;
+  margin-bottom: 16px;
 `;
 
 const UnassignedTasksHeader = styled.div`
@@ -70,6 +80,7 @@ const UnassignedTasksHeader = styled.div`
   padding-bottom: 8px;
   font-size: 16px;
   font-weight: bold;
+  border-bottom: 1px solid gray;
 `;
 
 const MilestoneHeader = styled.div`
@@ -89,20 +100,14 @@ const MilestoneFooter = styled.div`
 `;
 
 const SortableListWrapper = styled.div`
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   margin-bottom: 8px;
   min-height: 100px;
   padding: 16px;
   padding-top: 8px;
-`;
-
-const UnassignedTasksWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 350px;
-  border-radius: 16px;
-  background-color: #f3f3f3;
+  scrollbar-width: thin;
 `;
 
 const MilestoneWrapper = styled.div`
@@ -112,9 +117,25 @@ const MilestoneWrapper = styled.div`
   border-radius: 16px;
   background-color: #fbfbfb;
   border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 3px 3px 7px -4px rgba(0, 0, 0, 0.53);
-  -moz-box-shadow: 3px 3px 7px -4px rgba(0, 0, 0, 0.53);
-  box-shadow: 3px 3px 7px -4px rgba(0, 0, 0, 0.53);
+  -webkit-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
+  box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
+  overflow-x: visible;
+`;
+
+const UnassignedTasksWrapper = styled(MilestoneWrapper)`
+  background-color: #f3f3f3;
+`;
+
+const AddNewBtnWrapper = styled(MilestoneWrapper)`
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: 1px dashed black;
+  background-color: rgba(255, 255, 255, 0);
 `;
 
 interface VersionListsObject {
@@ -372,7 +393,7 @@ export const MilestonesEditor = () => {
           direction="horizontal"
         >
           {(droppableProvided) => (
-            <LayoutRow
+            <HorizontalScroller
               ref={droppableProvided.innerRef}
               overflowY="auto"
               overflowX="auto"
@@ -415,8 +436,18 @@ export const MilestonesEditor = () => {
                   </Draggable>
                 );
               })}
+              <MilestoneCol>
+                <AddNewBtnWrapper onClick={addVersion}>
+                  <AddVersionButton onClick={addVersion}>
+                    <span>
+                      <PlusIcon />
+                      <Trans i18nKey="Add new milestone" />
+                    </span>
+                  </AddVersionButton>
+                </AddNewBtnWrapper>
+              </MilestoneCol>
               {droppableProvided.placeholder}
-            </LayoutRow>
+            </HorizontalScroller>
           )}
         </Droppable>
       </>
@@ -425,14 +456,7 @@ export const MilestonesEditor = () => {
 
   return (
     <>
-      <Toolbar>
-        <AddVersionWrapper onClick={addVersion}>
-          <span>
-            <PlusIcon />
-            <Trans i18nKey="Add new" />
-          </span>
-        </AddVersionWrapper>
-      </Toolbar>
+      <Toolbar></Toolbar>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <LayoutRow overflowY="auto" overflowX="auto">
           <UnassignedTasksCol>
