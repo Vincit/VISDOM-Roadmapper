@@ -6,6 +6,7 @@ export const english = {
     Save: 'Save',
     Add: 'Add',
     'Add new task': 'Add new task',
+    'Add new milestone': 'Add new milestone',
     'Add new': 'Add new',
     'Task name': 'Task name',
     Description: 'Description',

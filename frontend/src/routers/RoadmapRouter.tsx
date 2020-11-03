@@ -30,7 +30,7 @@ import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
 
 const RoadmapPageContainer = styled(LayoutCol)`
-  padding: 16px;
+  padding: 16px 16px 0 16px;
 `;
 
 const routes = [
