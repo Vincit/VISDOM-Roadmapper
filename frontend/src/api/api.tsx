@@ -2,6 +2,8 @@ import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
   ImportBoardRequest,
+  JiraOAuthURLResponse,
+  JiraTokenSwapRequest,
   PublicUser,
   PublicUserRequest,
   RelatedTaskRequest,
@@ -159,6 +161,15 @@ const getHotSwappableUsers = async () => {
 
 const hotSwapToUser = async (targetUserId: number) => {
   await axios.post('/users/hotswap', { targetUser: targetUserId });
+};
+
+const getJiraOauthURL = async () => {
+  const response = await axios.get('/jira/oauthauthorizationurl');
+  return response.data as JiraOAuthURLResponse;
+};
+
+const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
+  await axios.post('/jira/swapoauthtoken', swapRequest);
   return true;
 };
 
@@ -186,4 +197,6 @@ export const api = {
   importJiraBoard,
   hotSwapToUser,
   getHotSwappableUsers,
+  getJiraOauthURL,
+  swapJiraOAuthToken,
 };

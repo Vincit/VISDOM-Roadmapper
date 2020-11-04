@@ -1,5 +1,9 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import { jiraApi } from '../../utils/jiraclient';
+import {
+  authorizationURL,
+  swapOAuthToken,
+} from '../../utils/jiraauthentication';
 import Task from '../tasks/tasks.model';
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
@@ -45,4 +49,35 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
 
   ctx.body = importedTasks.length + ' tasks imported';
   ctx.status = 200;
+};
+
+export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
+  try {
+    const oauthResponse = await authorizationURL();
+    ctx.body = {
+      url: oauthResponse.url,
+      token: oauthResponse.token,
+      token_secret: oauthResponse.token_secret,
+    };
+    ctx.status = 200;
+  } catch (error) {
+    ctx.body = {
+      error: 'Error in getting Jira OAuth authorization URL.',
+    };
+    ctx.status = 500;
+  }
+};
+
+export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
+  const { verifierToken, token, token_secret } = ctx.request.body;
+  try {
+    // TODO: Save swapped token to user session.
+    const oauthResponse = await swapOAuthToken(token, token_secret, verifierToken);
+    ctx.status = 200;
+    ctx.body = 'OAuth token swapped successfully.';
+  } catch (error) {
+    console.log('Controller error on OAuth URL creation:', error);
+    ctx.status = 500;
+    ctx.body = 'Exception is OAuth token swap.';
+  }
 };

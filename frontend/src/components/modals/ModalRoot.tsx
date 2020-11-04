@@ -12,6 +12,7 @@ import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
+import { JiraOauthModal } from './JiraOauthModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RateUserModal, RateUserModalProps } from './RateUserModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
@@ -39,6 +40,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.RATE_USER_MODAL]: RateUserModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
+  [ModalTypes.SETUP_OAUTH_MODAL]: JiraOauthModal,
 };
 
 const StyledModal = Modal.styled`
