@@ -7,6 +7,7 @@ export enum ModalTypes {
   RATE_USER_MODAL = 'RATE_USER_MODAL',
   ADD_VERSION_MODAL = 'ADD_VERSION_MODAL',
   IMPORT_TASKS_MODAL = 'IMPORT_TASKS_MODAL',
+  SETUP_OAUTH_MODAL = 'SETUP_OATH_MODAL',
 }
 
 export interface ShowModalPayload {

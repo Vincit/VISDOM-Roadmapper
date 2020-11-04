@@ -94,3 +94,15 @@ export interface ImportBoardRequest {
   createdByUser: number;
   roadmapId: number;
 }
+
+export interface JiraOAuthURLResponse {
+    url: URL;
+    token: string;
+    token_secret: string;
+}
+
+export interface JiraTokenSwapRequest {
+    verifierToken: string;
+    token: string;
+    token_secret: string;
+}
