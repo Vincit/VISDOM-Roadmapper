@@ -18,6 +18,7 @@ export interface Roadmap {
   name: string;
   description: string;
   tasks: Task[];
+  jiraconfiguration: JiraConfiguration;
 }
 
 export interface RoadmapRequest {
@@ -105,4 +106,18 @@ export interface JiraTokenSwapRequest {
     verifierToken: string;
     token: string;
     token_secret: string;
+}
+
+export interface JiraConfigurationRequest {
+  id?: number;
+  url: string;
+  privatekey: string;
+  roadmapId: number;
+}
+
+export interface JiraConfiguration {
+  id: number;
+  roadmapId: number;
+  url: string;
+  privatekey: string;
 }

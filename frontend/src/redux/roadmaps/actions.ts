@@ -13,6 +13,8 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  JiraConfigurationRequest,
+  JiraConfiguration,
 } from './types';
 
 export const getPublicUsers = createAsyncThunk<
@@ -201,6 +203,21 @@ export const importJiraBoard = createAsyncThunk<
     try {
       await api.importJiraBoard(importBoardRequest);
       return await api.getRoadmaps();
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const addJiraConfiguration = createAsyncThunk<
+  JiraConfiguration,
+  JiraConfigurationRequest,
+  { rejectValue: AxiosError }
+>(
+  'jiraconfigurations/addJiraconfiguration',
+  async (jiraconfiguration: JiraConfigurationRequest, thunkAPI) => {
+    try {
+      return await api.addJiraconfiguration(jiraconfiguration);
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }

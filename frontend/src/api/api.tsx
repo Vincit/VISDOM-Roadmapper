@@ -2,8 +2,10 @@ import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
   ImportBoardRequest,
+  JiraConfigurationRequest,
   JiraOAuthURLResponse,
   JiraTokenSwapRequest,
+  JiraConfiguration,
   PublicUser,
   PublicUserRequest,
   RelatedTaskRequest,
@@ -160,6 +162,11 @@ const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
   return true;
 };
 
+const addJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest) => {
+  const response = await axios.post('/jiraconfigurations', jiraconfiguration);
+  return response.data as JiraConfiguration;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -184,4 +191,5 @@ export const api = {
   importJiraBoard,
   getJiraOauthURL,
   swapJiraOAuthToken,
+  addJiraconfiguration,
 };

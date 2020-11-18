@@ -7,6 +7,7 @@ import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
 import { ReactComponent as PlanButtonIcon } from '../icons/sidebar_plan.svg';
 import { ReactComponent as TasksButtonIcon } from '../icons/sidebar_tasks.svg';
 import { ReactComponent as UsersIcon } from '../icons/users_icon.svg';
+import { ReactComponent as ConfigureButtonIcon } from '../icons/users_icon.svg';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo, UserType } from '../redux/user/types';
@@ -103,6 +104,17 @@ export const SideBar = () => {
                 <PlanButtonIcon />
               </SideBarIcon>
               <Trans i18nKey="Plan" />
+            </SideBarButton>
+            <SideBarButton
+              to={url + paths.roadmapRelative.configure}
+              highlight={
+                pathname.startsWith(url + paths.roadmapRelative.configure) ? 1 : 0
+              }
+            >
+              <SideBarIcon>
+                <ConfigureButtonIcon />
+              </SideBarIcon>
+              <Trans i18nKey="Configure" />
             </SideBarButton>
           </>
         )}

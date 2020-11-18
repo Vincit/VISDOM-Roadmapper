@@ -1,6 +1,7 @@
 import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
 import { UserType } from 'src/types/customTypes';
+import Token from '../tokens/tokens.model';
 
 const Password = objectionPassword();
 export default class User extends Password(Model) {
@@ -10,6 +11,8 @@ export default class User extends Password(Model) {
   type!: number;
   password!: string;
   customerValue!: number;
+
+  tokens!: Token[];
 
   static tableName = 'users';
 
@@ -50,6 +53,7 @@ export default class User extends Password(Model) {
      * when this model is used in the response body.
      */
     delete json.password;
+    delete json.tokens;
     return json;
   }
 
@@ -70,4 +74,17 @@ export default class User extends Password(Model) {
       });
     },
   };
+
+  static get relationMappings() {
+    return {
+      tokens: {
+        relation: Model.HasManyRelation,
+        modelClass: Token,
+        join: {
+          from: 'users.id',
+          to: 'tokens.id',
+        },
+      },
+    };
+  }
 }

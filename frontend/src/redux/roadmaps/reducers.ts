@@ -9,6 +9,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  JiraConfiguration,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -175,4 +176,15 @@ export const PATCH_PUBLIC_USER_FULFILLED = (
   )!;
 
   Object.assign(patchUser, action.payload);
+};
+
+export const ADD_JIRA_CONFIGURATION_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<JiraConfiguration>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const parent = state.roadmaps.find(
+    (roadmap) => roadmap.id === action.payload.roadmapId,
+  )!;
+  parent.jiraconfiguration = action.payload;
 };
