@@ -12,6 +12,7 @@ export const paths = {
     users: '/users',
     taskList: '/tasks',
     planner: '/planner',
+    configure: '/configure',
   },
   plannerRelative: {
     graph: '/graph',

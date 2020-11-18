@@ -9,6 +9,7 @@ import session from 'koa-session';
 import { Model } from 'objection';
 import knexConfig from '../knexfile';
 import jiraRouter from './api/jira/jira.routes';
+import jiraConfigurationRouter from './api/jiraconfigurations/jiraconfigurations.routes';
 import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import taskratingRouter from './api/taskratings/taskratings.routes';
 import tasksRouter from './api/tasks/tasks.routes';
@@ -64,6 +65,8 @@ const createServer = async () => {
   rootRouter.use(versionsRouter.allowedMethods());
   rootRouter.use(jiraRouter.routes());
   rootRouter.use(jiraRouter.allowedMethods());
+  rootRouter.use(jiraConfigurationRouter.routes());
+  rootRouter.use(jiraConfigurationRouter.allowedMethods());
   rootRouter.get('/', (ctx, next) => {
     ctx.status = 200;
     ctx.body = '';

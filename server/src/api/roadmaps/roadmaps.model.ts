@@ -1,5 +1,6 @@
 import { Model } from 'objection';
 import Task from './../tasks/tasks.model';
+import JiraConfiguration from './../jiraconfigurations/jiraconfigurations.model';
 
 export default class Roadmap extends Model {
   id!: number;
@@ -7,6 +8,7 @@ export default class Roadmap extends Model {
   description!: string;
 
   tasks?: Task[];
+  jiraconfiguration?: JiraConfiguration;
 
   static tableName = 'roadmaps';
 
@@ -29,6 +31,14 @@ export default class Roadmap extends Model {
         join: {
           from: 'roadmaps.id',
           to: 'tasks.roadmapId',
+        },
+      },
+      jiraconfigurations: {
+        relation: Model.HasOneRelation,
+        modelClass: JiraConfiguration,
+        join: {
+          from: 'roadmaps.id',
+          to: 'jiraconfigurations.id',
         },
       },
     };

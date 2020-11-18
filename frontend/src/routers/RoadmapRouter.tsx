@@ -13,6 +13,8 @@ import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { DashboardPage } from '../pages/DashboardPage';
+import { PlannerPage } from '../pages/PlannerPage';
+import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
 import { UserListPage } from '../pages/UserListPage';
 import { StoreDispatchType } from '../redux';
@@ -49,6 +51,10 @@ const routes = [
   {
     path: paths.roadmapRelative.planner,
     component: PlannerPageRouter,
+  },
+  {
+    path: paths.roadmapRelative.configure,
+    component: ConfigurationPage,
   },
   {
     path: '',

@@ -19,6 +19,7 @@ export interface Roadmap {
   description: string;
   tasks: Task[];
   plannerUserWeights: PlannerUserWeight[] | undefined;
+  jiraconfiguration: JiraConfiguration;
 }
 
 export interface RoadmapRequest {
@@ -110,4 +111,18 @@ export interface JiraTokenSwapRequest {
   verifierToken: string;
   token: string;
   token_secret: string;
+}
+
+export interface JiraConfigurationRequest {
+  id?: number;
+  url: string;
+  privatekey: string;
+  roadmapId: number;
+}
+
+export interface JiraConfiguration {
+  id: number;
+  roadmapId: number;
+  url: string;
+  privatekey: string;
 }

@@ -10,6 +10,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  JiraConfiguration,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -178,14 +179,32 @@ export const PATCH_PUBLIC_USER_FULFILLED = (
   Object.assign(patchUser, action.payload);
 };
 
-export const SET_PLANNER_USER_WEIGHT: CaseReducer<RoadmapsState, PayloadAction<PlannerUserWeight>> = (state, action) => {
-  const selectedRoadmap = state.roadmaps?.find(roadmap => roadmap.id === state.selectedRoadmapId);
+export const SET_PLANNER_USER_WEIGHT: CaseReducer<
+  RoadmapsState,
+  PayloadAction<PlannerUserWeight>
+> = (state, action) => {
+  const selectedRoadmap = state.roadmaps?.find(
+    (roadmap) => roadmap.id === state.selectedRoadmapId,
+  );
   if (!selectedRoadmap) throw new Error('No roadmap has been selected');
   const newUserWeights = selectedRoadmap.plannerUserWeights || [];
-  const existing = newUserWeights.find(userWeight => userWeight.userId === action.payload.userId);
+  const existing = newUserWeights.find(
+    (userWeight) => userWeight.userId === action.payload.userId,
+  );
   if (existing) Object.assign(existing, action.payload);
-  if (!existing){
+  if (!existing) {
     newUserWeights.push(action.payload);
   }
   selectedRoadmap.plannerUserWeights = newUserWeights;
-}
+};
+
+export const ADD_JIRA_CONFIGURATION_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<JiraConfiguration>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const parent = state.roadmaps.find(
+    (roadmap) => roadmap.id === action.payload.roadmapId,
+  )!;
+  parent.jiraconfiguration = action.payload;
+};
