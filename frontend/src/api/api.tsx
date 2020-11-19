@@ -4,6 +4,7 @@ import {
   ImportBoardRequest,
   JiraConfigurationRequest,
   JiraOAuthURLResponse,
+  JiraOAuthURLRequest,
   JiraTokenSwapRequest,
   JiraConfiguration,
   PublicUser,
@@ -166,23 +167,32 @@ const hotSwapToUser = async (targetUserId: number) => {
   await axios.post('/users/hotswap', { targetUser: targetUserId });
 };
 
-const getJiraOauthURL = async () => {
-  const response = await axios.get('/jira/oauthauthorizationurl');
+const getJiraOauthURL = async (jiraconfiguration: JiraOAuthURLRequest) => {
+  const response = await axios.get(
+    `/jira/oauthauthorizationurl/${jiraconfiguration.id}`,
+  );
   return response.data as JiraOAuthURLResponse;
 };
 
 const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
-  await axios.post('/jira/swapoauthtoken', swapRequest);
+  await axios.post(`/jira/swapoauthtoken/${swapRequest.id}`, swapRequest);
   return true;
 };
 
-const addJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest) => {
+const addJiraconfiguration = async (
+  jiraconfiguration: JiraConfigurationRequest,
+) => {
   const response = await axios.post('/jiraconfigurations', jiraconfiguration);
   return response.data as JiraConfiguration;
 };
 
-const patchJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest) => {
-  const response = await axios.patch(`/jiraconfigurations/${jiraconfiguration.id}`, jiraconfiguration);
+const patchJiraconfiguration = async (
+  jiraconfiguration: JiraConfigurationRequest,
+) => {
+  const response = await axios.patch(
+    `/jiraconfigurations/${jiraconfiguration.id}`,
+    jiraconfiguration,
+  );
   return response.data as JiraConfiguration;
 };
 

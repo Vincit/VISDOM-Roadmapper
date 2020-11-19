@@ -1,9 +1,10 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
-import { jiraApi } from '../../utils/jiraclient';
 import {
   authorizationURL,
   swapOAuthToken,
 } from '../../utils/jiraauthentication';
+import { jiraApi } from '../../utils/jiraclient';
+import JiraConfiguration from '../jiraconfigurations/jiraconfigurations.model';
 import Task from '../tasks/tasks.model';
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
@@ -53,7 +54,14 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
 
 export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
   try {
-    const oauthResponse = await authorizationURL();
+    const jiraconfiguration = await JiraConfiguration.query().findById(
+      ctx.params.id,
+    );
+
+    const oauthResponse = await authorizationURL(
+      jiraconfiguration.url,
+      jiraconfiguration.privatekey,
+    );
     ctx.body = {
       url: oauthResponse.url,
       token: oauthResponse.token,
@@ -72,7 +80,16 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
   const { verifierToken, token, token_secret } = ctx.request.body;
   try {
     // TODO: Save swapped token to user session.
-    const oauthResponse = await swapOAuthToken(token, token_secret, verifierToken);
+    const jiraconfiguration = await JiraConfiguration.query().findById(
+      ctx.params.id,
+    );
+    const oauthResponse = await swapOAuthToken(
+      jiraconfiguration.url,
+      jiraconfiguration.privatekey,
+      token,
+      token_secret,
+      verifierToken,
+    );
     ctx.status = 200;
     ctx.body = 'OAuth token swapped successfully.';
   } catch (error) {

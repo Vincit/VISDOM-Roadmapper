@@ -107,7 +107,12 @@ export interface JiraOAuthURLResponse {
   token_secret: string;
 }
 
+export interface JiraOAuthURLRequest {
+  id: number;
+}
+
 export interface JiraTokenSwapRequest {
+  id: number;
   verifierToken: string;
   token: string;
   token_secret: string;

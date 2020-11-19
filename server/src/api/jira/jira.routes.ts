@@ -11,6 +11,6 @@ const jiraRouter = new KoaRouter<DefaultState, Context>();
 
 jiraRouter.get('/jira/boards', getBoards);
 jiraRouter.post('/jira/importboard', importBoard);
-jiraRouter.get('/jira/oauthauthorizationurl', getOauthAuthorizationURL);
-jiraRouter.post('/jira/swapoauthtoken', swapOauthAuthorizationToken);
+jiraRouter.get('/jira/oauthauthorizationurl/:id', getOauthAuthorizationURL);
+jiraRouter.post('/jira/swapoauthtoken/:id', swapOauthAuthorizationToken);
 export default jiraRouter;
