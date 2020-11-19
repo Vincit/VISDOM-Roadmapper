@@ -223,3 +223,18 @@ export const addJiraConfiguration = createAsyncThunk<
     }
   },
 );
+
+export const patchJiraConfiguration = createAsyncThunk<
+  JiraConfiguration,
+  JiraConfigurationRequest,
+  { rejectValue: AxiosError }
+>(
+  'jiraconfigurations/patchJiraconfiguration',
+  async (jiraconfiguration: JiraConfigurationRequest, thunkAPI) => {
+    try {
+      return await api.patchJiraconfiguration(jiraconfiguration);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);

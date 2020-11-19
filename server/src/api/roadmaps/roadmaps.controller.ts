@@ -5,7 +5,9 @@ import Objection from 'objection';
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
     const eagerResult = await Roadmap.query()
-      .withGraphFetched('[tasks.[ratings, relatedTasks(selectTaskId)]]')
+      .withGraphFetched(
+        '[tasks.[ratings, relatedTasks(selectTaskId)], jiraconfiguration]',
+      )
       .modifiers({
         selectTaskId: (builder) => {
           builder.select('tasks.id');

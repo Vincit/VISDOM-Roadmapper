@@ -15,6 +15,7 @@ import {
   patchTask,
   patchTaskrating,
   addJiraConfiguration,
+  patchJiraConfiguration,
 } from './actions';
 import {
   ADD_RELATED_TASK_FULFILLED,
@@ -32,6 +33,7 @@ import {
   SELECT_CURRENT_ROADMAP,
   SET_PLANNER_USER_WEIGHT,
   ADD_JIRA_CONFIGURATION_FULFILLED,
+  PATCH_JIRA_CONFIGURATION_FULFILLED,
 } from './reducers';
 import { RoadmapsState } from './types';
 
@@ -66,6 +68,10 @@ export const roadmapsSlice = createSlice({
       addJiraConfiguration.fulfilled,
       ADD_JIRA_CONFIGURATION_FULFILLED,
     );
+    builder.addCase(
+      patchJiraConfiguration.fulfilled,
+      PATCH_JIRA_CONFIGURATION_FULFILLED,
+    );
   },
 });
 
@@ -86,4 +92,5 @@ export const roadmapsActions = {
   patchPublicUser,
   importJiraBoard,
   addJiraConfiguration,
+  patchJiraConfiguration,
 };

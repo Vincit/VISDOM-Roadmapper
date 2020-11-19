@@ -41,6 +41,7 @@ const getRoadmaps = async () => {
 const addRoadmap = async (roadmap: RoadmapRequest) => {
   const response = await axios.post('/roadmaps', roadmap);
   if (!response.data.tasks) response.data.tasks = [];
+  if (!response.data.jiraconfiguration) response.data.jiraconfiguration = null;
   return response.data as Roadmap;
 };
 
@@ -180,6 +181,11 @@ const addJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest)
   return response.data as JiraConfiguration;
 };
 
+const patchJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest) => {
+  const response = await axios.patch(`/jiraconfigurations/${jiraconfiguration.id}`, jiraconfiguration);
+  return response.data as JiraConfiguration;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -207,4 +213,5 @@ export const api = {
   getJiraOauthURL,
   swapJiraOAuthToken,
   addJiraconfiguration,
+  patchJiraconfiguration,
 };

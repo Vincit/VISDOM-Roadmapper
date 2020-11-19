@@ -1,6 +1,5 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import JiraConfiguration from './jiraconfigurations.model';
-import Objection from 'objection';
 
 export const postJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await JiraConfiguration.query().insertAndFetch(ctx.request.body);
@@ -20,7 +19,9 @@ export const patchJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const deleteJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
-  const numDeleted = await JiraConfiguration.query().findById(ctx.params.id).delete();
+  const numDeleted = await JiraConfiguration.query()
+    .findById(ctx.params.id)
+    .delete();
 
   ctx.status = numDeleted == 1 ? 200 : 404;
 };

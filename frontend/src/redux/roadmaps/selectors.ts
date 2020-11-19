@@ -41,7 +41,15 @@ export const userSelector = (id: number) => {
 };
 
 export const plannerUserWeightsSelector = () => {
-  return createSelector(chosenRoadmapSelector, (roadmap) =>
-    roadmap?.plannerUserWeights || []
+  return createSelector(
+    chosenRoadmapSelector,
+    (roadmap) => roadmap?.plannerUserWeights || [],
+  );
+};
+
+export const chosenJiraconfigurationSelector = () => {
+  return createSelector(
+    chosenRoadmapSelector,
+    (roadmap) => roadmap?.jiraconfiguration,
   );
 };
