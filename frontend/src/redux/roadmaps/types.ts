@@ -97,15 +97,20 @@ export interface ImportBoardRequest {
 }
 
 export interface JiraOAuthURLResponse {
-    url: URL;
-    token: string;
-    token_secret: string;
+  url: URL;
+  token: string;
+  token_secret: string;
+}
+
+export interface JiraOAuthURLRequest {
+  id: number;
 }
 
 export interface JiraTokenSwapRequest {
-    verifierToken: string;
-    token: string;
-    token_secret: string;
+  id: number;
+  verifierToken: string;
+  token: string;
+  token_secret: string;
 }
 
 export interface JiraConfigurationRequest {

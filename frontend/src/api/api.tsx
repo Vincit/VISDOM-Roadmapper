@@ -4,6 +4,7 @@ import {
   ImportBoardRequest,
   JiraConfigurationRequest,
   JiraOAuthURLResponse,
+  JiraOAuthURLRequest,
   JiraTokenSwapRequest,
   JiraConfiguration,
   PublicUser,
@@ -153,13 +154,13 @@ const importJiraBoard = async (request: ImportBoardRequest) => {
   return true;
 };
 
-const getJiraOauthURL = async () => {
-  const response = await axios.get('/jira/oauthauthorizationurl');
+const getJiraOauthURL = async (jiraconfiguration: JiraOAuthURLRequest) => {
+  const response = await axios.get(`/jira/oauthauthorizationurl/${jiraconfiguration.id}`);
   return response.data as JiraOAuthURLResponse;
 };
 
 const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
-  await axios.post('/jira/swapoauthtoken', swapRequest);
+  await axios.post(`/jira/swapoauthtoken/${swapRequest.id}`, swapRequest);
   return true;
 };
 

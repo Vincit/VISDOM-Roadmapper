@@ -12,12 +12,18 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { useSelector } from 'react-redux';
+import { chosenJiraconfigurationSelector } from '../../redux/roadmaps/selectors';
 
 export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const currentJiraConfiguration = useSelector(
+    chosenJiraconfigurationSelector(),
+  )!;
 
   const [formValues, setFormValues] = useState({
     token: '',
@@ -27,7 +33,9 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   useEffect(() => {
     const getOAuthURL = async () => {
-      const response = await api.getJiraOauthURL();
+      const response = await api.getJiraOauthURL({
+        id: currentJiraConfiguration.id,
+      });
       let token = response.token;
       let token_secret = response.token_secret;
       setFormValues({ ...formValues, token, token_secret });
@@ -46,6 +54,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
 
       const swapToken = async () => {
         const success = await api.swapJiraOAuthToken({
+          id: currentJiraConfiguration.id,
           verifierToken: formValues.oauthVerifierCode,
           token: formValues.token,
           token_secret: formValues.token_secret,
