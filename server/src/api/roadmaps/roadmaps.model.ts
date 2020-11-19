@@ -33,12 +33,12 @@ export default class Roadmap extends Model {
           to: 'tasks.roadmapId',
         },
       },
-      jiraconfigurations: {
+      jiraconfiguration: {
         relation: Model.HasOneRelation,
         modelClass: JiraConfiguration,
         join: {
           from: 'roadmaps.id',
-          to: 'jiraconfigurations.id',
+          to: 'jiraconfigurations.roadmapId',
         },
       },
     };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
+import { LayoutRow } from '../components/CommonLayoutComponents';
 import { StyledButton } from '../components/forms/StyledButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
@@ -27,14 +27,26 @@ const RoadmapConfigurationPageComponent = () => {
 
   const onJiraConfigurationClick = (e: any) => {
     e.preventDefault();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.CONFIGURE_JIRA_MODAL,
-        modalProps: {
-          roadmap: currentRoadmap,
-        },
-      }),
-    );
+
+    if (currentRoadmap.jiraconfiguration) {
+      dispatch(
+        modalsActions.showModal({
+          modalType: ModalTypes.EDIT_JIRA_CONFIGURATION_MODAL,
+          modalProps: {
+            jiraconfigurationId: currentRoadmap.jiraconfiguration.id,
+          },
+        }),
+      );
+    } else {
+      dispatch(
+        modalsActions.showModal({
+          modalType: ModalTypes.ADD_JIRA_CONFIGURATION_MODAL,
+          modalProps: {
+            roadmap: currentRoadmap,
+          },
+        }),
+      );
+    }
   };
 
   const onOAuthClick = (e: any) => {
@@ -55,30 +67,6 @@ const RoadmapConfigurationPageComponent = () => {
     font-weight: bold;
     padding-top: 16px;
     padding-bottom: 24px;
-  `;
-
-  const ListWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    min-height: 150px;
-    padding: 16px;
-    border-radius: 16px;
-    background-color: #f3f3f3;
-  `;
-
-  const AddVersionWrapper = styled(ListWrapper)`
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0);
-    border: 1px dashed black;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
-    text-transform: uppercase;
-    svg {
-      margin: 4px;
-    }
   `;
 
   return (

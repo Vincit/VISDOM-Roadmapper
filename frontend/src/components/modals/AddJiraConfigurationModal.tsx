@@ -17,11 +17,11 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 
-export interface JiraConfigurationModalProps extends ModalProps {
+export interface AddJiraConfigurationModalProps extends ModalProps {
   roadmapId: number;
 }
 
-export const JiraConfigurationModal: React.FC<JiraConfigurationModalProps> = ({
+export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps> = ({
   closeModal,
   roadmapId,
 }) => {
@@ -56,7 +56,7 @@ export const JiraConfigurationModal: React.FC<JiraConfigurationModalProps> = ({
 
       dispatch(roadmapsActions.addJiraConfiguration(req)).then((res) => {
         setIsLoading(false);
-        if (roadmapsActions.addTask.rejected.match(res)) {
+        if (roadmapsActions.addJiraConfiguration.rejected.match(res)) {
           if (res.payload) {
             setErrorMessage(res.payload.message);
           }

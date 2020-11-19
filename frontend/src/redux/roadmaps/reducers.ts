@@ -1,5 +1,6 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
+  JiraConfiguration,
   PublicUser,
   RelatedTaskResponsePayload,
   Roadmap,
@@ -9,7 +10,6 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
-  JiraConfiguration,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -187,4 +187,19 @@ export const ADD_JIRA_CONFIGURATION_FULFILLED = (
     (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
   parent.jiraconfiguration = action.payload;
+};
+
+export const PATCH_JIRA_CONFIGURATION_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<JiraConfiguration>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const parentRoadmap = state.roadmaps.find(
+    (roadmap) => roadmap.id === action.payload.roadmapId,
+  )!;
+
+  if (parentRoadmap) {
+    const jiraconfiguration = parentRoadmap.jiraconfiguration;
+    Object.assign(jiraconfiguration, action.payload);
+  }
 };
