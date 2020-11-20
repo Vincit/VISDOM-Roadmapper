@@ -58,7 +58,6 @@ export const MainRouter = () => {
             component={route.component}
           />
         ))}
-        <RoadmapRouter />
       </Switch>
     </>
   );
