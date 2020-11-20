@@ -13,4 +13,8 @@ export const paths = {
     taskList: '/tasks',
     planner: '/planner',
   },
+  plannerRelative: {
+    graph: '/graph',
+    editor: '/editor',
+  }
 };

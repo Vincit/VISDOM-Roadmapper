@@ -94,9 +94,19 @@ export const SideBar = () => {
               <Trans i18nKey="Stakeholders" />
             </SideBarButton>
             <SideBarButton
-              to={url + paths.roadmapRelative.planner}
+              to={
+                url +
+                paths.roadmapRelative.planner +
+                paths.plannerRelative.editor
+              }
               highlight={
-                pathname.startsWith(url + paths.roadmapRelative.planner) ? 1 : 0
+                pathname.startsWith(
+                  url +
+                    paths.roadmapRelative.planner +
+                    paths.plannerRelative.editor,
+                )
+                  ? 1
+                  : 0
               }
             >
               <SideBarIcon>

@@ -47,12 +47,6 @@ const AddVersionButton = styled.div`
   }
 `;
 
-const Toolbar = styled.div`
-  padding: 8px;
-  border-bottom: 1px solid black;
-  margin-bottom: 8px;
-`;
-
 const UnassignedTasksCol = styled(LayoutCol)`
   flex: 1;
   max-width: 350px;
@@ -456,7 +450,6 @@ export const MilestonesEditor = () => {
 
   return (
     <>
-      <Toolbar></Toolbar>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <LayoutRow overflowY="auto" overflowX="auto">
           <UnassignedTasksCol>

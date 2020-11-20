@@ -28,6 +28,7 @@ import { PublicUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
+import { PlannerPageRouter } from './PlannerPageRouter';
 
 const RoadmapPageContainer = styled(LayoutCol)`
   padding: 16px 16px 0 16px;
@@ -48,7 +49,7 @@ const routes = [
   },
   {
     path: paths.roadmapRelative.planner,
-    component: MilestonesEditor,
+    component: PlannerPageRouter,
   },
   {
     path: '',
@@ -144,6 +145,7 @@ const RoadmapRouterComponent = () => {
                   key={path + route.path}
                   path={path + route.path}
                   component={route.component}
+                  exact={route.exact}
                 />
               ))}
             </Switch>
