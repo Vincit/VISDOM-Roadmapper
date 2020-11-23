@@ -13,7 +13,6 @@ import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { DashboardPage } from '../pages/DashboardPage';
-import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { TaskListPage } from '../pages/TaskListPage';
 import { UserListPage } from '../pages/UserListPage';
 import { StoreDispatchType } from '../redux';
