@@ -8,7 +8,6 @@ const Navbar = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  margin-bottom: 8px;
 `;
 
 const NavbarButton = styled(Link)<{ highlight: number }>`
@@ -31,19 +30,34 @@ const NavbarButton = styled(Link)<{ highlight: number }>`
   }
 `;
 
+const NavbarFiller = styled.div`
+  display: flex;
+  flex-grow: 1;
+  border-bottom: 1px solid black;
+`;
+
 export const PlannerPageNavbar = () => {
   const { url } = useRouteMatch();
   const { pathname } = useLocation();
   return (
     <Navbar>
       <NavbarButton
+        to={url + paths.plannerRelative.graph}
+        highlight={
+          pathname.startsWith(url + paths.plannerRelative.graph) ? 1 : 0
+        }
+      >
+        <Trans i18nKey="Roadmap" />
+      </NavbarButton>
+      <NavbarButton
         to={url + paths.plannerRelative.editor}
         highlight={
           pathname.startsWith(url + paths.plannerRelative.editor) ? 1 : 0
         }
       >
-        Milestones
+        <Trans i18nKey="Milestones" />
       </NavbarButton>
+      <NavbarFiller />
     </Navbar>
   );
 };

@@ -167,10 +167,10 @@ export const TaskHeatmap = () => {
       <p>Task heatmap</p>
       <GraphicsFlexbox>
         <GraphicsContainer>
-          {frequencies.map((row) => (
-            <Row>
-              {row.map((value) => (
-                <Tile value={value} />
+          {frequencies.map((row, i) => (
+            <Row key={i}>
+              {row.map((value, ii) => (
+                <Tile value={value} key={ii} />
               ))}
             </Row>
           ))}
