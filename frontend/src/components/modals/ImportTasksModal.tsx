@@ -103,7 +103,9 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
                   onChange={handleSelectBoardChange}
                 >
                   {jiraBoards.map((board) => (
-                    <option value={board.id}>{board.name}</option>
+                    <option key={board.id} value={board.id}>
+                      {board.name}
+                    </option>
                   ))}
                 </select>
               ) : (
