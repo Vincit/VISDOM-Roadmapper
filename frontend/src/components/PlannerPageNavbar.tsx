@@ -57,6 +57,16 @@ export const PlannerPageNavbar = () => {
       >
         <Trans i18nKey="Milestones" />
       </NavbarButton>
+      <NavbarButton
+        to={url + paths.plannerRelative.timeEstimation}
+        highlight={
+          pathname.startsWith(url + paths.plannerRelative.timeEstimation)
+            ? 1
+            : 0
+        }
+      >
+        <Trans i18nKey="Time Estimation" />
+      </NavbarButton>
       <NavbarFiller />
     </Navbar>
   );

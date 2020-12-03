@@ -16,5 +16,6 @@ export const paths = {
   plannerRelative: {
     graph: '/graph',
     editor: '/editor',
+    timeEstimation: '/timeestimation',
   }
 };
