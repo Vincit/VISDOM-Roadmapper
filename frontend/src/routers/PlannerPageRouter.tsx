@@ -5,6 +5,7 @@ import { LayoutCol } from '../components/CommonLayoutComponents';
 import { PlannerPageNavbar } from '../components/PlannerPageNavbar';
 import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { RoadmapGraphPage } from '../pages/RoadmapGraphPage';
+import { TimeEstimationPage } from '../pages/TimeEstimationPage';
 import { paths } from './paths';
 
 const routes = [
@@ -16,6 +17,11 @@ const routes = [
   {
     path: paths.plannerRelative.graph,
     component: RoadmapGraphPage,
+    exact: false,
+  },
+  {
+    path: paths.plannerRelative.timeEstimation,
+    component: TimeEstimationPage,
     exact: false,
   },
   {

@@ -67,5 +67,11 @@ export const english = {
     Import: 'Import',
     'Import Jira tasks': 'Import Jira tasks',
     'Unassigned tasks': 'Unassigned tasks',
+    "Time Estimation": "Time Estimation",
+    "Estimate milestone durations": "Estimate milestone durations",
+    "Milestone to compare with": "Milestone to compare with",
+    "Select a milestone": "Select a milestone",
+    "Unable to calculate work": "Unable to calculate work",
+    "Predicted milestone durations": "Predicted milestone durations"
   },
 };
