@@ -16,7 +16,7 @@ const NavbarButton = styled(Link)<{ highlight: number }>`
   padding-left: 32px;
   padding-right: 32px;
   border-bottom: ${(props) =>
-    props.highlight ? '3px solid green' : '1px solid black'};
+    props.highlight ? '3px solid green' : '1px solid rgba(0, 0, 0, 0.3)'};
   justify-content: center;
   color: black;
   text-align: center;
@@ -33,7 +33,7 @@ const NavbarButton = styled(Link)<{ highlight: number }>`
 const NavbarFiller = styled.div`
   display: flex;
   flex-grow: 1;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 `;
 
 export const PlannerPageNavbar = () => {
@@ -66,6 +66,14 @@ export const PlannerPageNavbar = () => {
         }
       >
         <Trans i18nKey="Time Estimation" />
+      </NavbarButton>
+      <NavbarButton
+        to={url + paths.plannerRelative.weights}
+        highlight={
+          pathname.startsWith(url + paths.plannerRelative.weights) ? 1 : 0
+        }
+      >
+        <Trans i18nKey="Client Weights" />
       </NavbarButton>
       <NavbarFiller />
     </Navbar>
