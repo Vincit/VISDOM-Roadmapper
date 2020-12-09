@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { LayoutCol } from '../components/CommonLayoutComponents';
 import { PlannerPageNavbar } from '../components/PlannerPageNavbar';
 import { MilestonesEditor } from '../pages/MilestonesEditor';
+import { PlannerWeightsPage } from '../pages/PlannerWeightsPage';
 import { RoadmapGraphPage } from '../pages/RoadmapGraphPage';
 import { TimeEstimationPage } from '../pages/TimeEstimationPage';
 import { paths } from './paths';
@@ -22,6 +23,11 @@ const routes = [
   {
     path: paths.plannerRelative.timeEstimation,
     component: TimeEstimationPage,
+    exact: false,
+  },
+  {
+    path: paths.plannerRelative.weights,
+    component: PlannerWeightsPage,
     exact: false,
   },
   {

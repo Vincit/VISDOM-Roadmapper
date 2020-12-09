@@ -1,8 +1,16 @@
 import React from 'react';
 import { StarFill, Wrench } from 'react-bootstrap-icons';
 import { shallowEqual, useSelector } from 'react-redux';
-import { publicUsersSelector } from '../redux/roadmaps/selectors';
-import { PublicUser, Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import {
+  chosenRoadmapSelector,
+  publicUsersSelector,
+} from '../redux/roadmaps/selectors';
+import {
+  PublicUser,
+  Roadmap,
+  Task,
+  TaskRatingDimension,
+} from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import {
   calcTaskAverageRating,
@@ -22,6 +30,10 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
     publicUsersSelector,
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  )!;
   return (
     <>
       {averageBusinessVal && (
@@ -38,7 +50,7 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
       )}
       {averageWorkVal && averageBusinessVal && (
         <span className="mr-1 font-weight-bold">
-          {calcWeightedTaskPriority(task, publicUsers!)}
+          {calcWeightedTaskPriority(task, publicUsers!, currentRoadmap)}
         </span>
       )}
       {!averageWorkVal && !averageBusinessVal && <span>-</span>}

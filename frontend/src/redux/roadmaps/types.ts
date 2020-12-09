@@ -18,6 +18,7 @@ export interface Roadmap {
   name: string;
   description: string;
   tasks: Task[];
+  plannerUserWeights: PlannerUserWeight[] | undefined;
 }
 
 export interface RoadmapRequest {
@@ -93,4 +94,9 @@ export interface ImportBoardRequest {
   boardId: number;
   createdByUser: number;
   roadmapId: number;
+}
+
+export interface PlannerUserWeight {
+  userId: number;
+  weight: number;
 }

@@ -29,6 +29,7 @@ import {
   PATCH_TASKRATING_FULFILLED,
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
+  SET_PLANNER_USER_WEIGHT,
 } from './reducers';
 import { RoadmapsState } from './types';
 
@@ -43,6 +44,7 @@ export const roadmapsSlice = createSlice({
   initialState,
   reducers: {
     selectCurrentRoadmap: SELECT_CURRENT_ROADMAP,
+    setPlannerUserWeight: SET_PLANNER_USER_WEIGHT,
   },
   extraReducers: (builder) => {
     builder.addCase(getRoadmaps.fulfilled, GET_ROADMAPS_FULFILLED);

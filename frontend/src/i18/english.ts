@@ -72,6 +72,8 @@ export const english = {
     "Milestone to compare with": "Milestone to compare with",
     "Select a milestone": "Select a milestone",
     "Unable to calculate work": "Unable to calculate work",
-    "Predicted milestone durations": "Predicted milestone durations"
+    "Predicted milestone durations": "Predicted milestone durations",
+    "Set different weighing for clients": "Set different weighing for clients",
+    "Client Weights": "Client Weights"
   },
 };
