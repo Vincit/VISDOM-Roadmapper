@@ -1,5 +1,5 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
-import { PublicUser, Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import { PublicUser, Roadmap, Task, TaskRatingDimension } from '../redux/roadmaps/types';
 import { UserType } from '../redux/user/types';
 
 export enum FilterTypes {
@@ -191,6 +191,7 @@ export const calcTaskValueSum = (task: Task) => {
 export const calcTaskWeightedValueSum = (
   task: Task,
   allUsers: PublicUser[],
+  roadmap: Roadmap
 ) => {
   let customerValuesSum = 0;
   allUsers.forEach((user) => {
@@ -210,13 +211,16 @@ export const calcTaskWeightedValueSum = (
 
     const ratingCreatorValue = ratingCreator?.customerValue || 0;
 
-    let ratingWeight = 0;
-    if (ratingCreator?.type !== UserType.CustomerUser) ratingWeight = 1;
+    let creatorPlannerWeight = roadmap.plannerUserWeights?.find(weight => weight.userId === rating.createdByUser)?.weight;
+    if (creatorPlannerWeight === undefined) creatorPlannerWeight = 1;
+
+    let creatorValueWeight = 0;
+    if (ratingCreator?.type !== UserType.CustomerUser) creatorValueWeight = 1;
 
     if (ratingCreatorValue > 0 && customerValuesSum > 0) {
-      ratingWeight = ratingCreatorValue / customerValuesSum;
+      creatorValueWeight = ratingCreatorValue / customerValuesSum;
     }
-    ratingValuesSum += rating.value * ratingWeight;
+    ratingValuesSum += rating.value * creatorValueWeight * creatorPlannerWeight;
   });
 
   return ratingValuesSum;
@@ -225,8 +229,9 @@ export const calcTaskWeightedValueSum = (
 export const calcWeightedTaskPriority = (
   task: Task,
   allUsers: PublicUser[],
+  roadmap: Roadmap
 ) => {
-  const weightedValue = calcTaskWeightedValueSum(task, allUsers);
+  const weightedValue = calcTaskWeightedValueSum(task, allUsers, roadmap);
   if (!weightedValue) return -2;
 
   const avgWorkRating = calcTaskAverageRating(

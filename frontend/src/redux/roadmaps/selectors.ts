@@ -39,3 +39,9 @@ export const userSelector = (id: number) => {
     users?.find((user) => user.id === id),
   );
 };
+
+export const plannerUserWeightsSelector = () => {
+  return createSelector(chosenRoadmapSelector, (roadmap) =>
+    roadmap?.plannerUserWeights || []
+  );
+};
