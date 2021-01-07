@@ -1,3 +1,4 @@
+import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import {
   getTaskratings,
@@ -8,9 +9,9 @@ import {
 import { DefaultState, Context } from 'koa';
 const taskratingRouter = new KoaRouter<DefaultState, Context>();
 
-taskratingRouter.get('/taskratings', getTaskratings);
-taskratingRouter.post('/taskratings', postTaskratings);
-taskratingRouter.delete('/taskratings/:id', deleteTaskratings);
-taskratingRouter.patch('/taskratings/:id', patchTaskratings);
+taskratingRouter.get('/taskratings', requireAuth, getTaskratings);
+taskratingRouter.post('/taskratings', requireAuth, postTaskratings);
+taskratingRouter.delete('/taskratings/:id', requireAuth, deleteTaskratings);
+taskratingRouter.patch('/taskratings/:id', requireAuth, patchTaskratings);
 
 export default taskratingRouter;

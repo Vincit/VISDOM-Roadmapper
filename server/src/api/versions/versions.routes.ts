@@ -1,3 +1,4 @@
+import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import { Context, DefaultState } from 'koa';
 import {
@@ -8,9 +9,9 @@ import {
 } from './versions.controller';
 const versionsRouter = new KoaRouter<DefaultState, Context>();
 
-versionsRouter.get('/versions', getVersions);
-versionsRouter.post('/versions', postVersions);
-versionsRouter.patch('/versions/:id', patchVersions);
-versionsRouter.delete('/versions/:id', deleteVersions);
+versionsRouter.get('/versions', requireAuth, getVersions);
+versionsRouter.post('/versions', requireAuth, postVersions);
+versionsRouter.patch('/versions/:id', requireAuth, patchVersions);
+versionsRouter.delete('/versions/:id', requireAuth, deleteVersions);
 
 export default versionsRouter;

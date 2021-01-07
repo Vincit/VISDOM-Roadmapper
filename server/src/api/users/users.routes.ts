@@ -1,3 +1,4 @@
+import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import {
   getUsers,
@@ -12,10 +13,10 @@ import { DefaultState, Context } from 'koa';
 
 const userRouter = new KoaRouter<DefaultState, Context>();
 
-userRouter.get('/users', getUsers);
-userRouter.post('/users', postUsers);
-userRouter.patch('/users/:id', patchUsers);
-userRouter.delete('/users/:id', deleteUsers);
+userRouter.get('/users', requireAuth, getUsers);
+userRouter.post('/users', requireAuth, postUsers);
+userRouter.patch('/users/:id', requireAuth, patchUsers);
+userRouter.delete('/users/:id', requireAuth, deleteUsers);
 
 userRouter.post('/users/login', loginUser);
 userRouter.get('/users/logout', logoutUser);
