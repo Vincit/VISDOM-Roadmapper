@@ -10,6 +10,7 @@ export default class User extends Password(Model) {
   type!: number;
   password!: string;
   customerValue!: number;
+  hotSwappableUsers?: User[];
 
   static tableName = 'users';
 
@@ -34,6 +35,23 @@ export default class User extends Password(Model) {
       },
     },
   };
+
+  static get relationMappings() {
+    return {
+      hotSwappableUsers: {
+        relation: Model.ManyToManyRelation,
+        modelClass: User,
+        join: {
+          from: 'users.id',
+          through: {
+            from: 'hotSwappableUsers.fromUserId',
+            to: 'hotSwappableUsers.toUserId',
+          },
+          to: 'users.id',
+        },
+      },
+    };
+  }
 
   async $beforeInsert(context: QueryContext): Promise<void> {
     await super.$beforeInsert(context);

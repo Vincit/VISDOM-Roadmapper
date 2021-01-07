@@ -70,7 +70,7 @@ const clearData = async () => {
 };
 
 const createTestUsers = async () => {
-  await User.query().insert({
+  const businessPerson1 = await User.query().insert({
     username: 'BusinessPerson1',
     email: 'biz@business.com',
     type: UserType.BusinessUser,
@@ -82,7 +82,7 @@ const createTestUsers = async () => {
     type: UserType.BusinessUser,
     password: 'test',
   });
-  await User.query().insert({
+  const developerPerson1 = await User.query().insert({
     username: 'DeveloperPerson1',
     email: 'dev@coders.com',
     type: UserType.DeveloperUser,
@@ -94,7 +94,7 @@ const createTestUsers = async () => {
     type: UserType.DeveloperUser,
     password: 'test',
   });
-  await User.query().insert({
+  const customerPerson1 = await User.query().insert({
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
     type: UserType.CustomerUser,
@@ -126,10 +126,14 @@ const createTestUsers = async () => {
     type: UserType.CustomerUser,
     password: 'test',
   });
-  await User.query().insert({
+  const adminPerson1 = await User.query().insert({
     username: 'AdminPerson1',
     email: 'admin@admins.com',
     type: UserType.AdminUser,
     password: 'test',
   });
+
+  await adminPerson1
+    .$relatedQuery('hotSwappableUsers')
+    .relate([customerPerson1, developerPerson1, businessPerson1]);
 };
