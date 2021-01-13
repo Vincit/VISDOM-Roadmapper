@@ -14,7 +14,11 @@ import {
   TaskRequest,
 } from '../redux/roadmaps/types';
 import { JiraBoard } from '../redux/types';
-import { UserInfo, UserLoginRequest } from '../redux/user/types';
+import {
+  UserInfo,
+  UserLoginRequest,
+  HotSwappableUser,
+} from '../redux/user/types';
 import { Version, VersionRequest } from '../redux/versions/types';
 
 dotenv.config();
@@ -148,6 +152,16 @@ const importJiraBoard = async (request: ImportBoardRequest) => {
   return true;
 };
 
+const getHotSwappableUsers = async () => {
+  const response = await axios.get('/users/hotswappableusers');
+  return response.data as HotSwappableUser[];
+};
+
+const hotSwapToUser = async (targetUserId: number) => {
+  await axios.post('/users/hotswap', { targetUser: targetUserId });
+  return true;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -170,4 +184,6 @@ export const api = {
   patchUser,
   getJiraBoards,
   importJiraBoard,
+  hotSwapToUser,
+  getHotSwappableUsers,
 };

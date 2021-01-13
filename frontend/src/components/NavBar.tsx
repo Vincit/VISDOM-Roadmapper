@@ -9,6 +9,7 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
+import { UserHotSwapWidget } from './UserHotSwapWidget';
 
 const NavbarDiv = styled.nav`
   position: relative;
@@ -64,7 +65,7 @@ const NavbarDivider = styled.div`
   border: 0;
   border-left: 1px solid black;
   width: 0px;
-  margin-left: 0;
+  margin-left: 16px;
   margin-right: 16px;
   height: 30px;
   margin-top: 13px;
@@ -118,6 +119,7 @@ export const NavBar = () => {
             <NavbarLink as={Link} to={paths.userInfo}>
               <Trans i18nKey="UserInfo" />
             </NavbarLink>
+            <UserHotSwapWidget />
             <NavbarDivider />
             <RoadmapSelectorWidget />
           </>

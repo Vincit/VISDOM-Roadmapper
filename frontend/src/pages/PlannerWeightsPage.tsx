@@ -2,15 +2,10 @@ import React, { useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
-  chosenRoadmapSelector,
   plannerUserWeightsSelector,
   publicUsersSelector,
 } from '../redux/roadmaps/selectors';
-import {
-  PlannerUserWeight,
-  PublicUser,
-  Roadmap,
-} from '../redux/roadmaps/types';
+import { PlannerUserWeight, PublicUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { Trans } from 'react-i18next';
 import { StoreDispatchType } from '../redux';

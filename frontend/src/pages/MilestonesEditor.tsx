@@ -213,7 +213,14 @@ export const MilestonesEditor = () => {
 
       setVersionLists(newVersionLists);
     }
-  }, [dispatch, roadmapsVersionsLocal, tasks, disableUpdates, publicUsers]);
+  }, [
+    dispatch,
+    roadmapsVersionsLocal,
+    tasks,
+    disableUpdates,
+    publicUsers,
+    currentRoadmap,
+  ]);
 
   const addVersion = () => {
     dispatch(
