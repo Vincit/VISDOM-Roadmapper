@@ -2,13 +2,13 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
-import { app } from './setuptests';
+import { app, loggedInAgent } from './setuptests';
 chai.use(chaiHttp);
 
 describe('Test /roadmaps/ api', function () {
   describe('GET /roadmaps/', function () {
     it('Should return all roadmaps', async function () {
-      const res = await chai.request(app).get('/roadmaps/');
+      const res = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
       expect(res.body[0]).to.have.property('id');
@@ -18,7 +18,7 @@ describe('Test /roadmaps/ api', function () {
     });
 
     it('Should return all roadmaps, eager loaded', async function () {
-      const res = await chai.request(app).get('/roadmaps?eager=1');
+      const res = await loggedInAgent.get('/roadmaps?eager=1');
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
       expect(res.body[0]).to.have.property('id');
@@ -39,13 +39,12 @@ describe('Test /roadmaps/ api', function () {
 
   describe('POST /roadmaps/', function () {
     it('Should add new roadmap', async function () {
-      const before = await chai.request(app).get('/roadmaps/');
-      const res = await chai
-        .request(app)
+      const before = await loggedInAgent.get('/roadmaps/');
+      const res = await loggedInAgent
         .post('/roadmaps/')
         .type('json')
         .send({ name: 'TestRoadmap', description: 'TestDescription' });
-      const after = await chai.request(app).get('/roadmaps/');
+      const after = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(200);
       expect(before.body.length + 1).to.equal(after.body.length);
       const addedRoadmap = after.body.find(
@@ -58,12 +57,11 @@ describe('Test /roadmaps/ api', function () {
   describe('PATCH /roadmaps/', function () {
     it('Should patch roadmap', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const res = await chai
-        .request(app)
+      const res = await loggedInAgent
         .patch('/roadmaps/' + firstRoadmapId)
         .type('json')
         .send({ name: 'patchedname', description: 'patcheddesc' });
-      const after = await chai.request(app).get('/roadmaps/');
+      const after = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(200);
       const patchedRoadmap = after.body.find(
         (rm: any) => rm.name == 'patchedname',
@@ -75,10 +73,10 @@ describe('Test /roadmaps/ api', function () {
 
   describe('DELETE /roadmaps/', function () {
     it('Should delete roadmap', async function () {
-      const before = await chai.request(app).get('/roadmaps/');
+      const before = await loggedInAgent.get('/roadmaps/');
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const res = await chai.request(app).delete('/roadmaps/' + firstRoadmapId);
-      const after = await chai.request(app).get('/roadmaps/');
+      const res = await loggedInAgent.delete('/roadmaps/' + firstRoadmapId);
+      const after = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(200);
       expect(before.body.length - 1).to.equal(after.body.length);
     });
@@ -87,9 +85,9 @@ describe('Test /roadmaps/ api', function () {
   describe('GET /roadmaps/:id/tasks', function () {
     it('Should get roadmaps tasks', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const res = await chai
-        .request(app)
-        .get('/roadmaps/' + firstRoadmapId + '/tasks?eager=1');
+      const res = await loggedInAgent.get(
+        '/roadmaps/' + firstRoadmapId + '/tasks?eager=1',
+      );
 
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
@@ -108,11 +106,10 @@ describe('Test /roadmaps/ api', function () {
     it('Should add new task to roadmap', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstUserId = (await User.query().first()).id;
-      const before = await chai
-        .request(app)
-        .get('/roadmaps/' + firstRoadmapId + '/tasks?eager=1');
-      const res = await chai
-        .request(app)
+      const before = await loggedInAgent.get(
+        '/roadmaps/' + firstRoadmapId + '/tasks?eager=1',
+      );
+      const res = await loggedInAgent
         .post('/roadmaps/' + firstRoadmapId + '/tasks')
         .type('json')
         .send({
@@ -120,9 +117,9 @@ describe('Test /roadmaps/ api', function () {
           description: 'testdesc',
           createdByUser: firstUserId,
         });
-      const after = await chai
-        .request(app)
-        .get('/roadmaps/' + firstRoadmapId + '/tasks?eager=1');
+      const after = await loggedInAgent.get(
+        '/roadmaps/' + firstRoadmapId + '/tasks?eager=1',
+      );
 
       expect(res.status).to.equal(200);
       expect(before.body.length + 1).to.equal(after.body.length);
