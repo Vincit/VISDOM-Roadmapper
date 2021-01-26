@@ -91,6 +91,10 @@ export interface PublicUserRequest {
   customerValue?: number;
 }
 
+export interface GetRoadmapBoardsRequest {
+  roadmapId: number;
+}
+
 export interface ImportBoardRequest {
   boardId: number;
   createdByUser: number;

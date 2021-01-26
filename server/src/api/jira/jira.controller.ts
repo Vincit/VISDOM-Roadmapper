@@ -1,3 +1,4 @@
+import JiraApi from 'jira-client';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import {
   authorizationURL,
@@ -5,10 +6,38 @@ import {
 } from '../../utils/jiraauthentication';
 import { jiraApi } from '../../utils/jiraclient';
 import JiraConfiguration from '../jiraconfigurations/jiraconfigurations.model';
+import Roadmap from '../roadmaps/roadmaps.model';
 import Task from '../tasks/tasks.model';
 import Token from '../tokens/tokens.model';
+import User from '../users/users.model';
+
+const buildJiraClientForRoadmap = (jiraconfig: JiraConfiguration, user: User) => {
+  const requestToken = user.tokens.find((token) => {
+    return token.provider === 'jira' && token.type === 'Bearer' && token.instance === jiraconfig.url;
+  });
+  if(!requestToken) {
+    throw "Missing Jira request token.";
+  }
+
+  return new JiraApi({
+    protocol: 'https',
+    host: jiraconfig.url,
+    apiVersion: '2',
+    strictSSL: true,
+    bearer: requestToken.value,
+  });
+};
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
+  const roadmapId = ctx.params.id;
+  const roadmap = await Roadmap.query().withGraphFetched('[jiraconfiguration]').findById(roadmapId);
+  if(!roadmap || !roadmap.jiraconfiguration) {
+    throw "Missing Roadmap or JiraConfiguration.";
+  }
+
+  const user = await User.query().withGraphFetched('[tokens]').findById(parseInt(ctx.state.user.id, 10));
+
+  const jiraApi = buildJiraClientForRoadmap(roadmap.jiraconfiguration, user);
   const boards = await jiraApi.getAllBoards();
   ctx.body = boards.values.map((board: any) => {
     return {

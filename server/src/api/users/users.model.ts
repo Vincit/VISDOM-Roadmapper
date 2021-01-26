@@ -100,7 +100,7 @@ export default class User extends Password(Model) {
         modelClass: Token,
         join: {
           from: 'users.id',
-          to: 'tokens.id',
+          to: 'tokens.user',
         },
       },
     };

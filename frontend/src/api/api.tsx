@@ -17,6 +17,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  GetRoadmapBoardsRequest,
 } from '../redux/roadmaps/types';
 import { JiraBoard } from '../redux/types';
 import {
@@ -148,8 +149,8 @@ const patchUser = async (user: PublicUserRequest) => {
   return response.data as PublicUser;
 };
 
-const getJiraBoards = async () => {
-  const response = await axios.get('/jira/boards');
+const getJiraBoards = async (request: GetRoadmapBoardsRequest) => {
+  const response = await axios.get(`/jira/boards/${request.roadmapId}`);
   return response.data as JiraBoard[];
 };
 
