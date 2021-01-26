@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { api } from '../../api/api';
 import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
@@ -12,7 +13,6 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
-import { useSelector } from 'react-redux';
 import { chosenJiraconfigurationSelector } from '../../redux/roadmaps/selectors';
 
 export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
@@ -27,22 +27,28 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   const [formValues, setFormValues] = useState({
     token: '',
-    token_secret: '',
+    tokenSecret: '',
     oauthVerifierCode: '',
   });
 
   useEffect(() => {
     const getOAuthURL = async () => {
-      const response = await api.getJiraOauthURL({
-        id: currentJiraConfiguration.id,
-      });
-      let token = response.token;
-      let token_secret = response.token_secret;
-      setFormValues({ ...formValues, token, token_secret });
-      setOAuthURL(response.url);
+      try {
+        const response = await api.getJiraOauthURL({
+          id: currentJiraConfiguration.id,
+        });
+        const { token, tokenSecret } = response;
+        setFormValues({ ...formValues, token, tokenSecret });
+        setOAuthURL(response.url);
+      } catch (error) {
+        setErrorMessage(
+          'Unable to query Jira OAuth URL. Please contact an administrator if the problem persists.',
+        );
+      }
     };
+
     getOAuthURL();
-  }, []);
+  }, [currentJiraConfiguration.id]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -57,7 +63,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
           id: currentJiraConfiguration.id,
           verifierToken: formValues.oauthVerifierCode,
           token: formValues.token,
-          token_secret: formValues.token_secret,
+          tokenSecret: formValues.tokenSecret,
         });
         setIsLoading(false);
 

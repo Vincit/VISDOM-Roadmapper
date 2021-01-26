@@ -1,5 +1,9 @@
 export interface JiraOAuthURLResponse {
-    url: String;
-    token: String;
-    token_secret: String;
+    url: string;
+    token: string;
+    token_secret: string;
+}
+
+export interface JiraOAuthRequestTokenResponse {
+    token: string;
 }
