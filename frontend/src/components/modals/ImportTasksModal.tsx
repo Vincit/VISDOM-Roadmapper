@@ -41,12 +41,12 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   useEffect(() => {
     const getJiraBoards = async () => {
-      const boards = await api.getJiraBoards();
+      const boards = await api.getJiraBoards({ roadmapId: chosenRoadmapId! });
       setJiraBoards(boards);
       setLoadedBoards(true);
     };
     getJiraBoards();
-  }, []);
+  }, [chosenRoadmapId]);
 
   useEffect(() => {
     if (jiraBoards.length > 0) {

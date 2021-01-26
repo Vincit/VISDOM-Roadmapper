@@ -17,6 +17,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  GetRoadmapBoardsRequest,
 } from '../redux/roadmaps/types';
 import { JiraBoard } from '../redux/types';
 import { UserInfo, UserLoginRequest } from '../redux/user/types';
@@ -144,8 +145,8 @@ const patchUser = async (user: PublicUserRequest) => {
   return response.data as PublicUser;
 };
 
-const getJiraBoards = async () => {
-  const response = await axios.get('/jira/boards');
+const getJiraBoards = async (request: GetRoadmapBoardsRequest) => {
+  const response = await axios.get(`/jira/boards/${request.roadmapId}`);
   return response.data as JiraBoard[];
 };
 
@@ -155,7 +156,9 @@ const importJiraBoard = async (request: ImportBoardRequest) => {
 };
 
 const getJiraOauthURL = async (jiraconfiguration: JiraOAuthURLRequest) => {
-  const response = await axios.get(`/jira/oauthauthorizationurl/${jiraconfiguration.id}`);
+  const response = await axios.get(
+    `/jira/oauthauthorizationurl/${jiraconfiguration.id}`,
+  );
   return response.data as JiraOAuthURLResponse;
 };
 
@@ -164,13 +167,20 @@ const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
   return true;
 };
 
-const addJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest) => {
+const addJiraconfiguration = async (
+  jiraconfiguration: JiraConfigurationRequest,
+) => {
   const response = await axios.post('/jiraconfigurations', jiraconfiguration);
   return response.data as JiraConfiguration;
 };
 
-const patchJiraconfiguration = async (jiraconfiguration: JiraConfigurationRequest) => {
-  const response = await axios.patch(`/jiraconfigurations/${jiraconfiguration.id}`, jiraconfiguration);
+const patchJiraconfiguration = async (
+  jiraconfiguration: JiraConfigurationRequest,
+) => {
+  const response = await axios.patch(
+    `/jiraconfigurations/${jiraconfiguration.id}`,
+    jiraconfiguration,
+  );
   return response.data as JiraConfiguration;
 };
 
