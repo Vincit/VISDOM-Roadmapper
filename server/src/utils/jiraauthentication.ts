@@ -1,6 +1,5 @@
-import fs from 'fs';
 import JiraClient from 'jira-connector';
-import { JiraOAuthURLResponse } from '../types/jiraTypes';
+import { JiraOAuthURLResponse, JiraOAuthRequestTokenResponse } from '../types/jiraTypes';
 import NodeRSA from 'node-rsa';
 
 const PRIVATE_KEY_EXPORT_FORMAT = 'pkcs1';
@@ -39,7 +38,7 @@ const swapJiraOAuthToken = async (
   oauthToken: string,
   oauthSecret: string,
   oauthVerifier: string,
-): Promise<JiraOAuthURLResponse> => {
+): Promise<JiraOAuthRequestTokenResponse> => {
   const pkey = new NodeRSA();
   pkey.importKey(privatekey);
 
@@ -59,7 +58,9 @@ const swapJiraOAuthToken = async (
         if (error) {
           reject(error);
         } else {
-          resolve(oauth);
+          resolve({
+            token: oauth,
+          });
         }
       },
     );

@@ -99,7 +99,7 @@ export interface ImportBoardRequest {
 export interface JiraOAuthURLResponse {
   url: URL;
   token: string;
-  token_secret: string;
+  tokenSecret: string;
 }
 
 export interface JiraOAuthURLRequest {
@@ -110,7 +110,7 @@ export interface JiraTokenSwapRequest {
   id: number;
   verifierToken: string;
   token: string;
-  token_secret: string;
+  tokenSecret: string;
 }
 
 export interface JiraConfigurationRequest {

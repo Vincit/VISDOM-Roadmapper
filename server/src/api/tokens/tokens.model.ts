@@ -1,9 +1,10 @@
 import { Model } from 'objection';
 import User from './../users/users.model';
 
-export default class JiraConfiguration extends Model {
+export default class Token extends Model {
   id!: number;
   provider!: string;
+  instance!: string;
   type!: string;
   value!: string;
 
@@ -18,6 +19,7 @@ export default class JiraConfiguration extends Model {
     properties: {
       id: { type: 'integer' },
       provider: { type: 'string', minLength: 1, maxLength: 75 },
+      instance: { type: 'string', minLength: 1, maxLength: 75 },
       type: { type: 'string', minLength: 1, maxLength: 75 },
       value: { type: 'string', minLength: 1, maxLength: 250 },
       userId: { type: 'integer' },

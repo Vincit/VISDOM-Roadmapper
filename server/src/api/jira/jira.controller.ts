@@ -6,6 +6,7 @@ import {
 import { jiraApi } from '../../utils/jiraclient';
 import JiraConfiguration from '../jiraconfigurations/jiraconfigurations.model';
 import Task from '../tasks/tasks.model';
+import Token from '../tokens/tokens.model';
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
   const boards = await jiraApi.getAllBoards();
@@ -65,12 +66,12 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
     ctx.body = {
       url: oauthResponse.url,
       token: oauthResponse.token,
-      token_secret: oauthResponse.token_secret,
+      tokenSecret: oauthResponse.token_secret,
     };
     ctx.status = 200;
   } catch (error) {
     ctx.body = {
-      error: 'Error in getting Jira OAuth authorization URL.',
+      error: 'Error in getting Jira OAuth authorization URL: ' + error,
     };
     ctx.status = 500;
   }
@@ -78,8 +79,8 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
 
 export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
   const { verifierToken, token, token_secret } = ctx.request.body;
+
   try {
-    // TODO: Save swapped token to user session.
     const jiraconfiguration = await JiraConfiguration.query().findById(
       ctx.params.id,
     );
@@ -90,6 +91,32 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
       token_secret,
       verifierToken,
     );
+
+    if (!oauthResponse || !oauthResponse.token) {
+      throw 'Empty response on authorization token swap.';
+    }
+
+    const newToken = {
+      provider: 'jira',
+      instance: jiraconfiguration.url,
+      type: 'Bearer',
+      user: parseInt(ctx.state.user.id, 10),
+      value: oauthResponse.token,
+    };
+
+    // TODO: Extract providers and token types somewhere to avoid magic numbers.
+    const existing = await Token.query()
+      .where('tokens.user', newToken.user)
+      .where('provider', newToken.provider)
+      .where('instance', newToken.instance)
+      .where('type', newToken.type)
+      .first();
+    if (existing) {
+      await Token.query().patchAndFetchById(existing.id, newToken);
+    } else {
+      await Token.query().insert(newToken);
+    }
+
     ctx.status = 200;
     ctx.body = 'OAuth token swapped successfully.';
   } catch (error) {
