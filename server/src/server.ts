@@ -18,7 +18,6 @@ import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
 
 Dotenv.config();
-
 export const knex = Knex(knexConfig);
 
 const createServer = async () => {
