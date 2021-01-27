@@ -1,43 +1,47 @@
-import JiraApi from 'jira-client';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import {
   authorizationURL,
   swapOAuthToken,
+  createJiraClient,
+  insertOrUpdateToken,
 } from '../../utils/jiraauthentication';
-import { jiraApi } from '../../utils/jiraclient';
 import JiraConfiguration from '../jiraconfigurations/jiraconfigurations.model';
 import Roadmap from '../roadmaps/roadmaps.model';
 import Task from '../tasks/tasks.model';
-import Token from '../tokens/tokens.model';
 import User from '../users/users.model';
 
-const buildJiraClientForRoadmap = (jiraconfig: JiraConfiguration, user: User) => {
-  const requestToken = user.tokens.find((token) => {
-    return token.provider === 'jira' && token.type === 'Bearer' && token.instance === jiraconfig.url;
-  });
-  if(!requestToken) {
-    throw "Missing Jira request token.";
+const fetchImportUserAndRoadmap = async (
+  roadmapId: number,
+  userId: number,
+): Promise<{
+  roadmap: Roadmap;
+  user: User;
+}> => {
+  const roadmap = await Roadmap.query()
+    .withGraphFetched('[jiraconfiguration]')
+    .findById(roadmapId);
+  if (!roadmap || !roadmap.jiraconfiguration) {
+    throw 'Missing Roadmap or JiraConfiguration.';
   }
 
-  return new JiraApi({
-    protocol: 'https',
-    host: jiraconfig.url,
-    apiVersion: '2',
-    strictSSL: true,
-    bearer: requestToken.value,
-  });
+  const user = await User.query().withGraphFetched('[tokens]').findById(userId);
+
+  return {
+    roadmap: roadmap,
+    user: user,
+  };
 };
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
   const roadmapId = ctx.params.id;
-  const roadmap = await Roadmap.query().withGraphFetched('[jiraconfiguration]').findById(roadmapId);
-  if(!roadmap || !roadmap.jiraconfiguration) {
-    throw "Missing Roadmap or JiraConfiguration.";
+
+  const userId = parseInt(ctx.state.user.id, 10);
+  const { user, roadmap } = await fetchImportUserAndRoadmap(roadmapId, userId);
+  if (!roadmap || !roadmap.jiraconfiguration) {
+    throw 'Missing Roadmap or JiraConfiguration.';
   }
 
-  const user = await User.query().withGraphFetched('[tokens]').findById(parseInt(ctx.state.user.id, 10));
-
-  const jiraApi = buildJiraClientForRoadmap(roadmap.jiraconfiguration, user);
+  const jiraApi = createJiraClient(roadmap.jiraconfiguration, user);
   const boards = await jiraApi.getAllBoards();
   ctx.body = boards.values.map((board: any) => {
     return {
@@ -49,6 +53,15 @@ export const getBoards: RouteHandlerFnc = async (ctx, _) => {
 
 export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   const { boardId, roadmapId, createdByUser } = ctx.request.body;
+
+  const userId = parseInt(ctx.state.user.id, 10);
+  const { user, roadmap } = await fetchImportUserAndRoadmap(roadmapId, userId);
+  if (!roadmap || !roadmap.jiraconfiguration) {
+    throw 'Missing Roadmap or JiraConfiguration.';
+  }
+
+  const jiraApi = createJiraClient(roadmap.jiraconfiguration, user);
+
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
   const issueIds = boardissues.issues.map((issue: any) => issue.id);
   const issues = await Promise.all(
@@ -107,7 +120,7 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
-  const { verifierToken, token, token_secret } = ctx.request.body;
+  const { verifierToken, token, tokenSecret } = ctx.request.body;
 
   try {
     const jiraconfiguration = await JiraConfiguration.query().findById(
@@ -117,7 +130,7 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
       jiraconfiguration.url,
       jiraconfiguration.privatekey,
       token,
-      token_secret,
+      tokenSecret,
       verifierToken,
     );
 
@@ -125,26 +138,20 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
       throw 'Empty response on authorization token swap.';
     }
 
-    const newToken = {
+    await insertOrUpdateToken({
       provider: 'jira',
       instance: jiraconfiguration.url,
-      type: 'Bearer',
+      type: 'access_token',
       user: parseInt(ctx.state.user.id, 10),
       value: oauthResponse.token,
-    };
-
-    // TODO: Extract providers and token types somewhere to avoid magic numbers.
-    const existing = await Token.query()
-      .where('tokens.user', newToken.user)
-      .where('provider', newToken.provider)
-      .where('instance', newToken.instance)
-      .where('type', newToken.type)
-      .first();
-    if (existing) {
-      await Token.query().patchAndFetchById(existing.id, newToken);
-    } else {
-      await Token.query().insert(newToken);
-    }
+    });
+    await insertOrUpdateToken({
+      provider: 'jira',
+      instance: jiraconfiguration.url,
+      type: 'access_token_secret',
+      user: parseInt(ctx.state.user.id, 10),
+      value: tokenSecret,
+    });
 
     ctx.status = 200;
     ctx.body = 'OAuth token swapped successfully.';
