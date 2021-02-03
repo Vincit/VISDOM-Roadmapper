@@ -166,6 +166,7 @@ const getHotSwappableUsers = async () => {
 
 const hotSwapToUser = async (targetUserId: number) => {
   await axios.post('/users/hotswap', { targetUser: targetUserId });
+  return true;
 };
 
 const getJiraOauthURL = async (jiraconfiguration: JiraOAuthURLRequest) => {

@@ -13,7 +13,6 @@ import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { SideBar } from '../components/SideBar';
 import { DashboardPage } from '../pages/DashboardPage';
-import { PlannerPage } from '../pages/PlannerPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
 import { UserListPage } from '../pages/UserListPage';

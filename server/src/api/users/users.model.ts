@@ -53,6 +53,14 @@ export default class User extends Password(Model) {
           to: 'users.id',
         },
       },
+      tokens: {
+        relation: Model.HasManyRelation,
+        modelClass: Token,
+        join: {
+          from: 'users.id',
+          to: 'tokens.user',
+        },
+      },
     };
   }
 
@@ -92,17 +100,4 @@ export default class User extends Password(Model) {
       });
     },
   };
-
-  static get relationMappings() {
-    return {
-      tokens: {
-        relation: Model.HasManyRelation,
-        modelClass: Token,
-        join: {
-          from: 'users.id',
-          to: 'tokens.user',
-        },
-      },
-    };
-  }
 }
