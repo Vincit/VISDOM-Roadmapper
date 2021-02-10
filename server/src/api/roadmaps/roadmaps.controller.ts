@@ -1,27 +1,16 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Roadmap from './roadmaps.model';
-import Objection from 'objection';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
     const eagerResult = await Roadmap.query()
       .withGraphFetched(
         '[tasks.[ratings, relatedTasks(selectTaskId)], jiraconfiguration]',
-      )
-      .modifiers({
-        selectTaskId: (builder) => {
-          builder.select('tasks.id');
-        },
-      });
+      );
     ctx.body = eagerResult;
   } else {
     const eagerResult = await Roadmap.query()
-      .withGraphFetched('[tasks(selectTaskId)]')
-      .modifiers({
-        selectTaskId: (builder) => {
-          builder.select('tasks.id');
-        },
-      });
+      .withGraphFetched('[tasks(selectTaskId)]');
     ctx.body = eagerResult;
   }
 };
@@ -61,12 +50,7 @@ export const getRoadmapsTasks: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
     const eagerResult = await Roadmap.relatedQuery('tasks')
       .for(ctx.params.id)
-      .withGraphFetched('[ratings, relatedTasks(selectTaskId)]')
-      .modifiers({
-        selectTaskId: (builder: Objection.AnyQueryBuilder) => {
-          builder.select('tasks.id');
-        },
-      });
+      .withGraphFetched('[ratings, relatedTasks(selectTaskId)]');
     ctx.body = eagerResult;
   } else {
     const tasks = await Roadmap.relatedQuery('tasks')

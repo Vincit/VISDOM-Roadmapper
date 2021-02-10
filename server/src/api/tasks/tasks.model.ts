@@ -1,4 +1,4 @@
-import { Model, QueryContext } from 'objection';
+import { Model, QueryContext, AnyQueryBuilder } from 'objection';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
 import User from '../users/users.model';
@@ -38,6 +38,14 @@ export default class Task extends Model {
     if (!this.createdAt) {
       this.createdAt = new Date().toJSON();
     }
+  }
+
+  static get modifiers() {
+    return {
+      selectTaskId: (builder: AnyQueryBuilder) => {
+        builder.select('tasks.id');
+      },
+    };
   }
 
   static get relationMappings() {
