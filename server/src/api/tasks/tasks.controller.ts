@@ -13,9 +13,6 @@ export const getTasks: RouteHandlerFnc = async (ctx, _) => {
         '[ratings(selectRatingId), relatedTasks(selectTaskId), createdBy(selectUserId)]',
       )
       .modifiers({
-        selectTaskId: (builder: Objection.AnyQueryBuilder) => {
-          builder.select('tasks.id');
-        },
         selectRatingId: (builder: Objection.AnyQueryBuilder) => {
           builder.select('taskratings.id');
         },
