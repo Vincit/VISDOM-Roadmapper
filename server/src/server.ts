@@ -53,20 +53,20 @@ const createServer = async () => {
   app.use(koaBodyParser());
 
   const rootRouter = new KoaRouter<DefaultState, Context>();
-  rootRouter.use(userRouter.routes());
-  rootRouter.use(userRouter.allowedMethods());
-  rootRouter.use(roadmapRouter.routes());
-  rootRouter.use(roadmapRouter.allowedMethods());
-  rootRouter.use(tasksRouter.routes());
-  rootRouter.use(tasksRouter.allowedMethods());
-  rootRouter.use(taskratingRouter.routes());
-  rootRouter.use(taskratingRouter.allowedMethods());
-  rootRouter.use(versionsRouter.routes());
-  rootRouter.use(versionsRouter.allowedMethods());
-  rootRouter.use(jiraRouter.routes());
-  rootRouter.use(jiraRouter.allowedMethods());
-  rootRouter.use(jiraConfigurationRouter.routes());
-  rootRouter.use(jiraConfigurationRouter.allowedMethods());
+  rootRouter.use('/api', userRouter.routes());
+  rootRouter.use('/api', userRouter.allowedMethods());
+  rootRouter.use('/api', roadmapRouter.routes());
+  rootRouter.use('/api', roadmapRouter.allowedMethods());
+  rootRouter.use('/api', tasksRouter.routes());
+  rootRouter.use('/api', tasksRouter.allowedMethods());
+  rootRouter.use('/api', taskratingRouter.routes());
+  rootRouter.use('/api', taskratingRouter.allowedMethods());
+  rootRouter.use('/api', versionsRouter.routes());
+  rootRouter.use('/api', versionsRouter.allowedMethods());
+  rootRouter.use('/api', jiraRouter.routes());
+  rootRouter.use('/api', jiraRouter.allowedMethods());
+  rootRouter.use('/api', jiraConfigurationRouter.routes());
+  rootRouter.use('/api', jiraConfigurationRouter.allowedMethods());
   rootRouter.get('/', (ctx, next) => {
     ctx.status = 200;
     ctx.body = '';
