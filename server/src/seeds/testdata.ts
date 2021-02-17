@@ -132,6 +132,20 @@ const createTestUsers = async () => {
     type: UserType.AdminUser,
     password: 'test',
   });
+  await User.query().insert({
+    username: 'TokenUser1',
+    authToken: '61682a02-47aa-4f64-b290-a6958a2beb7b',
+    type: UserType.TokenUser,
+    email: 'dummy1',
+    password: 'dummy1',
+  });
+  await User.query().insert({
+    username: 'TokenUser2',
+    type: UserType.TokenUser,
+    authToken: '21682a02-47aa-4f64-b290-a6958a2beb7b',
+    email: 'dummy2',
+    password: 'dummy2',
+  });
 
   await adminPerson1
     .$relatedQuery('hotSwappableUsers')

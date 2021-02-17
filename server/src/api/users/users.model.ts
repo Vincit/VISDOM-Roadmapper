@@ -12,6 +12,7 @@ export default class User extends Password(Model) {
   password!: string;
   customerValue!: number;
   hotSwappableUsers?: User[];
+  authToken!: string;
 
   tokens!: Token[];
 
@@ -34,6 +35,7 @@ export default class User extends Password(Model) {
           UserType.DeveloperUser,
           UserType.CustomerUser,
           UserType.AdminUser,
+          UserType.TokenUser,
         ],
       },
     },
@@ -80,6 +82,7 @@ export default class User extends Password(Model) {
      */
     delete json.password;
     delete json.tokens;
+    delete json.authToken;
     return json;
   }
 
