@@ -22,7 +22,7 @@ userRouter.delete('/users/:id', requireAuth, deleteUsers);
 
 userRouter.post('/users/login', loginUser);
 userRouter.get('/users/logout', logoutUser);
-userRouter.get('/users/whoami', getCurrentUser);
+userRouter.get('/users/whoami', requireAuth, getCurrentUser);
 userRouter.get('/users/hotswappableusers', requireAuth, getHotSwappableUsers);
 userRouter.post('/users/hotswap', requireAuth, hotswapUser);
 

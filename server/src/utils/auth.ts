@@ -1,5 +1,6 @@
 import passport from 'koa-passport';
 import * as passportLocal from 'passport-local';
+import TokenStrategy from 'passport-auth-token';
 import User from '../api/users/users.model';
 
 const fetchUserById = async (id: number) => {
@@ -8,6 +9,10 @@ const fetchUserById = async (id: number) => {
 
 const fetchUserByName = async (username: string) => {
   return await User.query().modify('searchByUsernameExact', username).first();
+};
+
+const fetchUserByToken = async (token: string) => {
+  return await User.query().where('authToken', token).first();
 };
 
 const addAuthToPassport = () => {
@@ -23,6 +28,17 @@ const addAuthToPassport = () => {
       done(err, false);
     }
   });
+
+  passport.use(
+    new TokenStrategy(async (token, done) => {
+      try {
+        const user = await fetchUserByToken(token);
+        done(null, user ? user : false);
+      } catch (err) {
+        done(err, false);
+      }
+    }),
+  );
 
   const LocalStrategy = passportLocal.Strategy;
   passport.use(

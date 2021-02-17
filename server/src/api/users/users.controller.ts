@@ -63,11 +63,7 @@ export const logoutUser: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
-  if (ctx.isAuthenticated()) {
-    ctx.body = ctx.state.user;
-  } else {
-    ctx.status = 401;
-  }
+  ctx.body = ctx.state.user;
 };
 
 export const getHotSwappableUsers: RouteHandlerFnc = async (ctx, _) => {
