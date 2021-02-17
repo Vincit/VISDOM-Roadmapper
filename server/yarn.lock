@@ -399,6 +399,15 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.5.tgz#3d03acd3b3414cf67faf999aed11682ed121f22b"
   integrity sha512-90hiq6/VqtQgX8Sp0EzeIsv3r+ellbGj4URKj5j30tLlZvRUpnAe9YbYnjl3pJM93GyXU0tghHhvXHq+5rnCKA==
 
+"@types/passport-auth-token@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/passport-auth-token/-/passport-auth-token-1.0.0.tgz#917cb317e0f989638a5c558a8c8e2eafac084fa0"
+  integrity sha512-MQxLz7BgUZ9Q3NS5ZdwxeriLOslhhoH1tVc23g1yo7CZipWnzEaYdGUJqrHOpzw6MOzslhSvF0zQ5agC4nujBQ==
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
+    "@types/passport-strategy" "*"
+
 "@types/passport-local@^1.0.33":
   version "1.0.33"
   resolved "https://registry.yarnpkg.com/@types/passport-local/-/passport-local-1.0.33.tgz#d245b60c5b801cb3aeca1ffab557d5fe1534260d"
@@ -3249,6 +3258,13 @@ pascalcase@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
+
+passport-auth-token@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/passport-auth-token/-/passport-auth-token-1.0.1.tgz#1026588af258058fe6a471da5c64b8698e16e06a"
+  integrity sha1-ECZYivJYBY/mpHHaXGS4aY4W4Go=
+  dependencies:
+    passport-strategy "1.x.x"
 
 passport-local@^1.0.0:
   version "1.0.0"
