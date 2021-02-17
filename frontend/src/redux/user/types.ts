@@ -25,6 +25,7 @@ export enum UserType {
   DeveloperUser = 1,
   CustomerUser = 2,
   AdminUser = 3,
+  TokenUser = 4,
 }
 
 export interface HotSwappableUser {
