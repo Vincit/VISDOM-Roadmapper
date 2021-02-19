@@ -13,7 +13,6 @@ import { i18config } from './i18/config';
 import { MainRouter } from './routers/MainRouter';
 
 i18n.use(initReactI18next).init(i18config);
-
 export const App = () => {
   return (
     <>
