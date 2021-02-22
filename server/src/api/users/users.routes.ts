@@ -1,4 +1,4 @@
-import { requireAuth } from './../../utils/requireAuth';
+import { requireAuth, requireLoginSession } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import {
   getUsers,
@@ -23,7 +23,17 @@ userRouter.delete('/users/:id', requireAuth, deleteUsers);
 userRouter.post('/users/login', loginUser);
 userRouter.get('/users/logout', logoutUser);
 userRouter.get('/users/whoami', requireAuth, getCurrentUser);
-userRouter.get('/users/hotswappableusers', requireAuth, getHotSwappableUsers);
-userRouter.post('/users/hotswap', requireAuth, hotswapUser);
+userRouter.get(
+  '/users/hotswappableusers',
+  requireAuth,
+  requireLoginSession,
+  getHotSwappableUsers,
+);
+userRouter.post(
+  '/users/hotswap',
+  requireAuth,
+  requireLoginSession,
+  hotswapUser,
+);
 
 export default userRouter;
