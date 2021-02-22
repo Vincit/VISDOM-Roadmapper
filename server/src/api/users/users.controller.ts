@@ -67,11 +67,6 @@ export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const getHotSwappableUsers: RouteHandlerFnc = async (ctx, _) => {
-  if (!ctx.isAuthenticated()) {
-    ctx.status = 401;
-    ctx.body = 'Authentication required';
-    return;
-  }
   const hotSwappableUsers = await User.relatedQuery('hotSwappableUsers').for(
     User.query().where('id', ctx.session!.originalUserId),
   );
