@@ -11,34 +11,25 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
     await next();
   } catch (err) {
     if (err instanceof ValidationError) {
-      let message = '';
-      let errorCount = 0;
+      const errors = [];
       for (let column of Object.keys(err.data)) {
         for (let columnErr of err.data[column]) {
-          if (errorCount > 0) message += '\n';
-          message += `"${column}" ` + columnErr.message;
-          errorCount += 1;
+          errors.push(`"${column}" ${columnErr.message}`);
         }
       }
 
       ctx.status = 400;
       ctx.body = {
         error: 'ValidationError',
-        message: message,
+        message: errors.join('\n'),
       };
     } else if (err instanceof UniqueViolationError) {
-      let message = '';
-      let errorCount = 0;
-      for (let column of err.columns) {
-        if (errorCount > 0) message += '\n';
-        message += `"${column}" must be unique.`;
-        errorCount += 1;
-      }
+      const errors = err.columns.map((column) => `"${column}" must be unique.`);
 
       ctx.status = 400;
       ctx.body = {
         error: 'UniqueViolationError',
-        message: message,
+        message: errors.join('\n'),
       };
     } else if (err instanceof SyntaxError) {
       ctx.status = 400;
@@ -56,7 +47,7 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       ctx.status = 400;
       ctx.body = {
         error: 'NotNullViolationError',
-        message: err.column + ' is required',
+        message: `${err.column} is required`,
       };
     } else {
       console.log(err);
