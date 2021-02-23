@@ -32,16 +32,20 @@ const fetchImportUserAndRoadmap = async (
   };
 };
 
+const jiraClientForRoadmapAndUser = async (
+  roadmapId: number,
+  userId: number,
+) => {
+  const { user, roadmap } = await fetchImportUserAndRoadmap(roadmapId, userId);
+  return createJiraClient(roadmap.jiraconfiguration!, user);
+};
+
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
   const roadmapId = ctx.params.id;
 
   const userId = parseInt(ctx.state.user.id, 10);
-  const { user, roadmap } = await fetchImportUserAndRoadmap(roadmapId, userId);
-  if (!roadmap || !roadmap.jiraconfiguration) {
-    throw 'Missing Roadmap or JiraConfiguration.';
-  }
+  const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
-  const jiraApi = createJiraClient(roadmap.jiraconfiguration, user);
   const boards = await jiraApi.getAllBoards();
   ctx.body = boards.values.map((board: any) => {
     return {
@@ -55,12 +59,7 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   const { boardId, roadmapId, createdByUser } = ctx.request.body;
 
   const userId = parseInt(ctx.state.user.id, 10);
-  const { user, roadmap } = await fetchImportUserAndRoadmap(roadmapId, userId);
-  if (!roadmap || !roadmap.jiraconfiguration) {
-    throw 'Missing Roadmap or JiraConfiguration.';
-  }
-
-  const jiraApi = createJiraClient(roadmap.jiraconfiguration, user);
+  const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
   const issueIds = boardissues.issues.map((issue: any) => issue.id);
