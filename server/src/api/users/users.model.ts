@@ -25,8 +25,9 @@ export default class User extends Password(Model) {
     properties: {
       id: { type: 'integer' },
       username: { type: 'string', minLength: 1, maxLength: 255 },
-      email: { type: 'string', minLength: 1, maxLength: 255 },
+      email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
       password: { type: 'string', minLength: 1, maxLength: 255 },
+      authToken: { type: 'string', format: 'uuid' },
       customerValue: { type: 'integer', minimum: 0 },
       type: {
         type: 'integer',
