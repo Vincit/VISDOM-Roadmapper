@@ -1,11 +1,5 @@
 import { Context } from 'koa';
 import passport from 'koa-passport';
-import {
-  ValidationError,
-  UniqueViolationError,
-  ForeignKeyViolationError,
-  NotNullViolationError,
-} from 'objection';
 
 export const requireAuth = async (ctx: Context, next: () => Promise<any>) => {
   return passport.authenticate('authtoken', async (_err, user, _info) => {
