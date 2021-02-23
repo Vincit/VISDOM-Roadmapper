@@ -66,15 +66,15 @@ export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = ctx.state.user;
 };
 
-export const getHotSwappableUsers: RouteHandlerFnc = async (ctx, _) => {
-  const hotSwappableUsers = await User.relatedQuery('hotSwappableUsers').for(
-    User.query().where('id', ctx.session!.originalUserId),
-  );
-  hotSwappableUsers.push(
-    await User.query().where('id', ctx.session!.originalUserId).first(),
-  );
+const hotSwappableUsers = async (id: number) => {
+  const users = await User.relatedQuery('hotSwappableUsers').for(id);
+  users.push(await User.query().where('id', id).first());
+  return users;
+};
 
-  const idsAndNames = hotSwappableUsers.map((user) => {
+export const getHotSwappableUsers: RouteHandlerFnc = async (ctx, _) => {
+  const users = await hotSwappableUsers(ctx.session!.originalUserId);
+  const idsAndNames = users.map((user) => {
     return {
       id: user.id,
       username: user.username,
@@ -100,15 +100,10 @@ export const hotswapUser: RouteHandlerFnc = async (ctx, _) => {
     return;
   }
 
-  //Verify that it is possible to hot swap to given user
-  const hotSwappableUsers = await User.relatedQuery('hotSwappableUsers').for(
-    User.query().where('id', ctx.session!.originalUserId),
-  );
-  hotSwappableUsers.push(
-    await User.query().where('id', ctx.session!.originalUserId).first(),
-  );
+  // Verify that it is possible to hot swap to given user
+  const users = await hotSwappableUsers(ctx.session!.originalUserId);
+  const foundUser = users.find((user) => user.id === targetUserId);
 
-  const foundUser = hotSwappableUsers.find((user) => user.id === targetUserId);
   if (!foundUser) {
     ctx.status = 401;
     ctx.body = 'Hotswap to target user not allowed';
