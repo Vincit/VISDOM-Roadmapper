@@ -30,14 +30,21 @@ const addAuthToPassport = () => {
   });
 
   passport.use(
-    new TokenStrategy(async (token, done) => {
-      try {
-        const user = await fetchUserByToken(token);
-        done(null, user ? user : false);
-      } catch (err) {
-        done(err, false);
-      }
-    }),
+    new TokenStrategy(
+      {
+        headerFields: ['authorization'],
+        session: false,
+        caseInsensitive: true,
+      },
+      async (token, done) => {
+        try {
+          const user = await fetchUserByToken(token.replace(/^bearer +/i, ''));
+          done(null, user ? user : false);
+        } catch (err) {
+          done(err, false);
+        }
+      },
+    ),
   );
 
   const LocalStrategy = passportLocal.Strategy;
