@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import Select from 'react-select';
 import { api } from '../../api/api';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
@@ -25,7 +26,11 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [jiraBoards, setJiraBoards] = useState<JiraBoard[]>([]);
-  const [selectedBoardId, setSelectedBoardId] = useState(0);
+  const [selectedBoardId, setSelectedBoardId] = useState<number | undefined>();
+  const [availableLabels, setAvailableLabels] = useState<
+    string[] | undefined
+  >();
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [loadedBoards, setLoadedBoards] = useState(false);
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
@@ -49,12 +54,28 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
   }, [chosenRoadmapId]);
 
   useEffect(() => {
+    const getLabels = async () => {
+      const labels = await api.getJiraBoardLabels({
+        roadmapId: chosenRoadmapId!,
+        boardId: selectedBoardId!,
+      });
+      setSelectedLabels([]);
+      setAvailableLabels(labels);
+    };
+    if (selectedBoardId !== undefined) {
+      getLabels();
+    }
+  }, [selectedBoardId, chosenRoadmapId]);
+
+  useEffect(() => {
     if (jiraBoards.length > 0) {
       setSelectedBoardId(jiraBoards[0].id);
     }
   }, [jiraBoards]);
 
-  const handleSelectBoardChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectBoardChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     setSelectedBoardId(parseInt(e.target.value, 10));
   };
 
@@ -68,9 +89,12 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
 
       dispatch(
         roadmapsActions.importJiraBoard({
-          boardId: selectedBoardId,
+          boardId: selectedBoardId!,
           createdByUser: userInfo!.id,
           roadmapId: chosenRoadmapId!,
+          filters: {
+            labels: selectedLabels,
+          },
         }),
       ).then((res) => {
         setIsLoading(false);
@@ -97,17 +121,33 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
           {loadedBoards ? (
             <>
               {jiraBoards.length > 0 ? (
-                <select
-                  name="board"
-                  id="board"
-                  onChange={handleSelectBoardChange}
-                >
-                  {jiraBoards.map((board) => (
-                    <option key={board.id} value={board.id}>
-                      {board.name}
-                    </option>
-                  ))}
-                </select>
+                <>
+                  <select
+                    name="board"
+                    id="board"
+                    onChange={handleSelectBoardChange}
+                  >
+                    {jiraBoards.map((board) => (
+                      <option key={board.id} value={board.id}>
+                        {board.name}
+                      </option>
+                    ))}
+                  </select>
+                  <Select
+                    placeholder="Select labels to include"
+                    isMulti
+                    isSearchable
+                    isClearable
+                    onChange={(selected) =>
+                      setSelectedLabels(selected.map(({ value }) => value))
+                    }
+                    isLoading={availableLabels === undefined}
+                    options={availableLabels?.map((label) => ({
+                      value: label,
+                      label,
+                    }))}
+                  />
+                </>
               ) : (
                 <p>No boards available</p>
               )}
