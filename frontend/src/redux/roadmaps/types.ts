@@ -95,10 +95,18 @@ export interface GetRoadmapBoardsRequest {
   roadmapId: number;
 }
 
+export interface GetRoadmapBoardLabelsRequest {
+  roadmapId: number;
+  boardId: number;
+}
+
 export interface ImportBoardRequest {
   boardId: number;
   createdByUser: number;
   roadmapId: number;
+  filters?: {
+    labels?: string[];
+  };
 }
 
 export interface PlannerUserWeight {

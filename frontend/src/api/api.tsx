@@ -18,6 +18,7 @@ import {
   TaskratingRequest,
   TaskRequest,
   GetRoadmapBoardsRequest,
+  GetRoadmapBoardLabelsRequest,
 } from '../redux/roadmaps/types';
 import { JiraBoard } from '../redux/types';
 import {
@@ -154,6 +155,13 @@ const getJiraBoards = async (request: GetRoadmapBoardsRequest) => {
   return response.data as JiraBoard[];
 };
 
+const getJiraBoardLabels = async (request: GetRoadmapBoardLabelsRequest) => {
+  const response = await axios.get(
+    `/jira/boards/${request.roadmapId}/labels/${request.boardId}`,
+  );
+  return response.data as string[];
+};
+
 const importJiraBoard = async (request: ImportBoardRequest) => {
   await axios.post('/jira/importboard', request);
   return true;
@@ -219,6 +227,7 @@ export const api = {
   deleteVersion,
   patchUser,
   getJiraBoards,
+  getJiraBoardLabels,
   importJiraBoard,
   hotSwapToUser,
   getHotSwappableUsers,
