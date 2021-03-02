@@ -73,12 +73,6 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
     }
   }, [jiraBoards]);
 
-  const handleSelectBoardChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSelectedBoardId(parseInt(e.target.value, 10));
-  };
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -120,37 +114,47 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
           <label htmlFor="board">Select JIRA board:</label>
           {loadedBoards ? (
             <>
-              {jiraBoards.length > 0 ? (
-                <>
-                  <select
-                    name="board"
-                    id="board"
-                    onChange={handleSelectBoardChange}
-                  >
-                    {jiraBoards.map((board) => (
-                      <option key={board.id} value={board.id}>
-                        {board.name}
-                      </option>
-                    ))}
-                  </select>
-                  <Select
-                    placeholder="Select labels to include"
-                    isMulti
-                    isSearchable
-                    isClearable
-                    onChange={(selected) =>
-                      setSelectedLabels(selected.map(({ value }) => value))
-                    }
-                    isLoading={availableLabels === undefined}
-                    options={availableLabels?.map((label) => ({
-                      value: label,
-                      label,
-                    }))}
-                  />
-                </>
-              ) : (
-                <p>No boards available</p>
-              )}
+              <Select
+                name="board"
+                id="board"
+                placeholder="No boards available"
+                isDisabled={jiraBoards.length === 0}
+                onChange={(selected) =>
+                  selected && setSelectedBoardId(selected.value)
+                }
+                defaultValue={
+                  jiraBoards.length > 0
+                    ? {
+                        value: jiraBoards[0].id,
+                        label: jiraBoards[0].name,
+                      }
+                    : null
+                }
+                options={jiraBoards.map(({ id, name }) => ({
+                  value: id,
+                  label: name,
+                }))}
+              />
+              <label htmlFor="labels" style={{ marginTop: '1em' }}>
+                Select labels to import:
+              </label>
+              <Select
+                id="labels"
+                placeholder="Import all issues"
+                isMulti
+                isClearable
+                isDisabled={selectedBoardId === undefined}
+                onChange={(selected) =>
+                  setSelectedLabels(selected.map(({ value }) => value))
+                }
+                isLoading={
+                  selectedBoardId !== undefined && availableLabels === undefined
+                }
+                options={availableLabels?.map((label) => ({
+                  value: label,
+                  label,
+                }))}
+              />
             </>
           ) : (
             <LoadingSpinner />
