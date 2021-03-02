@@ -62,10 +62,8 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
-  const issueIds = boardissues.issues.map((issue: any) => issue.id);
-  const issues = await Promise.all(
-    issueIds.map(async (id: any) => await jiraApi.findIssue(id)),
-  );
+  const issues = boardissues.issues;
+
   const importedTasks: Task[] = [];
   for (let issue of issues) {
     const convertedIssue = issue as any;
