@@ -77,14 +77,24 @@ export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = 200;
 };
 
+const filterIssues = <T>(filters: { labels?: string[] }, issues: T[]): T[] => {
+  const includeLabels = new Set(filters?.labels || []);
+  if (includeLabels.size === 0) return issues;
+  return issues.filter((issue: any) =>
+    (issue.fields.labels || []).some((label: string) =>
+      includeLabels.has(label),
+    ),
+  );
+};
+
 export const importBoard: RouteHandlerFnc = async (ctx, _) => {
-  const { boardId, roadmapId, createdByUser } = ctx.request.body;
+  const { boardId, roadmapId, createdByUser, filters } = ctx.request.body;
 
   const userId = parseInt(ctx.state.user.id, 10);
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
-  const issues = boardissues.issues;
+  const issues = filterIssues(filters, boardissues.issues);
 
   const importedTasks: Task[] = [];
   for (let issue of issues) {
