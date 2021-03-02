@@ -55,6 +55,28 @@ export const getBoards: RouteHandlerFnc = async (ctx, _) => {
   });
 };
 
+const boardLabels = async (
+  userId: number,
+  roadmapId: number,
+  boardId: string,
+): Promise<string[]> => {
+  const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
+  const boardissues = await jiraApi.getIssuesForBoard(boardId);
+  const allIssues: string[] = boardissues.issues.flatMap(
+    (issue: any): string[] => issue.fields.labels,
+  );
+  return [...new Set(allIssues)];
+};
+
+export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
+  const roadmapId = ctx.params.id;
+  const boardId = ctx.params.board;
+  const userId = parseInt(ctx.state.user.id, 10);
+  const labels = await boardLabels(userId, roadmapId, boardId);
+  ctx.body = labels;
+  ctx.status = 200;
+};
+
 export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   const { boardId, roadmapId, createdByUser } = ctx.request.body;
 

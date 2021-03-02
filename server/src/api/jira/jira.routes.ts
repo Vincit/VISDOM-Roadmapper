@@ -3,6 +3,7 @@ import KoaRouter from '@koa/router';
 import { Context, DefaultState } from 'koa';
 import {
   getBoards,
+  getBoardLabels,
   importBoard,
   getOauthAuthorizationURL,
   swapOauthAuthorizationToken,
@@ -10,6 +11,7 @@ import {
 const jiraRouter = new KoaRouter<DefaultState, Context>();
 
 jiraRouter.get('/jira/boards/:id', getBoards);
+jiraRouter.get('/jira/boards/:id/labels/:board', getBoardLabels);
 jiraRouter.post('/jira/importboard', importBoard);
 jiraRouter.get('/jira/oauthauthorizationurl/:id', getOauthAuthorizationURL);
 jiraRouter.post('/jira/swapoauthtoken/:id', swapOauthAuthorizationToken);
