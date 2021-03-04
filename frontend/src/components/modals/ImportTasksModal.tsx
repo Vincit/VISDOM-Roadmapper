@@ -140,6 +140,7 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
               </label>
               <Select
                 id="labels"
+                key={selectedBoardId}
                 placeholder="Import all issues"
                 isMulti
                 isClearable
