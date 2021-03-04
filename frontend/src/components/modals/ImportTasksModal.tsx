@@ -30,7 +30,9 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
   const [availableLabels, setAvailableLabels] = useState<
     string[] | undefined
   >();
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<Map<number, string[]>>(
+    new Map(),
+  );
   const [loadedBoards, setLoadedBoards] = useState(false);
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
@@ -59,7 +61,6 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
         roadmapId: chosenRoadmapId!,
         boardId: selectedBoardId!,
       });
-      setSelectedLabels([]);
       setAvailableLabels(labels);
     };
     if (selectedBoardId !== undefined) {
@@ -87,7 +88,7 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
           createdByUser: userInfo!.id,
           roadmapId: chosenRoadmapId!,
           filters: {
-            labels: selectedLabels,
+            labels: selectedLabels.get(selectedBoardId!),
           },
         }),
       ).then((res) => {
@@ -146,11 +147,19 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
                 isClearable
                 isDisabled={selectedBoardId === undefined}
                 onChange={(selected) =>
-                  setSelectedLabels(selected.map(({ value }) => value))
+                  setSelectedLabels(
+                    new Map(selectedLabels).set(
+                      selectedBoardId!,
+                      selected.map(({ value }) => value),
+                    ),
+                  )
                 }
                 isLoading={
                   selectedBoardId !== undefined && availableLabels === undefined
                 }
+                defaultValue={selectedLabels
+                  .get(selectedBoardId!)
+                  ?.map((label) => ({ value: label, label }))}
                 options={availableLabels?.map((label) => ({
                   value: label,
                   label,
