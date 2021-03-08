@@ -22,7 +22,6 @@ export const UserHotSwapWidget = () => {
   const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
 
   const hotSwapToUser = async (user: HotSwappableUser) => {
-    console.log('Hotswap to: ' + user.username);
     const res = await dispatch(userActions.hotSwapToUser(user.id));
     if (userActions.hotSwapToUser.rejected.match(res)) {
       if (res.payload) {
