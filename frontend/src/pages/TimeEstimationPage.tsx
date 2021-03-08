@@ -169,7 +169,6 @@ export const TimeEstimationPage = () => {
         calcTaskAverageRating(TaskRatingDimension.RequiredWork, task!) || 0;
     });
 
-    console.log(work);
     if (work <= 0) {
       setCalculatedDaysPerWork(undefined);
       return;
