@@ -23,21 +23,18 @@ export const UserHotSwapWidget = () => {
 
   const hotSwapToUser = async (user: HotSwappableUser) => {
     console.log('Hotswap to: ' + user.username);
-    dispatch(userActions.hotSwapToUser(user.id)).then((res) => {
-      if (userActions.hotSwapToUser.rejected.match(res)) {
-        if (res.payload) {
-          //setErrorMessage(res.payload.message);
-        }
-      } else {
-        if (chosenRoadmapId !== undefined) {
-          history.push(
-            `/roadmap/${chosenRoadmapId}${paths.roadmapRelative.dashboard}`,
-          );
-        } else {
-          history.push('/user');
-        }
+    const res = await dispatch(userActions.hotSwapToUser(user.id));
+    if (userActions.hotSwapToUser.rejected.match(res)) {
+      if (res.payload) {
+        // setErrorMessage(res.payload.message);
       }
-    });
+    } else if (chosenRoadmapId !== undefined) {
+      history.push(
+        `/roadmap/${chosenRoadmapId}${paths.roadmapRelative.dashboard}`,
+      );
+    } else {
+      history.push('/user');
+    }
   };
 
   useEffect(() => {
