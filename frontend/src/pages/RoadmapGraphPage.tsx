@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
+import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import { totalValueAndWork } from '../utils/TaskUtils';
+import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 
 const GraphOuter = styled.div`
   display: flex;
@@ -101,7 +102,14 @@ export const RoadmapGraphPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  useEffect(() => {}, [roadmapsVersions]);
+  const [hoverVersion, setHoverVersion] = useState<undefined | Version>(
+    undefined,
+  );
+  useEffect(() => {
+    if (hoverVersion == undefined && roadmapsVersions && roadmapsVersions[0]) {
+      setHoverVersion(roadmapsVersions[0]);
+    }
+  }, [roadmapsVersions]);
 
   return (
     <>
@@ -118,7 +126,12 @@ export const RoadmapGraphPage = () => {
               const w = Math.max(100, 60 * (work / 5));
               const h = Math.max(90, 50 * (value / 5));
               return (
-                <GraphItem width={`${w}px`} height={`${h}px`} key={ver.id}>
+                <GraphItem
+                  width={`${w}px`}
+                  height={`${h}px`}
+                  key={ver.id}
+                  onMouseOver={() => setHoverVersion(ver)}
+                >
                   <VersionTitle>{ver.name}</VersionTitle>
                   <VersionData>
                     <StarFill />
@@ -147,7 +160,10 @@ export const RoadmapGraphPage = () => {
       </GraphOuter>
 
       <Footer>
-        <GraphTitle>Clients receiving the most value</GraphTitle>
+        <GraphTitle>Customers stakes in milestone</GraphTitle>
+        {hoverVersion && (
+          <TaskValueCreatedVisualization version={hoverVersion} />
+        )}
       </Footer>
     </>
   );
