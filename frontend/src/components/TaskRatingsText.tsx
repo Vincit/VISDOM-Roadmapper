@@ -16,6 +16,7 @@ import {
   calcTaskAverageRating,
   calcWeightedTaskPriority,
 } from '../utils/TaskUtils';
+import { Debug } from './Debug';
 
 export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
   const averageBusinessVal = calcTaskAverageRating(
@@ -49,9 +50,11 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
         </span>
       )}
       {averageWorkVal && averageBusinessVal && (
-        <span className="mr-1 font-weight-bold">
-          {calcWeightedTaskPriority(task, publicUsers!, currentRoadmap)}
-        </span>
+        <Debug>
+          <span className="mr-1 font-weight-bold">
+            {calcWeightedTaskPriority(task, publicUsers!, currentRoadmap)}
+          </span>
+        </Debug>
       )}
       {!averageWorkVal && !averageBusinessVal && <span>-</span>}
     </>
