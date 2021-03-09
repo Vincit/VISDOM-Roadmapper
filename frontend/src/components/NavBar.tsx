@@ -27,7 +27,7 @@ const NavbarDiv = styled.nav`
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.08);
 `;
 
-const NavbarBrand = styled.a`
+const NavbarBrand = styled(Link)`
   display: flex;
   height: 100%;
   align-items: center;
@@ -96,7 +96,7 @@ export const NavBar = () => {
 
   return (
     <NavbarDiv>
-      <NavbarBrand href={paths.home}>
+      <NavbarBrand to={paths.home}>
         <BrandIconDiv>
           <VisdomIcon />
         </BrandIconDiv>
