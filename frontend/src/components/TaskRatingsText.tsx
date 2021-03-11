@@ -39,20 +39,33 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
     <>
       {averageBusinessVal && (
         <span className="mr-1 font-weight-bold">
-          {averageBusinessVal}
+          {averageBusinessVal.toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          })}
           <StarFill />
         </span>
       )}
       {averageWorkVal && (
         <span className="mr-1 font-weight-bold">
-          {averageWorkVal}
+          {averageWorkVal.toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          })}
           <Wrench />
         </span>
       )}
       {averageWorkVal && averageBusinessVal && (
         <Debug>
           <span className="mr-1 font-weight-bold">
-            {calcWeightedTaskPriority(task, publicUsers!, currentRoadmap)}
+            {calcWeightedTaskPriority(
+              task,
+              publicUsers!,
+              currentRoadmap,
+            ).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })}
           </span>
         </Debug>
       )}
