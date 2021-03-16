@@ -13,7 +13,7 @@ import {
   plannerTimeEstimatesSelector,
 } from '../redux/versions/selectors';
 import { Version, TimeEstimate } from '../redux/versions/types';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { calcTaskAverageRating, totalValueAndWork } from '../utils/TaskUtils';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
@@ -190,14 +190,14 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    let work = 0;
-    let milestoneTasks = selectedMilestone.tasks.map((taskId) =>
-      roadmap?.tasks.find((task) => task.id === taskId),
-    );
-    milestoneTasks.forEach((task) => {
-      work +=
-        calcTaskAverageRating(TaskRatingDimension.RequiredWork, task!) || 0;
-    });
+    const work = selectedMilestone.tasks
+      .map((taskId) => roadmap?.tasks.find((task) => task.id === taskId))
+      .reduce(
+        (total, task) =>
+          total +
+          (calcTaskAverageRating(TaskRatingDimension.RequiredWork, task!) || 0),
+        0,
+      );
 
     if (work <= 0) {
       setCalculatedDaysPerWork(undefined);
@@ -215,30 +215,15 @@ export const TimeEstimationPage = () => {
         <GraphInner>
           <GraphItems>
             {roadmapsVersions?.map((ver) => {
-              let value = 0;
-              let work = 0;
-              let numTasks = 0;
-              let versionTasks = ver.tasks.map((taskId) =>
-                roadmap?.tasks.find((task) => task.id === taskId),
+              const numTasks = ver.tasks.length;
+              const versionTasks = ver.tasks.map(
+                (taskId) => roadmap!.tasks.find((task) => task.id === taskId)!,
               );
-              versionTasks.forEach((task) => {
-                numTasks += 1;
-                value +=
-                  calcTaskAverageRating(
-                    TaskRatingDimension.BusinessValue,
-                    task!,
-                  ) || 0;
-
-                work +=
-                  calcTaskAverageRating(
-                    TaskRatingDimension.RequiredWork,
-                    task!,
-                  ) || 0;
-              });
+              const { value, work } = totalValueAndWork(versionTasks);
               const duration = work * calculatedDaysPerWork!;
               return (
                 <GraphItemWrapper key={ver.id}>
-                  <GraphItem width={`200px`} height={`225px`}>
+                  <GraphItem width="200px" height="225px">
                     <VersionTitle>{ver.name}</VersionTitle>
                     <VersionData>
                       <StarFill />
@@ -330,7 +315,7 @@ export const TimeEstimationPage = () => {
       {calculatedDaysPerWork === undefined &&
         selectedMilestoneId !== undefined &&
         milestoneDuration && (
-          <Alert show={true} variant="danger">
+          <Alert show variant="danger">
             <Trans i18nKey="Unable to calculate work" />
           </Alert>
         )}

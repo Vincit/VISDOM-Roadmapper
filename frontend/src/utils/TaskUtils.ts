@@ -1,5 +1,10 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
-import { PublicUser, Roadmap, Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import {
+  PublicUser,
+  Roadmap,
+  Task,
+  TaskRatingDimension,
+} from '../redux/roadmaps/types';
 import { UserType } from '../redux/user/types';
 
 export enum FilterTypes {
@@ -24,6 +29,29 @@ export enum SortingOrders {
   DESCENDING,
 }
 
+const averageRatingsByDimension = (
+  task: Task,
+): Map<TaskRatingDimension, number> => {
+  const ratings = task.ratings.reduce((result, { value, dimension }) => {
+    const { sum, count } = result.get(dimension) || { sum: 0, count: 0 };
+    return result.set(dimension, { sum: sum + value, count: count + 1 });
+  }, new Map());
+  return new Map(
+    Array.from(ratings).map(([key, { sum, count }]) => [key, sum / count]),
+  );
+};
+
+export const totalValueAndWork = (tasks: Task[]) =>
+  tasks
+    .map((task) => averageRatingsByDimension(task))
+    .reduce(
+      ({ value, work }, ratings) => ({
+        value: value + (ratings.get(TaskRatingDimension.BusinessValue) || 0),
+        work: work + (ratings.get(TaskRatingDimension.RequiredWork) || 0),
+      }),
+      { value: 0, work: 0 },
+    );
+
 export const calcTaskAverageRating = (
   dimension: TaskRatingDimension,
   task: Task,
@@ -43,17 +71,11 @@ export const calcTaskAverageRating = (
 };
 
 export const calcTaskPriority = (task: Task) => {
-  const avgBusinessRating = calcTaskAverageRating(
-    TaskRatingDimension.BusinessValue,
-    task,
-  );
+  const ratings = averageRatingsByDimension(task);
+  const avgBusinessRating = ratings.get(TaskRatingDimension.BusinessValue);
+  const avgWorkRating = ratings.get(TaskRatingDimension.RequiredWork);
   if (!avgBusinessRating) return -2;
-  const avgWorkRating = calcTaskAverageRating(
-    TaskRatingDimension.RequiredWork,
-    task,
-  );
   if (!avgWorkRating) return -1;
-
   return avgBusinessRating / avgWorkRating;
 };
 
@@ -191,7 +213,7 @@ export const calcTaskValueSum = (task: Task) => {
 export const calcTaskWeightedValueSum = (
   task: Task,
   allUsers: PublicUser[],
-  roadmap: Roadmap
+  roadmap: Roadmap,
 ) => {
   let customerValuesSum = 0;
   allUsers.forEach((user) => {
@@ -211,7 +233,9 @@ export const calcTaskWeightedValueSum = (
 
     const ratingCreatorValue = ratingCreator?.customerValue || 0;
 
-    let creatorPlannerWeight = roadmap.plannerUserWeights?.find(weight => weight.userId === rating.createdByUser)?.weight;
+    let creatorPlannerWeight = roadmap.plannerUserWeights?.find(
+      (weight) => weight.userId === rating.createdByUser,
+    )?.weight;
     if (creatorPlannerWeight === undefined) creatorPlannerWeight = 1;
 
     let creatorValueWeight = 0;
@@ -229,7 +253,7 @@ export const calcTaskWeightedValueSum = (
 export const calcWeightedTaskPriority = (
   task: Task,
   allUsers: PublicUser[],
-  roadmap: Roadmap
+  roadmap: Roadmap,
 ) => {
   const weightedValue = calcTaskWeightedValueSum(task, allUsers, roadmap);
   if (!weightedValue) return -2;
