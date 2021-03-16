@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { StarFill, Wrench, List } from 'react-bootstrap-icons';
+import { Trans, useTranslation } from 'react-i18next';
+import { Alert } from 'react-bootstrap';
+
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
-import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import { calcTaskAverageRating } from '../utils/TaskUtils';
-import { Trans, useTranslation } from 'react-i18next';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
-import { Alert } from 'react-bootstrap';
 
 const GraphTitle = styled.p`
   font-size: 28px;
