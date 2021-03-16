@@ -300,6 +300,7 @@ export const TimeEstimationPage = () => {
             name="duration"
             id="duration"
             type="number"
+            min="0"
             placeholder={t('Duration')}
             defaultValue={milestoneDuration}
             onChange={(e: any) => onDurationChange(e.currentTarget.value)}
