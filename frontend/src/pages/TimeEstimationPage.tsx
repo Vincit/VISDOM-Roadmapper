@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
@@ -8,10 +8,15 @@ import { Alert } from 'react-bootstrap';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { roadmapsVersionsSelector } from '../redux/versions/selectors';
-import { Version } from '../redux/versions/types';
+import {
+  roadmapsVersionsSelector,
+  plannerTimeEstimatesSelector,
+} from '../redux/versions/selectors';
+import { Version, TimeEstimate } from '../redux/versions/types';
 import { calcTaskAverageRating } from '../utils/TaskUtils';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
+import { StoreDispatchType } from '../redux';
+import { versionsActions } from '../redux/versions';
 
 const GraphTitle = styled.p`
   font-size: 28px;
@@ -121,6 +126,12 @@ export const TimeEstimationPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+  const dispatch = useDispatch<StoreDispatchType>();
+  const timeEstimates = useSelector<RootState, TimeEstimate[]>(
+    plannerTimeEstimatesSelector,
+    shallowEqual,
+  );
+
   const [selectedMilestoneId, setSelectedMilestoneId] = useState<
     undefined | number
   >(undefined);
@@ -128,7 +139,6 @@ export const TimeEstimationPage = () => {
     undefined | number
   >(undefined);
 
-  const [milestoneDuration, setMilestoneDuration] = useState<string>('');
   const handleMilestoneChange = (e: any) => {
     if (e.currentTarget.value !== '') {
       const selectedId = parseInt(e.currentTarget.value, 10);
@@ -139,8 +149,26 @@ export const TimeEstimationPage = () => {
   };
 
   const onDurationChange = (duration: string) => {
-    setMilestoneDuration(duration);
+    const milestone = selectedMilestoneId;
+    const time = parseFloat(duration);
+    if (milestone !== undefined && roadmap) {
+      dispatch(
+        versionsActions.setTimeEstimate({
+          roadmapId: roadmap!.id,
+          id: milestone,
+          estimate: time > 0 ? time : undefined,
+        }),
+      );
+    }
   };
+
+  const milestoneDuration =
+    roadmap && selectedMilestoneId !== undefined
+      ? timeEstimates.find(
+          ({ roadmapId, id }) =>
+            roadmapId === roadmap!.id && id === selectedMilestoneId,
+        )?.estimate
+      : undefined;
 
   useEffect(() => {
     if (!roadmapsVersions || !roadmap) {
@@ -154,10 +182,7 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    if (
-      Number.isNaN(parseFloat(milestoneDuration)) ||
-      parseFloat(milestoneDuration) <= 0
-    ) {
+    if (milestoneDuration === undefined) {
       setCalculatedDaysPerWork(undefined);
       return;
     }
@@ -174,7 +199,7 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    setCalculatedDaysPerWork(parseFloat(milestoneDuration) / work);
+    setCalculatedDaysPerWork(milestoneDuration / work);
   }, [selectedMilestoneId, milestoneDuration, roadmap, roadmapsVersions]);
 
   const renderMilestoneTimeline = () => {
@@ -282,11 +307,12 @@ export const TimeEstimationPage = () => {
           </FormLabel>
           <StyledFormControl
             required
+            key={selectedMilestoneId}
             name="duration"
             id="duration"
             type="number"
             placeholder={t('Duration')}
-            value={milestoneDuration}
+            defaultValue={milestoneDuration}
             onChange={(e: any) => onDurationChange(e.currentTarget.value)}
             onKeyPress={(e: any) => {
               // Prevents input of non-numeric characters

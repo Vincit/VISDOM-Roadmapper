@@ -8,8 +8,15 @@ export interface Version {
   sortingRank: number;
 }
 
+export interface TimeEstimate {
+  roadmapId: number;
+  id: number;
+  estimate?: number;
+}
+
 export interface VersionsState {
   versions: Version[] | undefined;
+  timeEstimates: TimeEstimate[];
 }
 
 export interface VersionRequest {
