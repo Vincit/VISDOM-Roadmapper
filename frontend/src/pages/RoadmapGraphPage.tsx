@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
-import { StarFill, Wrench, List } from 'react-bootstrap-icons';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { totalValueAndWork } from '../utils/TaskUtils';
 
 const GraphOuter = styled.div`
   display: flex;
@@ -110,26 +110,11 @@ export const RoadmapGraphPage = () => {
         <GraphInner>
           <GraphItems>
             {roadmapsVersions?.map((ver) => {
-              let value = 0;
-              let work = 0;
-              let numTasks = 0;
-              let versionTasks = ver.tasks.map((taskId) =>
-                roadmap?.tasks.find((task) => task.id === taskId),
+              const numTasks = ver.tasks.length;
+              const versionTasks = ver.tasks.map(
+                (taskId) => roadmap!.tasks.find((task) => task.id === taskId)!,
               );
-              versionTasks.forEach((task) => {
-                numTasks += 1;
-                value +=
-                  calcTaskAverageRating(
-                    TaskRatingDimension.BusinessValue,
-                    task!,
-                  ) || 0;
-
-                work +=
-                  calcTaskAverageRating(
-                    TaskRatingDimension.RequiredWork,
-                    task!,
-                  ) || 0;
-              });
+              const { value, work } = totalValueAndWork(versionTasks);
               const w = Math.max(100, 60 * (work / 5));
               const h = Math.max(90, 50 * (value / 5));
               return (
