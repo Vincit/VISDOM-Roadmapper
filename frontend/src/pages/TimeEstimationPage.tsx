@@ -139,6 +139,10 @@ export const TimeEstimationPage = () => {
     undefined | number
   >(undefined);
 
+  useEffect(() => {
+    if (!roadmapsVersions) dispatch(versionsActions.getVersions());
+  }, [dispatch, roadmapsVersions]);
+
   const handleMilestoneChange = (e: any) => {
     if (e.currentTarget.value !== '') {
       const selectedId = parseInt(e.currentTarget.value, 10);
