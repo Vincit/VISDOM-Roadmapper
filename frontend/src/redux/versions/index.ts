@@ -12,17 +12,21 @@ import {
   DELETE_VERSION_FULFILLED,
   GET_VERSIONS_FULFILLED,
   PATCH_VERSION_FULFILLED,
+  SET_PLANNER_TIME_ESTIMATE,
 } from './reducers';
 import { VersionsState } from './types';
 
 const initialState: VersionsState = {
   versions: undefined,
+  timeEstimates: [],
 };
 
 export const versionsSlice = createSlice({
   name: 'versions',
   initialState,
-  reducers: {},
+  reducers: {
+    setTimeEstimate: SET_PLANNER_TIME_ESTIMATE,
+  },
   extraReducers: (builder) => {
     builder.addCase(addVersion.fulfilled, ADD_VERSION_FULFILLED);
     builder.addCase(getVersions.fulfilled, GET_VERSIONS_FULFILLED);
