@@ -65,6 +65,15 @@ const GraphItem = styled.div<{
   -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
   -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
   box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  &:hover {
+    background-color: #f2f2f2;
+  }
+
+  &:active {
+    transform: scale(0.97, 0.97);
+  }
+  user-select: none;
 `;
 
 const Footer = styled.div`
@@ -102,14 +111,18 @@ export const RoadmapGraphPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const [hoverVersion, setHoverVersion] = useState<undefined | Version>(
+  const [selectedVersion, setSelectedVersion] = useState<undefined | Version>(
     undefined,
   );
   useEffect(() => {
-    if (hoverVersion == undefined && roadmapsVersions && roadmapsVersions[0]) {
-      setHoverVersion(roadmapsVersions[0]);
+    if (
+      selectedVersion === undefined &&
+      roadmapsVersions &&
+      roadmapsVersions[0]
+    ) {
+      setSelectedVersion(roadmapsVersions[0]);
     }
-  }, [roadmapsVersions]);
+  }, [roadmapsVersions, selectedVersion]);
 
   return (
     <>
@@ -145,7 +158,7 @@ export const RoadmapGraphPage = () => {
                   width={`${w}px`}
                   height={`${h}px`}
                   key={ver.id}
-                  onMouseOver={() => setHoverVersion(ver)}
+                  onClick={() => setSelectedVersion(ver)}
                 >
                   <VersionTitle>{ver.name}</VersionTitle>
                   <VersionData>
@@ -176,8 +189,8 @@ export const RoadmapGraphPage = () => {
 
       <Footer>
         <GraphTitle>Customers stakes in milestone</GraphTitle>
-        {hoverVersion && (
-          <TaskValueCreatedVisualization version={hoverVersion} />
+        {selectedVersion && (
+          <TaskValueCreatedVisualization version={selectedVersion} />
         )}
       </Footer>
     </>
