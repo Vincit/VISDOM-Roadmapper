@@ -48,7 +48,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
     };
 
     getOAuthURL();
-  }, [currentJiraConfiguration.id]);
+  }, [formValues, currentJiraConfiguration.id]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
