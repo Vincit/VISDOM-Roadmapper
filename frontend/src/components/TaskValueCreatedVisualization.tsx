@@ -1,18 +1,6 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  Tooltip,
-  TooltipProps,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
 import styled from 'styled-components';
 import {
   chosenRoadmapSelector,
@@ -25,8 +13,7 @@ import {
 } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
-import { calcTaskAverageRating, calcTaskValueSum } from '../utils/TaskUtils';
-import { useMousePosition } from '../utils/useMousePosition';
+import { calcTaskValueSum } from '../utils/TaskUtils';
 
 export interface TaskValueCreatedVisualizationProps {
   version: Version;
@@ -94,7 +81,7 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
   return (
     <Container>
       <Title>{version.name}</Title>
-      <PieChart width={400} height={200}>
+      <PieChart width={450} height={200}>
         <Pie
           data={data}
           cx="50%"
@@ -109,7 +96,12 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
           ))}
         </Pie>
         <Tooltip allowEscapeViewBox={{ x: true, y: true }} />
-        <Legend align="right" verticalAlign="middle" layout="vertical" />
+        <Legend
+          align="right"
+          verticalAlign="middle"
+          layout="vertical"
+          width={200}
+        />
       </PieChart>
     </Container>
   );
