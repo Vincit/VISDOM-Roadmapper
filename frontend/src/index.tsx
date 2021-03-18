@@ -4,6 +4,11 @@ import { Provider } from 'react-redux';
 import { App } from './App';
 import { store } from './redux/index';
 import * as serviceWorker from './serviceWorker';
+import './global.scss';
+import './shared.scss';
+import 'typeface-anonymous-pro';
+import 'typeface-ibm-plex-mono';
+import 'typeface-work-sans';
 
 ReactDOM.render(
   <Provider store={store}>

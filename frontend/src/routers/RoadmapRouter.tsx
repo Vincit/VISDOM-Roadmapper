@@ -141,7 +141,6 @@ const RoadmapRouterComponent = () => {
     if (!isLoadingRoadmap && !isLoadingUsers) {
       return (
         <LayoutRow overflowY="auto" overflowX="auto">
-          <SideBar />
           <RoadmapPageContainer overflowY="auto" overflowX="auto">
             <Switch>
               {routes.map((route) => (

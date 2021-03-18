@@ -17,7 +17,7 @@ const NavbarDiv = styled.nav`
   left: 0;
   height: 56px;
   min-height: 56px;
-  width: 100vw;
+  width: 100%;
   border: 0;
   display: flex;
   flex-direction: row;
