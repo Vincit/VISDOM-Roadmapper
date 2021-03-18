@@ -118,7 +118,9 @@ export const SideBar = () => {
             <SideBarButton
               to={url + paths.roadmapRelative.configure}
               highlight={
-                pathname.startsWith(url + paths.roadmapRelative.configure) ? 1 : 0
+                pathname.startsWith(url + paths.roadmapRelative.configure)
+                  ? 1
+                  : 0
               }
             >
               <SideBarIcon>

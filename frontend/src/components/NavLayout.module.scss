@@ -1,0 +1,15 @@
+@import "../shared.scss";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.appContent {
+    height: 100%;
+    background-color: $COLOR_BLACK5;
+}

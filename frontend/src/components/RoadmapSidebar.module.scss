@@ -1,0 +1,39 @@
+@import "./../shared.scss";
+
+.navButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 104px;
+    min-height: 104px;
+    font-family: Anonymous Pro;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: $COLOR_BLACK100;
+
+    &:hover {
+        color: $COLOR_BLACK100;
+    }
+    
+    svg {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+.selected {
+    background-color: $COLOR_BLACK5;
+    border-left: 5px solid $COLOR_SKY;
+    padding-left: -5px;
+}
+
+.logo {
+    svg {
+        min-width: 60px;
+        min-height: 60px;
+    }
+    margin-bottom: 60px;
+}
