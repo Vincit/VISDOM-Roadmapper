@@ -129,10 +129,12 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Rate task" />
+          <h3>
+            <Trans i18nKey="Rate task" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           {cameFromTaskCreation ? (
@@ -166,7 +168,7 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

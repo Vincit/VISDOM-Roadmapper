@@ -89,10 +89,12 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Add new task" />
+          <h3>
+            <Trans i18nKey="Add new task" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <Form.Group>
@@ -130,7 +132,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

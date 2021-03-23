@@ -83,11 +83,12 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
-
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Edit task" />
+          <h3>
+            <Trans i18nKey="Edit task" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
 
         <ModalContent>
@@ -125,7 +126,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

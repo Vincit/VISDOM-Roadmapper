@@ -69,11 +69,12 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
-
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Rate customer" />
+          <h3>
+            <Trans i18nKey="Rate customer" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
 
         <ModalContent>
@@ -100,7 +101,7 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

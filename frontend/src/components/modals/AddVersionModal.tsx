@@ -54,13 +54,13 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
-
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Add milestone" />
+          <h3>
+            <Trans i18nKey="Add milestone" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
-
         <ModalContent>
           <StyledFormControl
             autoComplete="off"
@@ -82,7 +82,7 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

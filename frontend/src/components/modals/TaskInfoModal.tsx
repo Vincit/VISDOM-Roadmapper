@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
@@ -16,37 +15,11 @@ import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalHeader } from './modalparts/ModalHeader';
+import css from './TaskInfoModal.module.scss';
 
 export interface TaskInfoModalProps extends ModalProps {
   taskId: number;
 }
-
-const TaskNameText = styled.span`
-  color: #888888;
-`;
-
-const DescriptionRatingsDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-`;
-
-const DetailsDiv = styled.div<{ rightMargin?: boolean }>`
-  text-align: start;
-  min-width: 8em;
-  max-height: 40em;
-  margin-right: ${(props) => (props.rightMargin ? '8px' : 'initial')};
-  font-size: 14px;
-`;
-const LabelText = styled.p`
-  font-family: 'Anonymous Pro';
-  margin-bottom: 8px;
-  font-size: 11px;
-  line-height: 16px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: bold;
-`;
 
 export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
   closeModal,
@@ -65,44 +38,43 @@ export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
-
       <ModalHeader>
-        <span>
-          <Trans i18nKey="Overview for" />
-          <TaskNameText>: {task.name}</TaskNameText>
-        </span>
+        <h3>
+          <span>
+            <Trans i18nKey="Overview for" />
+            <span className={css.taskNameText}>: {task.name}</span>
+          </span>
+        </h3>
+        <ModalCloseButton onClick={closeModal} />
       </ModalHeader>
-
       <ModalContent>
-        <DescriptionRatingsDiv>
-          <DetailsDiv rightMargin>
-            <LabelText>Description</LabelText>
+        <div className={css.descriptionRatingsDiv}>
+          <div className={css.detailsDiv}>
+            <p className={css.labelText}>Description</p>
             {task.description}
-          </DetailsDiv>
-          <DetailsDiv>
-            <LabelText>Task rating</LabelText>
+          </div>
+          <div className={css.detailsDiv}>
+            <p className={css.labelText}>Task rating</p>
             <TaskRatingsText task={task} />
-          </DetailsDiv>
-        </DescriptionRatingsDiv>
+          </div>
+        </div>
       </ModalContent>
       <ModalFooter>
-        <DetailsDiv>
-          <LabelText>
+        <div className={css.detailsDiv}>
+          <p className={css.labelText}>
             <Trans i18nKey="Created by" />
-          </LabelText>
+          </p>
           {
             publicUsers?.find((user) => user.id === task.createdByUser)
               ?.username
           }
-        </DetailsDiv>
-        <DetailsDiv>
-          <LabelText>
+        </div>
+        <div className={css.detailsDiv}>
+          <p className={css.labelText}>
             <Trans i18nKey="Created on" />
-          </LabelText>
+          </p>
           {new Date(task.createdAt).toLocaleDateString()}
-        </DetailsDiv>
-        <DetailsDiv />
+        </div>
       </ModalFooter>
     </>
   );

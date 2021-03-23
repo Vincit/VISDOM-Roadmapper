@@ -1,9 +1,20 @@
-import styled from 'styled-components';
+import React from 'react';
 
 interface ModalFooterButtonDivProps {
   rightmargin?: boolean;
 }
-export const ModalFooterButtonDiv = styled.div<ModalFooterButtonDivProps>`
-  width: 100%;
-  margin-right: ${(props) => (props.rightmargin ? '16px' : '0px')};
-`;
+
+export const ModalFooterButtonDiv: React.FC<ModalFooterButtonDivProps> = ({
+  children,
+}) => {
+  return (
+    <div
+      style={{
+        flexGrow: 1,
+        flexBasis: 1,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
