@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
-import styled from 'styled-components';
 import {
   chosenRoadmapSelector,
   publicUsersSelector,
@@ -14,6 +13,7 @@ import {
 import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
 import { calcTaskValueSum } from '../utils/TaskUtils';
+import css from './TaskValueCreatedVisualization.module.scss';
 
 export interface TaskValueCreatedVisualizationProps {
   version: Version;
@@ -24,15 +24,6 @@ export interface DataPoint {
   value: number;
   color: string;
 }
-
-const Container = styled.div``;
-
-const Title = styled.p`
-  width: 400px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 0;
-`;
 
 export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizationProps> = ({
   version,
@@ -55,7 +46,9 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
   // And map values of how much each user has rated in these tasks
   versionTasks.forEach((task) => {
     totalValue += calcTaskValueSum(task!) || 0;
-    task?.ratings.forEach((rating) => {
+    if (task == null) return;
+
+    task.ratings.forEach((rating) => {
       if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
       const user = publicUsers?.find((u) => u.id === rating.createdByUser);
       if (user) {
@@ -79,8 +72,8 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
   });
 
   return (
-    <Container>
-      <Title>{version.name}</Title>
+    <div className={css.container}>
+      <h3 className={css.taskTitle}>{version.name}</h3>
       <PieChart width={450} height={200}>
         <Pie
           data={data}
@@ -103,6 +96,6 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
           width={200}
         />
       </PieChart>
-    </Container>
+    </div>
   );
 };
