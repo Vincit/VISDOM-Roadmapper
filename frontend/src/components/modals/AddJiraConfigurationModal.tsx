@@ -77,11 +77,14 @@ export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps>
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="jiraconfiguration" />
+          <h3>
+            <Trans i18nKey="jiraconfiguration" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
+
         <ModalContent>
           {currentRoadmap ? (
             <>
@@ -127,7 +130,7 @@ export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps>
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

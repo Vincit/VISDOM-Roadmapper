@@ -1,8 +1,20 @@
-import styled from 'styled-components';
+import React from 'react';
+import css from './ModalContent.module.scss';
 
-export const ModalContent = styled.div<{ overflowAuto?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  margin: 32px;
-  overflow-y: ${(props) => (props.overflowAuto ? 'auto' : 'inherit')};
-`;
+export interface ModalContentProps {
+  overflowAuto?: boolean;
+}
+
+export const ModalContent: React.FC<ModalContentProps> = ({
+  children,
+  overflowAuto,
+}) => {
+  return (
+    <div
+      className={css.container}
+      style={{ overflowY: overflowAuto ? 'auto' : 'inherit' }}
+    >
+      {children}
+    </div>
+  );
+};

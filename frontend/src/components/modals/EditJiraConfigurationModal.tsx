@@ -22,7 +22,6 @@ export interface EditJiraConfigurationModalProps extends ModalProps {
 
 export const EditJiraConfigurationModal: React.FC<EditJiraConfigurationModalProps> = ({
   closeModal,
-  jiraconfigurationId,
 }) => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
@@ -77,10 +76,12 @@ export const EditJiraConfigurationModal: React.FC<EditJiraConfigurationModalProp
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="edit_jiraconfiguration" />
+          <h3>
+            <Trans i18nKey="edit_jiraconfiguration" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           {currentJiraConfiguration ? (
@@ -129,7 +130,7 @@ export const EditJiraConfigurationModal: React.FC<EditJiraConfigurationModalProp
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"

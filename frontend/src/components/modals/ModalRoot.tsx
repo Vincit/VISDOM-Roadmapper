@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import Modal, { ModalProvider } from 'styled-react-modal';
+import Modal from 'react-modal';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals/index';
 import { modalStateSelector } from '../../redux/modals/selectors';
@@ -13,8 +13,14 @@ import { AddVersionModal } from './AddVersionModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
 import { JiraOauthModal } from './JiraOauthModal';
-import { AddJiraConfigurationModal, AddJiraConfigurationModalProps } from './AddJiraConfigurationModal';
-import { EditJiraConfigurationModal, EditJiraConfigurationModalProps } from './EditJiraConfigurationModal';
+import {
+  AddJiraConfigurationModal,
+  AddJiraConfigurationModalProps,
+} from './AddJiraConfigurationModal';
+import {
+  EditJiraConfigurationModal,
+  EditJiraConfigurationModalProps,
+} from './EditJiraConfigurationModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RateUserModal, RateUserModalProps } from './RateUserModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
@@ -49,16 +55,21 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.EDIT_JIRA_CONFIGURATION_MODAL]: EditJiraConfigurationModal,
 };
 
-const StyledModal = Modal.styled`
-  position: absolute;
-  top: 15%;
-  background-color: white;
-  min-width: 540px;
-  max-width: 80vw;
-  max-height: 80vh;
-  border: 1px solid black;
-  border-radius: 8px;
-`;
+const modalCustomStyles = {
+  content: {
+    top: '35%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: '540px',
+    maxWidth: '80vw',
+    maxHeight: '80vh',
+    borderRadius: '20px',
+    boxShadow: '0px 10px 20px 0px rgba(0,0,0,0.25)',
+  },
+};
 
 export const ModalRoot = () => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -95,16 +106,15 @@ export const ModalRoot = () => {
     search,
   ]);
 
+  if (!modalsState.showModal) return null;
   return (
-    <ModalProvider>
-      {modalsState.showModal && (
-        <StyledModal isOpen onEscapeKeydown={onRequestClose}>
-          <ChosenModal
-            closeModal={onRequestClose}
-            {...modalsState.modalProps}
-          />
-        </StyledModal>
-      )}
-    </ModalProvider>
+    <Modal
+      isOpen
+      shouldCloseOnOverlayClick={false}
+      onRequestClose={onRequestClose}
+      style={modalCustomStyles}
+    >
+      <ChosenModal closeModal={onRequestClose} {...modalsState.modalProps} />
+    </Modal>
   );
 };

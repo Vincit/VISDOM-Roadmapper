@@ -106,10 +106,12 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Import Jira tasks" />
+          <h3>
+            <Trans i18nKey="Import Jira tasks" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <label htmlFor="board">Select JIRA board:</label>
@@ -180,7 +182,7 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"
