@@ -1,0 +1,26 @@
+.taskDiv {
+    display: flex;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 6px;
+    background-color: white;
+    user-select: none;
+}
+
+.leftSideDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.rightSideDiv {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    svg {
+      margin-left: 8px;
+    }
+}
