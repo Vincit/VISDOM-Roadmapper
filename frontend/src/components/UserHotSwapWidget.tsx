@@ -21,6 +21,8 @@ export const UserHotSwapWidget = () => {
   const userInfo = useSelector(userInfoSelector);
   const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
 
+  const [selectedUser, setSelectedUser] = useState<String>('Swap to user');
+
   const hotSwapToUser = async (user: HotSwappableUser) => {
     const res = await dispatch(userActions.hotSwapToUser(user.id));
     if (userActions.hotSwapToUser.rejected.match(res)) {
@@ -44,6 +46,7 @@ export const UserHotSwapWidget = () => {
       setHotSwappableUsers(filtered);
     };
     getHotSwappableUsers();
+    if (userInfo) setSelectedUser(userInfo.username);
   }, [userInfo]);
 
   if (hotSwappableUsers.length === 0) {
@@ -52,7 +55,7 @@ export const UserHotSwapWidget = () => {
   return (
     <StyledNavDropdown
       id="userhotswapwidget"
-      title="Swap to user"
+      title={selectedUser}
       ref={dropdownRef}
     >
       {hotSwappableUsers.length === 0 && (
