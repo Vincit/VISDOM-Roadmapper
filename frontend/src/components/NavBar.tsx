@@ -3,7 +3,6 @@ import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { ReactComponent as VisdomIcon } from '../icons/visdom_icon.svg';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -24,32 +23,6 @@ const NavbarDiv = styled.nav`
   justify-content: start;
   vertical-align: middle;
   box-sizing: border-box;
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.08);
-`;
-
-const NavbarBrand = styled(Link)`
-  display: flex;
-  height: 100%;
-  align-items: center;
-  font-family: Anonymous Pro;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 11px;
-  line-height: 16px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #888888;
-  cursor: pointer;
-
-  :hover {
-    text-decoration: none;
-    color: #888888;
-  }
-`;
-
-const BrandIconDiv = styled.div`
-  margin-left: 8px;
-  margin-right: 8px;
 `;
 
 const NavBarRightSide = styled.div`
@@ -95,17 +68,8 @@ export const NavBar = () => {
   );
 
   return (
-    <NavbarDiv>
-      <NavbarBrand to={paths.home}>
-        <BrandIconDiv>
-          <VisdomIcon />
-        </BrandIconDiv>
-        Visdom Roadmap Tool
-      </NavbarBrand>
+    <NavbarDiv style={{ borderRadius: 50, backgroundColor: '#f5f5f5' }}>
       <NavBarRightSide>
-        <NavbarLink to={paths.home}>
-          <Trans i18nKey="Home" />
-        </NavbarLink>
         {!userInfo && (
           <NavbarLink as={Link} to={paths.loginPage}>
             <Trans i18nKey="Login" />
