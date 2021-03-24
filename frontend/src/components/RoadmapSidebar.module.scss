@@ -22,12 +22,21 @@
         width: 30px;
         height: 30px;
     }
-}
 
-.selected {
-    background-color: $COLOR_BLACK5;
-    border-left: 5px solid $COLOR_SKY;
-    padding-left: -5px;
+    &.selected:not(.settings) {
+        background-color: $COLOR_BLACK5;
+        border-left: 5px solid $COLOR_SKY;
+        padding-left: -5px;
+    }
+
+    &.settings {
+        margin-top: auto;
+        border-top: 1px solid $COLOR_BLACK10;
+    }
+
+    &.settings.selected>svg {
+        color: $COLOR_AZURE;
+    }
 }
 
 .logo {

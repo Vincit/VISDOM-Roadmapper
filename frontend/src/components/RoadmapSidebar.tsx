@@ -84,14 +84,14 @@ export const RoadmapSidebar: React.FC = () => {
             </Link>{' '}
             <Link
               to={url + paths.roadmapRelative.configure}
-              className={classes(css.navButton, {
+              className={classes(css.navButton, css.settings, {
                 [css.selected]: pathname.startsWith(
                   url + paths.roadmapRelative.configure,
                 ),
               })}
             >
               <SettingsIcon />
-              <Trans i18nKey="Configure" />
+              <Trans i18nKey="Settings" />
             </Link>
           </>
         )}
