@@ -3,6 +3,9 @@ import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { ReactComponent as CornerPiece } from '../icons/corner_rounder.svg';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -36,7 +39,7 @@ const NavBarRightSide = styled.div`
 
 const NavbarDivider = styled.div`
   border: 0;
-  border-left: 1px solid black;
+  border-left: 1px solid #e3e3e3;
   width: 0px;
   margin-left: 16px;
   margin-right: 16px;
@@ -53,11 +56,24 @@ const NavbarLink = styled(Link)`
   font-weight: normal;
   font-size: 14px;
   line-height: 20px;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-right: 10px;
   color: black;
   :hover {
     color: black;
+  }
+`;
+
+const NavbarText = styled.div`
+  display: flex;
+  align-items: center;
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 18px;
+  padding-left: 16px;
+  padding-right: 16px;
+  color: 696969;
   }
 `;
 
@@ -68,7 +84,8 @@ export const NavBar = () => {
   );
 
   return (
-    <NavbarDiv style={{ borderRadius: 50, backgroundColor: '#f5f5f5' }}>
+    <NavbarDiv style={{ backgroundColor: '#f5f5f5' }}>
+      <CornerPiece />
       <NavBarRightSide>
         {!userInfo && (
           <NavbarLink as={Link} to={paths.loginPage}>
@@ -77,15 +94,21 @@ export const NavBar = () => {
         )}
         {userInfo && (
           <>
-            <NavbarLink as={Link} to={paths.logoutPage}>
-              <Trans i18nKey="Logout" />
-            </NavbarLink>
-            <NavbarLink as={Link} to={paths.userInfo}>
-              <Trans i18nKey="UserInfo" />
-            </NavbarLink>
+            <NavbarText>
+              <Trans i18nKey="Viewing as" />
+            </NavbarText>
             <UserHotSwapWidget />
-            <NavbarDivider />
+            <NavbarText>
+              <Trans i18nKey="Project" />
+            </NavbarText>
             <RoadmapSelectorWidget />
+            <NavbarDivider />
+            <NavbarLink as={Link} to={paths.userInfo}>
+              <PermIdentityIcon style={{ color: '#C6C6C6' }} />
+            </NavbarLink>
+            <NavbarLink as={Link} to={paths.logoutPage}>
+              <PowerSettingsNewIcon style={{ color: '#C6C6C6' }} />
+            </NavbarLink>
           </>
         )}
       </NavBarRightSide>
