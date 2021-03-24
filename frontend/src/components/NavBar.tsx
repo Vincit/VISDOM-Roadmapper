@@ -2,9 +2,9 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import classNames from 'classnames';
 import { ReactComponent as CornerPiece } from '../icons/corner_rounder.svg';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -12,70 +12,9 @@ import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
 import { UserHotSwapWidget } from './UserHotSwapWidget';
+import css from './NavBar.module.scss';
 
-const NavbarDiv = styled.nav`
-  position: relative;
-  top: 0;
-  left: 0;
-  height: 56px;
-  min-height: 56px;
-  width: 100%;
-  border: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  vertical-align: middle;
-  box-sizing: border-box;
-`;
-
-const NavBarRightSide = styled.div`
-  margin-right: 16px;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: flex-end;
-  vertical-align: middle;
-`;
-
-const NavbarDivider = styled.div`
-  border: 0;
-  border-left: 1px solid #e3e3e3;
-  width: 0px;
-  margin-left: 16px;
-  margin-right: 16px;
-  height: 30px;
-  margin-top: 13px;
-  margin-bottom: 13px;
-`;
-
-const NavbarLink = styled(Link)`
-  display: flex;
-  align-items: center;
-  font-family: Work Sans;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  padding-right: 10px;
-  color: black;
-  :hover {
-    color: black;
-  }
-`;
-
-const NavbarText = styled.div`
-  display: flex;
-  align-items: center;
-  font-family: Work Sans;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 18px;
-  padding-left: 16px;
-  padding-right: 16px;
-  color: 696969;
-  }
-`;
+const classes = classNames.bind(css);
 
 export const NavBar = () => {
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -84,34 +23,34 @@ export const NavBar = () => {
   );
 
   return (
-    <NavbarDiv style={{ backgroundColor: '#f5f5f5' }}>
+    <div className={classes(css.navBarDiv)}>
       <CornerPiece />
-      <NavBarRightSide>
+      <div className={classes(css.navBarRightSide)}>
         {!userInfo && (
-          <NavbarLink as={Link} to={paths.loginPage}>
+          <Link className={classes(css.navBarLink)} to={paths.loginPage}>
             <Trans i18nKey="Login" />
-          </NavbarLink>
+          </Link>
         )}
         {userInfo && (
           <>
-            <NavbarText>
+            <div className={classes(css.navBarText)}>
               <Trans i18nKey="Viewing as" />
-            </NavbarText>
+            </div>
             <UserHotSwapWidget />
-            <NavbarText>
+            <div className={classes(css.navBarText)}>
               <Trans i18nKey="Project" />
-            </NavbarText>
+            </div>
             <RoadmapSelectorWidget />
-            <NavbarDivider />
-            <NavbarLink as={Link} to={paths.userInfo}>
-              <PermIdentityIcon style={{ color: '#C6C6C6' }} />
-            </NavbarLink>
-            <NavbarLink as={Link} to={paths.logoutPage}>
-              <PowerSettingsNewIcon style={{ color: '#C6C6C6' }} />
-            </NavbarLink>
+            <div className={classes(css.navBarDivider)} />
+            <Link className={classes(css.navBarLink)} to={paths.userInfo}>
+              <PermIdentityIcon className={classes(css.icon)} />
+            </Link>
+            <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
+              <PowerSettingsNewIcon className={classes(css.icon)} />
+            </Link>
           </>
         )}
-      </NavBarRightSide>
-    </NavbarDiv>
+      </div>
+    </div>
   );
 };
