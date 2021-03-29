@@ -1,323 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import classNames from 'classnames';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { ReactComponent as VincitLogo } from '../icons/vincit_text_logo.svg';
-import BackgroundImage from '../visdom-background.png';
+import css from './LandingPage.module.scss';
 
-const Background = styled.div`
-  :before {
-    content: '';
-    background-image: url(${BackgroundImage});
-    background-size: cover;
-    background-repeat: no-repeat;
-    filter: blur(8px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 1025px;
-    border: 0px;
-  }
-  display: grid;
-
-  width: 100vw;
-  min-height: 100vh;
-  grid-template-rows: 1fr auto auto;
-
-  /* absolute position needed while NavBar is rendered by App */
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  font-family: Work Sans;
-  font-style: normal;
-  font-weight: normal;
-
-  border: 0;
-  margin: 0;
-  padding: 0;
-  justify-content: start;
-  vertical-align: middle;
-  box-sizing: border-box;
-
-  h1 {
-    /* headings/h1 */
-    font-family: Anonymous Pro;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 56px;
-    line-height: 100%;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-
-    color: #ffffff;
-    margin: 20px 10px;
-  }
-
-  h2 {
-    /* headings/h2.light */
-    font-size: 24px;
-    line-height: 32px;
-
-    /* white */
-    color: #ffffff;
-    opacity: 0.7;
-
-    margin: 20px 0px;
-  }
-
-  ul {
-    margin: 12px;
-    padding: 0px 8px;
-  }
-
-  li {
-    /* Paragraph / Body 1 */
-    font-size: 14px;
-    line-height: 20px;
-    /* or 143% */
-    letter-spacing: -0.02em;
-
-    /* dark grey */
-    color: #6a6a6a;
-
-    text-align: start;
-    ::marker {
-      font-size: 1.5em;
-      /* link.cta */
-      color: #0ec679;
-    }
-    overflow-wrap: break-word;
-  }
-`;
-
-const HomeDiv = styled.div`
-  position: relative;
-  width: 100vw;
-`;
-
-const Gradient = styled.div`
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    #c3c3c3 85.42%,
-    #d3d3d3 100%
-  );
-`;
-
-const TopBar = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  padding: 0px;
-
-  position: relative;
-  height: 32px;
-  top: 46px;
-
-  margin: 0px 10vw;
-  svg {
-    height: 32px;
-    width: auto;
-  }
-`;
-
-const LoginButton = styled(Link)`
-  /* Button / Small / Outlined */
-
-  padding: 10px 16px;
-  left: calc(100% - width);
-
-  /* link.cta */
-  background: #0ec679;
-  border-radius: 25px;
-
-  /* Inside Auto Layout */
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 16px;
-  color: #ffffff;
-`;
-
-const VisdomBigLogo = styled(VisdomLogo)`
-  position: relative;
-  width: 300px;
-  height: auto;
-  max-width: 40vw;
-  margin-top: 12rem;
-  margin-bottom: 4rem;
-`;
-
-const Cards = styled.div`
-  background-image: linear-gradient(
-    176deg,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0) 60%,
-    rgba(250, 250, 250, 1) 60%
-  );
-  padding: 0px max(calc((100% - 1000px) / 2), 8vw);
-  margin-top: 8em;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 35px;
-  justify-content: center;
-  align-content: center;
-`;
-
-const Card = styled.div`
-  padding: 0px 26px;
-  padding-bottom: 36px;
-  text-align: start;
-  min-width: min(30ch, 100%);
-
-  flex: 1 1 30%;
-
-  /* white */
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0px 20px 70px rgba(0, 0, 0, 0.2);
-
-  /* headings/h3 */
-  h3 {
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 140%;
-    /* identical to box height, or 140% */
-    letter-spacing: -0.03em;
-    color: #000000;
-    margin: 30px 0px;
-  }
-
-  hr {
-    width: 20px;
-    height: 0px;
-    left: 0px;
-    margin: 30px 0px;
-
-    /* blue.deep */
-    border: 1px solid #00a3ff;
-  }
-`;
-
-const Content = styled.div`
-  background: rgba(250, 250, 250, 1);
-  padding: 4rem max(calc((100% - 1000px) / 2), 8vw);
-  padding-top: 8rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 60px;
-
-  text-align: start;
-
-  img {
-    flex: 1 1 30%;
-
-    max-height: 200px;
-    max-width: 100%;
-    object-fit: contain;
-    background: #c4c4c4;
-  }
-
-  div {
-    flex: 1 1 60%;
-
-    /* Body */
-    font-size: 14px;
-    line-height: 150%;
-    /* or 21px */
-
-    /* Black/60 */
-    color: #696969;
-  }
-
-  a {
-    color: #0ec679;
-  }
-
-  strong {
-    color: #00a3ff;
-  }
-
-  h2 {
-    font-weight: 600;
-    font-size: 30px;
-    line-height: 32px;
-    /* identical to box height, or 107% */
-    letter-spacing: -0.03em;
-
-    /* Black / 100 */
-    color: #000000;
-  }
-`;
-
-const Contact = styled.div`
-  /* Black / 10 */
-  background: #e3e3e3;
-  position: relative;
-  width: 100vw;
-  min-height: 320px;
-  text-align: center;
-  letter-spacing: 0.02em;
-
-  h3 {
-    /* Subtitle */
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 23px;
-    height: 23px;
-    margin: 86px 0px 63px 0px;
-
-    color: #000000;
-  }
-
-  div {
-    justify-content: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  a {
-    /* Auto Layout */
-    padding: 10px 16px;
-
-    height: 34px;
-    min-width: max-content;
-
-    /* Brand / Emerald */
-    border: 2px solid #0ec679;
-    border-radius: 25px;
-
-    /* Body (small) */
-    font-size: 12px;
-    line-height: 100%;
-    color: #000000;
-  }
-`;
-
-const Footer = styled.div`
-  background: #000000;
-  position: relative;
-  width: 100vw;
-  padding: 140px max(calc((100% - 1000px) / 2), 8vw);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  div {
-    flex: 1 1 30%;
-  }
-  color: #ffffff;
-  svg {
-    margin: 40px 0px;
-  }
-  p {
-    margin-bottom: 40px;
-  }
-  a {
-    color: #ffffff;
-  }
-`;
+const classes = classNames.bind(css);
 
 const cardData = [
   {
@@ -348,22 +37,22 @@ const cardData = [
 
 export const LandingPage = () => {
   return (
-    <Background>
-      <HomeDiv>
-        <Gradient>
-          <TopBar>
+    <div className={classes(css.background)}>
+      <div>
+        <div className={classes(css.gradient)}>
+          <div className={classes(css.topBar)}>
             <VisdomLogo />
             <span />
-            <LoginButton as={Link} to="/login">
+            <Link className={classes(css.loginButton)} to="/login">
               <Trans i18nKey="Login" />
-            </LoginButton>
-          </TopBar>
-          <VisdomBigLogo />
+            </Link>
+          </div>
+          <VisdomLogo className={classes(css.bigLogo)} />
           <h1>Visdom roadmap tool</h1>
           <h2>Open-source roadmap planning and visualisation tool</h2>
-          <Cards>
+          <div className={classes(css.cards)}>
             {cardData.map(({ title, points }) => (
-              <Card key={title}>
+              <div className={classes(css.card)} key={title}>
                 <h3>{title}</h3>
                 <hr />
                 <ul>
@@ -371,12 +60,12 @@ export const LandingPage = () => {
                     <li key={`${title}-${e}`}>{e}</li>
                   ))}
                 </ul>
-              </Card>
+              </div>
             ))}
-          </Cards>
-        </Gradient>
+          </div>
+        </div>
 
-        <Content>
+        <div className={classes(css.content)}>
           <div>
             <h2>Product roadmapping</h2>
             <p>
@@ -516,9 +205,9 @@ export const LandingPage = () => {
             </p>
           </div>
           <img alt="placeholder" />
-        </Content>
-      </HomeDiv>
-      <Contact>
+        </div>
+      </div>
+      <div className={classes(css.contact)}>
         <h3>Contact us</h3>
         <div>
           <a href="https://github.com/Vincit/VISDOM-Roadmapper">
@@ -526,8 +215,8 @@ export const LandingPage = () => {
           </a>
           <a href="mailto:visdom@vincit.fi">Send us email</a>
         </div>
-      </Contact>
-      <Footer>
+      </div>
+      <div className={classes(css.footer)}>
         <div style={{ textAlign: 'left' }}>
           <strong>VISDOM Roadmap visualization tool</strong>
           <p>
@@ -564,7 +253,7 @@ export const LandingPage = () => {
             <a href="mailto:visdom@vincit.fi">visdom@vincit.fi</a>
           </p>
         </div>
-      </Footer>
-    </Background>
+      </div>
+    </div>
   );
 };

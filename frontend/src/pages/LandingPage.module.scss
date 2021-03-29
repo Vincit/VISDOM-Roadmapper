@@ -1,0 +1,297 @@
+@import '../shared.scss';
+
+@mixin content-padding {
+  padding-left: max(calc((100% - 1000px) / 2), 8vw);
+  padding-right: max(calc((100% - 1000px) / 2), 8vw);
+}
+
+.background {
+  &:before {
+    content: '';
+    background-image: url(../visdom-background.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: blur(8px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 1025px;
+    border: 0px;
+  }
+  display: grid;
+
+  width: 100vw;
+  min-height: 100vh;
+  grid-template-rows: 1fr auto auto;
+
+  /* absolute position needed while NavBar is rendered by NavLayout */
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  h1 {
+    /* headings/h1 */
+    line-height: 100%;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+
+    color: white;
+    margin: 20px 10px;
+  }
+
+  h2 {
+    /* headings/h2.light */
+    font-size: 24px;
+    line-height: 32px;
+
+    color: white;
+    opacity: 0.7;
+
+    margin: 20px 0px;
+  }
+
+  ul {
+    margin: 12px;
+    padding: 0px 8px;
+  }
+
+  li {
+    /* Paragraph / Body 1 */
+    font-size: 14px;
+    line-height: 20px;
+    /* or 143% */
+    letter-spacing: -0.02em;
+
+    color: $COLOR_BLACK60;
+
+    text-align: start;
+    &::marker {
+      font-size: 1.5em;
+      /* link.cta */
+      color: $COLOR_EMERALD;
+    }
+    overflow-wrap: break-word;
+  }
+
+  & > * {
+    position: relative;
+  }
+}
+
+.gradient {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    #c3c3c3 85%,
+    #d3d3d3 100%
+  );
+}
+
+.topBar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  padding: 0px;
+
+  position: relative;
+  height: 32px;
+  top: 46px;
+
+  margin: 0px 10vw;
+  svg {
+    height: 32px;
+    width: auto;
+  }
+}
+
+.loginButton {
+  /* Button / Small / Outlined */
+
+  padding: 10px 16px;
+  left: calc(100% - width);
+
+  /* link.cta */
+  background: $COLOR_EMERALD;
+  border-radius: 25px;
+
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  color: white;
+}
+
+.bigLogo {
+  position: relative;
+  width: 300px;
+  height: auto;
+  max-width: 40vw;
+  margin-top: 12rem;
+  margin-bottom: 4rem;
+}
+
+.cards {
+  @include content-padding;
+  background-image: linear-gradient(
+    176deg,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0) 60%,
+    rgba(250, 250, 250, 1) 60%
+  );
+
+  margin-top: 8em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 35px;
+  justify-content: center;
+  align-content: center;
+}
+
+.card {
+  padding: 0px 26px;
+  padding-bottom: 36px;
+  text-align: start;
+  min-width: min(30ch, 100%);
+
+  flex: 1 1 30%;
+
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 20px 70px rgba(0, 0, 0, 0.2);
+
+  /* headings/h3 */
+  h3 {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 140%;
+    /* identical to box height, or 140% */
+    letter-spacing: -0.03em;
+    color: $COLOR_BLACK100;
+    margin: 30px 0px;
+  }
+
+  hr {
+    width: 20px;
+    height: 0px;
+    left: 0px;
+    margin: 30px 0px;
+
+    /* blue.deep */
+    border: 1px solid $COLOR_AZURE;
+  }
+}
+
+.content {
+  background: rgba(250, 250, 250, 1);
+  @include content-padding;
+  padding-bottom: 4rem;
+  padding-top: 8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+
+  text-align: start;
+
+  img {
+    flex: 1 1 30%;
+
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+    background: $COLOR_BLACK40;
+  }
+
+  div {
+    flex: 1 1 60%;
+
+    /* Body */
+    font-size: 14px;
+    line-height: 150%;
+    /* or 21px */
+
+    color: $COLOR_BLACK60;
+  }
+
+  a {
+    color: $COLOR_EMERALD;
+  }
+
+  strong {
+    color: $COLOR_AZURE;
+  }
+
+  h2 {
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 32px;
+    /* identical to box height, or 107% */
+    letter-spacing: -0.03em;
+
+    color: $COLOR_BLACK100;
+  }
+}
+
+.contact {
+  background: $COLOR_BLACK10;
+  position: relative;
+  width: 100vw;
+  min-height: 320px;
+  text-align: center;
+  letter-spacing: 0.02em;
+
+  h3 {
+    /* Subtitle */
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 23px;
+    height: 23px;
+    margin: 86px 0px 63px 0px;
+
+    color: $COLOR_BLACK100;
+  }
+
+  div {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  a {
+    padding: 10px 16px;
+
+    height: 34px;
+    min-width: max-content;
+
+    border: 2px solid $COLOR_EMERALD;
+    border-radius: 25px;
+
+    /* Body (small) */
+    font-size: 12px;
+    line-height: 100%;
+    color: $COLOR_BLACK100;
+  }
+}
+
+.footer {
+  background: $COLOR_BLACK100;
+  position: relative;
+  width: 100vw;
+  padding: 140px;
+  @include content-padding;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  & > div {
+    flex: 1 1 30%;
+  }
+  svg {
+    margin: 40px 0px;
+  }
+  p {
+    margin-bottom: 40px;
+  }
+  color: white;
+  a {
+    color: inherit;
+  }
+}
