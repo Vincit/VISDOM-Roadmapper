@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
+import { ReactComponent as VincitLogo } from '../icons/vincit_text_logo.svg';
 import BackgroundImage from '../visdom-background.png';
 
 const Background = styled.div`
@@ -66,6 +67,30 @@ const Background = styled.div`
 
     margin: 20px 0px;
   }
+
+  ul {
+    margin: 12px;
+    padding: 0px 8px;
+  }
+
+  li {
+    /* Paragraph / Body 1 */
+    font-size: 14px;
+    line-height: 20px;
+    /* or 143% */
+    letter-spacing: -0.02em;
+
+    /* dark grey */
+    color: #6a6a6a;
+
+    text-align: start;
+    ::marker {
+      font-size: 1.5em;
+      /* link.cta */
+      color: #0ec679;
+    }
+    overflow-wrap: break-word;
+  }
 `;
 
 const HomeDiv = styled.div`
@@ -101,8 +126,6 @@ const TopBar = styled.div`
 const LoginButton = styled(Link)`
   /* Button / Small / Outlined */
 
-  display: grid;
-
   padding: 10px 16px;
   left: calc(100% - width);
 
@@ -133,7 +156,7 @@ const Cards = styled.div`
     rgba(0, 0, 0, 0) 60%,
     rgba(250, 250, 250, 1) 60%
   );
-  padding: 0px 10vw;
+  padding: 0px max(calc((100% - 1000px) / 2), 8vw);
   margin-top: 8em;
   display: grid;
   gap: 35px;
@@ -176,36 +199,11 @@ const Card = styled.div`
     /* blue.deep */
     border: 1px solid #00a3ff;
   }
-
-  ul {
-    margin: 0px 12px;
-    padding: 0px 8px;
-  }
-
-  li {
-    /* Paragraph / Body 1 */
-    font-size: 14px;
-    line-height: 20px;
-    /* or 143% */
-    letter-spacing: -0.02em;
-
-    /* dark grey */
-    color: #6a6a6a;
-
-    text-align: start;
-    ::marker {
-      font-size: 1.5em;
-      /* link.cta */
-      color: #0ec679;
-    }
-    max-width: 40ch;
-    overflow-wrap: break-word;
-  }
 `;
 
 const Content = styled.div`
   background: rgba(250, 250, 250, 1);
-  padding: 4rem 10vw;
+  padding: 4rem max(calc((100% - 1000px) / 2), 8vw);
   padding-top: 8rem;
   display: grid;
   gap: 2rem;
@@ -216,7 +214,7 @@ const Content = styled.div`
     max-width: 100%;
   }
 
-  p {
+  div {
     /* Body */
     font-size: 14px;
     line-height: 150%;
@@ -226,6 +224,14 @@ const Content = styled.div`
     color: #696969;
 
     margin: 17px 0px;
+  }
+
+  a {
+    color: #0ec679;
+  }
+
+  strong {
+    color: #00a3ff;
   }
 
   h2 {
@@ -308,9 +314,23 @@ const Footer = styled.div`
   background: #000000;
   position: relative;
   width: 100vw;
-  min-height: 500px;
-  h1 {
-    margin-top: 200px;
+  padding: 140px max(calc((100% - 1000px) / 2), 8vw);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 40px;
+  div {
+    flex: 1 1 30%;
+  }
+  color: #ffffff;
+  svg {
+    margin: 40px 0px;
+  }
+  p {
+    margin-bottom: 40px;
+  }
+  a {
+    color: #ffffff;
   }
 `;
 
@@ -318,21 +338,26 @@ const cardData = [
   {
     title: 'Stakeholder evaluations',
     points: [
-      `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    `,
-      'two',
-      'three',
+      'Product direction is based on evaluations of different people, each experts on their field',
+      'Customer representatives provide info on the value produced',
+      'Developers can speak aloud their estimations of task complexities',
     ],
   },
   {
     title: 'Balance your roadmap',
-    points: ['one', 'two', 'three'],
+    points: [
+      'Visualize stakeholder expectation fulfillment',
+      'Create milestones and alternative scenarios to arrange future development',
+      'Use different weighting to prioritize different clients',
+    ],
   },
   {
     title: 'Keep track of progression',
-    points: ['one', 'two', 'three'],
+    points: [
+      'Track the completion of development tasks and milestones',
+      'Fine-tune work or values estimations based on retrospective analysis',
+      'Keep the big picture of the development always at hand',
+    ],
   },
 ];
 
@@ -368,69 +393,144 @@ export const LandingPage = () => {
 
         <Content>
           <div>
-            <h2>Something something</h2>
+            <h2>Product roadmapping</h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Id
-              nibh tortor id aliquet lectus proin nibh. Laoreet id donec
-              ultrices tincidunt arcu non. Egestas integer eget aliquet nibh. Et
-              malesuada fames ac turpis egestas. Sit amet nulla facilisi morbi
-              tempus iaculis urna. Aliquam etiam erat velit scelerisque in
-              dictum non. Tempor orci eu lobortis elementum nibh tellus molestie
-              nunc non. Venenatis lectus magna fringilla urna porttitor. Iaculis
-              at erat pellentesque adipiscing commodo elit at. Eu non diam
-              phasellus vestibulum.
+              When we talk about a roadmap in this context, we talk about
+              product planning. More specifically, planning upcoming product
+              development versions ahead. This is a task, which is usually the
+              PO’s responsibility. Typically, a PO listens to all stakeholders
+              (developers, customer representatives, product managers, sales
+              team) and constructs the roadmap to best serve all parties
+              involved.
+            </p>
+            <p>
+              Roadmap offers a direction to a product. In this context the
+              roadmap consists of sequential future versions, named as
+              scenarios. Each scenario consists of milestones, which can have
+              any scope. In this context we are using user stories as we are
+              developing this tool from a software development perspective.
+            </p>
+            <p>
+              To help achieve this goal, the roadmapper offers analysis tools to
+              help the project owner to tailor the roadmap to a form where it
+              best fulfills the wishes of customers and the team. Tool
+              integrates currently with JIRA and other integrations are planned
+              as well such as Redmine integration. This makes it easy to import
+              roadmap items from the existing project management tools.
             </p>
           </div>
-          <img
-            src="http://2.bp.blogspot.com/_h937HNtz6ek/S0XR_lEkQPI/AAAAAAAAQKU/z8Ky_coR39g/s400/cute-cats-39.jpg"
-            alt="cat"
-          />
+          <img alt="placeholder" />
 
-          <img
-            src="http://s6.favim.com/orig/61/cute-lovely-white-cat-Favim.com-569356.jpg"
-            alt="cat"
-          />
+          <img alt="placeholder" />
           <div>
-            <h2>Something something</h2>
+            <h2>Rationale</h2>
             <p>
-              Suspendisse interdum consectetur libero id faucibus nisl. Turpis
-              massa sed elementum tempus. Nec nam aliquam sem et tortor
-              consequat. Ac tortor dignissim convallis aenean et tortor at risus
-              viverra. Pharetra et ultrices neque ornare aenean euismod
-              elementum nisi quis. Scelerisque felis imperdiet proin fermentum.
-              Cursus in hac habitasse platea dictumst quisque. Sed velit
-              dignissim sodales ut eu sem integer vitae. Tempus urna et pharetra
-              pharetra massa. Semper quis lectus nulla at volutpat diam ut
-              venenatis. Donec ultrices tincidunt arcu non sodales neque.
-              Laoreet sit amet cursus sit amet. At imperdiet dui accumsan sit.
+              The product owner plans a few versions ahead to gain aim towards
+              specific goals. There can be many perspectives to goals but one
+              universal goal for a product is to create value for the customers
+              - to make profit. That goal generally contains many variables.
+              From profitability perspective PO might think about these
+              questions, when thinking about which stories to add to a version:
             </p>
+            <ul>
+              <li>What future customers might we acquire with this?</li>
+              <li>
+                How many current clients would profit from this? (customer need
+                {'->'} more sales / continuity)
+              </li>
+              <li>
+                How much work would this need relative to the income it creates?
+              </li>
+              <li>Which stories should be there before this one?</li>
+              <li>
+                We want to concentrate on this specific customer’s needs. How
+                could we serve that goal the best?
+              </li>
+            </ul>
+            <p>
+              For development processes it is easy to select any existing tool,
+              which supports the teams way to work. Adding a workflow layer for
+              product roadmap planning to any existing tool creates unnecessary
+              payload for all stakeholders. Having a separate tool for roadmap
+              planning helps all stakeholders in their daily work:
+            </p>
+            <ul>
+              <li>
+                For developers the roadmap tool offers a separate “forum” for
+                evaluating future stories, which helps to minimize context
+                switch toll.
+              </li>
+              <li>
+                When sales have a view of future stories and versions, it can
+                more efficiently target new customers and ease communication
+                towards existing clients.
+              </li>
+              <li>
+                Evaluations of customer need for each story and value a customer
+                might (or will) bring helps the product owner to plan versions
+                ahead to best serve the business needs.
+              </li>
+              <li>
+                Transparent and accessible “board” for future stories with
+                workload and business value evaluation, remove most of the
+                manual steps the product owner needs to evaluate which stories
+                are most important.
+              </li>
+            </ul>
           </div>
 
           <div>
-            <h2>Something something</h2>
+            <h2>Current list of features</h2>
             <p>
-              Feugiat vivamus at augue eget arcu dictum varius duis. Et
-              sollicitudin ac orci phasellus egestas tellus rutrum. Enim
-              facilisis gravida neque convallis a cras semper auctor neque. Arcu
-              ac tortor dignissim convallis aenean et. Vitae et leo duis ut
-              diam. Sapien eget mi proin sed libero. Nam libero justo laoreet
-              sit amet cursus sit. Enim sit amet venenatis urna cursus eget
-              nunc. At tellus at urna condimentum mattis pellentesque id. Nunc
-              sed augue lacus viverra vitae congue eu. Consectetur adipiscing
-              elit pellentesque habitant morbi tristique. Tincidunt lobortis
-              feugiat vivamus at augue eget arcu dictum varius. Eget lorem dolor
-              sed viverra ipsum nunc aliquet bibendum. Tincidunt eget nullam non
-              nisi. Augue interdum velit euismod in pellentesque massa. Diam
-              donec adipiscing tristique risus nec feugiat. Purus sit amet
-              luctus venenatis lectus magna. Donec massa sapien faucibus et
-              molestie ac feugiat sed. Velit egestas dui id ornare.
+              The following descriptions and images present some of the ideas
+              that are to be implemented in the tool. Currently VISDOM is a work
+              in progress project.
+            </p>
+            <ul>
+              <li>
+                <strong>Dashboard</strong> - A view for the PO to get a wider
+                view of the product development process.
+              </li>
+              <li>
+                <strong>Planning tools - version milestones</strong> - A view
+                for planning the current scenario based on the ordered and rated
+                milestones. The graph represents how the estimated work
+                (developers) correlate to the estimated value produced
+                (customers). PO could arrange the upcoming milestones e.g. by
+                “most value created” - for all customers or just specific ones.
+              </li>
+              <li>
+                <strong>Task ordering</strong> - PO can order the rated tasks in
+                whatever order he/she wants to.
+              </li>
+              <li>
+                <strong>Client weighting</strong> - PO can set different
+                weighting to different customers to try out how the roadmap
+                would look like if someone’s prioritized over another.
+              </li>
+              <li>
+                <strong>Time estimation</strong> - Based on pure guesses or
+                already realized milestones, PO can estimate how other
+                milestones’ durations look like based on another one.
+              </li>
+              <li>
+                <strong>Developer / customer expert evaluation</strong> - The
+                estimations are based on expert evaluation; developers rate
+                tasks by how work-heavy they see each of them, and the customers
+                by how much value it brings to them.
+              </li>
+              <li>
+                <strong>Time estimation</strong> - Based on pure guesses or
+                already realized milestones, PO can estimate how other
+                milestones’ durations look like based on another one.
+              </li>
+            </ul>
+            <p>
+              See example images from{' '}
+              <a href="https://iteavisdom.org/news/142">this article</a>.
             </p>
           </div>
-          <img
-            src="http://images2.fanpop.com/images/photos/8400000/cute-cats-cats-8477436-400-261.jpg"
-            alt="cat"
-          />
+          <img alt="placeholder" />
         </Content>
       </HomeDiv>
       <Contact>
@@ -439,11 +539,46 @@ export const LandingPage = () => {
           <a href="https://github.com/Vincit/VISDOM-Roadmapper">
             Check us out on github
           </a>
-          <a href="mailto:nobody@example.com">Send us email</a>
+          <a href="mailto:visdom@vincit.fi">Send us email</a>
         </div>
       </Contact>
       <Footer>
-        <h1>Footer</h1>
+        <div style={{ textAlign: 'left' }}>
+          <strong>VISDOM Roadmap visualization tool</strong>
+          <p>
+            The VISDOM project will develop new types of visualisations that
+            utilise and merge data from several data sources in modern DevOps
+            development. The aim is to provide simple “health check”
+            visualisations about the state of the development process, software
+            and use.
+          </p>
+          <strong>Project repository</strong>
+          <p>
+            <a href="https://github.com/Vincit/VISDOM-Roadmapper">
+              https://github.com/Vincit/VISDOM-Roadmapper
+            </a>
+          </p>
+          <strong>Read more</strong>
+          <p>
+            <a href="https://itea3.org/news/the-itea-project-visdom-developed-open-source-roadmap-planning-and-visualisation-tool.html">
+              https://itea3.org/news/the-itea-project-visdom-developed-open-source-roadmap-planning-and-visualisation-tool.html
+            </a>
+          </p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <strong>Designed and developed by</strong>
+          <br />
+          <VincitLogo />
+          <p>
+            Vincit Ltd
+            <br />
+            <a href="https://www.vincit.fi/en/">vincit.fi</a>
+          </p>
+          <strong>Contact the team</strong>
+          <p>
+            <a href="mailto:visdom@vincit.fi">visdom@vincit.fi</a>
+          </p>
+        </div>
       </Footer>
     </Background>
   );
