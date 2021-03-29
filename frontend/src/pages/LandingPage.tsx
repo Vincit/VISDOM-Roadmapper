@@ -12,7 +12,7 @@ const Background = styled.div`
     background-image: url(${BackgroundImage});
     background-size: cover;
     background-repeat: no-repeat;
-    filter: blur(0.55%);
+    filter: blur(8px);
     position: absolute;
     top: 0;
     left: 0;
