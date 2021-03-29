@@ -158,12 +158,9 @@ const Cards = styled.div`
   );
   padding: 0px max(calc((100% - 1000px) / 2), 8vw);
   margin-top: 8em;
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 35px;
-  grid-template-columns: max-content;
-  @media (min-width: calc(3 * 310px + 20px)) {
-    grid-template-columns: repeat(3, 1fr);
-  }
   justify-content: center;
   align-content: center;
 `;
@@ -172,7 +169,9 @@ const Card = styled.div`
   padding: 0px 26px;
   padding-bottom: 36px;
   text-align: start;
-  max-width: 94vw;
+  min-width: min(30ch, 100%);
+
+  flex: 1 1 30%;
 
   /* white */
   background: #ffffff;
@@ -205,16 +204,24 @@ const Content = styled.div`
   background: rgba(250, 250, 250, 1);
   padding: 4rem max(calc((100% - 1000px) / 2), 8vw);
   padding-top: 8rem;
-  display: grid;
-  gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
 
   text-align: start;
 
-  * {
+  img {
+    flex: 1 1 30%;
+
+    max-height: 200px;
     max-width: 100%;
+    object-fit: contain;
+    background: #c4c4c4;
   }
 
   div {
+    flex: 1 1 60%;
+
     /* Body */
     font-size: 14px;
     line-height: 150%;
@@ -222,8 +229,6 @@ const Content = styled.div`
 
     /* Black/60 */
     color: #696969;
-
-    margin: 17px 0px;
   }
 
   a {
@@ -243,22 +248,6 @@ const Content = styled.div`
 
     /* Black / 100 */
     color: #000000;
-
-    /* Inside Auto Layout */
-    margin: 17px 0px;
-  }
-  grid-template-columns: 1fr;
-  @media (min-width: calc(2 * 300px + 40px)) {
-    grid-template-columns: repeat(2, 1fr);
-    div {
-      grid-column: span 2;
-    }
-  }
-  @media (min-width: calc(3 * 300px + 40px)) {
-    grid-template-columns: repeat(3, 1fr);
-    div {
-      grid-column: span 2;
-    }
   }
 `;
 
@@ -284,12 +273,9 @@ const Contact = styled.div`
 
   div {
     justify-content: center;
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    grid-template-columns: auto;
-    @media (min-width: calc(2 * 220px)) {
-      grid-template-columns: repeat(2, fit-content(20%));
-    }
   }
 
   a {
@@ -316,7 +302,6 @@ const Footer = styled.div`
   width: 100vw;
   padding: 140px max(calc((100% - 1000px) / 2), 8vw);
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 40px;
   div {
