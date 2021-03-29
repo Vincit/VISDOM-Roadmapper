@@ -1,53 +1,53 @@
 @import './../shared.scss';
 
 .navButton {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-width: 104px;
-  min-height: 104px;
-  font-family: Anonymous Pro;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 2px;
-  font-size: 12px;
-  color: $COLOR_BLACK100;
-
-  &:hover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 104px;
+    min-height: 104px;
+    font-family: Anonymous Pro;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 12px;
     color: $COLOR_BLACK100;
-  }
 
-  svg {
-    width: 30px;
-    height: 30px;
-    margin-bottom: 5px;
-  }
+    &:hover {
+        color: $COLOR_BLACK100;
+    }
 
-  &.selected:not(.settings) {
-    background-color: $COLOR_BLACK5;
-    border-left: 5px solid $COLOR_SKY;
-    padding-left: -5px;
-  }
+    svg {
+        width: 30px;
+        height: 30px;
+        margin-bottom: 5px;
+    }
 
-  &.settings {
-    margin-top: auto;
-    border-top: 1px solid $COLOR_BLACK10;
-    font-family: IBM Plex Mono;
-    font-size: 11px;
-    font-weight: normal;
-  }
+    &.selected:not(.settings) {
+        background-color: $COLOR_BLACK5;
+        border-left: 5px solid $COLOR_SKY;
+        padding-left: -5px;
+    }
 
-  &.settings.selected > svg {
-    color: $COLOR_AZURE;
-  }
+    &.settings {
+        margin-top: auto;
+        border-top: 1px solid $COLOR_BLACK10;
+        font-family: IBM Plex Mono;
+        font-size: 11px;
+        font-weight: normal;
+    }
+
+    &.settings.selected > svg {
+       color: $COLOR_AZURE;
+    }
 }
 
 .logo {
-  svg {
-    min-width: 60px;
-    min-height: 60px;
-  }
-  margin-bottom: 60px;
+    svg {
+        min-width: 60px;
+        min-height: 60px;
+    }
+    margin-bottom: 60px;
 }
