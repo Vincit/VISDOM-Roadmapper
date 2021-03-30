@@ -25,7 +25,36 @@ export interface DataPoint {
   color: string;
 }
 
-const Container = styled.div``;
+// TODO: split up the pre-title style etc. when moving to scss
+const Container = styled.div`
+  .tooltip-base {
+    align-items: center;
+    padding: 10px 17px;
+
+    background: white;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 19px;
+
+    /* Pre title */
+    font-family: Anonymous Pro;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 100%;
+    /* identical to box height, or 12px */
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+
+    /* Black / 100 */
+    color: #000000;
+
+    /* Inside Auto Layout */
+    margin: 0px 10px;
+  }
+`;
 
 const Title = styled.p`
   width: 400px;
@@ -86,6 +115,19 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
     })}%`;
   };
 
+  const tooltip = ({
+    payload,
+    active,
+  }: {
+    payload: DataPoint[];
+    active: boolean;
+  }) =>
+    active ? (
+      <div className="tooltip-base">
+        {`${payload[0].name} : ${valuePercent(payload[0].value)}`}
+      </div>
+    ) : null;
+
   return (
     <Container>
       <Title>{version.name}</Title>
@@ -103,10 +145,7 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
-        <Tooltip
-          formatter={(value) => valuePercent(value as number)}
-          allowEscapeViewBox={{ x: true, y: true }}
-        />
+        <Tooltip content={tooltip} allowEscapeViewBox={{ x: true, y: true }} />
         <Legend
           align="right"
           verticalAlign="middle"
