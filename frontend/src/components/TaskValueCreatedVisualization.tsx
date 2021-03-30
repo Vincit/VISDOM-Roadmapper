@@ -78,6 +78,14 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
     index += 1;
   });
 
+  const valuePercent = (value: number) => {
+    const percent = (100 * value) / totalValue;
+    return `${percent.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    })}%`;
+  };
+
   return (
     <Container>
       <Title>{version.name}</Title>
@@ -95,7 +103,10 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
-        <Tooltip allowEscapeViewBox={{ x: true, y: true }} />
+        <Tooltip
+          formatter={(value) => valuePercent(value as number)}
+          allowEscapeViewBox={{ x: true, y: true }}
+        />
         <Legend
           align="right"
           verticalAlign="middle"
