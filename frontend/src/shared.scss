@@ -250,6 +250,31 @@ $COLOR_BLACK5: #f5f5f5;
   border-radius: 25px;
 }
 
+.tooltip-base {
+  @extend .shadow-tooltip;
+
+  background: white;
+  border-radius: 19px;
+
+  /* Pre title */
+  font-family: Anonymous Pro;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 100%;
+  /* identical to box height, or 12px */
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  color: $COLOR_BLACK100;
+
+  padding: 10px 17px;
+  margin: 0px 10px;
+}
+
 @mixin landing-content-padding {
   padding-left: max(calc((100% - 1000px) / 2), 8vw);
   padding-right: max(calc((100% - 1000px) / 2), 8vw);
