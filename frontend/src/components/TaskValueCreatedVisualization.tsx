@@ -71,6 +71,27 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
     index += 1;
   });
 
+  const valuePercent = (value: number) => {
+    const percent = (100 * value) / totalValue;
+    return `${percent.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    })}%`;
+  };
+
+  const tooltip = ({
+    payload,
+    active,
+  }: {
+    payload: DataPoint[];
+    active: boolean;
+  }) =>
+    active ? (
+      <div className="tooltip-base">
+        {`${payload[0].name} : ${valuePercent(payload[0].value)}`}
+      </div>
+    ) : null;
+
   return (
     <div className={css.container}>
       <h3 className={css.taskTitle}>{version.name}</h3>
@@ -88,7 +109,7 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
-        <Tooltip allowEscapeViewBox={{ x: true, y: true }} />
+        <Tooltip content={tooltip} allowEscapeViewBox={{ x: true, y: true }} />
         <Legend
           align="right"
           verticalAlign="middle"
