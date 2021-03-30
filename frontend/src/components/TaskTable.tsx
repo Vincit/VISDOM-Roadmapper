@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
 import {
   HeaderSpan,
   SearchBarContainer,
   StyledTable,
   StyledTh,
   TopBar,
-} from '../components/CommonLayoutComponents';
-import { StyledButton } from '../components/forms/StyledButton';
-import { StyledFormControl } from '../components/forms/StyledFormControl';
-import { TableTaskRow } from '../components/TableTaskRow';
+} from './CommonLayoutComponents';
+import { StyledButton } from './forms/StyledButton';
+import { StyledFormControl } from './forms/StyledFormControl';
+import { TableTaskRow } from './TableTaskRow';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
@@ -26,7 +27,6 @@ import {
   SortingTypes,
   sortTasks,
 } from '../utils/TaskUtils';
-import classNames from 'classnames';
 import css from './TaskTable.module.scss';
 
 const classes = classNames.bind(css);
