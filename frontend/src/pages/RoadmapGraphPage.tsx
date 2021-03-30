@@ -50,21 +50,19 @@ const GraphItems = styled.div`
 const GraphItem = styled.div<{
   width: string;
   height: string;
+  selected: boolean;
 }>`
   display: flex;
   flex-direction: column;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
-  border: 1px solid red;
   overflow-x: visible;
-  border-radius: 8px;
+  border-radius: 10px;
+
   margin-right: 12px;
   padding: 8px;
-  background-color: #fbfbfb;
-  border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  background: ${({ selected }) => (selected ? '#F7FCFF' : 'white')};
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   &:hover {
     background-color: #f2f2f2;
@@ -89,7 +87,7 @@ const VersionData = styled.p`
   svg {
     position: relative;
     top: -1px;
-    color: #4fbeff;
+    color: #00a3ff;
     margin-right: 2px;
     width: 13px;
     height: 13px;
@@ -142,6 +140,7 @@ export const RoadmapGraphPage = () => {
                 <GraphItem
                   width={`${w}px`}
                   height={`${h}px`}
+                  selected={ver.id === selectedVersion?.id}
                   key={ver.id}
                   onClick={() => setSelectedVersion(ver)}
                 >
