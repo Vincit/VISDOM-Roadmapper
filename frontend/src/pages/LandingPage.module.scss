@@ -105,19 +105,12 @@
 }
 
 .loginButton {
-  /* Button / Small / Outlined */
-
-  padding: 10px 16px;
+  @extend .button-small-filled;
   left: calc(100% - width);
-
-  /* link.cta */
-  background: $COLOR_EMERALD;
-  border-radius: 25px;
 
   font-weight: 500;
   font-size: 13px;
   line-height: 16px;
-  color: white;
 }
 
 .bigLogo {
@@ -213,6 +206,9 @@
 
   a {
     color: $COLOR_EMERALD;
+    &:hover {
+      color: $COLOR_FOREST;
+    }
   }
 
   strong {
@@ -257,13 +253,9 @@
   }
 
   a {
-    padding: 10px 16px;
-
+    @extend .button-small-outlined;
     height: 34px;
     min-width: max-content;
-
-    border: 2px solid $COLOR_EMERALD;
-    border-radius: 25px;
 
     /* Body (small) */
     font-size: 12px;
