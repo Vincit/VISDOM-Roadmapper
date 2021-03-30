@@ -96,16 +96,13 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
 
   // Format for recharts
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-  const data: DataPoint[] = [];
-  let index = 0;
-  customerStakes.forEach((val, key) => {
-    data.push({
+  const data: DataPoint[] = Array.from(customerStakes)
+    .sort((a, b) => b[1] - a[1])
+    .map(([key, val], index) => ({
       name: key.username,
       value: Math.round(val * 100) / 100,
       color: COLORS[index % COLORS.length],
-    });
-    index += 1;
-  });
+    }));
 
   const valuePercent = (value: number) => {
     const percent = (100 * value) / totalValue;
