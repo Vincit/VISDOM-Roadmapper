@@ -1,33 +1,33 @@
 @import "../shared.scss";
 
 .outerContainer {
-  display: inline-block;
-  border-radius: 16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  height: 180px;
-  background-color: rgb(247, 247, 247);
-  text-align: start;
+    display: inline-block;
+    border-radius: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    height: 180px;
+    background-color: rgb(247, 247, 247);
+    text-align: start;
 }
 
 .header {
-  margin-left: 16px;
+   margin-left: 16px;
 }
 
 .completedtasks {
-  font-size: 12px;
-  position: absolute;
-  left: 63px;
-  top: 142px;
-  font-weight: 600;
-  color: #777777;
+    font-size: 12px;
+    position: absolute;
+    left: 63px;
+    top: 142px;
+    font-weight: 600;
+    color: #777777;
 }
 
 .notcompletedtasks {
-  font-size: 12px;
-  position: absolute;
-  left: 182px;
-  top: 142px;
-  font-weight: 600;
-  color: #777777;
+    font-size: 12px;
+    position: absolute;
+    left: 182px;
+    top: 142px;
+    font-weight: 600;
+    color: #777777;
 }

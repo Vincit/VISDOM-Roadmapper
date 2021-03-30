@@ -1,13 +1,13 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
+import classNames from 'classnames';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
-import classNames from 'classnames';
 import css from './RoadmapOverview.module.scss';
 
 const classes = classNames.bind(css);
@@ -52,7 +52,9 @@ export const RoadmapOverview = () => {
       </div>
       <div className={classes(css.dataEntryWrapper)}>
         <Trans i18nKey="milestones" />
-        <p className={classes(css.dataNumberWrapper)}>{roadmapMilestonesCount()}</p>
+        <p className={classes(css.dataNumberWrapper)}>
+          {roadmapMilestonesCount()}
+        </p>
       </div>
       <div className={classes(css.dataEntryWrapper)}>
         <Trans i18nKey="Avg. Rating" />

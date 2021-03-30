@@ -2,6 +2,7 @@ import React from 'react';
 import { CheckCircle, Circle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
@@ -17,7 +18,6 @@ import { InfoButton } from './forms/InfoButton';
 import { RatingsButton } from './forms/RatingsButton';
 import { StyledButton } from './forms/StyledButton';
 import { TaskRatingsText } from './TaskRatingsText';
-import classNames from 'classnames';
 import css from './TableTaskRow.module.scss';
 
 const classes = classNames.bind(css);

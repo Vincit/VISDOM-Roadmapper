@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import classNames from 'classnames';
 import {
   chosenRoadmapSelector,
   publicUsersSelector,
@@ -28,7 +29,6 @@ import {
   calcWeightedTaskPriority,
 } from '../utils/TaskUtils';
 import { StyledButton } from './forms/StyledButton';
-import classNames from 'classnames';
 import css from './PlannerChart.module.scss';
 
 const classes = classNames.bind(css);

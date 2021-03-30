@@ -8,7 +8,7 @@
 .dataNumberWrapper {
     font-family: Work Sans;
     margin: auto;
-    color: #00a3ff;
+    color: $COLOR_AZURE;
     font-size: 36px;
     font-weight: 300;
     margin-top: 0;
@@ -16,7 +16,7 @@
     svg {
         position: relative;
         top: -4px;
-        color: #00a3ff;
+        color: $COLOR_AZURE;
         width: 32px;
         height: 32px;
     }
