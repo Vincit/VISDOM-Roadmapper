@@ -51,16 +51,22 @@ export const RoadmapSelectorWidget = () => {
 
   return (
     <Dropdown title={selectedRoadmap}>
-      {roadmaps &&
-        roadmaps.map((roadmap) => (
-          <Link
-            key={roadmap.id}
-            className={classes(css.dropItem)}
-            to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
-          >
-            {roadmap.name}
-          </Link>
-        ))}
+      {!roadmaps || roadmaps.length === 0 ? (
+        <div className={classes(css.dropItem)}>No roadmaps available</div>
+      ) : (
+        <>
+          {roadmaps &&
+            roadmaps.map((roadmap) => (
+              <Link
+                key={roadmap.id}
+                className={classes(css.dropItem)}
+                to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
+              >
+                {roadmap.name}
+              </Link>
+            ))}
+        </>
+      )}
     </Dropdown>
   );
 };
