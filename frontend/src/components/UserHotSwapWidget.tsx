@@ -65,17 +65,23 @@ export const UserHotSwapWidget = () => {
   }
   return (
     <Dropdown title={selectedUser}>
-      {hotSwappableUsers.map((user: any) => (
-        <div key={user.id}>
-          <button
-            type="button"
-            className={classes(css.dropItem)}
-            onClick={() => hotSwapToUser(user)}
-          >
-            {user.username}
-          </button>
-        </div>
-      ))}
+      {!hotSwappableUsers || hotSwappableUsers.length === 0 ? (
+        <div className={classes(css.dropItem)}>No linked users</div>
+      ) : (
+        <>
+          {hotSwappableUsers.map((user: any) => (
+            <div key={user.id}>
+              <button
+                type="button"
+                className={classes(css.dropItem)}
+                onClick={() => hotSwapToUser(user)}
+              >
+                {user.username}
+              </button>
+            </div>
+          ))}
+        </>
+      )}
     </Dropdown>
   );
 };
