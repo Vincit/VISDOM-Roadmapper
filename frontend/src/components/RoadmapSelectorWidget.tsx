@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavDropdown } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import {
@@ -11,10 +11,12 @@ import {
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { paths } from '../routers/paths';
-import { StyledNavDropdown } from './forms/StyledNavDropdown';
+import { Dropdown } from './forms/Dropdown';
+import css from './forms/Dropdown.module.scss';
+
+const classes = classNames.bind(css);
 
 export const RoadmapSelectorWidget = () => {
-  const dropdownRef = useRef<HTMLDivElement>();
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,
@@ -30,41 +32,35 @@ export const RoadmapSelectorWidget = () => {
     'Select roadmap',
   );
 
+  const shortenString = (target: string) => {
+    const modified = `${target.slice(0, 19)}..`;
+    return modified;
+  };
+
   useEffect(() => {
     if (!roadmaps) dispatch(roadmapsActions.getRoadmaps());
   }, [dispatch, roadmaps]);
 
   useEffect(() => {
-    if (chosenRoadmap) setSelectedRoadmap(chosenRoadmap.name);
+    if (chosenRoadmap) {
+      if (chosenRoadmap.name.length > 20)
+        setSelectedRoadmap(shortenString(chosenRoadmap.name));
+      else setSelectedRoadmap(chosenRoadmap.name);
+    }
   }, [chosenRoadmap]);
 
-  const toggleDropdown = () => {
-    dropdownRef!.current!.click();
-  };
-
   return (
-    <StyledNavDropdown
-      id="roadmapselector"
-      title={selectedRoadmap}
-      ref={dropdownRef}
-    >
-      {!roadmaps || roadmaps.length === 0 ? (
-        <NavDropdown.Item>No roadmaps available</NavDropdown.Item>
-      ) : (
-        <>
-          {roadmaps &&
-            roadmaps.map((roadmap) => (
-              <Link
-                key={roadmap.id}
-                className="dropdown-item"
-                to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
-                onClick={toggleDropdown} // Close dropdown manually because clicking on react <Link> does not close it
-              >
-                {roadmap.name}
-              </Link>
-            ))}
-        </>
-      )}
-    </StyledNavDropdown>
+    <Dropdown title={selectedRoadmap}>
+      {roadmaps &&
+        roadmaps.map((roadmap) => (
+          <Link
+            key={roadmap.id}
+            className={classes(css.dropItem)}
+            to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
+          >
+            {roadmap.name}
+          </Link>
+        ))}
+    </Dropdown>
   );
 };
