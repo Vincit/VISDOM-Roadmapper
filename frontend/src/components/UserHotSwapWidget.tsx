@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavDropdown } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import classNames from 'classnames';
 import { api } from '../api/api';
 import { StoreDispatchType } from '../redux';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
@@ -9,10 +9,12 @@ import { userActions } from '../redux/user';
 import { userInfoSelector } from '../redux/user/selectors';
 import { HotSwappableUser } from '../redux/user/types';
 import { paths } from '../routers/paths';
-import { StyledNavDropdown } from './forms/StyledNavDropdown';
+import { Dropdown } from './forms/Dropdown';
+import css from './forms/Dropdown.module.scss';
+
+const classes = classNames.bind(css);
 
 export const UserHotSwapWidget = () => {
-  const dropdownRef = useRef<HTMLDivElement>();
   const dispatch = useDispatch<StoreDispatchType>();
   const [hotSwappableUsers, setHotSwappableUsers] = useState<
     HotSwappableUser[]
@@ -38,6 +40,11 @@ export const UserHotSwapWidget = () => {
     }
   };
 
+  const shortenString = (target: string) => {
+    const modified = `${target.slice(0, 19)}..`;
+    return modified;
+  };
+
   useEffect(() => {
     const getHotSwappableUsers = async () => {
       const users = await api.getHotSwappableUsers();
@@ -46,28 +53,29 @@ export const UserHotSwapWidget = () => {
       setHotSwappableUsers(filtered);
     };
     getHotSwappableUsers();
-    if (userInfo) setSelectedUser(userInfo.username);
+    if (userInfo) {
+      if (userInfo.username.length > 20)
+        setSelectedUser(shortenString(userInfo.username));
+      else setSelectedUser(userInfo.username);
+    }
   }, [userInfo]);
 
   if (hotSwappableUsers.length === 0) {
     return null;
   }
   return (
-    <StyledNavDropdown
-      id="userhotswapwidget"
-      title={selectedUser}
-      ref={dropdownRef}
-    >
-      {hotSwappableUsers.length === 0 && (
-        <NavDropdown.Item>No linked users</NavDropdown.Item>
-      )}
-      {hotSwappableUsers.map((user) => {
-        return (
-          <NavDropdown.Item key={user.id} onClick={() => hotSwapToUser(user)}>
+    <Dropdown title={selectedUser}>
+      {hotSwappableUsers.map((user: any) => (
+        <div key={user.id}>
+          <button
+            type="button"
+            className={classes(css.dropItem)}
+            onClick={() => hotSwapToUser(user)}
+          >
             {user.username}
-          </NavDropdown.Item>
-        );
-      })}
-    </StyledNavDropdown>
+          </button>
+        </div>
+      ))}
+    </Dropdown>
   );
 };
