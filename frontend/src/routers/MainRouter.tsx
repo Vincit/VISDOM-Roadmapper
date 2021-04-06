@@ -1,13 +1,26 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from '../redux/types';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
 import { NavLayout } from '../components/NavLayout';
 import { HomePage } from '../pages/HomePage';
+import { LandingPage } from '../pages/LandingPage';
 import { LoginPage } from '../pages/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { UserInfoPage } from '../pages/UserInfoPage';
 import { paths } from './paths';
 import { RoadmapRouter } from './RoadmapRouter';
+
+const Home = () => {
+  const loggedInUser = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  return loggedInUser ? <NavLayout Content={HomePage} /> : <LandingPage />;
+};
 
 const routes = [
   {
@@ -32,7 +45,7 @@ const routes = [
   },
   {
     path: paths.home,
-    component: () => <NavLayout Content={HomePage} />,
+    component: () => <Home />,
     exact: true,
   },
   {

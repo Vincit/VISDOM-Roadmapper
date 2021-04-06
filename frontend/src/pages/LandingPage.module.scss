@@ -25,8 +25,7 @@
   min-height: 100vh;
   grid-template-rows: 1fr auto auto;
 
-  /* absolute position needed while NavBar is rendered by NavLayout */
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
 
