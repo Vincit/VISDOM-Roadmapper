@@ -8,7 +8,7 @@
 .background {
   &:before {
     content: '';
-    background-image: url(../visdom-background.png);
+    background-image: url(../assets/images/visdom-background.png);
     background-size: cover;
     background-repeat: no-repeat;
     filter: blur(8px);
@@ -62,6 +62,8 @@
     line-height: 20px;
     /* or 143% */
     letter-spacing: -0.02em;
+
+    margin: 10px 0px;
 
     color: $COLOR_BLACK60;
 
@@ -184,17 +186,23 @@
 
   text-align: start;
 
-  img {
+  svg {
     flex: 1 1 30%;
 
-    max-height: 200px;
-    max-width: 100%;
-    object-fit: contain;
-    background: $COLOR_BLACK40;
+    margin: auto;
+    padding: 10px 0px;
+
+    max-width: 300px;
+    min-width: 200px;
+    object-fit: scale-down;
   }
 
   div {
-    flex: 1 1 60%;
+    flex: 1 0 60%;
+
+    height: 100%;
+
+    margin: 0px;
 
     /* Body */
     font-size: 14px;
@@ -202,6 +210,10 @@
     /* or 21px */
 
     color: $COLOR_BLACK60;
+  }
+
+  p {
+    margin: 30px 0px;
   }
 
   a {

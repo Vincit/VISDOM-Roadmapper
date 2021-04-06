@@ -4,6 +4,9 @@ import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { ReactComponent as VincitLogo } from '../icons/vincit_text_logo.svg';
+import { ReactComponent as RoamappingSvg } from '../assets/images/roadmapping.svg';
+import { ReactComponent as RationaleSvg } from '../assets/images/rationale.svg';
+import { ReactComponent as FeaturesSvg } from '../assets/images/features.svg';
 import css from './LandingPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -93,9 +96,9 @@ export const LandingPage = () => {
               roadmap items from the existing project management tools.
             </p>
           </div>
-          <img alt="placeholder" />
+          <RoamappingSvg />
 
-          <img alt="placeholder" />
+          <RationaleSvg />
           <div>
             <h2>Rationale</h2>
             <p>
@@ -204,7 +207,7 @@ export const LandingPage = () => {
               <a href="https://iteavisdom.org/news/142">this article</a>.
             </p>
           </div>
-          <img alt="placeholder" />
+          <FeaturesSvg />
         </div>
       </div>
       <div className={classes(css.contact)}>
