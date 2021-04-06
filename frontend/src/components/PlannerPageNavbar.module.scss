@@ -1,0 +1,40 @@
+@import "../shared.scss";
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.navbarFiller {
+    display: flex;
+    flex-grow: 1;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.navbarButton {
+  font-size: 18px;
+  padding: 8px;
+  padding-left: 32px;
+  padding-right: 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  background-color: inherit;
+  &:hover {
+    background-color: #ededed;
+    text-decoration: underline;
+    color: black;
+  }
+  &.highlight {
+        border-bottom: 3px solid $COLOR_FOREST;
+        text-decoration: underline;
+        background-color: $COLOR_BLACK10;
+        &:hover {
+            background-color: $COLOR_BLACK10;
+        }
+    }
+}

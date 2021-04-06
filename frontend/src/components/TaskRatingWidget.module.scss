@@ -1,0 +1,39 @@
+@import "../shared.scss";
+
+.commentButton {
+    position: relative;
+    top: 0.15em;
+    cursor: pointer;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.closeCommentButton {
+  position: absolute;
+  top: -0.5em;
+  right: 0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 50px;
+  margin: 0px;
+}
+
+.commentBoxWrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin-left: 2em;
+  margin-right: 2em;
+  z-index: 999;
+  textarea {
+    resize: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 6em;
+  }
+}

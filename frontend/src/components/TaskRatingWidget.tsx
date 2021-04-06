@@ -3,50 +3,15 @@ import { Form } from 'react-bootstrap';
 import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo, UserType } from '../redux/user/types';
 import { TaskRatingBar } from './RatingBars';
+import classNames from 'classnames';
+import css from './TaskRatingWidget.module.scss';
 
-const CommentButton = styled(ChatDots)`
-  position: relative;
-  top: 0.15em;
-  cursor: pointer;
-  width: 1.5em;
-  height: 1.5em;
-`;
-
-const CloseCommentButton = styled.span`
-  position: absolute;
-  top: -0.5em;
-  right: 0;
-  cursor: pointer;
-  user-select: none;
-  font-size: 50px;
-  margin: 0px;
-`;
-
-const CommentBoxWrapper = styled(Form.Group)`
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  margin-left: 2em;
-  margin-right: 2em;
-  z-index: 999;
-  textarea {
-    resize: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    height: 6em;
-  }
-`;
+const classes = classNames.bind(css);
 
 interface TaskRatingWidgetProps {
   initialBusinessValueRating?: {
@@ -143,7 +108,8 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
                 initialValue={businessValueRating.value}
                 onChange={businessValueChanged}
               />
-              <CommentButton
+              <ChatDots 
+                className={classes(css.commentButton)}
                 onClick={() =>
                   openCommentBox(TaskRatingDimension.BusinessValue)
                 }
@@ -160,7 +126,8 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
                   initialValue={requiredWorkRating.value}
                   onChange={requiredWorkValueChanged}
                 />
-                <CommentButton
+                <ChatDots 
+                  className={classes(css.commentButton)}
                   onClick={() =>
                     openCommentBox(TaskRatingDimension.RequiredWork)
                   }
@@ -174,7 +141,7 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
 
   const renderCommentBox = () => {
     return (
-      <CommentBoxWrapper>
+      <Form.Group className={classes(css.commentBoxWrapper)}>
         <Form.Control
           required
           as="textarea"
@@ -189,13 +156,14 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
           }
           onChange={(e) => onCommentChange(e.currentTarget.value)}
         />
-        <CloseCommentButton
+        <span 
+          className={classes(css.closeCommentButton)}
           onClick={() => setCommentBoxOpen(false)}
           aria-hidden="true"
         >
           &times;
-        </CloseCommentButton>
-      </CommentBoxWrapper>
+        </span>
+      </Form.Group>
     );
   };
 
