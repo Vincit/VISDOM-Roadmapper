@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { NavLayout } from '../components/NavLayout';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage';
@@ -11,32 +12,32 @@ import { RoadmapRouter } from './RoadmapRouter';
 const routes = [
   {
     path: paths.loginPage,
-    component: LoginPage,
+    component: () => <NavLayout Content={LoginPage} />,
     exact: false,
   },
   {
     path: paths.logoutPage,
-    component: LogoutPage,
+    component: () => <NavLayout Content={LogoutPage} />,
     exact: false,
   },
   {
     path: paths.userInfo,
-    component: UserInfoPage,
+    component: () => <NavLayout Content={UserInfoPage} />,
     exact: false,
   },
   {
     path: paths.roadmapRouter,
-    component: RoadmapRouter,
+    component: () => <NavLayout Content={RoadmapRouter} />,
     exact: false,
   },
   {
     path: paths.home,
-    component: HomePage,
+    component: () => <NavLayout Content={HomePage} />,
     exact: true,
   },
   {
     path: paths.notFound,
-    component: NotFoundPage,
+    component: () => <NavLayout Content={NotFoundPage} />,
     exact: true,
   },
   {

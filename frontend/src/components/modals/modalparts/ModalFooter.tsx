@@ -1,8 +1,6 @@
-import styled from 'styled-components';
+import React from 'react';
+import css from './ModalFooter.module.scss';
 
-export const ModalFooter = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 32px;
-`;
+export const ModalFooter: React.FC = ({ children }) => {
+  return <div className={css.container}>{children}</div>;
+};

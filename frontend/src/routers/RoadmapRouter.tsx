@@ -11,7 +11,6 @@ import {
 import styled from 'styled-components';
 import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { SideBar } from '../components/SideBar';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
@@ -141,7 +140,6 @@ const RoadmapRouterComponent = () => {
     if (!isLoadingRoadmap && !isLoadingUsers) {
       return (
         <LayoutRow overflowY="auto" overflowX="auto">
-          <SideBar />
           <RoadmapPageContainer overflowY="auto" overflowX="auto">
             <Switch>
               {routes.map((route) => (

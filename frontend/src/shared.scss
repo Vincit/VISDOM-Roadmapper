@@ -1,0 +1,56 @@
+$COLOR_EMERALD: #0EC679;
+$COLOR_AZURE: #00A3FF;
+$COLOR_FOREST: #289C6B;
+$COLOR_SKY: #A6DFFF;
+$COLOR_CLOUD: #F6FCFF;
+$COLOR_RASPBERRY: #FF3062; 
+
+$COLOR_BLACK100: #000000;
+$COLOR_BLACK60: #6a6a6a;
+$COLOR_BLACK40: #C6C6C6;
+$COLOR_BLACK10: #e3e3e3;
+$COLOR_BLACK5: #f5f5f5;
+
+
+.shadow-landing {
+    -webkit-box-shadow: 0px 20px 70px 0px rgba(0,0,0,0.2); 
+    box-shadow: 0px 20px 70px 0px rgba(0,0,0,0.2);
+}
+
+.shadow-popup {
+    -webkit-box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.25); 
+    box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.25);
+}
+
+.shadow-tooltip {
+    -webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.2); 
+    box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.2);
+}
+
+.shadow-roadmapblock {
+    -webkit-box-shadow: 0px 5x 5px 0px rgba(0,0,0,0.1); 
+    box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.1);
+}
+
+.layout-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.grow {
+    flex-grow: 1;
+}
+
+.overflow-auto{
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.loading-cursor {
+    cursor: wait;
+}

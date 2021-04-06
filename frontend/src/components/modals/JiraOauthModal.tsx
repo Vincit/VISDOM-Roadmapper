@@ -85,10 +85,12 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   return (
     <>
-      <ModalCloseButton onClick={closeModal} />
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
-          <Trans i18nKey="Setup Jira OAuth" />
+          <h3>
+            <Trans i18nKey="Setup Jira OAuth" />
+          </h3>
+          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           {isLoading || !oauthURL ? (
@@ -133,7 +135,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv rightmargin>
+          <ModalFooterButtonDiv>
             <StyledButton
               fullWidth
               buttonType="cancel"
