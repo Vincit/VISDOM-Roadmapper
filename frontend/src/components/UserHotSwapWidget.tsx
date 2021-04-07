@@ -23,7 +23,7 @@ export const UserHotSwapWidget = () => {
   const userInfo = useSelector(userInfoSelector);
   const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
 
-  const [selectedUser, setSelectedUser] = useState<String>('Swap to user');
+  const [selectedUser, setSelectedUser] = useState<string>('Swap to user');
 
   const hotSwapToUser = async (user: HotSwappableUser) => {
     const res = await dispatch(userActions.hotSwapToUser(user.id));
@@ -40,11 +40,6 @@ export const UserHotSwapWidget = () => {
     }
   };
 
-  const shortenString = (target: string) => {
-    const modified = `${target.slice(0, 19)}..`;
-    return modified;
-  };
-
   useEffect(() => {
     const getHotSwappableUsers = async () => {
       const users = await api.getHotSwappableUsers();
@@ -53,23 +48,24 @@ export const UserHotSwapWidget = () => {
       setHotSwappableUsers(filtered);
     };
     getHotSwappableUsers();
-    if (userInfo) {
-      if (userInfo.username.length > 20)
-        setSelectedUser(shortenString(userInfo.username));
-      else setSelectedUser(userInfo.username);
-    }
+    if (userInfo) setSelectedUser(userInfo.username);
   }, [userInfo]);
 
   if (hotSwappableUsers.length === 0) {
     return null;
   }
+
+  if (!hotSwappableUsers || hotSwappableUsers.length === 0) {
+    return <Dropdown title={selectedUser} empty />;
+  }
+
   return (
     <Dropdown title={selectedUser}>
       {!hotSwappableUsers || hotSwappableUsers.length === 0 ? (
-        <div className={classes(css.dropItem)}>No linked users</div>
+        <div className={classes(css.disabledItem)}>No linked users</div>
       ) : (
         <>
-          {hotSwappableUsers.map((user: any) => (
+          {hotSwappableUsers.map((user) => (
             <div key={user.id}>
               <button
                 type="button"
