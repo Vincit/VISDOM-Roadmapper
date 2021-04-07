@@ -28,45 +28,34 @@ export const RoadmapSelectorWidget = () => {
     shallowEqual,
   );
 
-  const [selectedRoadmap, setSelectedRoadmap] = useState<String>(
+  const [selectedRoadmap, setSelectedRoadmap] = useState<string>(
     'Select roadmap',
   );
-
-  const shortenString = (target: string) => {
-    const modified = `${target.slice(0, 19)}..`;
-    return modified;
-  };
 
   useEffect(() => {
     if (!roadmaps) dispatch(roadmapsActions.getRoadmaps());
   }, [dispatch, roadmaps]);
 
   useEffect(() => {
-    if (chosenRoadmap) {
-      if (chosenRoadmap.name.length > 20)
-        setSelectedRoadmap(shortenString(chosenRoadmap.name));
-      else setSelectedRoadmap(chosenRoadmap.name);
-    }
+    if (chosenRoadmap) setSelectedRoadmap(chosenRoadmap.name);
   }, [chosenRoadmap]);
+
+  if (!roadmaps || roadmaps.length === 0) {
+    return <Dropdown title="No roadmaps available" disabled />;
+  }
 
   return (
     <Dropdown title={selectedRoadmap}>
-      {!roadmaps || roadmaps.length === 0 ? (
-        <div className={classes(css.dropItem)}>No roadmaps available</div>
-      ) : (
-        <>
-          {roadmaps &&
-            roadmaps.map((roadmap) => (
-              <Link
-                key={roadmap.id}
-                className={classes(css.dropItem)}
-                to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
-              >
-                {roadmap.name}
-              </Link>
-            ))}
-        </>
-      )}
+      {roadmaps &&
+        roadmaps.map((roadmap) => (
+          <Link
+            key={roadmap.id}
+            className={classes(css.dropItem)}
+            to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
+          >
+            {roadmap.name}
+          </Link>
+        ))}
     </Dropdown>
   );
 };
