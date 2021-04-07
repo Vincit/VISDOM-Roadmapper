@@ -7,6 +7,7 @@ import {
   deleteRoadmaps,
   postRoadmapsTasks,
   getRoadmapsTasks,
+  getRoadmapsUsers,
 } from './roadmaps.controller';
 import { DefaultState, Context } from 'koa';
 const roadmapRouter = new KoaRouter<DefaultState, Context>();
@@ -16,6 +17,7 @@ roadmapRouter.post('/roadmaps', requireAuth, postRoadmaps);
 roadmapRouter.patch('/roadmaps/:id', requireAuth, patchRoadmaps);
 roadmapRouter.delete('/roadmaps/:id', requireAuth, deleteRoadmaps);
 
+roadmapRouter.get('/roadmaps/:id/users', requireAuth, getRoadmapsUsers);
 roadmapRouter.get('/roadmaps/:id/tasks', requireAuth, getRoadmapsTasks);
 roadmapRouter.post('/roadmaps/:id/tasks', requireAuth, postRoadmapsTasks);
 
