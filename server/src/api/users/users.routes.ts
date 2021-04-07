@@ -2,6 +2,7 @@ import { requireAuth, requireLoginSession } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import {
   getUsers,
+  getUserRoles,
   postUsers,
   patchUsers,
   deleteUsers,
@@ -23,6 +24,7 @@ userRouter.delete('/users/:id', requireAuth, deleteUsers);
 userRouter.post('/users/login', loginUser);
 userRouter.get('/users/logout', logoutUser);
 userRouter.get('/users/whoami', requireAuth, getCurrentUser);
+userRouter.get('/users/roles', requireAuth, getUserRoles);
 userRouter.get(
   '/users/hotswappableusers',
   requireAuth,

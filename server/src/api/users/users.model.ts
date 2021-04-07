@@ -2,6 +2,7 @@ import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
 import { UserType } from 'src/types/customTypes';
 import Token from '../tokens/tokens.model';
+import { Role } from '../roles/roles.model';
 
 const Password = objectionPassword();
 export default class User extends Password(Model) {
@@ -13,6 +14,7 @@ export default class User extends Password(Model) {
   customerValue!: number;
   hotSwappableUsers?: User[];
   authToken!: string;
+  roles!: Role[];
 
   tokens!: Token[];
 
@@ -62,6 +64,14 @@ export default class User extends Password(Model) {
         join: {
           from: 'users.id',
           to: 'tokens.user',
+        },
+      },
+      roles: {
+        relation: Model.HasManyRelation,
+        modelClass: Role,
+        join: {
+          from: 'users.id',
+          to: 'roles.userId',
         },
       },
     };

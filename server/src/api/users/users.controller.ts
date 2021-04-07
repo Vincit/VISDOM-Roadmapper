@@ -72,6 +72,11 @@ const hotSwappableUsers = async (id: number) => {
   return users;
 };
 
+export const getUserRoles: RouteHandlerFnc = async (ctx, _) => {
+  const roles = await User.relatedQuery('roles').for(ctx.state.user.id);
+  ctx.body = roles;
+};
+
 export const getHotSwappableUsers: RouteHandlerFnc = async (ctx, _) => {
   const users = await hotSwappableUsers(ctx.session!.originalUserId);
   const idsAndNames = users.map((user) => {

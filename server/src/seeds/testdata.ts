@@ -2,6 +2,7 @@ import * as Knex from 'knex';
 import { Model } from 'objection';
 import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
+import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
 import { UserType } from '../types/customTypes';
 
@@ -14,6 +15,24 @@ const createTestData = async () => {
   await clearData();
   await createTestUsers();
   await createTestRoadmap();
+  await createTestRoles();
+};
+
+const createTestRoles = async () => {
+  const user = await User.query().where('username', 'TokenUser2').first();
+  const admin = await User.query().where('username', 'AdminPerson1').first();
+  const roadmap = await Roadmap.query().first();
+  const roleTable = Model.knex().table(Role.tableName);
+  await roleTable.insert({
+    type: 1,
+    userId: user.id,
+    roadmapId: roadmap.id,
+  });
+  await roleTable.insert({
+    type: 1,
+    userId: admin.id,
+    roadmapId: roadmap.id,
+  });
 };
 
 const createTestRoadmap = async () => {

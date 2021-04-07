@@ -3,16 +3,21 @@ import Roadmap from './roadmaps.model';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
-    const eagerResult = await Roadmap.query()
-      .withGraphFetched(
-        '[tasks.[ratings, relatedTasks(selectTaskId)], jiraconfiguration]',
-      );
+    const eagerResult = await Roadmap.query().withGraphFetched(
+      '[tasks.[ratings, relatedTasks(selectTaskId)], jiraconfiguration]',
+    );
     ctx.body = eagerResult;
   } else {
-    const eagerResult = await Roadmap.query()
-      .withGraphFetched('[tasks(selectTaskId)]');
+    const eagerResult = await Roadmap.query().withGraphFetched(
+      '[tasks(selectTaskId)]',
+    );
     ctx.body = eagerResult;
   }
+};
+
+export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
+  const roles = await Roadmap.relatedQuery('roles').for(ctx.params.id);
+  ctx.body = roles;
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
