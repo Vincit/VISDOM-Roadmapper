@@ -1,32 +1,12 @@
-import { StarFill, Wrench } from 'react-bootstrap-icons';
-import styled from 'styled-components';
+import { ReactComponent as businessValueEmpty } from '../icons/rate_value_empty.svg';
+import { ReactComponent as businessValueFilled } from '../icons/rate_value_filled.svg';
+import { ReactComponent as requiredWorkEmpty } from '../icons/rate_work_empty.svg';
+import { ReactComponent as requiredWorkFilled } from '../icons/rate_work_filled.svg';
 
-export const BusinessValueEmpty = styled(StarFill)`
-  color: gray;
-  opacity: 0.25;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
+export const BusinessValueEmpty = businessValueEmpty;
 
-export const BusinessValueFilled = styled(StarFill)`
-  color: gold;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
+export const BusinessValueFilled = businessValueFilled;
 
-export const RequiredWorkEmpty = styled(Wrench)`
-  color: gray;
-  opacity: 0.25;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
+export const RequiredWorkEmpty = requiredWorkEmpty;
 
-export const RequiredWorkFilled = styled(Wrench)`
-  color: black;
-  width: 1.5em;
-  height: 1.5em;
-  margin: 0.1em;
-`;
+export const RequiredWorkFilled = requiredWorkFilled;
