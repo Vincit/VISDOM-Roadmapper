@@ -1,8 +1,7 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { LayoutRow } from '../components/CommonLayoutComponents';
+import classNames from 'classnames';
 import { StyledButton } from '../components/forms/StyledButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
@@ -13,6 +12,9 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo, UserType } from '../redux/user/types';
 import { requireLogin } from '../utils/requirelogin';
+import css from './ConfigurationPage.module.scss';
+
+const classes = classNames.bind(css);
 
 const RoadmapConfigurationPageComponent = () => {
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
@@ -59,22 +61,12 @@ const RoadmapConfigurationPageComponent = () => {
     );
   };
 
-  const ColumnHeader = styled.span`
-    text-align: left;
-    border-bottom: 1px solid black;
-    font-size: 24px;
-    line-height: 32px;
-    font-weight: bold;
-    padding-top: 16px;
-    padding-bottom: 24px;
-  `;
-
   return (
     <>
       This is the roadmap configuration page.
       {userInfo!.type === UserType.AdminUser && (
-        <LayoutRow>
-          <ColumnHeader>
+        <div className={classes(css.layoutRow)}>
+          <span className={classes(css.columnHeader)}>
             {currentRoadmap.name} <Trans i18nKey="jiraconfiguration" />
             <br />
             <StyledButton
@@ -83,18 +75,18 @@ const RoadmapConfigurationPageComponent = () => {
             >
               + <Trans i18nKey="Configure Jira" />
             </StyledButton>
-          </ColumnHeader>
-        </LayoutRow>
+          </span>
+        </div>
       )}
-      <LayoutRow>
-        <ColumnHeader>
+      <div className={classes(css.layoutRow)}>
+        <span className={classes(css.columnHeader)}>
           {currentRoadmap.name} <Trans i18nKey="authentication" />
           <br />
           <StyledButton buttonType="submit" onClick={onOAuthClick}>
             + <Trans i18nKey="OAuth" />
           </StyledButton>
-        </ColumnHeader>
-      </LayoutRow>
+        </span>
+      </div>
     </>
   );
 };

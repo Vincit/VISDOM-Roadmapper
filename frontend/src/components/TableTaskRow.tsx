@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React from 'react';
 import { CheckCircle, Circle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
@@ -11,7 +13,6 @@ import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo, UserType } from '../redux/user/types';
-import { StyledTd, StyledTr } from './CommonLayoutComponents';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { InfoButton } from './forms/InfoButton';
@@ -99,21 +100,31 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   };
 
   return (
-    <StyledTr clickable onClick={taskDetailsClicked}>
-      <StyledTd clickable textAlign="center" onClick={toggleCompletedClicked}>
-        {completed ? <CheckCircle /> : <Circle />}
-      </StyledTd>
-      <StyledTd>{name}</StyledTd>
-      <StyledTd>
+    <tr
+      className={classes(css.styledTr, css.clickable)}
+      onClick={taskDetailsClicked}
+    >
+      <td
+        className="styledTd clickable textAlignCenter"
+        onClick={toggleCompletedClicked}
+      >
+        {completed ? (
+          <CheckCircle onClick={toggleCompletedClicked} />
+        ) : (
+          <Circle onClick={toggleCompletedClicked} />
+        )}
+      </td>
+      <td className="styledTd">{name}</td>
+      <td className="styledTd">
         {description.length > 75
           ? `${description.slice(0, 75)}...`
           : description}
-      </StyledTd>
-      <StyledTd nowrap>
+      </td>
+      <td className="styledTd nowrap">
         <TaskRatingsText task={task} />
-      </StyledTd>
-      <StyledTd>{new Date(createdAt).toLocaleDateString()}</StyledTd>
-      <StyledTd textAlign="end" nowrap width="202px">
+      </td>
+      <td className="styledTd">{new Date(createdAt).toLocaleDateString()}</td>
+      <td className="styledTd textAlignEnd nowrap" style={{ width: '202px' }}>
         {!task.ratings.find(
           (rating) => rating.createdByUser === userInfo?.id,
         ) && (
@@ -161,7 +172,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
             </>
           )}
         </div>
-      </StyledTd>
-    </StyledTr>
+      </td>
+    </tr>
   );
 };

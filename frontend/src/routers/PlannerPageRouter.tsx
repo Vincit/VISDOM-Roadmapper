@@ -1,13 +1,12 @@
 import React from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
-import styled from 'styled-components';
-import { LayoutCol } from '../components/CommonLayoutComponents';
 import { PlannerPageNavbar } from '../components/PlannerPageNavbar';
 import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { PlannerWeightsPage } from '../pages/PlannerWeightsPage';
 import { RoadmapGraphPage } from '../pages/RoadmapGraphPage';
 import { TimeEstimationPage } from '../pages/TimeEstimationPage';
 import { paths } from './paths';
+import '../shared.scss';
 
 const routes = [
   {
@@ -37,18 +36,13 @@ const routes = [
   },
 ];
 
-const PlannerPagecontainer = styled(LayoutCol)`
-  padding: 8px 0 0 0;
-  margin: 0 0 0 0;
-`;
-
 export const PlannerPageRouter = () => {
   const { path } = useRouteMatch();
 
   return (
     <>
       <PlannerPageNavbar />
-      <PlannerPagecontainer overflowY="auto" overflowX="auto">
+      <div className="layoutCol plannerPagecontainer">
         <Switch>
           {routes.map((route) => (
             <Route
@@ -59,7 +53,7 @@ export const PlannerPageRouter = () => {
             />
           ))}
         </Switch>
-      </PlannerPagecontainer>
+      </div>
     </>
   );
 };

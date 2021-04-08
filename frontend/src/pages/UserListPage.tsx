@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import {
-  HeaderSpan,
-  SearchBarContainer,
-  StyledTable,
-  StyledTh,
-  TopBar,
-} from '../components/CommonLayoutComponents';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { TableUserRow } from '../components/TableUserRow';
 import { StoreDispatchType } from '../redux/index';
@@ -18,6 +11,7 @@ import { PublicUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { UserType } from '../redux/user/types';
 import { SortingOrders, SortingTypes, sortUsers } from '../utils/UserUtils';
+import '../shared.scss';
 
 interface TableHeader {
   label: string;
@@ -84,15 +78,15 @@ export const UserListPage = () => {
 
   const renderTopbar = () => {
     return (
-      <TopBar>
-        <SearchBarContainer>
+      <div className="topBar">
+        <div className="searchBarContainer">
           <StyledFormControl
             placeholder={t('Search for users')}
             onChange={(e: any) => onSearchChange(e.currentTarget.value)}
           />
           <Search />
-        </SearchBarContainer>
-      </TopBar>
+        </div>
+      </div>
     );
   };
 
@@ -103,24 +97,23 @@ export const UserListPage = () => {
 
   const renderUsersTable = () => {
     return (
-      <StyledTable>
+      <table className="styledTable">
         <thead>
           <tr>
             {tableHeaders.map((header) => {
               return (
-                <StyledTh
-                  textAlign="left"
-                  clickable
+                <th
+                  className="styledTh clickable"
                   key={header.label}
                   onClick={() => onSortingChange(header.sorting)}
                 >
-                  <HeaderSpan>
+                  <span className="headerSpan">
                     <Trans i18nKey={header.label} />
                     {sortingType === header.sorting
                       ? renderSortingArrow()
                       : null}
-                  </HeaderSpan>
-                </StyledTh>
+                  </span>
+                </th>
               );
             })}
           </tr>
@@ -130,7 +123,7 @@ export const UserListPage = () => {
             <TableUserRow key={user.id} user={user} />
           ))}
         </tbody>
-      </StyledTable>
+      </table>
     );
   };
 

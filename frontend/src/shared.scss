@@ -53,3 +53,167 @@ $COLOR_BLACK5: #f5f5f5;
 .loading-cursor {
   cursor: wait;
 }
+
+.layoutRow {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  padding: 0;
+  margin: 0;
+  overflow-y: 'visible';
+  overflow-x: 'auto';
+
+  &.overflowYScroll {
+    overflow-y: scroll;
+  }
+  &.overflowYAuto {
+    overflow-y: auto;
+  }
+  &.overflowXScroll {
+    overflow-y: scroll;
+  }
+  &.overflowXVisible {
+    overflow-y: visible;
+  }
+}
+
+.layoutCol {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+
+  &.overflowYScroll {
+    overflow-y: scroll;
+  }
+  &.overflowYVisible {
+    overflow-y: visible;
+  }
+  &.overflowXScroll {
+    overflow-y: scroll;
+  }
+  &.overflowXVisible {
+    overflow-y: visible;
+  }
+
+  &.roadmapPageContainer {
+    padding: 16px 16px 0 16px;
+  }
+  &.unassignedTasksCol {
+    flex: 1;
+    max-width: 350px;
+    min-width: 350px;
+    overflow-y: visible;
+    overflow-x: visible;
+    margin-bottom: 16px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+  &.milestoneCol {
+    min-width: 350px;
+    max-width: 350px;
+    overflow-y: visible;
+    overflow-x: visible;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 8px;
+    margin-left: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.topBar {
+  display: flex;
+  justify-content: start;
+  vertical-align: middle;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.styledTable {
+  width: 100%;
+  thead {
+    border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+  }
+}
+
+.styledTr {
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.styledTh {
+  font-style: normal;
+  font-size: 16px;
+  line-height: 19px;
+  padding: 16px;
+  vertical-align: middle;
+  width: auto;
+  text-align: left;
+
+  &.clickable {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+}
+
+.styledTd {
+  border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+  padding: 16px;
+  vertical-align: middle;
+  max-width: 30em;
+  width: auto;
+  cursor: inherit;
+  text-align: left;
+  white-space: inherit;
+
+  &.clickable {
+    cursor: pointer;
+  }
+  &.nowrap {
+    white-space: nowrap;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+}
+
+.headerSpan {
+  position: relative;
+
+  svg {
+    position: absolute;
+    right: -1.6em;
+    width: 1.2em;
+    height: 1.2em;
+  }
+}
+
+.searchBarContainer {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  max-width: 20em;
+  min-width: 10em;
+
+  svg {
+    fill: black;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+  }
+}

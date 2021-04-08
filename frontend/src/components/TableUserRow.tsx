@@ -7,8 +7,8 @@ import { PublicUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo, UserType } from '../redux/user/types';
-import { StyledTd } from './CommonLayoutComponents';
 import { StyledButton } from './forms/StyledButton';
+import '../shared.scss';
 
 interface TableUserRowProps {
   user: PublicUser;
@@ -35,15 +35,15 @@ export const TableUserRow: React.FC<TableUserRowProps> = ({ user }) => {
 
   return (
     <tr>
-      <StyledTd>{username}</StyledTd>
-      <StyledTd>{customerValue}</StyledTd>
-      <StyledTd textAlign="end" nowrap>
+      <td className="styledTd">{username}</td>
+      <td className="styledTd">{customerValue}</td>
+      <td className="styledTd nowrap textAlignEnd">
         {userInfo!.type === UserType.AdminUser && (
           <StyledButton buttonType="ratenow" onClick={() => rateUser()}>
             Rate
           </StyledButton>
         )}
-      </StyledTd>
+      </td>
     </tr>
   );
 };
