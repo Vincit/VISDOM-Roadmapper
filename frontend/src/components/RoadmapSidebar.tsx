@@ -73,9 +73,7 @@ export const RoadmapSidebar: React.FC = () => {
               }
               className={classes(css.navButton, {
                 [css.selected]: pathname.startsWith(
-                  url +
-                    paths.roadmapRelative.planner +
-                    paths.plannerRelative.editor,
+                  url + paths.roadmapRelative.planner,
                 ),
               })}
             >
