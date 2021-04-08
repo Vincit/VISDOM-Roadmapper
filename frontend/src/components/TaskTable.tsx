@@ -3,13 +3,6 @@ import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import {
-  HeaderSpan,
-  SearchBarContainer,
-  StyledTable,
-  StyledTh,
-  TopBar,
-} from './CommonLayoutComponents';
 import { StyledButton } from './forms/StyledButton';
 import { StyledFormControl } from './forms/StyledFormControl';
 import { TableTaskRow } from './TableTaskRow';
@@ -114,8 +107,8 @@ export const TaskTable: React.FC<{
 
   const renderTopbar = () => {
     return (
-      <TopBar>
-        <SearchBarContainer>
+      <div className={classes(css.topBar)}>
+        <div className={classes(css.searchBarContainer)}>
           {!nosearch && (
             <>
               <StyledFormControl
@@ -125,7 +118,7 @@ export const TaskTable: React.FC<{
               <Search />
             </>
           )}
-        </SearchBarContainer>
+        </div>
         <div className={classes(css.filterSelectContainer)}>
           {!nofilter && (
             <StyledFormControl
@@ -164,7 +157,7 @@ export const TaskTable: React.FC<{
             </>
           )}
         </div>
-      </TopBar>
+      </div>
     );
   };
 
@@ -199,25 +192,27 @@ export const TaskTable: React.FC<{
 
   const renderTasksTable = () => {
     return (
-      <StyledTable>
+      <table className={classes(css.styledTable)}>
         <thead>
           <tr>
             {tableHeaders.map((header) => {
               return (
-                <StyledTh
-                  clickable
+                <th
+                  className={classes(css.styledTh, css.clickable, {
+                    textAlignEnd: header.textAlign === 'end',
+                    textAlignCenter: header.textAlign === 'center',
+                  })}
                   key={header.label}
                   onClick={() => onSortingChange(header.sorting)}
-                  textAlign={header.textAlign}
-                  width={header.width}
+                  style={{ width: header.width }}
                 >
-                  <HeaderSpan>
+                  <span className="headerSpan">
                     <Trans i18nKey={header.label} />
                     {sortingType === header.sorting
                       ? renderSortingArrow()
                       : null}
-                  </HeaderSpan>
-                </StyledTh>
+                  </span>
+                </th>
               );
             })}
           </tr>
@@ -227,7 +222,7 @@ export const TaskTable: React.FC<{
             <TableTaskRow key={task.id} task={task} />
           ))}
         </tbody>
-      </StyledTable>
+      </table>
     );
   };
 

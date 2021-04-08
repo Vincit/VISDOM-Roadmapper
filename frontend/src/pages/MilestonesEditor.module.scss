@@ -1,0 +1,103 @@
+@import '../shared.scss';
+
+.horizontalScroller {
+  margin-left: 8px;
+}
+
+.addVersionButton {
+  width: 250px;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  svg {
+    margin: 4px;
+  }
+}
+
+.unassignedTasksCol {
+  flex: 1;
+  max-width: 350px;
+  min-width: 350px;
+  overflow-y: visible;
+  overflow-x: visible;
+  margin-bottom: 16px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.milestoneCol {
+  min-width: 350px;
+  max-width: 350px;
+  overflow-y: visible;
+  overflow-x: visible;
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 8px;
+  margin-left: 16px;
+  margin-bottom: 16px;
+}
+
+.unassignedTasksHeader {
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid gray;
+}
+
+.milestoneHeader {
+  width: 100%;
+  border-bottom: 1px solid gray;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.milestoneFooter {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  border-top: 1px solid gray;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.sortableListWrapper {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+  min-height: 100px;
+  padding: 16px;
+  padding-top: 8px;
+  scrollbar-width: thin;
+}
+
+.milestoneWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  border-radius: 16px;
+  background-color: #fbfbfb;
+  border: 1px solid #f1f1f1;
+  -webkit-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
+  box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
+  overflow-x: visible;
+
+  &.unassignedTasksWrapper {
+    background-color: #f3f3f3;
+  }
+
+  &.addNewBtnWrapper {
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: 1px dashed black;
+    background-color: rgba(255, 255, 255, 0);
+  }
+}

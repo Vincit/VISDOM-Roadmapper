@@ -7,8 +7,7 @@ import {
 } from 'react-beautiful-dnd';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
+import classNames from 'classnames';
 import { DeleteButton } from '../components/forms/DeleteButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { ReactComponent as PlusIcon } from '../icons/plus_icon.svg';
@@ -30,108 +29,9 @@ import {
   dragDropBetweenLists,
   reorderList,
 } from '../utils/TaskUtils';
+import css from './MilestonesEditor.module.scss';
 
-const HorizontalScroller = styled(LayoutRow)`
-  margin-left: 8px;
-`;
-
-const AddVersionButton = styled.div`
-  width: 250px;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0);
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  text-transform: uppercase;
-  svg {
-    margin: 4px;
-  }
-`;
-
-const UnassignedTasksCol = styled(LayoutCol)`
-  flex: 1;
-  max-width: 350px;
-  min-width: 350px;
-  overflow-y: visible;
-  overflow-x: visible;
-  margin-bottom: 16px;
-  background-color: rgba(0, 0, 0, 0);
-`;
-
-const MilestoneCol = styled(LayoutCol)`
-  min-width: 350px;
-  max-width: 350px;
-  overflow-y: visible;
-  overflow-x: visible;
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 8px;
-  margin-left: 16px;
-  margin-bottom: 16px;
-`;
-
-const UnassignedTasksHeader = styled.div`
-  width: 100%;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  border-bottom: 1px solid gray;
-`;
-
-const MilestoneHeader = styled.div`
-  width: 100%;
-  border-bottom: 1px solid gray;
-  padding: 8px;
-  font-size: 16px;
-`;
-
-const MilestoneFooter = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  border-top: 1px solid gray;
-  padding: 8px;
-  font-size: 16px;
-`;
-
-const SortableListWrapper = styled.div`
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 8px;
-  min-height: 100px;
-  padding: 16px;
-  padding-top: 8px;
-  scrollbar-width: thin;
-`;
-
-const MilestoneWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 150px;
-  border-radius: 16px;
-  background-color: #fbfbfb;
-  border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
-  box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
-  overflow-x: visible;
-`;
-
-const UnassignedTasksWrapper = styled(MilestoneWrapper)`
-  background-color: #f3f3f3;
-`;
-
-const AddNewBtnWrapper = styled(MilestoneWrapper)`
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  border: 1px dashed black;
-  background-color: rgba(255, 255, 255, 0);
-`;
+const classes = classNames.bind(css);
 
 interface VersionListsObject {
   [K: string]: Task[];
@@ -399,10 +299,13 @@ export const MilestonesEditor = () => {
           direction="horizontal"
         >
           {(droppableProvided) => (
-            <HorizontalScroller
+            <div
+              className={classes(
+                css.layoutRow,
+                css.overflowYAuto,
+                css.horizontalScroller,
+              )}
               ref={droppableProvided.innerRef}
-              overflowY="auto"
-              overflowX="auto"
             >
               {roadmapsVersionsLocal!.map((version, index) => {
                 return (
@@ -413,47 +316,64 @@ export const MilestonesEditor = () => {
                     isDragDisabled={disableDrag}
                   >
                     {(draggableProvided) => (
-                      <MilestoneCol
+                      <div
+                        className={classes(css.layoutCol, css.milestoneCol)}
                         ref={draggableProvided.innerRef}
                         {...draggableProvided.draggableProps}
                       >
-                        <MilestoneWrapper>
-                          <MilestoneHeader
+                        <div className={classes(css.milestoneWrapper)}>
+                          <div
+                            className={classes(css.milestoneHeader)}
                             {...draggableProvided.dragHandleProps}
                           >
                             {version.name}
-                          </MilestoneHeader>
+                          </div>
 
-                          <SortableListWrapper>
+                          <div className={classes(css.sortableListWrapper)}>
                             <SortableTaskList
                               listId={`${version.id}`}
                               tasks={versionLists[version.id] || []}
                               disableDragging={disableDrag}
                             />
-                          </SortableListWrapper>
-                          <MilestoneFooter>
+                          </div>
+                          <div className={classes(css.milestoneFooter)}>
                             <DeleteButton
                               onClick={() => deleteVersion(version.id)}
                             />
-                          </MilestoneFooter>
-                        </MilestoneWrapper>
-                      </MilestoneCol>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </Draggable>
                 );
               })}
-              <MilestoneCol>
-                <AddNewBtnWrapper onClick={addVersion}>
-                  <AddVersionButton onClick={addVersion}>
+              <div className={classes(css.layoutCol, css.milestoneCol)}>
+                <div
+                  className={classes(
+                    css.milestoneWrapper,
+                    css.addNewBtnWrapper,
+                  )}
+                  onClick={addVersion}
+                  onKeyPress={addVersion}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div
+                    className={classes(css.addVersionButton)}
+                    onClick={addVersion}
+                    onKeyPress={addVersion}
+                    role="button"
+                    tabIndex={0}
+                  >
                     <span>
                       <PlusIcon />
                       <Trans i18nKey="Add new milestone" />
                     </span>
-                  </AddVersionButton>
-                </AddNewBtnWrapper>
-              </MilestoneCol>
+                  </div>
+                </div>
+              </div>
               {droppableProvided.placeholder}
-            </HorizontalScroller>
+            </div>
           )}
         </Droppable>
       </>
@@ -463,23 +383,28 @@ export const MilestonesEditor = () => {
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        <LayoutRow overflowY="auto" overflowX="auto">
-          <UnassignedTasksCol>
-            <UnassignedTasksWrapper>
-              <UnassignedTasksHeader>
+        <div className={classes(css.layoutRow, css.overflowYAuto)}>
+          <div className={classes(css.layoutCol, css.unassignedTasksCol)}>
+            <div
+              className={classes(
+                css.milestoneWrapper,
+                css.unassignedTasksWrapper,
+              )}
+            >
+              <div className={classes(css.unassignedTasksHeader)}>
                 <Trans i18nKey="Unassigned tasks" />
-              </UnassignedTasksHeader>
-              <SortableListWrapper>
+              </div>
+              <div className={classes(css.sortableListWrapper)}>
                 <SortableTaskList
                   listId={ROADMAP_LIST_ID}
                   tasks={versionLists[ROADMAP_LIST_ID] || []}
                   disableDragging={disableDrag}
                 />
-              </SortableListWrapper>
-            </UnassignedTasksWrapper>
-          </UnassignedTasksCol>
+              </div>
+            </div>
+          </div>
           {roadmapsVersionsLocal && renderMilestones()}
-        </LayoutRow>
+        </div>
       </DragDropContext>
     </>
   );

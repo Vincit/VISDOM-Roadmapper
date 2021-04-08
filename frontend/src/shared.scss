@@ -1,56 +1,219 @@
-$COLOR_EMERALD: #0EC679;
-$COLOR_AZURE: #00A3FF;
-$COLOR_FOREST: #289C6B;
-$COLOR_SKY: #A6DFFF;
-$COLOR_CLOUD: #F6FCFF;
-$COLOR_RASPBERRY: #FF3062; 
+$COLOR_EMERALD: #0ec679;
+$COLOR_AZURE: #00a3ff;
+$COLOR_FOREST: #289c6b;
+$COLOR_SKY: #a6dfff;
+$COLOR_CLOUD: #f6fcff;
+$COLOR_RASPBERRY: #ff3062;
 
 $COLOR_BLACK100: #000000;
 $COLOR_BLACK60: #6a6a6a;
-$COLOR_BLACK40: #C6C6C6;
+$COLOR_BLACK40: #c6c6c6;
 $COLOR_BLACK10: #e3e3e3;
 $COLOR_BLACK5: #f5f5f5;
 
-
 .shadow-landing {
-    -webkit-box-shadow: 0px 20px 70px 0px rgba(0,0,0,0.2); 
-    box-shadow: 0px 20px 70px 0px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0px 20px 70px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 20px 70px 0px rgba(0, 0, 0, 0.2);
 }
 
 .shadow-popup {
-    -webkit-box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.25); 
-    box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.25);
+  -webkit-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.25);
 }
 
 .shadow-tooltip {
-    -webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.2); 
-    box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.2);
 }
 
 .shadow-roadmapblock {
-    -webkit-box-shadow: 0px 5x 5px 0px rgba(0,0,0,0.1); 
-    box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0px 5x 5px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
 .layout-column {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .layout-row {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .grow {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
-.overflow-auto{
-    overflow-y: auto;
-    overflow-x: auto;
+.overflow-auto {
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .loading-cursor {
-    cursor: wait;
+  cursor: wait;
+}
+
+.layoutRow {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  padding: 0;
+  margin: 0;
+  overflow-y: 'visible';
+  overflow-x: 'auto';
+
+  &.overflowYScroll {
+    overflow-y: scroll;
+  }
+  &.overflowYAuto {
+    overflow-y: auto;
+  }
+  &.overflowXScroll {
+    overflow-y: scroll;
+  }
+  &.overflowXVisible {
+    overflow-y: visible;
+  }
+}
+
+.layoutCol {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+
+  &.overflowYScroll {
+    overflow-y: scroll;
+  }
+  &.overflowYVisible {
+    overflow-y: visible;
+  }
+  &.overflowXScroll {
+    overflow-y: scroll;
+  }
+  &.overflowXVisible {
+    overflow-y: visible;
+  }
+
+  &.roadmapPageContainer {
+    padding: 16px 16px 0 16px;
+  }
+  &.unassignedTasksCol {
+    flex: 1;
+    max-width: 350px;
+    min-width: 350px;
+    overflow-y: visible;
+    overflow-x: visible;
+    margin-bottom: 16px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+  &.milestoneCol {
+    min-width: 350px;
+    max-width: 350px;
+    overflow-y: visible;
+    overflow-x: visible;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 8px;
+    margin-left: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.topBar {
+  display: flex;
+  justify-content: start;
+  vertical-align: middle;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.styledTable {
+  width: 100%;
+  thead {
+    border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+  }
+}
+
+.styledTr {
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.styledTh {
+  font-style: normal;
+  font-size: 16px;
+  line-height: 19px;
+  padding: 16px;
+  vertical-align: middle;
+  width: auto;
+  text-align: left;
+
+  &.clickable {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+}
+
+.styledTd {
+  border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+  padding: 16px;
+  vertical-align: middle;
+  max-width: 30em;
+  width: auto;
+  cursor: inherit;
+  text-align: left;
+  white-space: inherit;
+
+  &.clickable {
+    cursor: pointer;
+  }
+  &.nowrap {
+    white-space: nowrap;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+}
+
+.headerSpan {
+  position: relative;
+
+  svg {
+    position: absolute;
+    right: -1.6em;
+    width: 1.2em;
+    height: 1.2em;
+  }
+}
+
+.searchBarContainer {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  max-width: 20em;
+  min-width: 10em;
+
+  svg {
+    fill: black;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+  }
 }

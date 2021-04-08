@@ -8,8 +8,6 @@ import {
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
-import styled from 'styled-components';
-import { LayoutCol, LayoutRow } from '../components/CommonLayoutComponents';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
@@ -28,10 +26,7 @@ import { RootState } from '../redux/types';
 import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
-
-const RoadmapPageContainer = styled(LayoutCol)`
-  padding: 16px 16px 0 16px;
-`;
+import '../shared.scss';
 
 const routes = [
   {
@@ -132,15 +127,15 @@ const RoadmapRouterComponent = () => {
     if (!isLoadingRoadmap && !currentRoadmap)
       return (
         <>
-          <LayoutRow>
-            <LayoutCol>Roadmap not found!</LayoutCol>
-          </LayoutRow>
+          <div className="layoutRow">
+            <div className="layoutCol">Roadmap not found!</div>
+          </div>
         </>
       );
     if (!isLoadingRoadmap && !isLoadingUsers) {
       return (
-        <LayoutRow overflowY="auto" overflowX="auto">
-          <RoadmapPageContainer overflowY="auto" overflowX="auto">
+        <div className="layoutRow overflowYAuto">
+          <div className="layoutCol roadmapPageContainer">
             <Switch>
               {routes.map((route) => (
                 <Route
@@ -151,8 +146,8 @@ const RoadmapRouterComponent = () => {
                 />
               ))}
             </Switch>
-          </RoadmapPageContainer>
-        </LayoutRow>
+          </div>
+        </div>
       );
     }
     return <LoadingSpinner />;

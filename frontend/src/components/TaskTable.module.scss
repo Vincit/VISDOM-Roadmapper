@@ -1,18 +1,20 @@
+@import '../shared.scss';
+
 .filterSelectContainer {
-    position: relative;
-    display: flex;
-    flex-grow: 1;
-    max-width: 20em;
-    min-width: 6em;
-    margin-left: 8px;
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  max-width: 20em;
+  min-width: 6em;
+  margin-left: 8px;
 }
 
 .addNewButtonContainer {
-    min-width: 10em;
-    position: relative;
-    display: flex;
-    flex-grow: 1;
-    justify-content: flex-end;
-    align-items: center;
-    margin-right: 8px;
+  min-width: 10em;
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 8px;
 }
