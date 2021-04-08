@@ -1,23 +1,18 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
-import { QuestionDiamondFill } from 'react-bootstrap-icons';
-import styled from 'styled-components';
+import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
+import classNames from 'classnames';
+import css from './NotFoundPage.module.scss';
 
-const TextDiv = styled.div`
-  padding: 8px;
-  margin: auto;
-  margin-top: 32px;
-  font-weight: bold;
-  font-size: 26px;
-`;
+const classes = classNames.bind(css);
 
 export const NotFoundPage = () => {
   return (
     <Col>
-      <TextDiv>
-        <QuestionDiamondFill />
+      <div className={classes(css.textDiv)}>
+        <NotListedLocationIcon fontSize="large" />
         <p>Page not found.</p>
-      </TextDiv>
+      </div>
     </Col>
   );
 };
