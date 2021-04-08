@@ -1,0 +1,87 @@
+@import '../shared.scss';
+
+.graphOuter {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 500px;
+  min-height: 500px;
+  margin-left: 16px;
+  overflow-x: auto;
+}
+
+.graphTitle {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: start;
+}
+
+.graphInner {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow-x: auto;
+  border-left: 1px solid gray;
+  border-bottom: 1px solid gray;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-left: 12px;
+  padding-bottom: 12px;
+}
+
+.graphItems {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+  overflow-x: visible;
+}
+
+.graphItem {
+  display: flex;
+  flex-direction: column;
+  overflow-x: visible;
+  border-radius: 8px;
+  margin-right: 12px;
+  padding: 8px;
+  background-color: white;
+  -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  &:hover {
+    background-color: $COLOR_BLACK5;
+  }
+  &:active {
+    transform: scale(0.97, 0.97);
+  }
+  &.selected {
+    background: $COLOR_CLOUD;
+  }
+  user-select: none;
+}
+
+.footer {
+  min-height: 200px;
+}
+
+.versionData {
+  font-family: IBM Plex Mono;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  text-align: start;
+  svg {
+    position: relative;
+    top: -1px;
+    color: #4fbeff;
+    margin-right: 2px;
+    width: 13px;
+    height: 13px;
+  }
+  &.versionTitle {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: unset;
+  }
+}
