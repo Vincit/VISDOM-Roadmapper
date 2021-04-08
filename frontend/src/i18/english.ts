@@ -69,7 +69,7 @@ export const english = {
     'Unassigned tasks': 'Unassigned tasks',
     'Time Estimation': 'Time Estimation',
     'Estimate milestone durations': 'Estimate milestone durations',
-    'Milestone to compare with': 'Milestone to compare with',
+    'Milestone to be compared to': 'Milestone to be compared to',
     'Select a milestone': 'Select a milestone',
     'Unable to calculate work': 'Unable to calculate work',
     'Predicted milestone durations': 'Predicted milestone durations',

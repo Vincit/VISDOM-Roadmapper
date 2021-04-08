@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import { StarFill, Wrench, List } from 'react-bootstrap-icons';
-import { Trans, useTranslation } from 'react-i18next';
 import { Alert } from 'react-bootstrap';
-
+import { Trans, useTranslation } from 'react-i18next';
+import { StarFill, Wrench, List } from 'react-bootstrap-icons';
+import classNames from 'classnames';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -17,104 +16,9 @@ import { calcTaskAverageRating, totalValueAndWork } from '../utils/TaskUtils';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
+import css from './TimeEstimationPage.module.scss';
 
-const GraphTitle = styled.p`
-  font-size: 28px;
-  font-weight: 600;
-  text-align: start;
-`;
-
-const FormLabel = styled.label`
-  text-align: start;
-  font-size: 14px;
-  font-family: IBM Plex Mono;
-`;
-
-const GraphInner = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  overflow-x: auto;
-  justify-content: flex-start;
-`;
-
-const GraphItems = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  overflow-x: visible;
-`;
-
-const GraphItem = styled.div<{
-  width: string;
-  height: string;
-}>`
-  display: flex;
-  flex-direction: column;
-  width: ${(props) => props.width};
-  height: ${(props) => props.height};
-  border: 1px solid red;
-  overflow-x: visible;
-  border-radius: 8px;
-  padding: 8px;
-  background-color: #fbfbfb;
-  border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-`;
-
-const GraphItemWrapper = styled.div`
-  text-align: center;
-  margin-right: 22px;
-`;
-
-const GraphItemDuration = styled.div`
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-`;
-
-const VersionSelect = styled.select`
-  display: block;
-  min-width: 250px;
-  max-width: 250px;
-  font-size: 16px;
-  margin-top: 6px;
-`;
-
-const TextInputWrapper = styled.div`
-  width: 240px;
-  margin-left: 16px;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 32px;
-`;
-
-const VersionData = styled.p`
-  font-family: IBM Plex Mono;
-  padding: 0;
-  margin: 0;
-  font-size: 12px;
-  text-align: start;
-  svg {
-    position: relative;
-    top: -1px;
-    color: #4fbeff;
-    margin-right: 2px;
-    width: 13px;
-    height: 13px;
-  }
-`;
-
-const VersionTitle = styled(VersionData)`
-  font-weight: bold;
-  font-size: 14px;
-  font-family: unset;
-`;
+const classes = classNames.bind(css);
 
 export const TimeEstimationPage = () => {
   const { t } = useTranslation();
@@ -209,11 +113,11 @@ export const TimeEstimationPage = () => {
   const renderMilestoneTimeline = () => {
     return (
       <>
-        <GraphTitle>
+        <p className={classes(css.graphTitle)}>
           <Trans i18nKey="Predicted milestone durations" />
-        </GraphTitle>
-        <GraphInner>
-          <GraphItems>
+        </p>
+        <div className={classes(css.graphInner)}>
+          <div className={classes(css.graphItems)}>
             {roadmapsVersions?.map((ver) => {
               const numTasks = ver.tasks.length;
               const versionTasks = ver.tasks.map(
@@ -222,97 +126,101 @@ export const TimeEstimationPage = () => {
               const { value, work } = totalValueAndWork(versionTasks);
               const duration = work * calculatedDaysPerWork!;
               return (
-                <GraphItemWrapper key={ver.id}>
-                  <GraphItem width="200px" height="225px">
-                    <VersionTitle>{ver.name}</VersionTitle>
-                    <VersionData>
+                <div className={classes(css.graphItemWrapper)} key={ver.id}>
+                  <div
+                    className={classes(css.graphItem)}
+                    style={{ width: '200px', height: '225px' }}
+                  >
+                    <p className={classes(css.versionData, css.versionTitle)}>
+                      {ver.name}
+                    </p>
+                    <p className={classes(css.versionData)}>
                       <StarFill />
                       {value.toLocaleString(undefined, {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 1,
                       })}
-                    </VersionData>
-                    <VersionData>
+                    </p>
+                    <p className={classes(css.versionData)}>
                       <Wrench />
                       {work.toLocaleString(undefined, {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 1,
                       })}
-                    </VersionData>
-                    <VersionData>
+                    </p>
+                    <p className={classes(css.versionData)}>
                       <List />
                       {numTasks}
-                    </VersionData>
-                  </GraphItem>
-                  <GraphItemDuration>
+                    </p>
+                  </div>
+                  <div className={classes(css.graphItemDuration)}>
                     {duration.toLocaleString(undefined, {
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 1,
                     })}{' '}
                     days
-                  </GraphItemDuration>
-                </GraphItemWrapper>
+                  </div>
+                </div>
               );
             })}
-          </GraphItems>
-        </GraphInner>
+          </div>
+        </div>
       </>
     );
   };
 
   return (
     <>
-      <GraphTitle>
+      <p className={classes(css.graphTitle)}>
         <Trans i18nKey="Estimate milestone durations" />
-      </GraphTitle>
-      <InputContainer>
+      </p>
+      <div className={classes(css.inputContainer)}>
         <div>
-          <FormLabel htmlFor="milestones">
-            <Trans i18nKey="Milestone to compare with" />
-          </FormLabel>
-          <VersionSelect
-            name="milestones"
-            id="milestones"
-            onChange={handleMilestoneChange}
-            placeholder={t('Select milestone')}
-            defaultValue=""
-          >
-            <option disabled value="">
-              Select a milestone
-            </option>
-            {roadmapsVersions?.map((ver) => {
-              return (
-                <option key={ver.id} value={ver.id}>
-                  {ver.name}
-                </option>
-              );
-            })}
-          </VersionSelect>
+          <label className={classes(css.formLabel)} htmlFor="milestones">
+            <Trans i18nKey="Milestone to be compared to" />
+            <select
+              className={classes(css.versionSelect)}
+              name="milestones"
+              id="milestones"
+              onChange={handleMilestoneChange}
+              placeholder={t('Select milestone')}
+              defaultValue=""
+            >
+              <option disabled value="">
+                Select a milestone
+              </option>
+              {roadmapsVersions?.map((ver) => {
+                return (
+                  <option key={ver.id} value={ver.id}>
+                    {ver.name}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
         </div>
 
-        <TextInputWrapper>
-          <FormLabel htmlFor="duration">
+        <div className={classes(css.textInputWrapper)}>
+          <label className={classes(css.formLabel)} htmlFor="duration">
             <Trans i18nKey="Working days estimation" />
-          </FormLabel>
-          <StyledFormControl
-            required
-            key={selectedMilestoneId}
-            name="duration"
-            id="duration"
-            type="number"
-            min="0"
-            placeholder={t('Duration')}
-            defaultValue={milestoneDuration}
-            onChange={(e: any) => onDurationChange(e.currentTarget.value)}
-            onKeyPress={(e: any) => {
-              // Prevents input of non-numeric characters
-              if (e.which < 48 || e.which > 57) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </TextInputWrapper>
-      </InputContainer>
+            <StyledFormControl
+              required
+              name="duration"
+              id="duration"
+              type="number"
+              placeholder={t('Duration')}
+              value={milestoneDuration}
+              onChange={(e: any) => onDurationChange(e.currentTarget.value)}
+              onKeyPress={(e: any) => {
+                // Prevents input of non-numeric characters
+                if (e.which < 48 || e.which > 57) {
+                  e.preventDefault();
+                }
+              }}
+            />
+          </label>
+        </div>
+      </div>
       {calculatedDaysPerWork === undefined &&
         selectedMilestoneId !== undefined &&
         milestoneDuration && (
