@@ -1,0 +1,27 @@
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: start;
+}
+
+.userRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  span {
+    min-width: 250px;
+    font-size: 14px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    text-align: start;
+  }
+
+  input {
+    min-width: 500px;
+  }
+}
