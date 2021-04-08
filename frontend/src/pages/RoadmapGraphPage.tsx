@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import classNames from 'classnames';
 import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
@@ -9,96 +9,9 @@ import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import { totalValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
+import css from './RoadmapGraphPage.module.scss';
 
-const GraphOuter = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  max-height: 500px;
-  min-height: 500px;
-  margin-left: 16px;
-  overflow-x: auto;
-`;
-
-const GraphTitle = styled.p`
-  font-size: 28px;
-  font-weight: 600;
-  text-align: start;
-`;
-
-const GraphInner = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  overflow-x: auto;
-  border-left: 1px solid gray;
-  border-bottom: 1px solid gray;
-  justify-content: flex-start;
-  align-items: flex-end;
-  padding-left: 12px;
-  padding-bottom: 12px;
-`;
-
-const GraphItems = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-end;
-  overflow-x: visible;
-`;
-
-const GraphItem = styled.div<{
-  width: string;
-  height: string;
-  selected: boolean;
-}>`
-  display: flex;
-  flex-direction: column;
-  width: ${(props) => props.width};
-  height: ${(props) => props.height};
-  overflow-x: visible;
-  border-radius: 10px;
-
-  margin-right: 12px;
-  padding: 8px;
-  background: ${({ selected }) => (selected ? '#F7FCFF' : 'white')};
-  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  &:hover {
-    background-color: #f2f2f2;
-  }
-
-  &:active {
-    transform: scale(0.97, 0.97);
-  }
-  user-select: none;
-`;
-
-const Footer = styled.div`
-  min-height: 200px;
-`;
-
-const VersionData = styled.p`
-  font-family: IBM Plex Mono;
-  padding: 0;
-  margin: 0;
-  font-size: 12px;
-  text-align: start;
-  svg {
-    position: relative;
-    top: -1px;
-    color: #00a3ff;
-    margin-right: 2px;
-    width: 13px;
-    height: 13px;
-  }
-`;
-
-const VersionTitle = styled(VersionData)`
-  font-weight: bold;
-  font-size: 14px;
-  font-family: unset;
-`;
+const classes = classNames.bind(css);
 
 export const RoadmapGraphPage = () => {
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
@@ -124,10 +37,10 @@ export const RoadmapGraphPage = () => {
 
   return (
     <>
-      <GraphOuter>
-        <GraphTitle>Value / Work</GraphTitle>
-        <GraphInner>
-          <GraphItems>
+      <div className={classes(css.graphOuter)}>
+        <p className={classes(css.graphTitle)}>Value / Work</p>
+        <div className={classes(css.graphInner)}>
+          <div className={classes(css.graphItems)}>
             {roadmapsVersions?.map((ver) => {
               const numTasks = ver.tasks.length;
               const versionTasks = ver.tasks.map(
@@ -137,46 +50,52 @@ export const RoadmapGraphPage = () => {
               const w = Math.max(100, 60 * (work / 5));
               const h = Math.max(90, 50 * (value / 5));
               return (
-                <GraphItem
-                  width={`${w}px`}
-                  height={`${h}px`}
-                  selected={ver.id === selectedVersion?.id}
+                <div
+                  className={classes(css.graphItem, {
+                    [css.selected]: ver.id === selectedVersion?.id,
+                  })}
+                  style={{ width: `${w}px`, height: `${h}px` }}
                   key={ver.id}
                   onClick={() => setSelectedVersion(ver)}
+                  onKeyPress={() => setSelectedVersion(ver)}
+                  role="button"
+                  tabIndex={0}
                 >
-                  <VersionTitle>{ver.name}</VersionTitle>
-                  <VersionData>
+                  <p className={classes(css.versionData, css.versionTitle)}>
+                    {ver.name}
+                  </p>
+                  <p className={classes(css.versionData)}>
                     <StarFill />
                     {value.toLocaleString(undefined, {
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 1,
                     })}
-                  </VersionData>
-                  <VersionData>
+                  </p>
+                  <p className={classes(css.versionData)}>
                     <Wrench />
                     {work.toLocaleString(undefined, {
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 1,
                     })}
-                  </VersionData>
-                  <VersionData>
+                  </p>
+                  <p className={classes(css.versionData)}>
                     <List />
                     {numTasks}
-                  </VersionData>
-                </GraphItem>
+                  </p>
+                </div>
               );
             })}
-          </GraphItems>
-        </GraphInner>
+          </div>
+        </div>
         <p>Total work</p>
-      </GraphOuter>
+      </div>
 
-      <Footer>
-        <GraphTitle>Customers stakes in milestone</GraphTitle>
+      <div className={classes(css.footer)}>
+        <p className={classes(css.graphTitle)}>Customers stakes in milestone</p>
         {selectedVersion && (
           <TaskValueCreatedVisualization version={selectedVersion} />
         )}
-      </Footer>
+      </div>
     </>
   );
 };
