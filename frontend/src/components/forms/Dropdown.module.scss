@@ -30,18 +30,18 @@
   }
 
 .dropButton:focus {
-  outline:none;
+  outline: none;
 }
-  
+
 .dropMenu {
   width: auto;
   min-width: 144px;
   border: 1px solid $COLOR_BLACK10;
   border-radius: 4%;
   display: flex;
-  align-items: center; 
+  align-items: center;
   flex-direction: column;
-  overflow:hidden;
+  overflow: hidden;
   margin-top: 4px;
 }
 

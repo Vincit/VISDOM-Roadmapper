@@ -1,42 +1,15 @@
 /* eslint-disable no-bitwise */
+import classNames from 'classnames';
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import css from './RoadmapCompletionMeter.module.scss';
 
-const OuterContainer = styled.div`
-  display: inline-block;
-  border-radius: 16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  height: 180px;
-  background-color: rgb(247, 247, 247);
-  text-align: start;
-  .header {
-    margin-left: 16px;
-  }
-  .completedtasks {
-    font-size: 12px;
-    position: absolute;
-    left: 63px;
-    top: 142px;
-    font-weight: 600;
-    color: #777777;
-  }
-
-  .notcompletedtasks {
-    font-size: 12px;
-    position: absolute;
-    left: 182px;
-    top: 142px;
-    font-weight: 600;
-    color: #777777;
-  }
-`;
+const classes = classNames.bind(css);
 
 export const RoadmapCompletionMeter = () => {
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
@@ -97,8 +70,8 @@ export const RoadmapCompletionMeter = () => {
   };
 
   return (
-    <OuterContainer>
-      <span className="header">
+    <div className={classes(css.outerContainer)}>
+      <span className={classes(css.header)}>
         <Trans i18nKey="Roadmap completion" />
       </span>
       <Chart
@@ -107,12 +80,12 @@ export const RoadmapCompletionMeter = () => {
         series={[getCompletionPercent()]}
         width="250"
       />
-      <span className="completedtasks">
+      <span className={classes(css.completedtasks)}>
         {currentRoadmap!.tasks.filter((task) => task.completed).length}
       </span>
-      <span className="notcompletedtasks">
+      <span className={classes(css.notcompletedtasks)}>
         {currentRoadmap!.tasks.filter((task) => !task.completed).length}
       </span>
-    </OuterContainer>
+    </div>
   );
 };

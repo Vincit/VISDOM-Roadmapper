@@ -14,7 +14,14 @@ export const NavLayout: React.FC<NavLayoutProps> = ({ Content }) => {
   return (
     <div className="layout-row grow">
       <RoadmapSidebar />
-      <div className={classes('layout-column', 'grow', css.appContent)}>
+      <div
+        className={classes(
+          'layout-column',
+          'grow',
+          'overflow-auto',
+          css.appContent,
+        )}
+      >
         <NavBar />
         <Content />
       </div>

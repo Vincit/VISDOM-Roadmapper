@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import {
   HeaderSpan,
   SearchBarContainer,
@@ -27,25 +26,10 @@ import {
   SortingTypes,
   sortTasks,
 } from '../utils/TaskUtils';
+import classNames from 'classnames';
+import css from './TaskTable.module.scss';
 
-const FilterSelectContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  max-width: 20em;
-  min-width: 6em;
-  margin-left: 8px;
-`;
-
-const AddNewButtonContainer = styled.div`
-  min-width: 10em;
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
-  align-items: center;
-  margin-right: 8px;
-`;
+const classes = classNames.bind(css);
 
 interface TableHeader {
   label: string;
@@ -142,7 +126,7 @@ export const TaskTable: React.FC<{
             </>
           )}
         </SearchBarContainer>
-        <FilterSelectContainer>
+        <div className={classes(css.filterSelectContainer)}>
           {!nofilter && (
             <StyledFormControl
               required
@@ -167,8 +151,8 @@ export const TaskTable: React.FC<{
               </option>
             </StyledFormControl>
           )}
-        </FilterSelectContainer>
-        <AddNewButtonContainer>
+        </div>
+        <div className={classes(css.addNewButtonContainer)}>
           {userInfo!.type === UserType.AdminUser && (
             <>
               <StyledButton buttonType="submit" onClick={onImportTasksClick}>
@@ -179,7 +163,7 @@ export const TaskTable: React.FC<{
               </StyledButton>
             </>
           )}
-        </AddNewButtonContainer>
+        </div>
       </TopBar>
     );
   };

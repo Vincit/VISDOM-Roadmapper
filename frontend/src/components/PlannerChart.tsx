@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import styled from 'styled-components';
 import {
   chosenRoadmapSelector,
   publicUsersSelector,
@@ -29,30 +28,10 @@ import {
   calcWeightedTaskPriority,
 } from '../utils/TaskUtils';
 import { StyledButton } from './forms/StyledButton';
+import classNames from 'classnames';
+import css from './PlannerChart.module.scss';
 
-const GraphWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-radius: 16px;
-  background-color: rgb(247, 247, 247);
-`;
-
-const ButtonsBar = styled.div`
-  display: flex;
-  margin-left: 46px;
-  padding-bottom: 16px;
-`;
-
-const LockIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  svg {
-    width: 1.2em;
-    height: 1.2em;
-    margin-right: 8px;
-  }
-`;
+const classes = classNames.bind(css);
 
 const colors = ['blue', 'red', 'green', 'yellow', 'orange'];
 
@@ -173,7 +152,7 @@ export const PlannerChart: React.FC<{
   const valueAxisTicks = valueDomainMax / 5 + 1;
 
   return (
-    <GraphWrapper>
+    <div className={classes(css.graphWrapper)}>
       <ResponsiveContainer width="100%" aspect={2}>
         <LineChart
           data={dataPoints}
@@ -233,13 +212,15 @@ export const PlannerChart: React.FC<{
         </LineChart>
       </ResponsiveContainer>
       {!hideButtons && (
-        <ButtonsBar>
+        <div className={classes(css.buttonsBar)}>
           <StyledButton buttonType="submit" onClick={toggleSavedData}>
-            <LockIcon>{savedData ? <LockFill /> : <UnlockFill />}</LockIcon>
+            <div className={classes(css.lockIcon)}>
+              {savedData ? <LockFill /> : <UnlockFill />}
+            </div>
             Compare these versions
           </StyledButton>
-        </ButtonsBar>
+        </div>
       )}
-    </GraphWrapper>
+    </div>
   );
 };

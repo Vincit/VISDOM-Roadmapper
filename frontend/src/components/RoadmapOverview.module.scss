@@ -1,0 +1,38 @@
+@import "../shared.scss";
+
+.dataFlexbox {
+    margin-top: 32px;
+    display: flex;
+}
+
+.dataNumberWrapper {
+    font-family: Work Sans;
+    margin: auto;
+    color: #00a3ff;
+    font-size: 36px;
+    font-weight: 300;
+    margin-top: 0;
+
+    svg {
+        position: relative;
+        top: -4px;
+        color: #00a3ff;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.dataEntryWrapper {
+    font-family: Ibm Plex Mono;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    margin-left: 0px;
+    margin-right: 16px;
+    border-radius: 24px;
+    background-color: #f6f6f6;
+    text-transform: uppercase;
+}

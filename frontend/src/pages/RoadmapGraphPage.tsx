@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
+import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
-import { StarFill, Wrench, List } from 'react-bootstrap-icons';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { totalValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 
 const GraphOuter = styled.div`
@@ -50,21 +50,19 @@ const GraphItems = styled.div`
 const GraphItem = styled.div<{
   width: string;
   height: string;
+  selected: boolean;
 }>`
   display: flex;
   flex-direction: column;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
-  border: 1px solid red;
   overflow-x: visible;
-  border-radius: 8px;
+  border-radius: 10px;
+
   margin-right: 12px;
   padding: 8px;
-  background-color: #fbfbfb;
-  border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  background: ${({ selected }) => (selected ? '#F7FCFF' : 'white')};
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   &:hover {
     background-color: #f2f2f2;
@@ -89,7 +87,7 @@ const VersionData = styled.p`
   svg {
     position: relative;
     top: -1px;
-    color: #4fbeff;
+    color: #00a3ff;
     margin-right: 2px;
     width: 13px;
     height: 13px;
@@ -131,32 +129,18 @@ export const RoadmapGraphPage = () => {
         <GraphInner>
           <GraphItems>
             {roadmapsVersions?.map((ver) => {
-              let value = 0;
-              let work = 0;
-              let numTasks = 0;
-              let versionTasks = ver.tasks.map((taskId) =>
-                roadmap?.tasks.find((task) => task.id === taskId),
+              const numTasks = ver.tasks.length;
+              const versionTasks = ver.tasks.map(
+                (taskId) => roadmap!.tasks.find((task) => task.id === taskId)!,
               );
-              versionTasks.forEach((task) => {
-                numTasks += 1;
-                value +=
-                  calcTaskAverageRating(
-                    TaskRatingDimension.BusinessValue,
-                    task!,
-                  ) || 0;
-
-                work +=
-                  calcTaskAverageRating(
-                    TaskRatingDimension.RequiredWork,
-                    task!,
-                  ) || 0;
-              });
+              const { value, work } = totalValueAndWork(versionTasks);
               const w = Math.max(100, 60 * (work / 5));
               const h = Math.max(90, 50 * (value / 5));
               return (
                 <GraphItem
                   width={`${w}px`}
                   height={`${h}px`}
+                  selected={ver.id === selectedVersion?.id}
                   key={ver.id}
                   onClick={() => setSelectedVersion(ver)}
                 >
