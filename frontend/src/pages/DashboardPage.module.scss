@@ -1,0 +1,52 @@
+@import '../shared.scss';
+
+.overviewHeader {
+  width: 100%;
+  text-align: start;
+  & > .taskmessage {
+    font-family: Ibm Plex Mono;
+    font-size: 15px;
+  }
+  & > .welcomemessage {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
+.chartWrapper {
+  min-width: 840px;
+  width: 840px;
+  margin-right: 16px;
+  margin-top: 16px;
+}
+
+.meterWrapper {
+  margin-right: 16px;
+  margin-top: 16px;
+}
+
+.chartFlexbox {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.usernameSpan {
+  font-weight: 600;
+}
+
+.taskCountSpan {
+  font-weight: 600;
+  color: $COLOR_EMERALD;
+  text-decoration: underline;
+}
+
+.taskTableWrapper {
+  & > .header {
+    font-size: 24px;
+    line-height: 32px;
+    text-align: start;
+    font-weight: 600;
+    margin-top: 16px;
+  }
+}

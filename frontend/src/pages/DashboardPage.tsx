@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import classNames from 'classnames';
 import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
@@ -16,62 +16,14 @@ import { UserInfo } from '../redux/user/types';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
+import css from './DashboardPage.module.scss';
+
+const classes = classNames.bind(css);
 
 interface VersionListsObject {
   [K: string]: Task[];
 }
 const ROADMAP_LIST_ID = '-1';
-
-const OverviewHeader = styled.div`
-  width: 100%;
-  text-align: start;
-  .taskmessage {
-    font-family: Ibm Plex Mono;
-    font-size: 15px;
-  }
-  .welcomemessage {
-    font-size: 24px;
-    line-height: 32px;
-  }
-`;
-
-const ChartWrapper = styled.div`
-  min-width: 840px;
-  width: 840px;
-  margin-right: 16px;
-  margin-top: 16px;
-`;
-
-const MeterWrapper = styled.div`
-  margin-right: 16px;
-  margin-top: 16px;
-`;
-
-const ChartFlexbox = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const UsernameSpan = styled.span`
-  font-weight: 600;
-`;
-
-const TaskCountSpan = styled.span`
-  font-weight: 600;
-  color: #0ec679;
-  text-decoration: underline;
-`;
-
-const TaskTableWrapper = styled.div`
-  .header {
-    font-size: 24px;
-    line-height: 32px;
-    text-align: start;
-    font-weight: 600;
-    margin-top: 16px;
-  }
-`;
 
 export const DashboardPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -150,33 +102,39 @@ export const DashboardPage = () => {
 
   return (
     <>
-      <OverviewHeader>
-        <p className="welcomemessage">
-          Welcome <UsernameSpan>@{userInfo!.username}</UsernameSpan>
+      <div className={classes(css.overviewHeader)}>
+        <p className={classes(css.welcomemessage)}>
+          Welcome{' '}
+          <span className={classes(css.usernameSpan)}>
+            @{userInfo!.username}
+          </span>
         </p>
-        <p className="taskmessage">
-          You have <TaskCountSpan>{getUnratedTasks().length}</TaskCountSpan> new
-          tasks to rate →
+        <p className={classes(css.taskmessage)}>
+          You have{' '}
+          <span className={classes(css.taskCountSpan)}>
+            {getUnratedTasks().length}
+          </span>{' '}
+          new tasks to rate →
         </p>
         <RoadmapOverview />
-      </OverviewHeader>
-      <ChartFlexbox>
-        <MeterWrapper>
+      </div>
+      <div className={classes(css.chartFlexbox)}>
+        <div className={classes(css.meterWrapper)}>
           <TaskHeatmap />
-        </MeterWrapper>
-        <ChartWrapper>
+        </div>
+        <div className={classes(css.chartWrapper)}>
           <PlannerChart versions={chartVersionLists} hideButtons />
-        </ChartWrapper>
-        <MeterWrapper>
+        </div>
+        <div className={classes(css.meterWrapper)}>
           <RoadmapCompletionMeter />
-        </MeterWrapper>
-      </ChartFlexbox>
-      <TaskTableWrapper>
-        <p className="header">
+        </div>
+      </div>
+      <div className={classes(css.taskTableWrapper)}>
+        <p className={classes(css.header)}>
           <Trans i18nKey="Unrated tasks" />
         </p>
         <TaskTable tasks={getUnratedTasks()} nofilter />
-      </TaskTableWrapper>
+      </div>
     </>
   );
 };
