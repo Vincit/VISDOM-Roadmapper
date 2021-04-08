@@ -3,7 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import classNames from 'classnames';
 import { StyledButton } from '../components/forms/StyledButton';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -15,13 +15,9 @@ import { userActions } from '../redux/user';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
+import css from './LoginPage.module.scss';
 
-const FormDiv = styled.div`
-  padding: 8px;
-  margin: auto;
-  margin-top: 32px;
-  width: 500px;
-`;
+const classes = classNames.bind(css);
 
 export const LoginPage = () => {
   const query = new URLSearchParams(useLocation().search);
@@ -76,7 +72,7 @@ export const LoginPage = () => {
   return (
     <>
       {userInfo && <Redirect to={query.get('redirectTo') || paths.home} />}
-      <FormDiv>
+      <div className={classes(css.formDiv)}>
         <ModalHeader>
           <Trans i18nKey="Login" />
         </ModalHeader>
@@ -122,7 +118,7 @@ export const LoginPage = () => {
             )}
           </Form>
         </ModalContent>
-      </FormDiv>
+      </div>
     </>
   );
 };
