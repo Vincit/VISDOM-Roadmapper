@@ -1,43 +1,19 @@
 import React, { useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { Trans } from 'react-i18next';
+import classNames from 'classnames';
 import {
   plannerUserWeightsSelector,
   publicUsersSelector,
 } from '../redux/roadmaps/selectors';
 import { PlannerUserWeight, PublicUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { Trans } from 'react-i18next';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { UserType } from '../redux/user/types';
+import css from './PlannerWeightsPage.module.scss';
 
-const Title = styled.p`
-  font-size: 28px;
-  font-weight: 600;
-  text-align: start;
-`;
-
-const UserRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0;
-  padding: 0;
-  span {
-    min-width: 250px;
-    font-size: 14px;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    text-align: start;
-  }
-
-  input {
-    min-width: 500px;
-  }
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-`;
+const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -73,7 +49,7 @@ export const PlannerWeightsPage = () => {
             )?.weight;
             if (existingWeight === undefined) existingWeight = 1;
             return (
-              <UserRow key={user.id}>
+              <div className={classes(css.userRow)} key={user.id}>
                 <span>{user.username}</span>
                 <input
                   type="range"
@@ -87,7 +63,7 @@ export const PlannerWeightsPage = () => {
                     handleSliderChange(user.id, Number(e.currentTarget.value))
                   }
                 />
-              </UserRow>
+              </div>
             );
           })}
       </>
@@ -96,9 +72,9 @@ export const PlannerWeightsPage = () => {
 
   return (
     <>
-      <Title>
+      <p className={classes(css.title)}>
         <Trans i18nKey="Set different weighing for clients" />
-      </Title>
+      </p>
       {publicUsers && renderUserSliders()}
     </>
   );
