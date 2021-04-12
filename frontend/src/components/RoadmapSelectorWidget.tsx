@@ -41,21 +41,20 @@ export const RoadmapSelectorWidget = () => {
   }, [chosenRoadmap]);
 
   if (!roadmaps || roadmaps.length === 0) {
-    return <Dropdown title="No roadmaps available" disabled />;
+    return <Dropdown title="No roadmaps available" disabled empty />;
   }
 
   return (
     <Dropdown title={selectedRoadmap}>
-      {roadmaps &&
-        roadmaps.map((roadmap) => (
-          <Link
-            key={roadmap.id}
-            className={classes(css.dropItem)}
-            to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
-          >
-            {roadmap.name}
-          </Link>
-        ))}
+      {roadmaps.map((roadmap) => (
+        <Link
+          key={roadmap.id}
+          className={classes(css.dropItem)}
+          to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
+        >
+          {roadmap.name}
+        </Link>
+      ))}
     </Dropdown>
   );
 };

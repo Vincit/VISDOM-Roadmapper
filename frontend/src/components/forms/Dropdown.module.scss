@@ -1,36 +1,44 @@
-@import "../../shared.scss";
+@import '../../shared.scss';
 
 .dropContainer {
   margin-top: 12px;
 }
 
 .dropButton {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-self: center;
-    align-items: center;
-    border-radius: 16px;
-    border: 2px solid #0ec679;
-    box-sizing: border-box;
-    height: 32px;
-    min-width: 12em;
-    background-color: white;
-    font-size: 12px;
-    line-height: 20px;
-    margin-top: auto;
-    margin-bottom: auto;
-    justify-content: center;
-    vertical-align: middle;
-    padding-bottom: 2px;
-    padding-top: 0px;
-    padding-right: 36px;
-    padding-left: 24px;
-    position: relative;
-  }
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-self: center;
+  align-items: center;
+  border-radius: 16px;
+  border: 2px solid $COLOR_EMERALD;
+  box-sizing: border-box;
+  height: 32px;
+  min-width: 12em;
+  background-color: white;
+  font-size: 12px;
+  line-height: 20px;
+  margin-top: auto;
+  margin-bottom: auto;
+  justify-content: center;
+  vertical-align: middle;
+  padding-bottom: 2px;
+  padding-top: 0px;
+  padding-right: 36px;
+  padding-left: 24px;
+  position: relative;
+}
 
 .dropButton:focus {
   outline: none;
+}
+
+.dropButton:disabled {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  color: $COLOR_BLACK40;
+  padding: 3px;
+  cursor: not-allowed;
 }
 
 .dropMenu {
@@ -64,21 +72,13 @@
 
 .dropItem:hover {
   background-color: $COLOR_BLACK5;
-  color:black;
+  color: black;
   text-decoration: none;
   cursor: pointer;
 }
 
 .dropItem:focus {
-  outline:none;
-}
-
-.disabledItem {
-  font-size: 12px !important;
-  line-height: 18px !important;
-  color: $COLOR_BLACK40;
-  padding: 3px;
-  cursor: not-allowed;
+  outline: none;
 }
 
 .expandIcon {

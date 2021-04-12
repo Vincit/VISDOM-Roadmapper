@@ -33,7 +33,11 @@ export const Dropdown: React.FC<{
   if (empty) {
     return (
       <div className={classes(css.dropContainer)}>
-        <button type="button" className={classes(css.dropButton)}>
+        <button
+          type="button"
+          className={classes(css.dropButton)}
+          disabled={disabled}
+        >
           {shortenString(title)}
         </button>
       </div>
