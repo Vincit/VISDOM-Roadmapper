@@ -22,7 +22,6 @@
   display: grid;
 
   width: 100vw;
-  min-height: 100vh;
   grid-template-rows: 1fr auto auto;
 
   position: relative;
@@ -90,15 +89,15 @@
 }
 
 .topBar {
+  @include content-padding;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  padding: 0px;
 
-  position: relative;
-  height: 32px;
+  position: sticky;
+  z-index: 10;
+  height: 0px;
   top: 46px;
 
-  margin: 0px 10vw;
   svg {
     height: 32px;
     width: auto;

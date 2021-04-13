@@ -41,15 +41,15 @@ const cardData = [
 export const LandingPage = () => {
   return (
     <div className={classes(css.background)}>
+      <div className={classes(css.topBar)}>
+        <VisdomLogo />
+        <span />
+        <Link className={classes(css.loginButton)} to="/login">
+          <Trans i18nKey="Login" />
+        </Link>
+      </div>
       <div>
         <div className={classes(css.gradient)}>
-          <div className={classes(css.topBar)}>
-            <VisdomLogo />
-            <span />
-            <Link className={classes(css.loginButton)} to="/login">
-              <Trans i18nKey="Login" />
-            </Link>
-          </div>
           <VisdomLogo className={classes(css.bigLogo)} />
           <h1>Visdom roadmap tool</h1>
           <h2>Open-source roadmap planning and visualisation tool</h2>
