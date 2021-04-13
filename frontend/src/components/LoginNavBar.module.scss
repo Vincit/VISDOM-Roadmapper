@@ -1,0 +1,26 @@
+@import '../shared.scss';
+
+.loginButton {
+  @extend .button-small-filled;
+  left: calc(100% - width);
+
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.loginNavBar {
+  @include landing-content-padding;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+
+  position: sticky;
+  z-index: 10;
+  height: 0px;
+  top: 46px;
+
+  svg {
+    height: 32px;
+    width: auto;
+  }
+}

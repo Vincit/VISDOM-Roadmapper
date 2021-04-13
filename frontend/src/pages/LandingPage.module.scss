@@ -68,44 +68,16 @@
     }
     overflow-wrap: break-word;
   }
-
-  & > * {
-    position: relative;
-  }
 }
 
 .gradient {
+  position: relative;
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.7) 0%,
     #c3c3c3 85%,
     #d3d3d3 100%
   );
-}
-
-.topBar {
-  @include landing-content-padding;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-
-  position: sticky;
-  z-index: 10;
-  height: 0px;
-  top: 46px;
-
-  svg {
-    height: 32px;
-    width: auto;
-  }
-}
-
-.loginButton {
-  @extend .button-small-filled;
-  left: calc(100% - width);
-
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 16px;
 }
 
 .bigLogo {
@@ -119,6 +91,8 @@
 
 .cards {
   @include landing-content-padding;
+  position: relative;
+  z-index: 2;
   background-image: linear-gradient(
     176deg,
     rgba(0, 0, 0, 0),
@@ -169,6 +143,7 @@
 }
 
 .content {
+  position: relative;
   background: rgba(250, 250, 250, 1);
   @include landing-content-padding;
   padding-bottom: 4rem;
