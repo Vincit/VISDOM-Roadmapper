@@ -31,6 +31,12 @@ $COLOR_BLACK5: #f5f5f5;
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
+.shadow-graphItem {
+  -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+  box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
+}
+
 .layout-column {
   display: flex;
   flex-direction: column;
@@ -109,14 +115,14 @@ $COLOR_BLACK5: #f5f5f5;
     overflow-y: visible;
     overflow-x: visible;
     margin-bottom: 16px;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: transparent;
   }
   &.milestoneCol {
     min-width: 350px;
     max-width: 350px;
     overflow-y: visible;
     overflow-x: visible;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: transparent;
     border-radius: 8px;
     margin-left: 16px;
     margin-bottom: 16px;
@@ -211,7 +217,7 @@ $COLOR_BLACK5: #f5f5f5;
   min-width: 10em;
 
   svg {
-    fill: black;
+    fill: $COLOR_BLACK100;
     position: absolute;
     top: 1em;
     right: 1em;

@@ -1,76 +1,76 @@
-@import "../shared.scss";
+@import '../shared.scss';
 
 .navBarDiv {
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 56px;
-    min-height: 56px;
-    width: 100%;
-    border: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    vertical-align: middle;
-    box-sizing: border-box;
-    background-color: $COLOR_BLACK5
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 56px;
+  min-height: 56px;
+  width: 100%;
+  border: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  vertical-align: middle;
+  box-sizing: border-box;
+  background-color: $COLOR_BLACK5;
 }
 
 .navBarRightSide {
-    margin-right: 16px;
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: flex-end;
-    vertical-align: middle;
+  margin-right: 16px;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-end;
+  vertical-align: middle;
 }
 
 .navBarDivider {
-    border: 0;
-    border-left: 1px solid $COLOR_BLACK10;
-    width: 0px;
-    margin-left: 16px;
-    margin-right: 16px;
-    height: 30px;
-    margin-top: 13px;
-    margin-bottom: 13px;  
+  border: 0;
+  border-left: 1px solid $COLOR_BLACK10;
+  width: 0px;
+  margin-left: 16px;
+  margin-right: 16px;
+  height: 30px;
+  margin-top: 13px;
+  margin-bottom: 13px;
 }
 
 .navBarLink {
-    display: flex;
-    align-items: center;
-    font-family: Work Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
-    padding-right: 10px;
-    color: black;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    padding-left: 6px; // Areas meet at the middle
-    margin-left: -6px; // Added - margin to match the padding
+  display: flex;
+  align-items: center;
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  padding-right: 10px;
+  color: $COLOR_BLACK100;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-left: 6px; // Areas meet at the middle
+  margin-left: -6px; // Added - margin to match the padding
 }
 
-.navBarLink:hover .icon  {
-    color: $COLOR_EMERALD;
+.navBarLink:hover .icon {
+  color: $COLOR_EMERALD;
 }
 
 .navBarText {
-    display: flex;
-    align-items: center;
-    font-family: Work Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 18px;
-    padding-left: 16px;
-    padding-right: 16px;
-    color: $COLOR_BLACK60;
+  display: flex;
+  align-items: center;
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 18px;
+  padding-left: 16px;
+  padding-right: 16px;
+  color: $COLOR_BLACK60;
 }
 
 .icon {
-    color: $COLOR_BLACK40;
-    width: 250px;
-    height: 250px;
+  color: $COLOR_BLACK40;
+  width: 250px;
+  height: 250px;
 }

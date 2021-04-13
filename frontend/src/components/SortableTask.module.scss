@@ -1,11 +1,13 @@
+@import './../shared.scss';
+
 .taskDiv {
-    display: flex;
-    border: 1px solid black;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 6px;
-    background-color: white;
-    user-select: none;
+  display: flex;
+  border: 1px solid $COLOR_BLACK100;
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 6px;
+  background-color: white;
+  user-select: none;
 }
 
 .leftSideDiv {
@@ -15,12 +17,12 @@
 }
 
 .rightSideDiv {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    svg {
-      margin-left: 8px;
-    }
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  svg {
+    margin-left: 8px;
+  }
 }

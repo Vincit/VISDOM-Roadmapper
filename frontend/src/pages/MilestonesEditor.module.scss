@@ -7,7 +7,7 @@
 .addVersionButton {
   width: 250px;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
@@ -24,7 +24,7 @@
   overflow-y: visible;
   overflow-x: visible;
   margin-bottom: 16px;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
 }
 
 .milestoneCol {
@@ -32,7 +32,7 @@
   max-width: 350px;
   overflow-y: visible;
   overflow-x: visible;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   border-radius: 8px;
   margin-left: 16px;
   margin-bottom: 16px;
@@ -81,9 +81,6 @@
   border-radius: 16px;
   background-color: #fbfbfb;
   border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
-  box-shadow: 4px 4px 7px -1px rgba(0, 0, 0, 0.35);
   overflow-x: visible;
 
   &.unassignedTasksWrapper {
@@ -97,7 +94,7 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    border: 1px dashed black;
+    border: 1px dashed $COLOR_BLACK100;
     background-color: rgba(255, 255, 255, 0);
   }
 }

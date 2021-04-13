@@ -1,3 +1,5 @@
+@import '../../../shared.scss';
+
 .container {
   display: flex;
   justify-content: flex-end;
@@ -8,7 +10,7 @@
   margin: 0;
   padding: 0;
   background-color: transparent;
-  color: black;
+  color: $COLOR_BLACK100;
   width: 60px;
   height: 60px;
   margin-right: 0px;
@@ -18,7 +20,7 @@
   cursor: pointer;
 
   svg {
-      width: 30px;
-      height: 30px;
+    width: 30px;
+    height: 30px;
   }
 }

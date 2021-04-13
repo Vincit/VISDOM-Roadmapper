@@ -51,7 +51,7 @@ export const RoadmapGraphPage = () => {
               const h = Math.max(90, 50 * (value / 5));
               return (
                 <div
-                  className={classes(css.graphItem, {
+                  className={classes(css.graphItem, css['shadow-graphItem'], {
                     [css.selected]: ver.id === selectedVersion?.id,
                   })}
                   style={{ width: `${w}px`, height: `${h}px` }}

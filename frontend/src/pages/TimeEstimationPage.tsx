@@ -128,7 +128,7 @@ export const TimeEstimationPage = () => {
               return (
                 <div className={classes(css.graphItemWrapper)} key={ver.id}>
                   <div
-                    className={classes(css.graphItem)}
+                    className={classes(css.graphItem, css['shadow-graphItem'])}
                     style={{ width: '200px', height: '225px' }}
                   >
                     <p className={classes(css.versionData, css.versionTitle)}>
