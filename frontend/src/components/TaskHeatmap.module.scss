@@ -1,82 +1,82 @@
 .tile {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border: 0;
-    margin: 0;
-    padding: 0;
-    text-align: center;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 .row {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 0;
 }
 
 .outerContainer {
-    display: inline-block;
-    border-radius: 16px;
-    padding-left: 16px;
-    padding-top: 16px;
-    background-color: rgb(247, 247, 247);
-    min-width: 386px;
-    min-height: 423px;
-    text-align: start;
+  display: inline-block;
+  border-radius: 16px;
+  padding-left: 16px;
+  padding-top: 16px;
+  background-color: rgb(247, 247, 247);
+  min-width: 386px;
+  min-height: 423px;
+  text-align: start;
 
-    .xaxismin {
-        font-family: IBM Plex Mono;
-        position: relative;
-        left: 2px;
-        display: inline-block;
-        width: 0;
-    }
-    .xaxismax {
-        font-family: IBM Plex Mono;
-        position: relative;
-        display: inline-block;
-        width: 0;
-        left: 310px;
-    }
-    .xaxislabel {
-        position: relative;
-        left: 145px;
-        display: inline-block;
-        width: 0;
-        font-weight: 600;
-    }
+  .xaxismin {
+    font-family: IBM Plex Mono;
+    position: relative;
+    left: 2px;
+    display: inline-block;
+    width: 0;
+  }
+  .xaxismax {
+    font-family: IBM Plex Mono;
+    position: relative;
+    display: inline-block;
+    width: 0;
+    left: 310px;
+  }
+  .xaxislabel {
+    position: relative;
+    left: 145px;
+    display: inline-block;
+    width: 0;
+    font-weight: 600;
+  }
 }
 
 .graphicsContainer {
-    display: inline-block;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .graphicsFlexbox {
-    display: flex;
-    .yaxislabel {
-        position: relative;
-        top: 7px;
-        right: 7px;
-        align-self: center;
-        transform: rotate(-90deg);
-        font-weight: 600;
-    }
-    .yaxismax {
-        font-family: IBM Plex Mono;
-        position: relative;
-        left: 5px;
-        width: 0;
-        height: 0;
-    }
-    .yaxismin {
-        font-family: IBM Plex Mono;
-        align-self: flex-end;
-        position: relative;
-        left: 5px;
-        bottom: 5px;
-        width: 0;
-        height: 0;
-    }
+  display: flex;
+  .yaxislabel {
+    position: relative;
+    top: 7px;
+    right: 7px;
+    align-self: center;
+    transform: rotate(-90deg);
+    font-weight: 600;
+  }
+  .yaxismax {
+    font-family: IBM Plex Mono;
+    position: relative;
+    left: 5px;
+    width: 0;
+    height: 0;
+  }
+  .yaxismin {
+    font-family: IBM Plex Mono;
+    align-self: flex-end;
+    position: relative;
+    left: 5px;
+    bottom: 5px;
+    width: 0;
+    height: 0;
+  }
 }

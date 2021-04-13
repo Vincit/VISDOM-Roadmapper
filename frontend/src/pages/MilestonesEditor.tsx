@@ -321,7 +321,12 @@ export const MilestonesEditor = () => {
                         ref={draggableProvided.innerRef}
                         {...draggableProvided.draggableProps}
                       >
-                        <div className={classes(css.milestoneWrapper)}>
+                        <div
+                          className={classes(
+                            css.milestoneWrapper,
+                            css['shadow-graphItem'],
+                          )}
+                        >
                           <div
                             className={classes(css.milestoneHeader)}
                             {...draggableProvided.dragHandleProps}
@@ -352,6 +357,7 @@ export const MilestonesEditor = () => {
                   className={classes(
                     css.milestoneWrapper,
                     css.addNewBtnWrapper,
+                    css['shadow-graphItem'],
                   )}
                   onClick={addVersion}
                   onKeyPress={addVersion}
@@ -389,6 +395,7 @@ export const MilestonesEditor = () => {
               className={classes(
                 css.milestoneWrapper,
                 css.unassignedTasksWrapper,
+                css['shadow-graphItem'],
               )}
             >
               <div className={classes(css.unassignedTasksHeader)}>

@@ -66,19 +66,27 @@
   font-size: 12px !important;
   line-height: 18px !important;
   text-decoration: none;
-  color: black;
+  color: $COLOR_BLACK100;
   padding: 3px;
 }
 
 .dropItem:hover {
   background-color: $COLOR_BLACK5;
-  color: black;
+  color: $COLOR_BLACK100;
   text-decoration: none;
   cursor: pointer;
 }
 
 .dropItem:focus {
   outline: none;
+}
+
+.disabledItem {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  color: $COLOR_BLACK40;
+  padding: 3px;
+  cursor: not-allowed;
 }
 
 .expandIcon {

@@ -1,13 +1,13 @@
 .highlight {
-    box-shadow: 0px 0px 20px rgba(0, 60, 250, 0.15);
-    background-color: rgba(0, 60, 250, 0.045) !important;
+  box-shadow: 0px 0px 20px rgba(0, 60, 250, 0.15);
+  background-color: rgba(0, 60, 250, 0.045) !important;
 }
 
 .sortableList {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow-y: visible;
-    background-color: rgba(0, 0, 0, 0);
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: visible;
+  background-color: transparent;
+  width: 100%;
 }

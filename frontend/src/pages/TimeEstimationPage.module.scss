@@ -35,15 +35,12 @@
 .graphItem {
   display: flex;
   flex-direction: column;
-  border: 1px solid red;
+  border: 1px solid #f1f1f1;
   overflow-x: visible;
   border-radius: 8px;
   padding: 8px;
   background-color: #fbfbfb;
   border: 1px solid #f1f1f1;
-  -webkit-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
-  box-shadow: 4px 4px 7px -2px rgba(0, 0, 0, 0.35);
 }
 
 .graphItemWrapper {
