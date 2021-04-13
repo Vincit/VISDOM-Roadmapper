@@ -1,11 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Trans } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { ReactComponent as RoamappingSvg } from '../assets/images/roadmapping.svg';
 import { ReactComponent as RationaleSvg } from '../assets/images/rationale.svg';
 import { ReactComponent as FeaturesSvg } from '../assets/images/features.svg';
+import { LoginNavBar } from '../components/LoginNavBar';
 import { Footer } from '../components/Footer';
 import css from './LandingPage.module.scss';
 
@@ -41,13 +40,7 @@ const cardData = [
 export const LandingPage = () => {
   return (
     <div className={classes(css.background)}>
-      <div className={classes(css.topBar)}>
-        <VisdomLogo />
-        <span />
-        <Link className={classes(css.loginButton)} to="/login">
-          <Trans i18nKey="Login" />
-        </Link>
-      </div>
+      <LoginNavBar />
       <div>
         <div className={classes(css.gradient)}>
           <VisdomLogo className={classes(css.bigLogo)} />
