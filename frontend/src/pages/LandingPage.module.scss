@@ -1,10 +1,5 @@
 @import '../shared.scss';
 
-@mixin content-padding {
-  padding-left: max(calc((100% - 1000px) / 2), 8vw);
-  padding-right: max(calc((100% - 1000px) / 2), 8vw);
-}
-
 .background {
   &:before {
     content: '';
@@ -89,7 +84,7 @@
 }
 
 .topBar {
-  @include content-padding;
+  @include landing-content-padding;
   display: grid;
   grid-template-columns: auto 1fr auto;
 
@@ -123,7 +118,7 @@
 }
 
 .cards {
-  @include content-padding;
+  @include landing-content-padding;
   background-image: linear-gradient(
     176deg,
     rgba(0, 0, 0, 0),
@@ -175,7 +170,7 @@
 
 .content {
   background: rgba(250, 250, 250, 1);
-  @include content-padding;
+  @include landing-content-padding;
   padding-bottom: 4rem;
   padding-top: 8rem;
   display: flex;
@@ -271,29 +266,5 @@
     font-size: 12px;
     line-height: 100%;
     color: $COLOR_BLACK100;
-  }
-}
-
-.footer {
-  background: $COLOR_BLACK100;
-  position: relative;
-  width: 100vw;
-  padding: 140px;
-  @include content-padding;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  & > div {
-    flex: 1 1 30%;
-  }
-  svg {
-    margin: 40px 0px;
-  }
-  p {
-    margin-bottom: 40px;
-  }
-  color: white;
-  a {
-    color: inherit;
   }
 }

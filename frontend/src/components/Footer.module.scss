@@ -1,0 +1,25 @@
+@import '../shared.scss';
+
+.footer {
+  background: $COLOR_BLACK100;
+  position: relative;
+  width: 100vw;
+  padding: 140px;
+  @include landing-content-padding;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  & > div {
+    flex: 1 1 30%;
+  }
+  svg {
+    margin: 40px 0px;
+  }
+  p {
+    margin-bottom: 40px;
+  }
+  color: white;
+  a {
+    color: inherit;
+  }
+}
