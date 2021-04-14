@@ -38,6 +38,7 @@
 }
 
 .graphItem {
+  @extend .shadow-roadmapblock;
   display: flex;
   flex-direction: column;
   overflow-x: visible;
