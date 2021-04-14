@@ -75,6 +75,7 @@
 }
 
 .milestoneWrapper {
+  @extend .shadow-roadmapblock;
   display: flex;
   flex-direction: column;
   min-height: 150px;
@@ -95,6 +96,6 @@
     -moz-box-shadow: none;
     box-shadow: none;
     border: 1px dashed $COLOR_BLACK100;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: transparent;
   }
 }

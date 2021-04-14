@@ -33,6 +33,7 @@
 }
 
 .graphItem {
+  @extend .shadow-roadmapblock;
   display: flex;
   flex-direction: column;
   border: 1px solid #f1f1f1;
