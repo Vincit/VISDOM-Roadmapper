@@ -8,7 +8,6 @@ import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenRoadmapSelector } from '../../redux/roadmaps/selectors';
 import { JiraConfigurationRequest, Roadmap } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
-import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -16,6 +15,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import '../../shared.scss';
 
 export interface AddJiraConfigurationModalProps extends ModalProps {
   roadmapId: number;
@@ -131,23 +131,22 @@ export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps>
         </ModalContent>
         <ModalFooter>
           <ModalFooterButtonDiv>
-            <StyledButton
-              fullWidth
-              buttonType="cancel"
-              onClick={closeModal}
+            <button
+              className="button-large cancel"
               type="button"
+              onClick={closeModal}
             >
               <Trans i18nKey="Cancel" />
-            </StyledButton>
+            </button>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
             {formValues.roadmapId &&
             formValues.url &&
             formValues.privatekey &&
             !isLoading ? (
-              <StyledButton fullWidth buttonType="submit" type="submit">
+              <button className="button-large" type="submit">
                 <Trans i18nKey="Save" />
-              </StyledButton>
+              </button>
             ) : null}
           </ModalFooterButtonDiv>
         </ModalFooter>

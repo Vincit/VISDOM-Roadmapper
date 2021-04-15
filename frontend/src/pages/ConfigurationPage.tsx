@@ -2,7 +2,6 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { StyledButton } from '../components/forms/StyledButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
@@ -69,12 +68,13 @@ const RoadmapConfigurationPageComponent = () => {
           <span className={classes(css.columnHeader)}>
             {currentRoadmap.name} <Trans i18nKey="jiraconfiguration" />
             <br />
-            <StyledButton
-              buttonType="submit"
+            <button
+              className={classes(css['button-small-filled'])}
+              type="submit"
               onClick={onJiraConfigurationClick}
             >
               + <Trans i18nKey="Configure Jira" />
-            </StyledButton>
+            </button>
           </span>
         </div>
       )}
@@ -82,9 +82,13 @@ const RoadmapConfigurationPageComponent = () => {
         <span className={classes(css.columnHeader)}>
           {currentRoadmap.name} <Trans i18nKey="authentication" />
           <br />
-          <StyledButton buttonType="submit" onClick={onOAuthClick}>
+          <button
+            className={classes(css['button-small-filled'])}
+            type="submit"
+            onClick={onOAuthClick}
+          >
             + <Trans i18nKey="OAuth" />
-          </StyledButton>
+          </button>
         </span>
       </div>
     </>

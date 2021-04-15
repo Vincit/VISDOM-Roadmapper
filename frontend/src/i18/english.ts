@@ -65,6 +65,7 @@ export const english = {
     'Your unrated tasks': 'Your unrated tasks',
     'Roadmap completion': 'Roadmap completion',
     Import: 'Import',
+    'Import tasks from JIRA': 'Import tasks from JIRA',
     'Import Jira tasks': 'Import Jira tasks',
     'Unassigned tasks': 'Unassigned tasks',
     'Time Estimation': 'Time Estimation',

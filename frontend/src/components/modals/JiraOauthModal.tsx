@@ -4,7 +4,6 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { api } from '../../api/api';
-import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
@@ -14,6 +13,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { chosenJiraconfigurationSelector } from '../../redux/roadmaps/selectors';
+import '../../shared.scss';
 
 export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
   const { t } = useTranslation();
@@ -138,20 +138,19 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
         </ModalContent>
         <ModalFooter>
           <ModalFooterButtonDiv>
-            <StyledButton
-              fullWidth
-              buttonType="cancel"
+            <button
+              className="button-large cancel"
               onClick={closeModal}
               type="button"
             >
               <Trans i18nKey="Cancel" />
-            </StyledButton>
+            </button>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
             {formValues.oauthVerifierCode && !isLoading ? (
-              <StyledButton fullWidth buttonType="submit" type="submit">
+              <button className="button-large" type="submit">
                 <Trans i18nKey="Save" />
-              </StyledButton>
+              </button>
             ) : null}
           </ModalFooterButtonDiv>
         </ModalFooter>

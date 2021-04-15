@@ -28,7 +28,6 @@ import {
   calcTaskValueSum,
   calcWeightedTaskPriority,
 } from '../utils/TaskUtils';
-import { StyledButton } from './forms/StyledButton';
 import css from './PlannerChart.module.scss';
 
 const classes = classNames.bind(css);
@@ -213,12 +212,16 @@ export const PlannerChart: React.FC<{
       </ResponsiveContainer>
       {!hideButtons && (
         <div className={classes(css.buttonsBar)}>
-          <StyledButton buttonType="submit" onClick={toggleSavedData}>
+          <button
+            className={classes(css['button-large'])}
+            type="submit"
+            onClick={toggleSavedData}
+          >
             <div className={classes(css.lockIcon)}>
               {savedData ? <LockFill /> : <UnlockFill />}
             </div>
             Compare these versions
-          </StyledButton>
+          </button>
         </div>
       )}
     </div>

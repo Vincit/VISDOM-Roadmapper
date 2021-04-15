@@ -7,7 +7,6 @@ import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
 import { userSelector } from '../../redux/roadmaps/selectors';
 import { PublicUserRequest } from '../../redux/roadmaps/types';
-import { StyledButton } from '../forms/StyledButton';
 import { StyledFormControl } from '../forms/StyledFormControl';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
@@ -16,6 +15,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import '../../shared.scss';
 
 export interface RateUserModalProps extends ModalProps {
   userId: number;
@@ -102,22 +102,21 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
         </ModalContent>
         <ModalFooter>
           <ModalFooterButtonDiv>
-            <StyledButton
-              fullWidth
-              buttonType="cancel"
+            <button
+              className="button-large cancel"
               onClick={closeModal}
               type="button"
             >
               <Trans i18nKey="Cancel" />
-            </StyledButton>
+            </button>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <StyledButton fullWidth buttonType="submit" type="submit">
+              <button className="button-large" type="submit">
                 <Trans i18nKey="Save" />
-              </StyledButton>
+              </button>
             )}
           </ModalFooterButtonDiv>
         </ModalFooter>
