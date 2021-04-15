@@ -12,7 +12,6 @@ import { JiraBoard, RootState } from '../../redux/types';
 import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
-import { StyledButton } from '../forms/StyledButton';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -20,6 +19,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import '../../shared.scss';
 
 export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -183,22 +183,21 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
         </ModalContent>
         <ModalFooter>
           <ModalFooterButtonDiv>
-            <StyledButton
-              fullWidth
-              buttonType="cancel"
+            <button
+              className="button-large cancel"
               onClick={closeModal}
               type="button"
             >
               <Trans i18nKey="Cancel" />
-            </StyledButton>
+            </button>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <StyledButton fullWidth buttonType="submit" type="submit">
+              <button className="button-large" type="submit">
                 <Trans i18nKey="Import" />
-              </StyledButton>
+              </button>
             )}
           </ModalFooterButtonDiv>
         </ModalFooter>

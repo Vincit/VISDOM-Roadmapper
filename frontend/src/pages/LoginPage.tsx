@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import { StyledButton } from '../components/forms/StyledButton';
 import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
@@ -112,9 +111,9 @@ export const LoginPage = () => {
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <StyledButton buttonType="submit" type="submit">
+              <button className={classes(css['button-large'])} type="submit">
                 <Trans i18nKey="Submit" />
-              </StyledButton>
+              </button>
             )}
           </Form>
         </ModalContent>

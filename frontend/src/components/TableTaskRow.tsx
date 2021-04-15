@@ -17,7 +17,6 @@ import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { InfoButton } from './forms/InfoButton';
 import { RatingsButton } from './forms/RatingsButton';
-import { StyledButton } from './forms/StyledButton';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './TableTaskRow.module.scss';
 
@@ -135,9 +134,13 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
               JSON.stringify({ taskId: task.id }),
             )}`}
           >
-            <StyledButton buttonType="ratenow" onClick={rateTaskClicked}>
+            <button
+              className={classes(css['button-small-filled'])}
+              type="button"
+              onClick={rateTaskClicked}
+            >
               <Trans i18nKey="Rate" />
-            </StyledButton>
+            </button>
           </a>
         )}
         <div className={classes(css.buttonWrapper)}>

@@ -3,7 +3,6 @@ import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { StyledButton } from './forms/StyledButton';
 import { StyledFormControl } from './forms/StyledFormControl';
 import { TableTaskRow } from './TableTaskRow';
 import { StoreDispatchType } from '../redux/index';
@@ -148,12 +147,20 @@ export const TaskTable: React.FC<{
         <div className={classes(css.addNewButtonContainer)}>
           {userInfo!.type === UserType.AdminUser && (
             <>
-              <StyledButton buttonType="submit" onClick={onImportTasksClick}>
-                + <Trans i18nKey="Import" />
-              </StyledButton>
-              <StyledButton buttonType="submit" onClick={onAddNewTaskClick}>
-                + <Trans i18nKey="Add new" />
-              </StyledButton>
+              <button
+                className={classes(css['button-small-filled'])}
+                type="submit"
+                onClick={onImportTasksClick}
+              >
+                <Trans i18nKey="Import tasks from JIRA" />
+              </button>
+              <button
+                className={classes(css['button-small-filled'])}
+                type="submit"
+                onClick={onAddNewTaskClick}
+              >
+                + <Trans i18nKey="Add new task" />
+              </button>
             </>
           )}
         </div>

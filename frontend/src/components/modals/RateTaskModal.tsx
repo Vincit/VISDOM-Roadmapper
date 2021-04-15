@@ -12,7 +12,6 @@ import {
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
-import { StyledButton } from '../forms/StyledButton';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TaskRatingWidget } from '../TaskRatingWidget';
 import { ModalProps } from '../types';
@@ -21,6 +20,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import '../../shared.scss';
 
 export interface RateTaskModalProps extends ModalProps {
   taskId: number;
@@ -169,22 +169,21 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
         </ModalContent>
         <ModalFooter>
           <ModalFooterButtonDiv>
-            <StyledButton
-              fullWidth
-              buttonType="cancel"
+            <button
+              className="button-large cancel"
               onClick={closeModal}
               type="button"
             >
               <Trans i18nKey="Cancel" />
-            </StyledButton>
+            </button>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <StyledButton fullWidth buttonType="submit" type="submit">
+              <button className="button-large" type="submit">
                 <Trans i18nKey="Submit" />
-              </StyledButton>
+              </button>
             )}
           </ModalFooterButtonDiv>
         </ModalFooter>
