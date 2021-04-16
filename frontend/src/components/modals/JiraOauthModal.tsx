@@ -38,7 +38,9 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
           id: currentJiraConfiguration.id,
         });
         const { token, tokenSecret } = response;
-        setFormValues({ ...formValues, token, tokenSecret });
+        setFormValues((prev) => {
+          return { ...prev, token, tokenSecret };
+        });
         setOAuthURL(response.url);
       } catch (error) {
         setErrorMessage(
@@ -48,7 +50,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
     };
 
     getOAuthURL();
-  }, [formValues, currentJiraConfiguration.id]);
+  }, [currentJiraConfiguration.id]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
