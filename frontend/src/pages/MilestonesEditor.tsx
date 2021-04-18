@@ -338,6 +338,7 @@ export const MilestonesEditor = () => {
                           </div>
                           <div className={classes(css.milestoneFooter)}>
                             <DeleteButton
+                              type="filled"
                               onClick={() => deleteVersion(version.id)}
                             />
                           </div>

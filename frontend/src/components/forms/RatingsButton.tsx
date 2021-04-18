@@ -1,12 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
-import { ReactComponent as RatingsIcon } from '../../icons/ratings_icon.svg';
+import ForumIcon from '@material-ui/icons/ForumOutlined';
+import classNames from 'classnames';
+import css from './RatingsButton.module.scss';
 
-const StyledRatingsIcon = styled(RatingsIcon)`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
+const classes = classNames.bind(css);
 
 export const RatingsButton: React.FC<{
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
@@ -15,9 +12,9 @@ export const RatingsButton: React.FC<{
   if (href && href.length > 0) {
     return (
       <a href={href}>
-        <StyledRatingsIcon onClick={onClick} />
+        <ForumIcon className={classes(css.ratingsIcon)} onClick={onClick} />
       </a>
     );
   }
-  return <StyledRatingsIcon onClick={onClick} />;
+  return <ForumIcon className={classes(css.ratingsIcon)} onClick={onClick} />;
 };

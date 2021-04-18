@@ -1,12 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
-import { ReactComponent as InfoIcon } from '../../icons/info_icon.svg';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import classNames from 'classnames';
+import css from './InfoButton.module.scss';
 
-const StyledInfoIcon = styled(InfoIcon)`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
+const classes = classNames.bind(css);
 
 export const InfoButton: React.FC<{
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
@@ -15,9 +12,9 @@ export const InfoButton: React.FC<{
   if (href && href.length > 0) {
     return (
       <a href={href}>
-        <StyledInfoIcon onClick={onClick} />
+        <InfoIcon className={classes(css.infoIcon)} onClick={onClick} />
       </a>
     );
   }
-  return <StyledInfoIcon onClick={onClick} />;
+  return <InfoIcon className={classes(css.infoIcon)} onClick={onClick} />;
 };

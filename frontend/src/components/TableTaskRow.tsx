@@ -163,7 +163,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           {userInfo!.type === UserType.AdminUser && (
             <>
               <EditButton
-                type="large"
+                type="default"
                 onClick={editTaskClicked}
                 href={`?openModal=${
                   ModalTypes.EDIT_TASK_MODAL
@@ -171,7 +171,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
                   JSON.stringify({ taskId: task.id }),
                 )}`}
               />
-              <DeleteButton onClick={deleteTaskClicked} />
+              <DeleteButton type="outlined" onClick={deleteTaskClicked} />
             </>
           )}
         </div>

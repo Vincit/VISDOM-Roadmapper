@@ -1,20 +1,23 @@
 import React from 'react';
-import { TrashFill } from 'react-bootstrap-icons';
-import styled from 'styled-components';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import DeleteIcon from '@material-ui/icons/Delete';
+import classNames from 'classnames';
+import css from './DeleteButton.module.scss';
 
-const StyledDeleteIcon = styled(TrashFill)`
-  path {
-    fill: black;
-    opacity: 0.25;
-  }
-  width: 22px;
-  height: 22px;
-  padding: 1px;
-  cursor: pointer;
-`;
+const classes = classNames.bind(css);
 
 export const DeleteButton: React.FC<{
+  type: 'outlined' | 'filled';
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
-}> = ({ onClick }) => {
-  return <StyledDeleteIcon onClick={onClick} />;
+}> = ({ type, onClick }) => {
+  if (type === 'outlined') {
+    return (
+      <DeleteOutlineOutlinedIcon
+        className={classes(css.deleteIcon)}
+        onClick={onClick}
+      />
+    );
+  }
+
+  return <DeleteIcon className={classes(css.deleteIcon)} onClick={onClick} />;
 };

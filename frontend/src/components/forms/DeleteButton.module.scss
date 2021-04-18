@@ -1,0 +1,9 @@
+@import '../../shared.scss';
+
+.deleteIcon {
+  path {
+    fill: $COLOR_BLACK100;
+    opacity: 0.25;
+  }
+  cursor: pointer;
+}
