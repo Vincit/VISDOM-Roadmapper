@@ -1,29 +1,32 @@
 import React from 'react';
-import styled from 'styled-components';
-import { ReactComponent as EditIcon } from '../../icons/edit_icon.svg';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import classNames from 'classnames';
+import css from './EditButton.module.scss';
 
-const StyledEditIcon = styled(EditIcon)<{ type: 'small' | 'large' }>`
-  path {
-    fill: black;
-    opacity: 0.25;
-  }
-  width: ${(props) => (props.type === 'small' ? '1.5em' : '24px')};
-  height: ${(props) => (props.type === 'small' ? '1.5em' : '24px')};
-  cursor: pointer;
-`;
+const classes = classNames.bind(css);
 
 export const EditButton: React.FC<{
-  type: 'small' | 'large';
+  type: 'small' | 'default';
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
   href?: string;
 }> = ({ type, href, onClick }) => {
   if (href && href.length > 0) {
     return (
       <a href={href}>
-        <StyledEditIcon type={type} onClick={onClick} />
+        <EditIcon
+          className={classes(css.editIcon)}
+          fontSize={type}
+          onClick={onClick}
+        />
       </a>
     );
   }
 
-  return <StyledEditIcon type={type} onClick={onClick} />;
+  return (
+    <EditIcon
+      className={classes(css.editIcon)}
+      fontSize={type}
+      onClick={onClick}
+    />
+  );
 };

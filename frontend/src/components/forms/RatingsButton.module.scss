@@ -1,0 +1,9 @@
+@import '../../shared.scss';
+
+.ratingsIcon {
+  path {
+    fill: $COLOR_BLACK100;
+    opacity: 0.25;
+  }
+  cursor: pointer;
+}
