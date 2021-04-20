@@ -1,12 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import { ReactComponent as RatingsIcon } from '../../icons/ratings_icon.svg';
-
-const StyledRatingsIcon = styled(RatingsIcon)`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 
 export const RatingsButton: React.FC<{
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
@@ -15,9 +8,31 @@ export const RatingsButton: React.FC<{
   if (href && href.length > 0) {
     return (
       <a href={href}>
-        <StyledRatingsIcon onClick={onClick} />
+        <QuestionAnswerIcon
+          onClick={onClick}
+          style={{
+            width: 24,
+            height: 24,
+            cursor: 'pointer',
+            opacity: 0.25,
+            fill: 'black',
+            color: 'black',
+          }}
+        />
       </a>
     );
   }
-  return <StyledRatingsIcon onClick={onClick} />;
+  return (
+    <QuestionAnswerIcon
+      onClick={onClick}
+      style={{
+        width: 24,
+        height: 24,
+        cursor: 'pointer',
+        opacity: 0.25,
+        fill: 'black',
+        color: 'black',
+      }}
+    />
+  );
 };

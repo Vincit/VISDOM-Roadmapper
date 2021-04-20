@@ -1,16 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import { ReactComponent as EditIcon } from '../../icons/edit_icon.svg';
-
-const StyledEditIcon = styled(EditIcon)<{ type: 'small' | 'large' }>`
-  path {
-    fill: black;
-    opacity: 0.25;
-  }
-  width: ${(props) => (props.type === 'small' ? '1.5em' : '24px')};
-  height: ${(props) => (props.type === 'small' ? '1.5em' : '24px')};
-  cursor: pointer;
-`;
+import EditIcon from '@material-ui/icons/Edit';
 
 export const EditButton: React.FC<{
   type: 'small' | 'large';
@@ -20,10 +9,32 @@ export const EditButton: React.FC<{
   if (href && href.length > 0) {
     return (
       <a href={href}>
-        <StyledEditIcon type={type} onClick={onClick} />
+        <EditIcon
+          onClick={onClick}
+          style={{
+            opacity: 0.25,
+            width: type === 'small' ? '16px' : '24px',
+            height: type === 'small' ? '16px' : '24px',
+            cursor: 'pointer',
+            fill: 'black',
+            color: 'black',
+          }}
+        />
       </a>
     );
   }
 
-  return <StyledEditIcon type={type} onClick={onClick} />;
+  return (
+    <EditIcon
+      onClick={onClick}
+      style={{
+        opacity: 0.25,
+        width: type === 'small' ? '16px' : '24px',
+        height: type === 'small' ? '16px' : '24px',
+        cursor: 'pointer',
+        fill: 'black',
+        color: 'black',
+      }}
+    />
+  );
 };
