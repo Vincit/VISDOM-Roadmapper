@@ -1,4 +1,3 @@
-import KoaRouter from '@koa/router';
 import { Context, Next } from 'koa';
 
 export interface RouteHandlerFnc {
@@ -16,4 +15,9 @@ export const enum UserType {
   CustomerUser = 2,
   AdminUser = 3,
   TokenUser = 4,
+}
+
+export const enum RoleType {
+  Admin,
+  Customer,
 }

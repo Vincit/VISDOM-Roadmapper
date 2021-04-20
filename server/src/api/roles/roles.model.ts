@@ -1,9 +1,10 @@
 import { Model } from 'objection';
+import { RoleType } from '../../types/customTypes';
 
 export class Role extends Model {
   userId!: number;
   roadmapId!: number;
-  type!: number;
+  type!: RoleType;
 
   static tableName = 'roles';
 
