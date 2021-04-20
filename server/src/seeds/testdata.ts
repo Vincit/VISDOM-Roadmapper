@@ -4,7 +4,7 @@ import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
 import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
-import { UserType } from '../types/customTypes';
+import { UserType, RoleType } from '../types/customTypes';
 
 export async function seed(knex: Knex): Promise<any> {
   Model.knex(knex);
@@ -24,12 +24,12 @@ const createTestRoles = async () => {
   const roadmap = await Roadmap.query().first();
   const roleTable = Model.knex().table(Role.tableName);
   await roleTable.insert({
-    type: 1,
+    type: RoleType.Admin,
     userId: user.id,
     roadmapId: roadmap.id,
   });
   await roleTable.insert({
-    type: 1,
+    type: RoleType.Admin,
     userId: admin.id,
     roadmapId: roadmap.id,
   });
