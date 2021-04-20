@@ -51,11 +51,13 @@
   flex-direction: column;
   overflow: hidden;
   margin-top: 4px;
+  z-index: 999;
 }
 
 .menuCanvas {
   background-color: white;
   width: 100%;
+  z-index: 999;
 }
 
 .dropItem {
