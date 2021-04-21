@@ -20,4 +20,6 @@ export const enum UserType {
 export const enum RoleType {
   Admin,
   Customer,
+  Developer,
+  Business,
 }
