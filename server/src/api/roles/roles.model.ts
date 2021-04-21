@@ -6,6 +6,7 @@ export class Role extends Model {
   roadmapId!: number;
   type!: RoleType;
 
+  static idColumn = ['userId', 'roadmapId'];
   static tableName = 'roles';
 
   static jsonSchema = {

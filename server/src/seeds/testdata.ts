@@ -33,9 +33,7 @@ const createTestRoles = async () => {
 
   const users = await User.query().select('id', 'username');
   const roadmap = await Roadmap.query().first();
-  const roleTable = Model.knex().table(Role.tableName);
-
-  await roleTable.insert(
+  await Role.query().insert(
     users
       .filter(({ username }) => roles.has(username))
       .map((user) => ({
@@ -98,7 +96,7 @@ const clearData = async () => {
   await User.query().delete();
   await Roadmap.query().delete();
   await Roadmap.query().delete();
-  await Model.knex().table(Role.tableName).delete();
+  await Role.query().delete();
 };
 
 const createTestUsers = async () => {
