@@ -19,20 +19,31 @@ const createTestData = async () => {
 };
 
 const createTestRoles = async () => {
-  const user = await User.query().where('username', 'TokenUser2').first();
-  const admin = await User.query().where('username', 'AdminPerson1').first();
+  const roles = new Map([
+    ['BusinessPerson1', RoleType.Business],
+    ['BusinessPerson2', RoleType.Business],
+    ['DeveloperPerson1', RoleType.Developer],
+    ['DeveloperPerson2', RoleType.Developer],
+    ['CustomerPerson1', RoleType.Customer],
+    ['CustomerPerson2', RoleType.Customer],
+    ['CustomerPerson3', RoleType.Customer],
+    ['AdminPerson1', RoleType.Admin],
+    ['TokenUser1', RoleType.Admin],
+  ]);
+
+  const users = await User.query().select('id', 'username');
   const roadmap = await Roadmap.query().first();
   const roleTable = Model.knex().table(Role.tableName);
-  await roleTable.insert({
-    type: RoleType.Admin,
-    userId: user.id,
-    roadmapId: roadmap.id,
-  });
-  await roleTable.insert({
-    type: RoleType.Admin,
-    userId: admin.id,
-    roadmapId: roadmap.id,
-  });
+
+  await roleTable.insert(
+    users
+      .filter(({ username }) => roles.has(username))
+      .map((user) => ({
+        type: roles.get(user.username)!,
+        userId: user.id,
+        roadmapId: roadmap.id,
+      })),
+  );
 };
 
 const createTestRoadmap = async () => {
@@ -86,6 +97,8 @@ const clearData = async () => {
   await Version.query().delete();
   await User.query().delete();
   await Roadmap.query().delete();
+  await Roadmap.query().delete();
+  await Model.knex().table(Role.tableName).delete();
 };
 
 const createTestUsers = async () => {
