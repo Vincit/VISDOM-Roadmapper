@@ -6,11 +6,13 @@ export const getVersions: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query) {
     query.where(ctx.query);
   }
-  query.withGraphFetched('tasks(ordered)').modifiers({
-    ordered(builder) {
-      builder.orderBy('order', 'asc');
-    },
-  });
+  query
+    .withGraphFetched('tasks(ordered).[ratings, relatedTasks, createdBy]')
+    .modifiers({
+      ordered(builder) {
+        builder.orderBy('order', 'asc');
+      },
+    });
   ctx.body = await query;
 };
 
@@ -87,12 +89,23 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
         .increment('sortingRank', 1);
     }
 
+    // TODO: separate adding/deleting from updating
+    const versionId = parseInt(ctx.params.id);
+    let ok = await trx('versionTasks').where('versionId', versionId).delete();
+    if (ctx.request.body.tasks?.length) {
+      const tasks = ctx.request.body.tasks as number[];
+      ok = await trx('versionTasks').insert(
+        tasks.map((taskId, order) => ({ taskId, versionId, order })),
+      );
+    }
+    delete ctx.request.body.tasks;
+
     const patched = await Version.query(trx).patchAndFetchById(
       ctx.params.id,
       ctx.request.body,
     );
 
-    return patched;
+    return patched || ok;
   });
 
   if (!updated) {
