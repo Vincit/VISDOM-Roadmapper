@@ -11,7 +11,6 @@ describe('Test /versions/ api', function () {
       const testVersion = {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
-        tasks: [1, 2],
         sortingRank: 0,
       };
       await Version.query().insert(testVersion);
@@ -28,7 +27,7 @@ describe('Test /versions/ api', function () {
       const testVersion = {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
-        tasks: [1, 2],
+        tasks: [],
         sortingRank: 0,
       };
       const res = await loggedInAgent.get('/versions/');
@@ -53,7 +52,7 @@ describe('Test /versions/ api', function () {
       const testVersion = {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
-        tasks: [1, 2],
+        tasks: [],
         sortingRank: 0,
       };
       await Version.query().insert(testVersion);
@@ -75,7 +74,7 @@ describe('Test /versions/ api', function () {
       const testVersion = {
         name: 'Test version',
         roadmapId: (await Roadmap.query().first()).id,
-        tasks: [1, 2],
+        tasks: [],
         sortingRank: 0,
       };
       await Version.query().insert(testVersion);
