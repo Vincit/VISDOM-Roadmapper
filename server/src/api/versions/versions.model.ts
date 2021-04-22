@@ -1,11 +1,12 @@
-import { Model, Pojo } from 'objection';
+import { Model } from 'objection';
 import Roadmap from '../roadmaps/roadmaps.model';
+import Task from '../tasks/tasks.model';
 
 export default class Version extends Model {
   id!: number;
   roadmapId!: number;
   name!: string;
-  tasks!: number[];
+  tasks!: Task[];
   sortingRank!: number;
 
   static tableName = 'versions';
@@ -31,25 +32,18 @@ export default class Version extends Model {
           to: 'roadmaps.id',
         },
       },
+      tasks: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Task,
+        join: {
+          from: 'versions.id',
+          through: {
+            from: 'versionTasks.versionId',
+            to: 'versionTasks.taskId',
+          },
+          to: 'tasks.id',
+        },
+      },
     };
-  }
-
-  $parseDatabaseJson(json: Pojo): Pojo {
-    json = super.$parseDatabaseJson(json);
-    if (json.tasks) {
-      json.tasks = JSON.parse(json.tasks);
-    } else {
-      json.tasks = [];
-    }
-    return json;
-  }
-
-  $formatDatabaseJson(json: Pojo): Pojo {
-    json = super.$parseDatabaseJson(json);
-    if (json.tasks) {
-      json.tasks = JSON.stringify(json.tasks);
-    }
-
-    return json;
   }
 }

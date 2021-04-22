@@ -6,6 +6,11 @@ export const getVersions: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query) {
     query.where(ctx.query);
   }
+  query.withGraphFetched('tasks(ordered)').modifiers({
+    ordered(builder) {
+      builder.orderBy('order', 'asc');
+    },
+  });
   ctx.body = await query;
 };
 
