@@ -80,31 +80,13 @@ export const MilestonesEditor = () => {
       dispatch(versionsActions.getVersions());
     } else {
       const newVersionLists: VersionListsObject = {};
-      newVersionLists[ROADMAP_LIST_ID] = [];
-      tasks.forEach((t) => {
-        let foundVersion = false;
-
-        // Try to find version with this tasks id
-        roadmapsVersionsLocal.forEach((v) => {
-          if (!newVersionLists[v.id]) newVersionLists[v.id] = [];
-          if (v.tasks.includes(t.id)) {
-            newVersionLists[v.id].push(t);
-            foundVersion = true;
-          }
-        });
-
-        // If no version for task is found, add to roadmaps tasklist (unversioned tasks)
-        if (!foundVersion) {
-          newVersionLists[ROADMAP_LIST_ID].push(t);
-        }
+      const unversioned = new Map(tasks.map((task) => [task.id, task]));
+      roadmapsVersionsLocal.forEach((v) => {
+        newVersionLists[v.id] = v.tasks;
+        v.tasks.forEach((t) => unversioned.delete(t.id));
       });
+      newVersionLists[ROADMAP_LIST_ID] = Array.from(unversioned.values());
 
-      // Sort tasks
-      roadmapsVersionsLocal.forEach((v) =>
-        newVersionLists[v.id].sort(
-          (a, b) => v.tasks.indexOf(a.id) - v.tasks.indexOf(b.id),
-        ),
-      );
       newVersionLists[ROADMAP_LIST_ID].sort(
         (a, b) =>
           calcWeightedTaskPriority(b, publicUsers!, currentRoadmap) -

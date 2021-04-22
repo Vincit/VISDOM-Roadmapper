@@ -1,10 +1,10 @@
-import { TaskRequest } from '../roadmaps/types';
+import { TaskRequest, Task } from '../roadmaps/types';
 
 export interface Version {
   roadmapId: number;
   id: number;
   name: string;
-  tasks: number[];
+  tasks: Task[];
   sortingRank: number;
 }
 

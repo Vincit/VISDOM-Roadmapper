@@ -81,10 +81,13 @@ export const addTaskToVersion = createAsyncThunk<
     const versionCopy = {
       ...state.versions.versions.find((ver) => ver.id === request.version.id)!,
     };
-    versionCopy.tasks = [...versionCopy.tasks];
-    versionCopy.tasks.splice(request.index, 0, request.task.id!);
+    const payload = {
+      ...versionCopy,
+      tasks: versionCopy.tasks.map((task) => task.id),
+    };
+    payload.tasks.splice(request.index, 0, request.task.id!);
     try {
-      const res = await thunkAPI.dispatch(patchVersion(versionCopy));
+      const res = await thunkAPI.dispatch(patchVersion(payload));
       if (patchVersion.rejected.match(res)) {
         return thunkAPI.rejectWithValue(res.payload!);
       }
@@ -108,11 +111,15 @@ export const removeTaskFromVersion = createAsyncThunk<
     const versionCopy = {
       ...state.versions.versions.find((ver) => ver.id === request.version.id)!,
     };
-    versionCopy.tasks = versionCopy.tasks.filter(
+    const payload = {
+      ...versionCopy,
+      tasks: versionCopy.tasks.map((task) => task.id),
+    };
+    payload.tasks = payload.tasks.filter(
       (taskId) => taskId !== request.task.id,
     );
     try {
-      const res = await thunkAPI.dispatch(patchVersion(versionCopy));
+      const res = await thunkAPI.dispatch(patchVersion(payload));
       if (patchVersion.rejected.match(res)) {
         return thunkAPI.rejectWithValue(res.payload!);
       }

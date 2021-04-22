@@ -1,15 +1,8 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
-import {
-  chosenRoadmapSelector,
-  publicUsersSelector,
-} from '../redux/roadmaps/selectors';
-import {
-  PublicUser,
-  Roadmap,
-  TaskRatingDimension,
-} from '../redux/roadmaps/types';
+import { publicUsersSelector } from '../redux/roadmaps/selectors';
+import { PublicUser, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
 import { calcTaskValueSum } from '../utils/TaskUtils';
@@ -28,23 +21,16 @@ export interface DataPoint {
 export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizationProps> = ({
   version,
 }) => {
-  const roadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
   const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
     publicUsersSelector,
     shallowEqual,
   );
   let totalValue = 0;
   const customerStakes = new Map<PublicUser, number>();
-  const versionTasks = version.tasks.map((taskId) =>
-    roadmap?.tasks.find((task) => task.id === taskId),
-  );
 
   // Calculate total sum of task values in the milestone
   // And map values of how much each user has rated in these tasks
-  versionTasks.forEach((task) => {
+  version.tasks.forEach((task) => {
     totalValue += calcTaskValueSum(task!) || 0;
     if (task == null) return;
 
