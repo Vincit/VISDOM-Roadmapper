@@ -93,14 +93,12 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    const work = selectedMilestone.tasks
-      .map((taskId) => roadmap?.tasks.find((task) => task.id === taskId))
-      .reduce(
-        (total, task) =>
-          total +
-          (calcTaskAverageRating(TaskRatingDimension.RequiredWork, task!) || 0),
-        0,
-      );
+    const work = selectedMilestone.tasks.reduce(
+      (total, task) =>
+        total +
+        (calcTaskAverageRating(TaskRatingDimension.RequiredWork, task) || 0),
+      0,
+    );
 
     if (work <= 0) {
       setCalculatedDaysPerWork(undefined);
@@ -119,10 +117,7 @@ export const TimeEstimationPage = () => {
           <div className={classes(css.graphItems)}>
             {roadmapsVersions?.map((ver) => {
               const numTasks = ver.tasks.length;
-              const versionTasks = ver.tasks.map(
-                (taskId) => roadmap!.tasks.find((task) => task.id === taskId)!,
-              );
-              const { value, work } = totalValueAndWork(versionTasks);
+              const { value, work } = totalValueAndWork(ver.tasks);
               const duration = work * calculatedDaysPerWork!;
               return (
                 <div className={classes(css.graphItemWrapper)} key={ver.id}>

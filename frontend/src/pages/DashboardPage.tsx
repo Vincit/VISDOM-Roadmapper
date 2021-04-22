@@ -63,22 +63,9 @@ export const DashboardPage = () => {
     }
     const versionLists: VersionListsObject = {};
     versionLists[ROADMAP_LIST_ID] = [];
-    currentRoadmap!.tasks.forEach((t) => {
-      // Try to find version with this tasks id
-      roadmapsVersions.forEach((v) => {
-        if (!versionLists[v.id]) versionLists[v.id] = [];
-        if (v.tasks.includes(t.id)) {
-          versionLists[v.id].push(t);
-        }
-      });
+    roadmapsVersions.forEach((v) => {
+      versionLists[v.id] = v.tasks;
     });
-
-    // Sort tasks
-    roadmapsVersions.forEach((v) =>
-      versionLists[v.id].sort(
-        (a, b) => v.tasks.indexOf(a.id) - v.tasks.indexOf(b.id),
-      ),
-    );
 
     const chartVersions = Object.keys(versionLists)
       .filter(
