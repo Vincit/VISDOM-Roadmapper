@@ -6,33 +6,40 @@
 }
 
 .dataNumberWrapper {
-  font-family: Work Sans;
-  margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  font-family: Anonymous Pro;
   color: $COLOR_AZURE;
-  font-size: 36px;
-  font-weight: 300;
-  margin-top: 0;
+  font-size: 56px;
+  font-weight: normal;
+  letter-spacing: 0.02em;
 
   svg {
-    position: relative;
-    top: -4px;
-    color: $COLOR_AZURE;
-    width: 32px;
-    height: 32px;
+    margin-left: 8px;
+    color: $COLOR_BLACK100;
   }
 }
 
+.dash {
+  border: 0.5px solid $COLOR_BLACK40;
+  width: 8px;
+  position: relative;
+  top: 5px;
+}
+
 .dataEntryWrapper {
-  font-family: Ibm Plex Mono;
-  font-weight: 600;
-  font-size: 11px;
+  font-family: Anonymous Pro;
+  font-weight: bold;
+  font-size: 12px;
   letter-spacing: 0.2em;
+  text-transform: uppercase;
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
-  margin-left: 0px;
-  margin-right: 16px;
-  border-radius: 24px;
+  height: 116px;
+  padding: 16px;
+  margin-right: 20px;
+  border: 1px solid $COLOR_SKY;
+  border-radius: 10px;
   background-color: transparent;
-  text-transform: uppercase;
 }
