@@ -42,6 +42,7 @@ export const english = {
     Cancel: 'Cancel',
     'Overview for': 'Overview for',
     Logout: 'Logout',
+    'Log in': 'Log in',
     'Logging out': 'Logging out',
     'Ratings for': 'Ratings for',
     'Your rating': 'Your rating',

@@ -36,6 +36,22 @@ $COLOR_BLACK5: #f5f5f5;
   box-shadow: 0px 0px 0px 3px rgba(14, 198, 121, 0.3);
 }
 
+label {
+  font-family: 'Anonymous Pro';
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $COLOR_AZURE;
+  margin-bottom: 5px;
+}
+
+form {
+  > button {
+    margin-top: 20px;
+  }
+}
+
 .layout-column {
   display: flex;
   flex-direction: column;
