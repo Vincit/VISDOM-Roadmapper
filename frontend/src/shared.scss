@@ -252,7 +252,7 @@ form {
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
-  letter-spacing: 1px;
+  letter-spacing: 0.02em;
 
   color: white;
   &:hover {
@@ -278,7 +278,7 @@ form {
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
-  letter-spacing: 1px;
+  letter-spacing: 0.02em;
 }
 
 @mixin landing-content-padding {
@@ -308,7 +308,7 @@ form {
   font-weight: 600;
   font-size: 16px;
   line-height: 16px;
-  letter-spacing: 1px;
+  letter-spacing: -0.02em;
 
   color: white;
   &.cancel {
