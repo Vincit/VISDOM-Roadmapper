@@ -13,7 +13,6 @@ import {
 } from '../redux/versions/selectors';
 import { Version, TimeEstimate } from '../redux/versions/types';
 import { calcTaskAverageRating, totalValueAndWork } from '../utils/TaskUtils';
-import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
 import css from './TimeEstimationPage.module.scss';
@@ -203,7 +202,8 @@ export const TimeEstimationPage = () => {
         <div className={classes(css.textInputWrapper)}>
           <label className={classes(css.formLabel)} htmlFor="duration">
             <Trans i18nKey="Working days estimation" />
-            <StyledFormControl
+            <input
+              className="input number"
               required
               name="duration"
               id="duration"

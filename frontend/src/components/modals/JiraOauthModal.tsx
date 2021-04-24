@@ -4,7 +4,6 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { api } from '../../api/api';
-import { StyledFormControl } from '../forms/StyledFormControl';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -112,7 +111,8 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
                 and input the code below:
               </p>
               <Form.Group>
-                <StyledFormControl
+                <input
+                  className="input"
                   autoComplete="off"
                   required
                   name="oauthVerifierCode"

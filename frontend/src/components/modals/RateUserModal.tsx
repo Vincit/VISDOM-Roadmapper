@@ -7,7 +7,6 @@ import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
 import { userSelector } from '../../redux/roadmaps/selectors';
 import { PublicUserRequest } from '../../redux/roadmaps/types';
-import { StyledFormControl } from '../forms/StyledFormControl';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -81,7 +80,8 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
           <label htmlFor="name">
             <Trans i18nKey="Value" /> (€)
           </label>
-          <StyledFormControl
+          <input
+            className="input"
             autoComplete="off"
             required
             type="number"

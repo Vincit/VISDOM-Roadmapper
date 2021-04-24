@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { TableUserRow } from '../components/TableUserRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -80,7 +79,8 @@ export const UserListPage = () => {
     return (
       <div className="topBar">
         <div className="searchBarContainer">
-          <StyledFormControl
+          <input
+            className="input search"
             placeholder={t('Search for users')}
             onChange={(e: any) => onSearchChange(e.currentTarget.value)}
           />

@@ -8,7 +8,6 @@ import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenRoadmapSelector } from '../../redux/roadmaps/selectors';
 import { JiraConfigurationRequest, Roadmap } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
-import { StyledFormControl } from '../forms/StyledFormControl';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
@@ -91,7 +90,8 @@ export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps>
               <label htmlFor="board">Roadmap: {currentRoadmap.name}</label>
               <p>Instructions here</p>
               <Form.Group>
-                <StyledFormControl
+                <input
+                  className="input"
                   autoComplete="off"
                   required
                   name="url"
@@ -102,7 +102,8 @@ export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps>
                 />
               </Form.Group>
               <Form.Group>
-                <StyledFormControl
+                <input
+                  className="input"
                   autoComplete="off"
                   required
                   type="password"
@@ -147,7 +148,11 @@ export const AddJiraConfigurationModal: React.FC<AddJiraConfigurationModalProps>
               <button className="button-large" type="submit">
                 <Trans i18nKey="Save" />
               </button>
-            ) : null}
+            ) : (
+              <button className="button-large" disabled type="submit">
+                <Trans i18nKey="Save" />
+              </button>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>

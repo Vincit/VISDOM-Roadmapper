@@ -1,12 +1,13 @@
 @import '../shared.scss';
 
-.filterSelectContainer {
-  position: relative;
+.taskBar {
   display: flex;
-  flex-grow: 1;
-  max-width: 20em;
-  min-width: 6em;
-  margin-left: 8px;
+  vertical-align: middle;
+  align-items: center;
+  padding: 9px;
+  padding-right: 15px;
+  background-color: white;
+  border-radius: 52px;
 }
 
 .addNewButtonContainer {
@@ -16,5 +17,24 @@
   flex-grow: 1;
   justify-content: flex-end;
   align-items: center;
-  margin-right: 8px;
+  & > :first-child {
+    margin-right: 20px;
+  }
+  & > :nth-last-child(2) {
+    margin-right: 10px;
+  }
+}
+
+.filterSelectContainer {
+  display: flex;
+  align-items: center;
+  font-family: 'Work Sans';
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+
+  & > :first-child {
+    margin-right: 8px;
+  }
 }

@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import classNames from 'classnames';
-import { StyledFormControl } from './forms/StyledFormControl';
 import { TableTaskRow } from './TableTaskRow';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
@@ -36,6 +38,7 @@ export const TaskTable: React.FC<{
   nosearch?: boolean;
 }> = ({ tasks, nofilter, nosearch }) => {
   const { t } = useTranslation();
+  const [checked, setChecked] = useState(true);
   const [searchString, setSearchString] = useState('');
   const [searchFilter, setSearchFilter] = useState(FilterTypes.SHOW_ALL);
   const [sortingType, setSortingType] = useState(SortingTypes.NO_SORT);
@@ -63,8 +66,12 @@ export const TaskTable: React.FC<{
     setSearchString(value.toLowerCase());
   };
 
-  const onFilterChange = (filter: FilterTypes) => {
-    setSearchFilter(filter);
+  const toggleCheckedClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setChecked(!checked);
+    if (checked) setSearchFilter(FilterTypes.NOT_RATED_BY_ME);
+    else setSearchFilter(FilterTypes.SHOW_ALL);
   };
 
   const toggleSortOrder = () => {
@@ -106,11 +113,12 @@ export const TaskTable: React.FC<{
 
   const renderTopbar = () => {
     return (
-      <div className={classes(css.topBar)}>
+      <div className={classes(css.taskBar)}>
         <div className={classes(css.searchBarContainer)}>
           {!nosearch && (
             <>
-              <StyledFormControl
+              <input
+                className={classes(css.input, css.search)}
                 placeholder={t('Search for tasks')}
                 onChange={(e: any) => onSearchChange(e.currentTarget.value)}
               />
@@ -118,33 +126,25 @@ export const TaskTable: React.FC<{
             </>
           )}
         </div>
-        <div className={classes(css.filterSelectContainer)}>
-          {!nofilter && (
-            <StyledFormControl
-              required
-              as="select"
-              onChange={(e: any) =>
-                onFilterChange(
-                  parseInt(e.currentTarget.value, 10) as FilterTypes,
-                )
-              }
-              value={searchFilter}
-            >
-              <option value={FilterTypes.SHOW_ALL}>{t('Show all')}</option>
-              <option value={FilterTypes.NOT_RATED_BY_ME}>
-                {t('Not rated by me')}
-              </option>
-              <option value={FilterTypes.RATED_BY_ME}>
-                {t('Rated by me')}
-              </option>
-              <option value={FilterTypes.COMPLETED}>{t('Completed')}</option>
-              <option value={FilterTypes.NOT_COMPLETED}>
-                {t('Not completed')}
-              </option>
-            </StyledFormControl>
-          )}
-        </div>
         <div className={classes(css.addNewButtonContainer)}>
+          {!nofilter && (
+            <div
+              className={classes(css.filterSelectContainer)}
+              onClick={toggleCheckedClicked}
+              role="checkbox"
+              aria-checked={checked}
+              tabIndex={0}
+            >
+              {checked ? (
+                <CheckBoxIcon className={classes(css.checkBox)} />
+              ) : (
+                <CheckBoxBlankIcon
+                  className={classes(css.checkBox, css.unchecked)}
+                />
+              )}
+              Show completed tasks
+            </div>
+          )}
           {userInfo!.type === UserType.AdminUser && (
             <>
               <button

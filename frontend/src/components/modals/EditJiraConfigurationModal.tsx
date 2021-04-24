@@ -7,7 +7,6 @@ import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenJiraconfigurationSelector } from '../../redux/roadmaps/selectors';
 import { JiraConfigurationRequest } from '../../redux/roadmaps/types';
-import { StyledFormControl } from '../forms/StyledFormControl';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
@@ -91,7 +90,8 @@ export const EditJiraConfigurationModal: React.FC<EditJiraConfigurationModalProp
               </label>
               <p>Instructions here</p>
               <Form.Group>
-                <StyledFormControl
+                <input
+                  className="input"
                   autoComplete="off"
                   required
                   name="url"
@@ -102,7 +102,8 @@ export const EditJiraConfigurationModal: React.FC<EditJiraConfigurationModalProp
                 />
               </Form.Group>
               <Form.Group>
-                <StyledFormControl
+                <input
+                  className="input"
                   autoComplete="off"
                   required
                   type="password"
@@ -147,7 +148,11 @@ export const EditJiraConfigurationModal: React.FC<EditJiraConfigurationModalProp
               <button className="button-large" type="submit">
                 <Trans i18nKey="Save" />
               </button>
-            ) : null}
+            ) : (
+              <button className="button-large" disabled type="submit">
+                <Trans i18nKey="Save" />
+              </button>
+            )}
           </ModalFooterButtonDiv>
         </ModalFooter>
       </Form>
