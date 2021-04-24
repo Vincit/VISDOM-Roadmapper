@@ -1,5 +1,21 @@
 @import '../shared.scss';
 
+.loginNavBar {
+  display: grid;
+  grid-template-columns: auto 470px auto;
+  margin: auto;
+
+  position: sticky;
+  z-index: 10;
+  height: 0px;
+  top: 46px;
+
+  svg {
+    height: 32px;
+    width: auto;
+  }
+}
+
 .navBarDiv {
   position: relative;
   top: 0;

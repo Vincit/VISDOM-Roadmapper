@@ -13,6 +13,7 @@ import { paths } from '../routers/paths';
 import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
 import { UserHotSwapWidget } from './UserHotSwapWidget';
 import css from './NavBar.module.scss';
+import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 
 const classes = classNames.bind(css);
 
@@ -27,9 +28,16 @@ export const NavBar = () => {
       <CornerPiece />
       <div className={classes(css.navBarRightSide)}>
         {!userInfo && (
-          <Link className={classes(css.navBarLink)} to={paths.loginPage}>
-            <Trans i18nKey="Login" />
-          </Link>
+          <div className={classes(css.loginNavBar)}>
+            <VisdomLogo />
+            <span />
+            <Link
+              className={classes(css['button-small-filled'])}
+              to={paths.loginPage}
+            >
+              <Trans i18nKey="Login" />
+            </Link>
+          </div>
         )}
         {userInfo && (
           <>
