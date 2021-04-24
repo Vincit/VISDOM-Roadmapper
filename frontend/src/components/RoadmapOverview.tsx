@@ -2,13 +2,14 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
-import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
 import css from './RoadmapOverview.module.scss';
+import { ReactComponent as WorkIcon } from '../icons/rate_work.svg';
 
 const classes = classNames.bind(css);
 
@@ -48,36 +49,40 @@ export const RoadmapOverview = () => {
     <div className={classes(css.dataFlexbox)}>
       <div className={classes(css.dataEntryWrapper)}>
         <Trans i18nKey="Tasks" />
+        <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>{roadmapTasksCount()}</p>
       </div>
       <div className={classes(css.dataEntryWrapper)}>
         <Trans i18nKey="milestones" />
+        <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
           {roadmapMilestonesCount()}
         </p>
       </div>
       <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Avg. Rating" />
+        <Trans i18nKey="Avg. Value" />
+        <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
-          <BusinessValueFilled />
           {roadmapAverageRating(
             TaskRatingDimension.BusinessValue,
           ).toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
+          <MonetizationOnIcon />
         </p>
       </div>
       <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Avg. Rating" />
+        <Trans i18nKey="Avg. Work" />
+        <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
-          <RequiredWorkFilled />
           {roadmapAverageRating(
             TaskRatingDimension.RequiredWork,
           ).toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
+          <WorkIcon />
         </p>
       </div>
     </div>
