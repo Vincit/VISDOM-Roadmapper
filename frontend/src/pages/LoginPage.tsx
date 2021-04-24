@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import { StyledFormControl } from '../components/forms/StyledFormControl';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
@@ -78,7 +77,8 @@ export const LoginPage = () => {
         <ModalContent>
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <StyledFormControl
+              <input
+                className="input"
                 required
                 name="name"
                 id="name"
@@ -89,7 +89,8 @@ export const LoginPage = () => {
             </Form.Group>
 
             <Form.Group>
-              <StyledFormControl
+              <input
+                className="input"
                 required
                 name="description"
                 id="description"

@@ -142,9 +142,8 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
   const renderCommentBox = () => {
     return (
       <Form.Group className={classes(css.commentBoxWrapper)}>
-        <Form.Control
+        <textarea
           required
-          as="textarea"
           name="description"
           id="description"
           draggable="false"

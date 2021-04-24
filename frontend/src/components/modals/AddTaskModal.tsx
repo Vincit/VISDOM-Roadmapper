@@ -12,7 +12,6 @@ import { RootState } from '../../redux/types';
 import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
-import { StyledFormControl } from '../forms/StyledFormControl';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -98,7 +97,7 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
         </ModalHeader>
         <ModalContent>
           <Form.Group>
-            <StyledFormControl
+            <input
               autoComplete="off"
               required
               name="name"
@@ -110,11 +109,9 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
           </Form.Group>
 
           <Form.Group>
-            <StyledFormControl
+            <textarea
               autoComplete="off"
-              isTextArea
               required
-              as="textarea"
               name="description"
               id="description"
               placeholder={t('Description')}

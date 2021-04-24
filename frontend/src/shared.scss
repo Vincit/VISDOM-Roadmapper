@@ -31,6 +31,11 @@ $COLOR_BLACK5: #f5f5f5;
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
+.shadow-input {
+  -webkit-box-shadow: 0px 0px 0px 3px rgba(14, 198, 121, 0.3);
+  box-shadow: 0px 0px 0px 3px rgba(14, 198, 121, 0.3);
+}
+
 .layout-column {
   display: flex;
   flex-direction: column;
@@ -204,15 +209,13 @@ $COLOR_BLACK5: #f5f5f5;
 
 .searchBarContainer {
   position: relative;
-  display: flex;
-  flex-grow: 1;
   max-width: 20em;
-  min-width: 10em;
+  min-width: 12em;
 
   svg {
     fill: $COLOR_BLACK100;
     position: absolute;
-    top: 1em;
+    top: 0.8em;
     right: 1em;
   }
 }
@@ -298,5 +301,50 @@ $COLOR_BLACK5: #f5f5f5;
   }
   &:disabled {
     background-color: $COLOR_BLACK40;
+  }
+}
+
+input {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 10px;
+  border: 0;
+  background-color: $COLOR_BLACK5;
+
+  font-family: 'Work Sans';
+  font-weight: 600;
+  font-size: 14px;
+  color: $COLOR_BLACK100;
+
+  &:focus {
+    @extend .shadow-input;
+    border: 1px solid $COLOR_EMERALD;
+    outline: none;
+  }
+  &::placeholder {
+    font-weight: normal;
+    color: $COLOR_BLACK60;
+  }
+  &.number {
+    background-color: white;
+  }
+  &.search {
+    border-radius: 49px;
+    min-height: 40px;
+    height: 40px;
+  }
+}
+
+textarea {
+  @extend input;
+}
+
+.checkBox {
+  color: $COLOR_EMERALD;
+  &.unckecked {
+    color: $COLOR_BLACK40;
   }
 }

@@ -5,7 +5,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { versionsActions } from '../../redux/versions';
-import { StyledFormControl } from '../forms/StyledFormControl';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -62,7 +61,7 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
-          <StyledFormControl
+          <input
             autoComplete="off"
             required
             type="text"
