@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Form } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
@@ -72,34 +72,30 @@ export const LoginPage = () => {
       {userInfo && <Redirect to={query.get('redirectTo') || paths.home} />}
       <div className={classes(css.formDiv)}>
         <ModalHeader>
-          <Trans i18nKey="Login" />
+          <Trans i18nKey="Log in" />
         </ModalHeader>
         <ModalContent>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group>
-              <input
-                className="input"
-                required
-                name="name"
-                id="name"
-                placeholder={t('Username')}
-                value={formValues.username}
-                onChange={(e: any) => onUsernameChange(e.currentTarget.value)}
-              />
-            </Form.Group>
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="name">Your email</label>
+            <input
+              required
+              name="name"
+              id="name"
+              placeholder={t('Email')}
+              value={formValues.username}
+              onChange={(e: any) => onUsernameChange(e.currentTarget.value)}
+            />
 
-            <Form.Group>
-              <input
-                className="input"
-                required
-                name="description"
-                id="description"
-                type="password"
-                placeholder={t('Password')}
-                value={formValues.password}
-                onChange={(e: any) => onPasswordChange(e.currentTarget.value)}
-              />
-            </Form.Group>
+            <label htmlFor="description">Password</label>
+            <input
+              required
+              name="description"
+              id="description"
+              type="password"
+              placeholder={t('Password')}
+              value={formValues.password}
+              onChange={(e: any) => onPasswordChange(e.currentTarget.value)}
+            />
             <Alert
               show={errorMessage.length > 0}
               variant="danger"
@@ -113,10 +109,10 @@ export const LoginPage = () => {
               <LoadingSpinner />
             ) : (
               <button className={classes(css['button-large'])} type="submit">
-                <Trans i18nKey="Submit" />
+                <Trans i18nKey="Log in" />
               </button>
             )}
-          </Form>
+          </form>
         </ModalContent>
       </div>
     </>
