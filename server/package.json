@@ -33,6 +33,7 @@
     "@types/node-rsa": "^1.0.0",
     "@types/passport-auth-token": "^1.0.0",
     "@types/passport-local": "^1.0.33",
+    "@types/uuid": "^8.3.0",
     "chai-http": "^4.3.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.0.0",

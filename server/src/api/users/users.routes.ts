@@ -7,6 +7,9 @@ import {
   patchUsers,
   deleteUsers,
   registerUser,
+  getToken,
+  generateToken,
+  deleteToken,
   loginUser,
   getCurrentUser,
   logoutUser,
@@ -16,6 +19,10 @@ import {
 import { DefaultState, Context } from 'koa';
 
 const userRouter = new KoaRouter<DefaultState, Context>();
+
+userRouter.get('/users/mytoken', requireAuth, getToken);
+userRouter.post('/users/mytoken', requireAuth, generateToken);
+userRouter.delete('/users/mytoken', requireAuth, deleteToken);
 
 userRouter.get('/users', requireAuth, getUsers);
 userRouter.post('/users', requireAuth, postUsers);

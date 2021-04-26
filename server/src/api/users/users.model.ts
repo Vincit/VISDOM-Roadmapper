@@ -13,7 +13,7 @@ export default class User extends Password(Model) {
   password!: string;
   customerValue!: number;
   hotSwappableUsers?: User[];
-  authToken!: string;
+  authToken!: string | null;
   roles!: Role[];
 
   tokens!: Token[];
@@ -29,7 +29,7 @@ export default class User extends Password(Model) {
       username: { type: 'string', minLength: 1, maxLength: 255 },
       email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
       password: { type: 'string', minLength: 1, maxLength: 255 },
-      authToken: { type: 'string', format: 'uuid' },
+      authToken: { type: ['string', 'null'], format: 'uuid' },
       customerValue: { type: 'integer', minimum: 0 },
       type: {
         type: 'integer',
