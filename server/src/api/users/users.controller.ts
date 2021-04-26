@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { UniqueViolationError } from 'objection';
+import uuid from 'uuid';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
 
@@ -43,6 +44,28 @@ export const registerUser: RouteHandlerFnc = async (ctx, _) => {
   const user = await User.query().insertAndFetch(request);
   ctx.body = user;
   ctx.status = 200;
+};
+
+const setToken = (userId: number, authToken: string | null) =>
+  User.query().patchAndFetchById(userId, { authToken });
+
+export const generateToken: RouteHandlerFnc = async (ctx, _) => {
+  const updated = await setToken(ctx.state.user.id, uuid.v4());
+  if (!updated) {
+    ctx.status = 404;
+  } else {
+    ctx.body = updated.authToken;
+  }
+};
+
+export const getToken: RouteHandlerFnc = async (ctx, _) => {
+  ctx.body = ctx.state.user.authToken;
+};
+
+export const deleteToken: RouteHandlerFnc = async (ctx, _) => {
+  const updated = await setToken(ctx.state.user.id, null);
+  delete ctx.state.user.authToken;
+  ctx.status = updated ? 200 : 404;
 };
 
 export const loginUser: RouteHandlerFnc = async (ctx, _) => {
