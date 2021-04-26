@@ -3,8 +3,8 @@
 .graphWrapper {
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
-  background-color: rgb(247, 247, 247);
+  border-radius: 10px;
+  border: 1px solid $COLOR_SKY;
 }
 
 .buttonsBar {

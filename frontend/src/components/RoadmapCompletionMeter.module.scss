@@ -2,11 +2,11 @@
 
 .outerContainer {
   display: inline-block;
-  border-radius: 16px;
+  border-radius: 10px;
+  border: 1px solid $COLOR_SKY;
   padding-top: 16px;
   padding-bottom: 16px;
   height: 180px;
-  background-color: rgb(247, 247, 247);
   text-align: start;
 }
 
