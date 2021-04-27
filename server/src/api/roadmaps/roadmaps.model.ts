@@ -1,6 +1,7 @@
-import { Model } from 'objection';
+import { Model, QueryBuilder } from 'objection';
 import Task from './../tasks/tasks.model';
 import { Role } from './../roles/roles.model';
+import User from './../users/users.model';
 import JiraConfiguration from './../jiraconfigurations/jiraconfigurations.model';
 
 export default class Roadmap extends Model {
@@ -33,6 +34,25 @@ export default class Roadmap extends Model {
         join: {
           from: 'roadmaps.id',
           to: 'roles.roadmapId',
+        },
+      },
+      users: {
+        relation: Model.ManyToManyRelation,
+        modelClass: User,
+        filter: (query: QueryBuilder<Model, Model[]>) =>
+          query.select(
+            'users.id',
+            'users.username',
+            'users.type',
+            'users.customerValue',
+          ),
+        join: {
+          from: 'roadmaps.id',
+          through: {
+            from: 'roles.roadmapId',
+            to: 'roles.userId',
+          },
+          to: 'users.id',
         },
       },
       tasks: {
