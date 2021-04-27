@@ -14,6 +14,7 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 import css from './LoginPage.module.scss';
+import { Footer } from '../components/Footer';
 
 const classes = classNames.bind(css);
 
@@ -115,6 +116,7 @@ export const LoginPage = () => {
           </form>
         </ModalContent>
       </div>
+      <Footer />
     </>
   );
 };
