@@ -28,6 +28,7 @@ import {
   TaskRatingsInfoModal,
   TaskRatingsInfoModalProps,
 } from './TaskRatingsInfoModal';
+import { UserAuthTokenModal } from './UserAuthTokenModal';
 
 type ModalTypeToComponent = {
   [K in ModalTypes]:
@@ -53,6 +54,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.SETUP_OAUTH_MODAL]: JiraOauthModal,
   [ModalTypes.ADD_JIRA_CONFIGURATION_MODAL]: AddJiraConfigurationModal,
   [ModalTypes.EDIT_JIRA_CONFIGURATION_MODAL]: EditJiraConfigurationModal,
+  [ModalTypes.USER_AUTH_TOKEN_MODAL]: UserAuthTokenModal,
 };
 
 const modalCustomStyles = {

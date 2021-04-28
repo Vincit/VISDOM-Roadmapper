@@ -60,6 +60,16 @@ const RoadmapConfigurationPageComponent = () => {
     );
   };
 
+  const openTokenModal = (e: any) => {
+    e.preventDefault();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.USER_AUTH_TOKEN_MODAL,
+        modalProps: {},
+      }),
+    );
+  };
+
   return (
     <>
       This is the roadmap configuration page.
@@ -88,6 +98,19 @@ const RoadmapConfigurationPageComponent = () => {
             onClick={onOAuthClick}
           >
             + <Trans i18nKey="OAuth" />
+          </button>
+        </span>
+      </div>
+      <div className={classes(css.layoutRow)}>
+        <span className={classes(css.columnHeader)}>
+          <Trans i18nKey="Personal auth token" />
+          <br />
+          <button
+            className="button-small-filled"
+            type="submit"
+            onClick={openTokenModal}
+          >
+            + <Trans i18nKey="Manage" />
           </button>
         </span>
       </div>
