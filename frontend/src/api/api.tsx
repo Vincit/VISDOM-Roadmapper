@@ -100,6 +100,21 @@ const logout = async () => {
   return response.status === 200;
 };
 
+const getCurrentUserToken = async () => {
+  const response = await axios.get(`/users/mytoken`);
+  return response.data as string;
+};
+
+const generateCurrentUserToken = async () => {
+  const response = await axios.post(`/users/mytoken`);
+  return response.data as string;
+};
+
+const deleteCurrentUserToken = async () => {
+  const response = await axios.delete(`/users/mytoken`);
+  return response.status === 200;
+};
+
 const getCurrentUserInfo = async () => {
   const response = await axios.get(`/users/whoami`);
   return response.data as UserInfo;
@@ -208,6 +223,9 @@ export const api = {
   login,
   logout,
   getCurrentUserInfo,
+  getCurrentUserToken,
+  generateCurrentUserToken,
+  deleteCurrentUserToken,
   patchTask,
   getPublicUsers,
   patchTaskrating,
