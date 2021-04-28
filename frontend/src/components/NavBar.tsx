@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classNames from 'classnames';
@@ -22,7 +22,6 @@ export const NavBar = () => {
     userInfoSelector,
     shallowEqual,
   );
-  const history = useHistory();
   const { pathname } = useLocation();
 
   return (
@@ -31,12 +30,9 @@ export const NavBar = () => {
       <div className={classes(css.navBarRightSide)}>
         {!userInfo && (
           <div className={classes(css.loginNavBar)}>
-            <VisdomLogo
-              className={classes(css.visdomLogo)}
-              onClick={() => {
-                history.push(paths.home);
-              }}
-            />
+            <Link to={paths.home} className={classes(css.visdomLogo)}>
+              <VisdomLogo />
+            </Link>
             <span />
             {pathname.startsWith(paths.loginPage) ? (
               <Link
