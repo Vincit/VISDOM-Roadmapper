@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classNames from 'classnames';
@@ -22,6 +22,8 @@ export const NavBar = () => {
     userInfoSelector,
     shallowEqual,
   );
+  const history = useHistory();
+  const { pathname } = useLocation();
 
   return (
     <div className={classes(css.navBarDiv)}>
@@ -29,14 +31,28 @@ export const NavBar = () => {
       <div className={classes(css.navBarRightSide)}>
         {!userInfo && (
           <div className={classes(css.loginNavBar)}>
-            <VisdomLogo />
+            <VisdomLogo
+              className={classes(css.visdomLogo)}
+              onClick={() => {
+                history.push(paths.home);
+              }}
+            />
             <span />
-            <Link
-              className={classes(css['button-small-filled'])}
-              to={paths.loginPage}
-            >
-              <Trans i18nKey="Login" />
-            </Link>
+            {pathname.startsWith(paths.loginPage) ? (
+              <Link
+                className={classes(css['button-small-filled'])}
+                to={paths.loginPage}
+              >
+                <Trans i18nKey="Register" />
+              </Link>
+            ) : (
+              <Link
+                className={classes(css['button-small-filled'])}
+                to={paths.loginPage}
+              >
+                <Trans i18nKey="Login" />
+              </Link>
+            )}
           </div>
         )}
         {userInfo && (
