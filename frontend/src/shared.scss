@@ -122,23 +122,27 @@ form {
   &.roadmapPageContainer {
     padding: 16px 16px 0 16px;
   }
-  &.unassignedTasksCol {
+  &.unorderedTasksCol {
     flex: 1;
-    max-width: 350px;
-    min-width: 350px;
+    flex-grow: 0;
+    width: 366px;
     overflow-y: visible;
     overflow-x: visible;
     margin-bottom: 16px;
     background-color: transparent;
+    &.minimized {
+      width: 65px;
+    }
   }
   &.milestoneCol {
-    min-width: 350px;
-    max-width: 350px;
+    justify-content: flex-start;
+    flex-grow: 0;
+    width: 200px;
     overflow-y: visible;
     overflow-x: visible;
     background-color: transparent;
     border-radius: 8px;
-    margin-left: 16px;
+    margin-left: 20px;
     margin-bottom: 16px;
   }
 }

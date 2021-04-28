@@ -10,7 +10,8 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { DeleteButton } from '../components/forms/DeleteButton';
 import { SortableTaskList } from '../components/SortableTaskList';
-import { ReactComponent as PlusIcon } from '../icons/plus_icon.svg';
+import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
+import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
@@ -68,6 +69,7 @@ export const MilestonesEditor = () => {
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [disableUpdates, setDisableUpdates] = useState(false);
   const [disableDrag, setDisableDrag] = useState(false);
+  const [expandUnordered, setExpandUnordered] = useState(true);
 
   useEffect(() => {
     // Keeping a local copy of versions so we can immediately update this state on drag&drop, then get backend updated state from redux later
@@ -341,18 +343,12 @@ export const MilestonesEditor = () => {
                   role="button"
                   tabIndex={0}
                 >
-                  <div
-                    className={classes(css.addVersionButton)}
-                    onClick={addVersion}
-                    onKeyPress={addVersion}
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    className={classes(css['button-large'])}
+                    type="submit"
                   >
-                    <span>
-                      <PlusIcon />
-                      <Trans i18nKey="Add new milestone" />
-                    </span>
-                  </div>
+                    <Trans i18nKey="+ Add new milestone" />
+                  </button>
                 </div>
               </div>
               {droppableProvided.placeholder}
@@ -367,23 +363,39 @@ export const MilestonesEditor = () => {
     <>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <div className={classes(css.layoutRow, css.overflowYAuto)}>
-          <div className={classes(css.layoutCol, css.unassignedTasksCol)}>
+          <div
+            className={classes(css.layoutCol, css.unorderedTasksCol, {
+              [css.minimized]: !expandUnordered,
+            })}
+          >
             <div
-              className={classes(
-                css.milestoneWrapper,
-                css.unassignedTasksWrapper,
-              )}
+              className={classes(css.unorderedTasksWrapper, {
+                [css.minimized]: !expandUnordered,
+              })}
             >
-              <div className={classes(css.unassignedTasksHeader)}>
-                <Trans i18nKey="Unassigned tasks" />
+              <div
+                className={classes(css.unorderedTasksHeader, {
+                  [css.minimized]: !expandUnordered,
+                })}
+                onClick={() => setExpandUnordered(!expandUnordered)}
+                onKeyPress={() => setExpandUnordered(!expandUnordered)}
+                role="button"
+                tabIndex={0}
+              >
+                {expandUnordered ? <ExpandLess /> : <ExpandMore />}
+                <div>
+                  <Trans i18nKey="Unordered tasks" />
+                </div>
               </div>
-              <div className={classes(css.sortableListWrapper)}>
-                <SortableTaskList
-                  listId={ROADMAP_LIST_ID}
-                  tasks={versionLists[ROADMAP_LIST_ID] || []}
-                  disableDragging={disableDrag}
-                />
-              </div>
+              {expandUnordered && (
+                <div className={classes(css.sortableListWrapper)}>
+                  <SortableTaskList
+                    listId={ROADMAP_LIST_ID}
+                    tasks={versionLists[ROADMAP_LIST_ID] || []}
+                    disableDragging={disableDrag}
+                  />
+                </div>
+              )}
             </div>
           </div>
           {roadmapsVersionsLocal && renderMilestones()}

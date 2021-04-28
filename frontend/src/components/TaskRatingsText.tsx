@@ -1,22 +1,12 @@
 import React from 'react';
-import { StarFill, Wrench } from 'react-bootstrap-icons';
-import { shallowEqual, useSelector } from 'react-redux';
-import {
-  chosenRoadmapSelector,
-  publicUsersSelector,
-} from '../redux/roadmaps/selectors';
-import {
-  PublicUser,
-  Roadmap,
-  Task,
-  TaskRatingDimension,
-} from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
-import {
-  calcTaskAverageRating,
-  calcWeightedTaskPriority,
-} from '../utils/TaskUtils';
-import { Debug } from './Debug';
+import classNames from 'classnames';
+import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
+import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import { calcTaskAverageRating } from '../utils/TaskUtils';
+
+import css from './TaskRatingsText.module.scss';
+
+const classes = classNames.bind(css);
 
 export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
   const averageBusinessVal = calcTaskAverageRating(
@@ -27,49 +17,31 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
     TaskRatingDimension.RequiredWork,
     task,
   );
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  )!;
   return (
-    <>
+    <div className={classes(css.taskRatingRow)}>
       {averageBusinessVal && (
-        <span className="mr-1 font-weight-bold">
+        <div className={classes(css.taskRating)}>
+          <div>
+            <BusinessValueFilled />
+          </div>
           {averageBusinessVal.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
-          <StarFill />
-        </span>
+        </div>
       )}
       {averageWorkVal && (
-        <span className="mr-1 font-weight-bold">
+        <div className={classes(css.taskRating)}>
+          <div>
+            <RequiredWorkFilled />
+          </div>
           {averageWorkVal.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
-          <Wrench />
-        </span>
-      )}
-      {averageWorkVal && averageBusinessVal && (
-        <Debug>
-          <span className="mr-1 font-weight-bold">
-            {calcWeightedTaskPriority(
-              task,
-              publicUsers!,
-              currentRoadmap,
-            ).toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </span>
-        </Debug>
+        </div>
       )}
       {!averageWorkVal && !averageBusinessVal && <span>-</span>}
-    </>
+    </div>
   );
 };

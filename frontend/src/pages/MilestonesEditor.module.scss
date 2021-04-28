@@ -4,63 +4,65 @@
   margin-left: 8px;
 }
 
-.addVersionButton {
-  width: 250px;
-  justify-content: center;
-  background-color: transparent;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  text-transform: uppercase;
-  svg {
-    margin: 4px;
+.unorderedTasksWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 366px;
+  margin-top: 26px;
+  background-color: $COLOR_BLACK10;
+  border-radius: 10px;
+  &.minimized {
+    width: 65px;
   }
 }
 
-.unassignedTasksCol {
-  flex: 1;
-  max-width: 350px;
-  min-width: 350px;
-  overflow-y: visible;
-  overflow-x: visible;
-  margin-bottom: 16px;
-  background-color: transparent;
-}
+.unorderedTasksHeader {
+  display: flex;
+  align-items: center;
+  margin: 16px;
+  margin-bottom: 0;
 
-.milestoneCol {
-  min-width: 350px;
-  max-width: 350px;
-  overflow-y: visible;
-  overflow-x: visible;
-  background-color: transparent;
-  border-radius: 8px;
-  margin-left: 16px;
-  margin-bottom: 16px;
-}
+  font-family: 'IBM Plex Mono';
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
 
-.unassignedTasksHeader {
-  width: 100%;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  border-bottom: 1px solid gray;
+  svg {
+    margin-right: 11px;
+  }
+  &.minimized {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  &.minimized > div {
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    position: relative;
+    left: -47px;
+    top: 70px;
+  }
 }
 
 .milestoneHeader {
+  overflow-wrap: break-word;
   width: 100%;
-  border-bottom: 1px solid gray;
-  padding: 8px;
-  font-size: 16px;
+  border-bottom: 1px solid $COLOR_BLACK10;
+  padding: 13px 15px;
+  font-family: 'Work Sans';
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
 }
 
 .milestoneFooter {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  border-top: 1px solid gray;
-  padding: 8px;
-  font-size: 16px;
+  border-top: 1px solid $COLOR_BLACK10;
+  padding: 13px;
 }
 
 .sortableListWrapper {
@@ -70,8 +72,10 @@
   margin-bottom: 8px;
   min-height: 100px;
   padding: 16px;
-  padding-top: 8px;
   scrollbar-width: thin;
+  font-family: 'Work Sans';
+  font-size: 12px;
+  letter-spacing: 0.02em;
 }
 
 .milestoneWrapper {
@@ -79,23 +83,18 @@
   display: flex;
   flex-direction: column;
   min-height: 150px;
-  border-radius: 16px;
-  background-color: #fbfbfb;
-  border: 1px solid #f1f1f1;
+  width: 200px;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid transparent;
+  margin-top: 26px;
   overflow-x: visible;
 
-  &.unassignedTasksWrapper {
-    background-color: #f3f3f3;
-  }
-
   &.addNewBtnWrapper {
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    border: 1px dashed $COLOR_BLACK100;
+    border: 0;
     background-color: transparent;
   }
 }

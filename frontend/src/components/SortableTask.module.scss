@@ -2,9 +2,8 @@
 
 .taskDiv {
   display: flex;
-  border: 1px solid $COLOR_BLACK100;
-  border-radius: 8px;
-  padding: 8px;
+  border-radius: 5px;
+  padding: 8px 16px;
   margin-bottom: 6px;
   background-color: white;
   user-select: none;
@@ -12,8 +11,8 @@
 
 .leftSideDiv {
   display: flex;
-  flex-direction: column;
   justify-content: flex-start;
+  text-align: left;
 }
 
 .rightSideDiv {
@@ -22,7 +21,8 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  svg {
+  svg:last-child {
+    color: $COLOR_BLACK40;
     margin-left: 8px;
   }
 }
