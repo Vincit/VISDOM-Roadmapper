@@ -17,9 +17,28 @@ export const enum UserType {
   TokenUser = 4,
 }
 
+export const enum Permission {
+  Any = 0,
+  All = ~0,
+
+  TaskCreate = 1 << 0,
+  TaskEdit = 1 << 1,
+  TaskDelete = 1 << 2,
+  TaskRate = 1 << 3,
+
+  VersionCreate = 1 << 4,
+  VersionEdit = 1 << 5,
+  VersionDelete = 1 << 6,
+
+  RoadmapEdit = 1 << 7,
+  RoadmapDelete = 1 << 8,
+  RoadmapInviteUser = 1 << 9,
+  RoadmapReadUsers = 1 << 10,
+}
+
 export const enum RoleType {
-  Admin,
-  Customer,
-  Developer,
-  Business,
+  Admin = Permission.All,
+  Developer = Permission.TaskRate | Permission.TaskCreate,
+  Customer = Permission.TaskRate,
+  Business = RoleType.Customer,
 }
