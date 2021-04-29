@@ -6,6 +6,7 @@ import {
   ForeignKeyViolationError,
   NotNullViolationError,
 } from 'objection';
+import { ForbiddenError } from './checkPermissions';
 
 export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
   try {
@@ -56,6 +57,9 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
         error: 'NotNullViolationError',
         message: `${err.column} is required`,
       };
+    } else if (err instanceof ForbiddenError) {
+      ctx.status = 403;
+      ctx.body = err.message;
     } else {
       console.log(err);
 
