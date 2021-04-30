@@ -82,6 +82,14 @@
   }
 }
 
+.ratingsSummaryWrapper {
+  @extend .sortableListWrapper;
+  border-top: 1px solid $COLOR_BLACK10;
+  padding: 15px;
+  padding-right: 11px;
+  padding-bottom: 7.5px;
+}
+
 .milestoneWrapper {
   @extend .shadow-roadmapblock;
   display: flex;

@@ -1,0 +1,17 @@
+@import './../shared.scss';
+
+.ratingDiv {
+  display: flex;
+  margin-bottom: 7.5px;
+}
+
+.rating {
+  font-family: Anonymous Pro;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: $COLOR_AZURE;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}

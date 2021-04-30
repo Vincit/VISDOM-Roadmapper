@@ -10,6 +10,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { DeleteButton } from '../components/forms/DeleteButton';
 import { SortableTaskList } from '../components/SortableTaskList';
+import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
 import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
 import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
@@ -323,6 +324,11 @@ export const MilestonesEditor = () => {
                               listId={`${version.id}`}
                               tasks={versionLists[version.id] || []}
                               disableDragging={disableDrag}
+                            />
+                          </div>
+                          <div className={classes(css.ratingsSummaryWrapper)}>
+                            <MilestoneRatingsSummary
+                              tasks={versionLists[version.id] || []}
                             />
                           </div>
                           <div className={classes(css.milestoneFooter)}>
