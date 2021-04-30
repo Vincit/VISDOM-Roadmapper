@@ -69,13 +69,17 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
   min-height: 100px;
   padding: 16px;
   scrollbar-width: thin;
   font-family: 'Work Sans';
   font-size: 12px;
   letter-spacing: 0.02em;
+  &.milestone {
+    padding: 0px;
+    padding-top: 7px;
+    padding-bottom: 1px;
+  }
 }
 
 .milestoneWrapper {

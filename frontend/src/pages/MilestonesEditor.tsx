@@ -313,7 +313,12 @@ export const MilestonesEditor = () => {
                             {version.name}
                           </div>
 
-                          <div className={classes(css.sortableListWrapper)}>
+                          <div
+                            className={classes(
+                              css.sortableListWrapper,
+                              css.milestone,
+                            )}
+                          >
                             <SortableTaskList
                               listId={`${version.id}`}
                               tasks={versionLists[version.id] || []}
