@@ -66,7 +66,7 @@ export const SortableTask: React.FC<{
                   <TaskRatingsText task={task} />
                 )}
             </div>
-            <DragIndicatorIcon />
+            <DragIndicatorIcon fontSize="small" />
           </div>
         </div>
       )}
