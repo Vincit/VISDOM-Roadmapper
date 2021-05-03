@@ -36,7 +36,7 @@ export const SortableTask: React.FC<{
   useEffect(() => {
     if (roadmapsVersionsLocal === undefined) return;
     const newVersionLists: VersionListsObject = {};
-    const unversioned = new Map(tasks.map((task) => [task.id, task]));
+    const unversioned = new Map(tasks.map((t) => [t.id, t]));
     roadmapsVersionsLocal.forEach((v) => {
       newVersionLists[v.id] = v.tasks;
       v.tasks.forEach((t) => unversioned.delete(t.id));
