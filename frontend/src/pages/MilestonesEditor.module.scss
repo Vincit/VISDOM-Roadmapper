@@ -35,14 +35,16 @@
   }
   &.minimized {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
   &.minimized > div {
     transform: rotate(-90deg);
     white-space: nowrap;
     position: relative;
-    left: -47px;
-    top: 70px;
+    top: 90px;
+  }
+  &.minimized > svg {
+    margin-right: 0;
   }
 }
 

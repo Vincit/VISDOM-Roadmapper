@@ -5,7 +5,7 @@ import {
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { DeleteButton } from '../components/forms/DeleteButton';
@@ -50,6 +50,7 @@ const copyVersionLists = (originalLists: VersionListsObject) => {
 const ROADMAP_LIST_ID = '-1';
 
 export const MilestonesEditor = () => {
+  const { t } = useTranslation();
   const tasks = useSelector(allTasksSelector(), shallowEqual);
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
@@ -397,8 +398,7 @@ export const MilestonesEditor = () => {
               >
                 {expandUnordered ? <ExpandLess /> : <ExpandMore />}
                 <div>
-                  <Trans i18nKey="Unordered tasks" />
-                  {` (${unversionedTasks?.length})`}
+                  {`${t('Unordered tasks')} (${unversionedTasks?.length})`}
                 </div>
               </div>
               {expandUnordered && (
