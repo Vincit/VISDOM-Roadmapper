@@ -73,34 +73,36 @@ const RoadmapConfigurationPageComponent = () => {
   return (
     <>
       This is the roadmap configuration page.
-      {userInfo!.type === UserType.AdminUser && (
-        <div className={classes(css.layoutRow)}>
-          <span className={classes(css.columnHeader)}>
-            {currentRoadmap.name} <Trans i18nKey="jiraconfiguration" />
-            <br />
-            <button
-              className={classes(css['button-small-filled'])}
-              type="submit"
-              onClick={onJiraConfigurationClick}
-            >
-              + <Trans i18nKey="Configure Jira" />
-            </button>
-          </span>
-        </div>
+      {userInfo?.type === UserType.AdminUser && (
+        <>
+          <div className={classes(css.layoutRow)}>
+            <span className={classes(css.columnHeader)}>
+              {currentRoadmap.name} <Trans i18nKey="jiraconfiguration" />
+              <br />
+              <button
+                className={classes(css['button-small-filled'])}
+                type="submit"
+                onClick={onJiraConfigurationClick}
+              >
+                + <Trans i18nKey="Configure Jira" />
+              </button>
+            </span>
+          </div>
+          <div className={classes(css.layoutRow)}>
+            <span className={classes(css.columnHeader)}>
+              {currentRoadmap.name} <Trans i18nKey="authentication" />
+              <br />
+              <button
+                className={classes(css['button-small-filled'])}
+                type="submit"
+                onClick={onOAuthClick}
+              >
+                + <Trans i18nKey="OAuth" />
+              </button>
+            </span>
+          </div>
+        </>
       )}
-      <div className={classes(css.layoutRow)}>
-        <span className={classes(css.columnHeader)}>
-          {currentRoadmap.name} <Trans i18nKey="authentication" />
-          <br />
-          <button
-            className={classes(css['button-small-filled'])}
-            type="submit"
-            onClick={onOAuthClick}
-          >
-            + <Trans i18nKey="OAuth" />
-          </button>
-        </span>
-      </div>
       <div className={classes(css.layoutRow)}>
         <span className={classes(css.columnHeader)}>
           <Trans i18nKey="Personal auth token" />

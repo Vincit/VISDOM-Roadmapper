@@ -32,10 +32,15 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   useEffect(() => {
     const getOAuthURL = async () => {
+      const id = currentJiraConfiguration?.id;
+      if (id === undefined) {
+        setErrorMessage(
+          'No Jira configuration found. Please configure Jira first.',
+        );
+        return;
+      }
       try {
-        const response = await api.getJiraOauthURL({
-          id: currentJiraConfiguration.id,
-        });
+        const response = await api.getJiraOauthURL({ id });
         const { token, tokenSecret } = response;
         setFormValues((prev) => {
           return { ...prev, token, tokenSecret };
@@ -49,7 +54,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
     };
 
     getOAuthURL();
-  }, [currentJiraConfiguration.id]);
+  }, [currentJiraConfiguration]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
