@@ -1,4 +1,5 @@
 import passport from 'passport';
+import { UniqueViolationError } from 'objection';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
 
@@ -30,6 +31,18 @@ export const deleteUsers: RouteHandlerFnc = async (ctx, _) => {
   const numDeleted = await User.query().findById(ctx.params.id).delete();
 
   ctx.status = numDeleted == 1 ? 200 : 404;
+};
+
+export const registerUser: RouteHandlerFnc = async (ctx, _) => {
+  // keep only required fields
+  const request = User.jsonSchema.required.reduce(
+    (object, key) => ({ ...object, [key]: ctx.request.body[key] }),
+    {},
+  );
+
+  const user = await User.query().insertAndFetch(request);
+  ctx.body = user;
+  ctx.status = 200;
 };
 
 export const loginUser: RouteHandlerFnc = async (ctx, _) => {
