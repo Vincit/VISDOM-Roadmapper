@@ -6,6 +6,7 @@ import {
   postUsers,
   patchUsers,
   deleteUsers,
+  registerUser,
   loginUser,
   getCurrentUser,
   logoutUser,
@@ -21,6 +22,7 @@ userRouter.post('/users', requireAuth, postUsers);
 userRouter.patch('/users/:id', requireAuth, patchUsers);
 userRouter.delete('/users/:id', requireAuth, deleteUsers);
 
+userRouter.post('/users/register', registerUser);
 userRouter.post('/users/login', loginUser);
 userRouter.get('/users/logout', logoutUser);
 userRouter.get('/users/whoami', requireAuth, getCurrentUser);
