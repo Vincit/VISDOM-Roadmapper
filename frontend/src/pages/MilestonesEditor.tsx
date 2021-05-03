@@ -88,7 +88,7 @@ export const MilestonesEditor = () => {
       const unversioned = new Map(tasks.map((task) => [task.id, task]));
       roadmapsVersionsLocal.forEach((v) => {
         newVersionLists[v.id] = v.tasks;
-        v.tasks.forEach((t) => unversioned.delete(t.id));
+        v.tasks.forEach((task) => unversioned.delete(task.id));
       });
       setUnversionedTasks(Array.from(unversioned.values()));
       newVersionLists[ROADMAP_LIST_ID] = Array.from(unversioned.values());
