@@ -72,7 +72,6 @@ export const MilestonesEditor = () => {
   const [disableUpdates, setDisableUpdates] = useState(false);
   const [disableDrag, setDisableDrag] = useState(false);
   const [expandUnordered, setExpandUnordered] = useState(true);
-  const [unversionedTasks, setUnversionedTasks] = useState<Task[]>();
 
   useEffect(() => {
     // Keeping a local copy of versions so we can immediately update this state on drag&drop, then get backend updated state from redux later
@@ -90,7 +89,6 @@ export const MilestonesEditor = () => {
         newVersionLists[v.id] = v.tasks;
         v.tasks.forEach((task) => unversioned.delete(task.id));
       });
-      setUnversionedTasks(Array.from(unversioned.values()));
       newVersionLists[ROADMAP_LIST_ID] = Array.from(unversioned.values());
 
       newVersionLists[ROADMAP_LIST_ID].sort(
@@ -398,7 +396,9 @@ export const MilestonesEditor = () => {
               >
                 {expandUnordered ? <ExpandLess /> : <ExpandMore />}
                 <div>
-                  {`${t('Unordered tasks')} (${unversionedTasks?.length})`}
+                  {`${t('Unordered tasks')} (${
+                    versionLists[ROADMAP_LIST_ID]?.length
+                  })`}
                 </div>
               </div>
               {expandUnordered && (

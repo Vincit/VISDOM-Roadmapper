@@ -61,10 +61,9 @@ export const SortableTask: React.FC<{
           <div className={css.leftSideDiv}>{task.name}</div>
           <div className={css.rightSideDiv}>
             <div>
-              {unversionedTasks &&
-                unversionedTasks.some((obj) => obj.id === task.id) && (
-                  <TaskRatingsText task={task} />
-                )}
+              {unversionedTasks?.some((obj) => obj.id === task.id) && (
+                <TaskRatingsText task={task} />
+              )}
             </div>
             <DragIndicatorIcon fontSize="small" />
           </div>

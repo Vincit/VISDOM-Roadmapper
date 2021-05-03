@@ -52,10 +52,13 @@ export const totalValueAndWork = (tasks: Task[]) =>
       { value: 0, work: 0 },
     );
 
-export const averageValueAndWork = (tasks: Task[]) => ({
-  value: totalValueAndWork(tasks).value / tasks.length,
-  work: totalValueAndWork(tasks).work / tasks.length,
-});
+export const averageValueAndWork = (tasks: Task[]) => {
+  const totals = totalValueAndWork(tasks);
+  return {
+    value: totals.value / tasks.length,
+    work: totals.work / tasks.length,
+  };
+};
 
 export const calcTaskAverageRating = (
   dimension: TaskRatingDimension,
