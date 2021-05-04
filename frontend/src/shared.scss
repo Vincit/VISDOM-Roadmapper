@@ -38,6 +38,12 @@ $COLOR_BLACK5: #f5f5f5;
   box-shadow: 0px 0px 0px 3px rgba(14, 198, 121, 0.3);
 }
 
+.alert {
+  @extend .typography-body;
+  margin: 10px 0px;
+  border-radius: 10px;
+}
+
 label {
   @extend .typography-pre-title;
   color: $COLOR_AZURE;
