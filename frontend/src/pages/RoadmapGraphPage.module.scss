@@ -6,14 +6,32 @@
   flex-grow: 1;
   max-height: 500px;
   min-height: 500px;
-  margin-left: 16px;
+  margin-left: 20px;
   overflow-x: auto;
 }
 
 .graphTitle {
-  font-size: 28px;
-  font-weight: 600;
   text-align: start;
+  font-family: Work Sans;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: -0.03em;
+}
+
+.graphLabel {
+  font-family: Anonymous Pro;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $COLOR_BLACK40;
+  &.vertical {
+    width: 100px;
+    transform: rotate(-90deg);
+    position: relative;
+    left: -40px;
+    top: -250px;
+  }
 }
 
 .graphInner {
@@ -21,8 +39,8 @@
   flex-direction: row;
   flex-grow: 1;
   overflow-x: auto;
-  border-left: 1px solid gray;
-  border-bottom: 1px solid gray;
+  border-left: 1px solid $COLOR_BLACK40;
+  border-bottom: 1px solid $COLOR_BLACK40;
   justify-content: flex-start;
   align-items: flex-end;
   padding-left: 12px;
@@ -64,22 +82,47 @@
 }
 
 .versionData {
-  font-family: IBM Plex Mono;
+  :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ratingDiv {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-family: Anonymous Pro;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: $COLOR_BLACK60;
+  svg {
+    color: $COLOR_BLACK100;
+    width: 10.5px;
+    height: 10.5px;
+  }
+  p {
+    margin-left: 4.75px;
+  }
+}
+
+.dash {
+  border: 0.5px solid $COLOR_BLACK10;
+  width: 37px;
+}
+
+.versionTitle {
   padding: 0;
   margin: 0;
-  font-size: 12px;
+  margin-top: auto;
   text-align: start;
-  svg {
-    position: relative;
-    top: -1px;
+  font-family: Work Sans;
+  font-size: 14px;
+  color: $COLOR_BLACK100;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  &.selected {
     color: $COLOR_AZURE;
-    margin-right: 2px;
-    width: 13px;
-    height: 13px;
-  }
-  &.versionTitle {
-    font-weight: bold;
-    font-size: 14px;
-    font-family: unset;
   }
 }
