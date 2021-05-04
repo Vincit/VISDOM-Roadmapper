@@ -35,22 +35,22 @@ export const PlannerPageNavbar = () => {
       <Link
         className={classes(css.navbarButton, {
           [css.highlight]: !!pathname.startsWith(
-            url + paths.plannerRelative.timeEstimation,
-          ),
-        })}
-        to={url + paths.plannerRelative.timeEstimation}
-      >
-        <Trans i18nKey="Time Estimation" />
-      </Link>
-      <Link
-        className={classes(css.navbarButton, {
-          [css.highlight]: !!pathname.startsWith(
             url + paths.plannerRelative.weights,
           ),
         })}
         to={url + paths.plannerRelative.weights}
       >
         <Trans i18nKey="Client Weights" />
+      </Link>
+      <Link
+        className={classes(css.navbarButton, {
+          [css.highlight]: !!pathname.startsWith(
+            url + paths.plannerRelative.timeEstimation,
+          ),
+        })}
+        to={url + paths.plannerRelative.timeEstimation}
+      >
+        <Trans i18nKey="Time Estimation" />
       </Link>
       <div className={classes(css.navbarFiller)} />
     </div>
