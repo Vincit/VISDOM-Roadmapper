@@ -58,7 +58,7 @@ export const DashboardPage = () => {
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
     if (roadmapsVersions === undefined) {
-      dispatch(versionsActions.getVersions());
+      dispatch(versionsActions.getVersions(currentRoadmap!.id));
       return;
     }
     const versionLists: VersionListsObject = {};

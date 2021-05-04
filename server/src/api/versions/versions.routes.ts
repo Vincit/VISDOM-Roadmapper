@@ -9,9 +9,23 @@ import {
 } from './versions.controller';
 const versionsRouter = new KoaRouter<DefaultState, Context>();
 
-versionsRouter.get('/versions', requireAuth, getVersions);
-versionsRouter.post('/versions', requireAuth, postVersions);
-versionsRouter.patch('/versions/:id', requireAuth, patchVersions);
-versionsRouter.delete('/versions/:id', requireAuth, deleteVersions);
+versionsRouter.get('/roadmaps/:roadmapId/versions/', requireAuth, getVersions);
 
+versionsRouter.post(
+  '/roadmaps/:roadmapId/versions/',
+  requireAuth,
+  postVersions,
+);
+
+versionsRouter.patch(
+  '/roadmaps/:roadmapId/versions/:versionId',
+  requireAuth,
+  patchVersions,
+);
+
+versionsRouter.delete(
+  '/roadmaps/:roadmapId/versions/:versionId',
+  requireAuth,
+  deleteVersions,
+);
 export default versionsRouter;

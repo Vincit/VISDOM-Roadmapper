@@ -77,7 +77,7 @@ export const MilestonesEditor = () => {
   useEffect(() => {
     if (disableUpdates) return;
     if (roadmapsVersionsLocal === undefined) {
-      dispatch(versionsActions.getVersions());
+      dispatch(versionsActions.getVersions(currentRoadmap!.id));
     } else {
       const newVersionLists: VersionListsObject = {};
       const unversioned = new Map(tasks.map((task) => [task.id, task]));
