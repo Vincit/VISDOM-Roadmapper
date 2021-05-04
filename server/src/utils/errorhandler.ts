@@ -1,6 +1,7 @@
 import { Context } from 'koa';
 import {
   ValidationError,
+  ErrorHash,
   UniqueViolationError,
   ForeignKeyViolationError,
   NotNullViolationError,
@@ -11,17 +12,22 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
     await next();
   } catch (err) {
     if (err instanceof ValidationError) {
-      const errors = [];
-      for (let column of Object.keys(err.data)) {
-        for (let columnErr of err.data[column]) {
-          errors.push(`"${column}" ${columnErr.message}`);
-        }
-      }
+      const columns = Object.entries(err.data as ErrorHash).flatMap(
+        ([column, errors]) =>
+          errors.map(({ message }) => ({
+            column,
+            message,
+          })),
+      );
+      const message = columns
+        .map(({ column, message }) => `"${column}" ${message}`)
+        .join('\n');
 
       ctx.status = 400;
       ctx.body = {
         error: 'ValidationError',
-        message: errors.join('\n'),
+        message,
+        columns,
       };
     } else if (err instanceof UniqueViolationError) {
       const errors = err.columns.map((column) => `"${column}" must be unique.`);
@@ -30,6 +36,7 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       ctx.body = {
         error: 'UniqueViolationError',
         message: errors.join('\n'),
+        columns: err.columns,
       };
     } else if (err instanceof SyntaxError) {
       ctx.status = 400;
