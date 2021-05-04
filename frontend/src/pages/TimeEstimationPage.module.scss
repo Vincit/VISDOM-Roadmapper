@@ -8,12 +8,7 @@
 
 .formLabel {
   text-align: start;
-  font-size: 12px;
-  font-family: Anonymous Pro;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-style: normal;
-  letter-spacing: 0.2em;
+  @extend .typography-pre-title;
   color: $COLOR_AZURE;
 }
 

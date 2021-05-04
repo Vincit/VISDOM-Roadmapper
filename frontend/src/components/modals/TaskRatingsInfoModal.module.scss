@@ -64,12 +64,8 @@
 }
 
 .labelText {
-    font-family: 'Anonymous Pro';
+    @extend .typography-pre-title;
     margin-bottom: 8px;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: bold;
 }
 
 .teamRatingUsername {

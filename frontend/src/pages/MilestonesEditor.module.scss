@@ -54,9 +54,9 @@
   width: 100%;
   border-bottom: 1px solid $COLOR_BLACK10;
   padding: 13px 15px;
-  font-family: 'Work Sans';
-  font-weight: 600;
-  font-size: 14px;
+
+  @extend .typography-body-bold;
+
   text-align: left;
 }
 
@@ -75,9 +75,9 @@
   min-height: 100px;
   padding: 16px;
   scrollbar-width: thin;
-  font-family: 'Work Sans';
-  font-size: 12px;
-  letter-spacing: 0.02em;
+
+  @extend .typography-body-small;
+
   &.milestone {
     padding: 0px;
     padding-top: 7px;

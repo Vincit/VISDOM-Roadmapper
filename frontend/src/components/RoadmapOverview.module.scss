@@ -9,11 +9,11 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  font-family: Anonymous Pro;
+
+  @extend .typography-big-number;
+  line-height: unset;
+
   color: $COLOR_AZURE;
-  font-size: 56px;
-  font-weight: normal;
-  letter-spacing: 0.02em;
 
   svg {
     margin-left: 8px;
@@ -29,11 +29,9 @@
 }
 
 .dataEntryWrapper {
-  font-family: Anonymous Pro;
-  font-weight: bold;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  @extend .typography-pre-title;
+  line-height: unset;
+
   display: flex;
   flex-direction: column;
   height: 116px;

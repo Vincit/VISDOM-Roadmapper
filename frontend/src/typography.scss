@@ -1,0 +1,77 @@
+.typography-pre-title {
+  font-family: Anonymous Pro;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.typography-big-number {
+  @extend .typography-pre-title;
+  font-weight: normal;
+  font-size: 56px;
+  letter-spacing: -0.02em;
+}
+
+.typography-h1 {
+  @extend .typography-pre-title;
+  font-weight: normal;
+  font-size: 56px;
+}
+
+.typography-h2 {
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 32px;
+  letter-spacing: -0.03em;
+}
+
+.typography-h3 {
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.03em;
+}
+
+.typography-subtitle {
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
+  letter-spacing: 0.02em;
+}
+
+.typography-body {
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 150%;
+}
+
+.typography-body-bold {
+  @extend .typography-body;
+  font-weight: 600;
+}
+
+.typography-body-small {
+  @extend .typography-body;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.typography-button {
+  font-family: Work Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+}
