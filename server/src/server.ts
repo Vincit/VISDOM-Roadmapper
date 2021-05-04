@@ -61,8 +61,6 @@ const createServer = async () => {
   rootRouter.use(tasksRouter.allowedMethods());
   rootRouter.use(taskratingRouter.routes());
   rootRouter.use(taskratingRouter.allowedMethods());
-  rootRouter.use(versionsRouter.routes());
-  rootRouter.use(versionsRouter.allowedMethods());
   rootRouter.use(jiraRouter.routes());
   rootRouter.use(jiraRouter.allowedMethods());
   rootRouter.use(jiraConfigurationRouter.routes());

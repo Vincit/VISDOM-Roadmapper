@@ -2,7 +2,10 @@ import { RouteHandlerFnc } from 'src/types/customTypes';
 import Version from './versions.model';
 
 export const getVersions: RouteHandlerFnc = async (ctx, _) => {
-  const query = Version.query().orderBy('sortingRank', 'asc');
+  const query = Version.query()
+    .where({ roadmapId: Number(ctx.params.roadmapId) })
+    .orderBy('sortingRank', 'asc');
+
   if (ctx.query) {
     query.where(ctx.query);
   }
@@ -19,7 +22,7 @@ export const getVersions: RouteHandlerFnc = async (ctx, _) => {
 export const postVersions: RouteHandlerFnc = async (ctx, _) => {
   const inserted = await Version.transaction(async (trx) => {
     const maxVersion = (await Version.query(trx)
-      .where({ roadmapId: ctx.request.body.roadmapId })
+      .where({ roadmapId: Number(ctx.params.roadmapId) })
       .max('sortingRank')
       .first()) as any;
     const maxRank = maxVersion.max === null ? -1 : maxVersion.max; // Treat null as -1 so next insertion goes to 0
@@ -32,21 +35,26 @@ export const postVersions: RouteHandlerFnc = async (ctx, _) => {
       ctx.request.body.sortingRank = maxRank + 1;
     } else {
       await Version.query(trx)
-        .where({ roadmapId: ctx.request.body.roadmapId })
+        .where({ roadmapId: Number(ctx.params.roadmapId) })
         .andWhere('sortingRank', '>=', ctx.request.body.sortingRank)
         .increment('sortingRank', 1);
     }
 
-    return await Version.query().insertAndFetch(ctx.request.body);
+    return await Version.query().insertAndFetch({
+      ...ctx.request.body,
+      roadmapId: Number(ctx.params.roadmapId),
+    });
   });
   ctx.body = inserted;
 };
 
 export const deleteVersions: RouteHandlerFnc = async (ctx, _) => {
   const numDeleted = await Version.transaction(async (trx) => {
-    const delVersion = await Version.query(trx).findById(ctx.params.id);
+    const delVersion = await Version.query(trx)
+      .findById(Number(ctx.params.versionId))
+      .where({ roadmapId: Number(ctx.params.roadmapId) });
     const numDeleted = await Version.query(trx)
-      .findById(ctx.params.id)
+      .findById(Number(ctx.params.versionId))
       .delete();
     if (delVersion && numDeleted == 1) {
       await Version.query(trx)
@@ -61,7 +69,9 @@ export const deleteVersions: RouteHandlerFnc = async (ctx, _) => {
 
 export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
   const updated = await Version.transaction(async (trx) => {
-    const originalVersion = await Version.query(trx).findById(ctx.params.id);
+    const originalVersion = await Version.query(trx)
+      .findById(Number(ctx.params.versionId))
+      .where({ roadmapId: Number(ctx.params.roadmapId) });
     const roadmapId = originalVersion.roadmapId;
     const previousRank = originalVersion.sortingRank;
 
@@ -90,7 +100,7 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
     }
 
     // TODO: separate adding/deleting from updating
-    const versionId = parseInt(ctx.params.id);
+    const versionId = Number(ctx.params.versionId);
     let ok = await trx('versionTasks').where('versionId', versionId).delete();
     if (ctx.request.body.tasks?.length) {
       const tasks = ctx.request.body.tasks as number[];
@@ -101,8 +111,8 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
     delete ctx.request.body.tasks;
 
     const patched = await Version.query(trx).patchAndFetchById(
-      ctx.params.id,
-      ctx.request.body,
+      Number(ctx.params.versionId),
+      { ...ctx.request.body, roadmapId: Number(ctx.params.roadmapId) },
     );
 
     return patched || ok;
