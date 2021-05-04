@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { StarFill, Wrench, List } from 'react-bootstrap-icons';
+import ListIcon from '@material-ui/icons/List';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -10,6 +10,10 @@ import { Version } from '../redux/versions/types';
 import { totalValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import css from './RoadmapGraphPage.module.scss';
+import {
+  BusinessValueFilled,
+  RequiredWorkFilled,
+} from '../components/RatingIcons';
 
 const classes = classNames.bind(css);
 
@@ -38,14 +42,14 @@ export const RoadmapGraphPage = () => {
   return (
     <>
       <div className={classes(css.graphOuter)}>
-        <p className={classes(css.graphTitle)}>Value / Work</p>
+        <p className={classes(css.graphTitle)}>Work / Value</p>
         <div className={classes(css.graphInner)}>
           <div className={classes(css.graphItems)}>
             {roadmapsVersions?.map((ver) => {
               const numTasks = ver.tasks.length;
               const { value, work } = totalValueAndWork(ver.tasks);
               const w = Math.max(100, 60 * (work / 5));
-              const h = Math.max(90, 50 * (value / 5));
+              const h = Math.max(100, 60 * (value / 5));
               return (
                 <div
                   className={classes(css.graphItem, {
@@ -58,34 +62,46 @@ export const RoadmapGraphPage = () => {
                   role="button"
                   tabIndex={0}
                 >
-                  <p className={classes(css.versionData, css.versionTitle)}>
+                  <div className={classes(css.versionData)}>
+                    <div className={classes(css.ratingDiv)}>
+                      <BusinessValueFilled />
+                      <p>
+                        {value.toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 1,
+                        })}
+                      </p>
+                    </div>
+                    <div className={classes(css.ratingDiv)}>
+                      <RequiredWorkFilled />
+                      <p>
+                        {work.toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 1,
+                        })}
+                      </p>
+                    </div>
+                    <div className={classes(css.dash)} />
+                    <div className={classes(css.ratingDiv)}>
+                      <ListIcon />
+                      <p>{numTasks}</p>
+                    </div>
+                  </div>
+                  <p
+                    className={classes(css.versionTitle, {
+                      [css.selected]: ver.id === selectedVersion?.id,
+                    })}
+                  >
                     {ver.name}
-                  </p>
-                  <p className={classes(css.versionData)}>
-                    <StarFill />
-                    {value.toLocaleString(undefined, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 1,
-                    })}
-                  </p>
-                  <p className={classes(css.versionData)}>
-                    <Wrench />
-                    {work.toLocaleString(undefined, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 1,
-                    })}
-                  </p>
-                  <p className={classes(css.versionData)}>
-                    <List />
-                    {numTasks}
                   </p>
                 </div>
               );
             })}
           </div>
         </div>
-        <p>Total work</p>
+        <p className={classes(css.graphLabel)}>Total work</p>
       </div>
+      <p className={classes(css.graphLabel, css.vertical)}>Total value</p>
 
       <div className={classes(css.footer)}>
         <p className={classes(css.graphTitle)}>Customers stakes in milestone</p>
