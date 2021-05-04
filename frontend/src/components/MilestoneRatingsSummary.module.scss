@@ -6,10 +6,8 @@
 }
 
 .rating {
-  font-family: Anonymous Pro;
-  font-weight: bold;
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  @extend .typography-pre-title;
+
   color: $COLOR_AZURE;
   display: flex;
   flex-grow: 1;

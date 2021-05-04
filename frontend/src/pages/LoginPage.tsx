@@ -73,7 +73,9 @@ export const LoginPage = () => {
       {userInfo && <Redirect to={query.get('redirectTo') || paths.home} />}
       <div className={classes(css.formDiv)}>
         <ModalHeader>
-          <Trans i18nKey="Log in" />
+          <h2>
+            <Trans i18nKey="Log in" />
+          </h2>
         </ModalHeader>
         <ModalContent>
           <form onSubmit={handleSubmit}>

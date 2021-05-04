@@ -7,10 +7,9 @@
 .taskRating {
   display: flex;
   align-items: center;
-  font-family: 'Anonymous Pro';
-  font-weight: bold;
-  font-size: 12px;
-  letter-spacing: 0.2em;
+
+  @extend .typography-pre-title;
+
   svg {
     height: 10.5px;
     width: 10.5px;
