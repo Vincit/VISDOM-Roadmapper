@@ -125,23 +125,29 @@ const getPublicUsers = async () => {
   return response.data as PublicUser[];
 };
 
-const getVersions = async () => {
-  const response = await axios.get('/versions');
+const getVersions = async (roadmapId: number) => {
+  const response = await axios.get(`/roadmaps/${roadmapId}/versions`);
   return response.data as Version[];
 };
 
 const addVersion = async (version: VersionRequest) => {
-  const response = await axios.post('/versions', version);
+  const response = await axios.post(
+    `/roadmaps/${version.roadmapId}/versions`,
+    version,
+  );
   return response.data as Version;
 };
 
 const deleteVersion = async (version: VersionRequest) => {
-  await axios.delete(`/versions/${version.id}`);
+  await axios.delete(`/roadmaps/${version.roadmapId}/versions/${version.id}`);
   return version;
 };
 
 const patchVersion = async (version: VersionRequest) => {
-  const response = await axios.patch(`/versions/${version.id}`, version);
+  const response = await axios.patch(
+    `/roadmaps/${version.roadmapId}/versions/${version.id}`,
+    version,
+  );
   return response.data as Version;
 };
 
