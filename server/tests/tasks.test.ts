@@ -5,10 +5,11 @@ import { app, loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
-describe('Test /tasks/ api', function () {
-  describe('GET /tasks/', function () {
+describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
+  describe('GET /roadmaps/:roadmapId/tasks/', function () {
     it('Should get all tasks', async function () {
-      const res = await loggedInAgent.get('/tasks/');
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/tasks/`);
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
       expect(res.body[0]).to.have.property('id');
@@ -21,18 +22,24 @@ describe('Test /tasks/ api', function () {
     });
   });
 
-  describe('POST /tasks/', function () {
+  describe('POST /roadmaps/:roadmapId/tasks/', function () {
     it('Should add new task', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstUserId = (await User.query().first()).id;
-      const before = await loggedInAgent.get('/tasks/');
-      const res = await loggedInAgent.post('/tasks/').type('json').send({
-        name: 'testtask',
-        description: 'testdesc',
-        createdByUser: firstUserId,
-        roadmapId: firstRoadmapId,
-      });
-      const after = await loggedInAgent.get('/tasks/');
+      const before = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/`,
+      );
+      const res = await loggedInAgent
+        .post(`/roadmaps/${firstRoadmapId}/tasks/`)
+        .type('json')
+        .send({
+          name: 'testtask',
+          description: 'testdesc',
+          createdByUser: firstUserId,
+        });
+      const after = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/`,
+      );
       expect(res.status).to.equal(200);
       expect(before.body.length + 1).to.equal(after.body.length);
       const added = after.body.find((task: any) => task.name == 'testtask');
@@ -43,41 +50,52 @@ describe('Test /tasks/ api', function () {
     });
   });
 
-  describe('DELETE /tasks/', function () {
+  describe('DELETE /roadmaps/:roadmapId/tasks/:taskId', function () {
     it('Should delete task', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
-      const before = await loggedInAgent.get('/tasks/');
-      const res = await loggedInAgent.delete('/tasks/' + firstTaskId);
-      const after = await loggedInAgent.get('/tasks/');
+      const before = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/`,
+      );
+      const res = await loggedInAgent.delete(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}`,
+      );
+      const after = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/`,
+      );
       expect(res.status).to.equal(200);
       expect(before.body.length - 1).to.equal(after.body.length);
     });
   });
 
-  describe('PATCH /tasks/', function () {
+  describe('PATCH /roadmaps/:roadmapId/tasks/:taskId', function () {
     it('Should patch task', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
       const res = await loggedInAgent
-        .patch('/tasks/' + firstTaskId)
+        .patch(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}`)
         .type('json')
         .send({
           name: 'patched',
           description: 'patched',
         });
       expect(res.status).to.equal(200);
-      const after = await loggedInAgent.get('/tasks/');
+      const after = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/`,
+      );
       const patched = after.body.find((task: any) => task.name == 'patched');
       expect(patched).to.exist;
       expect(patched.description).to.equal('patched');
     });
   });
 
-  describe('POST /tasks/:id/ratings', function () {
+  describe('POST /roadmaps/:roadmapId/tasks/:taskId/ratings', function () {
     it('Should add rating to task', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
       const secondUserId = (await User.query())[1].id;
       const res = await loggedInAgent
-        .post('/tasks/' + firstTaskId + '/ratings')
+        .post(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/ratings`)
         .type('json')
         .send({
           dimension: 0,

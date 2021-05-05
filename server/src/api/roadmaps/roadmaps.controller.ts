@@ -53,25 +53,3 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
-
-export const postRoadmapsTasks: RouteHandlerFnc = async (ctx, _) => {
-  const child = await Roadmap.relatedQuery('tasks')
-    .for(ctx.params.roadmapId)
-    .insertAndFetch(ctx.request.body);
-
-  ctx.body = child;
-};
-
-export const getRoadmapsTasks: RouteHandlerFnc = async (ctx, _) => {
-  if (ctx.query.eager) {
-    const eagerResult = await Roadmap.relatedQuery('tasks')
-      .for(ctx.params.roadmapId)
-      .withGraphFetched('ratings');
-    ctx.body = eagerResult;
-  } else {
-    const tasks = await Roadmap.relatedQuery('tasks')
-      .for(ctx.params.roadmapId)
-      .select('tasks.id');
-    ctx.body = tasks;
-  }
-};

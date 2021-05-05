@@ -57,19 +57,25 @@ const addTask = async (task: TaskRequest) => {
   return response.data as Task;
 };
 
-const patchTask = async (task: TaskRequest) => {
-  const response = await axios.patch(`/tasks/${task.id}`, task);
+const patchTask = async (task: TaskRequest, roadmapId: number) => {
+  const response = await axios.patch(
+    `/roadmaps/${roadmapId}/tasks/${task.id}`,
+    task,
+  );
   return response.data as Task;
 };
 
 const deleteTask = async (task: TaskRequest) => {
-  await axios.delete(`/tasks/${task.id}`);
+  await axios.delete(`/roadmaps/${task.roadmapId}/tasks/${task.id}`);
   return task;
 };
 
-const addTaskrating = async (taskrating: TaskratingRequest) => {
+const addTaskrating = async (
+  taskrating: TaskratingRequest,
+  roadmapId: number,
+) => {
   const response = await axios.post(
-    `/tasks/${taskrating.parentTask}/ratings`,
+    `/roadmaps/${roadmapId}/tasks/${taskrating.parentTask}/ratings`,
     taskrating,
   );
   return response.data as Taskrating;
