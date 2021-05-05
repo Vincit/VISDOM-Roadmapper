@@ -12,7 +12,6 @@ import jiraRouter from './api/jira/jira.routes';
 import jiraConfigurationRouter from './api/jiraconfigurations/jiraconfigurations.routes';
 import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import taskratingRouter from './api/taskratings/taskratings.routes';
-import tasksRouter from './api/tasks/tasks.routes';
 import userRouter from './api/users/users.routes';
 import versionsRouter from './api/versions/versions.routes';
 import { setupAuth } from './utils/auth';
@@ -57,8 +56,6 @@ const createServer = async () => {
   rootRouter.use(userRouter.allowedMethods());
   rootRouter.use(roadmapRouter.routes());
   rootRouter.use(roadmapRouter.allowedMethods());
-  rootRouter.use(tasksRouter.routes());
-  rootRouter.use(tasksRouter.allowedMethods());
   rootRouter.use(taskratingRouter.routes());
   rootRouter.use(taskratingRouter.allowedMethods());
   rootRouter.use(jiraRouter.routes());

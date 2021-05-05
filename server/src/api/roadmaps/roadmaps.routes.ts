@@ -7,13 +7,12 @@ import {
   postRoadmaps,
   patchRoadmaps,
   deleteRoadmaps,
-  postRoadmapsTasks,
-  getRoadmapsTasks,
   getRoadmapsUsers,
   inviteRoadmapUser,
 } from './roadmaps.controller';
 import { DefaultState, Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
+import tasksRouter from '../tasks/tasks.routes';
 const roadmapRouter = new KoaRouter<DefaultState, Context>();
 
 roadmapRouter.use(requireAuth);
@@ -36,16 +35,6 @@ roadmapRouter.get(
   requirePermission(Permission.RoadmapReadUsers),
   getRoadmapsUsers,
 );
-roadmapRouter.get(
-  '/roadmaps/:roadmapId/tasks',
-  requirePermission(Permission.Any),
-  getRoadmapsTasks,
-);
-roadmapRouter.post(
-  '/roadmaps/:roadmapId/tasks',
-  requirePermission(Permission.TaskCreate),
-  postRoadmapsTasks,
-);
 roadmapRouter.post(
   '/roadmaps/:roadmapId/inviteUser',
   requirePermission(Permission.RoadmapInviteUser),
@@ -58,5 +47,8 @@ roadmapRouter.use(
   requireRole,
   versionsRouter.allowedMethods(),
 );
+
+roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.routes());
+roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.allowedMethods());
 
 export default roadmapRouter;

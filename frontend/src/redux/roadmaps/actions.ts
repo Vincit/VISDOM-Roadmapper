@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { api } from '../../api/api';
+import { chosenRoadmapIdSelector } from './selectors';
+import { RootState } from '../types';
 import {
   ImportBoardRequest,
   PublicUser,
@@ -81,7 +83,10 @@ export const patchTask = createAsyncThunk<
   { rejectValue: AxiosError }
 >('roadmaps/patchTask', async (task: TaskRequest, thunkAPI) => {
   try {
-    return await api.patchTask(task);
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.patchTask(task, currentroadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -105,7 +110,10 @@ export const addTaskrating = createAsyncThunk<
   { rejectValue: AxiosError }
 >('roadmaps/addTaskrating', async (taskrating: TaskratingRequest, thunkAPI) => {
   try {
-    return await api.addTaskrating(taskrating);
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.addTaskrating(taskrating, currentroadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
