@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   addOrPatchTaskrating,
-  addRelatedtask,
   addRoadmap,
   addTask,
   addTaskrating,
@@ -18,7 +17,6 @@ import {
   patchJiraConfiguration,
 } from './actions';
 import {
-  ADD_RELATED_TASK_FULFILLED,
   ADD_ROADMAP_FULFILLED,
   ADD_TASKRATING_FULFILLED,
   ADD_TASK_FULFILLED,
@@ -58,7 +56,6 @@ export const roadmapsSlice = createSlice({
     builder.addCase(deleteTask.fulfilled, DELETE_TASK_FULFILLED);
     builder.addCase(addTaskrating.fulfilled, ADD_TASKRATING_FULFILLED);
     builder.addCase(deleteTaskrating.fulfilled, DELETE_TASKRATING_FULFILLED);
-    builder.addCase(addRelatedtask.fulfilled, ADD_RELATED_TASK_FULFILLED);
     builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
     builder.addCase(getPublicUsers.fulfilled, GET_PUBLIC_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
@@ -77,7 +74,6 @@ export const roadmapsSlice = createSlice({
 
 export const roadmapsActions = {
   ...roadmapsSlice.actions,
-  addRelatedtask,
   deleteTaskrating,
   addTaskrating,
   deleteTask,

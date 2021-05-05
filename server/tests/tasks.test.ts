@@ -96,26 +96,4 @@ describe('Test /tasks/ api', function () {
       expect(added.value).to.equal(5);
     });
   });
-
-  describe('POST & GET /tasks/:id/relatedTasks', function () {
-    it('Should add related task', async function () {
-      const firstTaskId = (await Task.query().first()).id;
-      const secondTaskId = (await Task.query())[1].id;
-      const before = await loggedInAgent.get(
-        '/tasks/' + firstTaskId + '/relatedTasks',
-      );
-      const res = await loggedInAgent
-        .post('/tasks/' + firstTaskId + '/relatedTasks')
-        .type('json')
-        .send({
-          id: secondTaskId,
-        });
-      expect(res.status).to.equal(200);
-      const after = await loggedInAgent.get(
-        '/tasks/' + firstTaskId + '/relatedTasks',
-      );
-      expect(after.body[0].id).to.equal(secondTaskId);
-      expect(before.body.length + 1).to.equal(after.body.length);
-    });
-  });
 });

@@ -37,7 +37,6 @@ export interface Task {
   createdAt: string;
   completed: boolean;
   ratings: Taskrating[];
-  relatedTasks: number[];
   createdByUser: number;
 }
 
@@ -48,7 +47,6 @@ export interface TaskRequest {
   completed?: boolean;
   roadmapId?: number;
   createdByUser?: number;
-  relatedTasks?: TaskRequest[];
 }
 
 export enum TaskRatingDimension {
@@ -72,16 +70,6 @@ export interface TaskratingRequest {
   comment?: string;
   createdByUser?: number;
   parentTask?: number;
-}
-
-export interface RelatedTaskRequest {
-  fromTask: number;
-  toTask: number;
-}
-
-export interface RelatedTaskResponsePayload {
-  newRelatedTasks: number[];
-  parentTaskId: number;
 }
 
 export interface PublicUserRequest {

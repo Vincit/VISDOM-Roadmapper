@@ -3,7 +3,6 @@ import {
   PlannerUserWeight,
   JiraConfiguration,
   PublicUser,
-  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   RoadmapsState,
@@ -139,24 +138,6 @@ export const DELETE_TASKRATING_FULFILLED = (
     parentTask.ratings = parentTask.ratings.filter(
       (rating) => rating.id !== action.payload.id,
     );
-  }
-};
-
-export const ADD_RELATED_TASK_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<RelatedTaskResponsePayload>,
-) => {
-  let parentTask: Task | undefined;
-  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  state.roadmaps.forEach((roadmap) => {
-    if (parentTask !== undefined) return;
-    parentTask = roadmap.tasks.find(
-      (task) => task.id === action.payload.parentTaskId,
-    );
-  });
-
-  if (parentTask) {
-    parentTask.relatedTasks = action.payload.newRelatedTasks;
   }
 };
 

@@ -13,7 +13,6 @@ export default class Task extends Model {
 
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
-  relatedTasks?: Task[];
   createdBy?: User;
 
   static tableName = 'tasks';
@@ -64,18 +63,6 @@ export default class Task extends Model {
         join: {
           from: 'tasks.id',
           to: 'taskratings.parentTask',
-        },
-      },
-      relatedTasks: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Task,
-        join: {
-          from: 'tasks.id',
-          through: {
-            from: 'taskjointable.taskId',
-            to: 'taskjointable.taskIdRelated',
-          },
-          to: 'tasks.id',
         },
       },
       createdBy: {
