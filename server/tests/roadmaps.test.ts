@@ -33,7 +33,6 @@ describe('Test /roadmaps/ api', function () {
       expect(res.body[0].tasks[0]).to.have.property('roadmapId');
       expect(res.body[0].tasks[0]).to.have.property('createdByUser');
       expect(res.body[0].tasks[0]).to.have.property('ratings');
-      expect(res.body[0].tasks[0]).to.have.property('relatedTasks');
     });
   });
 
@@ -99,7 +98,6 @@ describe('Test /roadmaps/ api', function () {
       expect(res.body[0]).to.have.property('roadmapId');
       expect(res.body[0]).to.have.property('createdByUser');
       expect(res.body[0]).to.have.property('ratings');
-      expect(res.body[0]).to.have.property('relatedTasks');
     });
   });
   describe('POST /roadmaps/:id/tasks', function () {

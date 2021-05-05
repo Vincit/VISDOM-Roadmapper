@@ -9,8 +9,6 @@ import {
   JiraConfiguration,
   PublicUser,
   PublicUserRequest,
-  RelatedTaskRequest,
-  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -56,7 +54,6 @@ const deleteRoadmap = async (roadmap: RoadmapRequest) => {
 const addTask = async (task: TaskRequest) => {
   const response = await axios.post(`/roadmaps/${task.roadmapId}/tasks`, task);
   if (!response.data.ratings) response.data.ratings = [];
-  if (!response.data.relatedTasks) response.data.relatedTasks = [];
   return response.data as Task;
 };
 
@@ -91,18 +88,6 @@ const patchTaskrating = async (taskrating: TaskratingRequest) => {
   );
 
   return response.data as Taskrating;
-};
-
-const addRelatedTask = async (relatedTaskRequest: RelatedTaskRequest) => {
-  const response = await axios.post(
-    `/tasks/${relatedTaskRequest.fromTask}/relatedtasks`,
-    { id: relatedTaskRequest.toTask },
-  );
-
-  return {
-    parentTaskId: relatedTaskRequest.fromTask,
-    newRelatedTasks: response.data,
-  } as RelatedTaskResponsePayload;
 };
 
 const login = async (loginRequest: UserLoginRequest) => {
@@ -220,7 +205,6 @@ export const api = {
   deleteTask,
   addTaskrating,
   deleteTaskrating,
-  addRelatedTask,
   login,
   logout,
   getCurrentUserInfo,

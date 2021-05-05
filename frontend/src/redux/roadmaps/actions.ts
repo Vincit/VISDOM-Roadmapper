@@ -5,8 +5,6 @@ import {
   ImportBoardRequest,
   PublicUser,
   PublicUserRequest,
-  RelatedTaskRequest,
-  RelatedTaskResponsePayload,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -163,21 +161,6 @@ export const addOrPatchTaskrating = createAsyncThunk<
       return thunkAPI.rejectWithValue(res.payload!);
     }
     return res.payload;
-  },
-);
-
-export const addRelatedtask = createAsyncThunk<
-  RelatedTaskResponsePayload,
-  RelatedTaskRequest,
-  { rejectValue: AxiosError }
->(
-  'roadmaps/addRelatedTask',
-  async (relatedTaskRequest: RelatedTaskRequest, thunkAPI) => {
-    try {
-      return await api.addRelatedTask(relatedTaskRequest);
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err);
-    }
   },
 );
 

@@ -4,7 +4,7 @@ import Roadmap from './roadmaps.model';
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
     const eagerResult = await Roadmap.query().withGraphFetched(
-      '[tasks.[ratings, relatedTasks(selectTaskId)], jiraconfiguration]',
+      '[tasks.ratings, jiraconfiguration]',
     );
     ctx.body = eagerResult;
   } else {
@@ -55,7 +55,7 @@ export const getRoadmapsTasks: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
     const eagerResult = await Roadmap.relatedQuery('tasks')
       .for(ctx.params.id)
-      .withGraphFetched('[ratings, relatedTasks(selectTaskId)]');
+      .withGraphFetched('ratings');
     ctx.body = eagerResult;
   } else {
     const tasks = await Roadmap.relatedQuery('tasks')
