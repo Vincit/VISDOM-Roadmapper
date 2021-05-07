@@ -3,6 +3,7 @@ import objectionPassword from 'objection-password';
 import { UserType } from 'src/types/customTypes';
 import Token from '../tokens/tokens.model';
 import { Role } from '../roles/roles.model';
+import Roadmap from '../roadmaps/roadmaps.model';
 
 const Password = objectionPassword();
 export default class User extends Password(Model) {
@@ -72,6 +73,18 @@ export default class User extends Password(Model) {
         join: {
           from: 'users.id',
           to: 'roles.userId',
+        },
+      },
+      roadmaps: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Roadmap,
+        join: {
+          from: 'users.id',
+          through: {
+            from: 'roles.userId',
+            to: 'roles.roadmapId',
+          },
+          to: 'roadmaps.id',
         },
       },
     };
