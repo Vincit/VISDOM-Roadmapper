@@ -1,6 +1,7 @@
-import { RouteHandlerFnc } from '../../types/customTypes';
+import { RouteHandlerFnc, RoleType } from '../../types/customTypes';
 import Roadmap from './roadmaps.model';
 import User from '../users/users.model';
+import { Role } from '../roles/roles.model';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   const query = User.relatedQuery('roadmaps').for(ctx.state.user.id);
@@ -21,7 +22,15 @@ export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
-  ctx.body = await Roadmap.query().insertAndFetch(ctx.request.body);
+  ctx.body = await Roadmap.transaction(async (trx) => {
+    const roadmap = await Roadmap.query(trx).insertAndFetch(ctx.request.body);
+    await Role.query(trx).insert({
+      userId: ctx.state.user.id,
+      roadmapId: roadmap.id,
+      type: RoleType.Admin,
+    });
+    return roadmap;
+  });
 };
 
 export const patchRoadmaps: RouteHandlerFnc = async (ctx, _) => {
