@@ -1,16 +1,16 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Roadmap from './roadmaps.model';
+import User from '../users/users.model';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+  const query = User.relatedQuery('roadmaps').for(ctx.state.user.id);
   if (ctx.query.eager) {
-    const eagerResult = await Roadmap.query().withGraphFetched(
+    const eagerResult = await query.withGraphFetched(
       '[tasks.ratings, jiraconfiguration]',
     );
     ctx.body = eagerResult;
   } else {
-    const eagerResult = await Roadmap.query().withGraphFetched(
-      '[tasks(selectTaskId)]',
-    );
+    const eagerResult = await query.withGraphFetched('[tasks(selectTaskId)]');
     ctx.body = eagerResult;
   }
 };
