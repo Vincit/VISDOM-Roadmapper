@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import ListIcon from '@material-ui/icons/List';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
@@ -22,10 +20,6 @@ export const RoadmapGraphPage = () => {
     roadmapsVersionsSelector,
     shallowEqual,
   );
-  const roadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
   const [selectedVersion, setSelectedVersion] = useState<undefined | Version>(
     undefined,
   );
@@ -42,7 +36,7 @@ export const RoadmapGraphPage = () => {
   return (
     <>
       <div className={classes(css.graphOuter)}>
-        <p className={classes(css.graphTitle)}>Work / Value</p>
+        <h2 className={classes(css.graphTitle)}>Work / Value</h2>
         <div className={classes(css.graphInner)}>
           <div className={classes(css.graphItems)}>
             {roadmapsVersions?.map((ver) => {
@@ -104,7 +98,9 @@ export const RoadmapGraphPage = () => {
       <p className={classes(css.graphLabel, css.vertical)}>Total value</p>
 
       <div className={classes(css.footer)}>
-        <p className={classes(css.graphTitle)}>Customers stakes in milestone</p>
+        <h2 className={classes(css.graphTitle)}>
+          Customers stakes in milestone
+        </h2>
         {selectedVersion && (
           <TaskValueCreatedVisualization version={selectedVersion} />
         )}

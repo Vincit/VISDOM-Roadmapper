@@ -13,16 +13,13 @@
 }
 
 .navbarButton {
-  font-size: 18px;
   padding: 14px 32px;
   border-bottom: 1px solid $COLOR_BLACK40;
   justify-content: center;
   color: $COLOR_BLACK100;
   text-align: center;
   text-decoration: none;
-  font-family: 'Work Sans';
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  @extend .typography-body-small;
   text-transform: uppercase;
   user-select: none;
   background-color: inherit;

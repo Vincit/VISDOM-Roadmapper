@@ -12,18 +12,11 @@
 
 .graphTitle {
   text-align: start;
-  font-family: Work Sans;
-  font-weight: 600;
-  font-size: 30px;
-  letter-spacing: -0.03em;
+  line-height: 150%;
 }
 
 .graphLabel {
-  font-family: Anonymous Pro;
-  font-weight: bold;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  @extend .typography-pre-title;
   color: $COLOR_BLACK40;
   &.vertical {
     width: 100px;
@@ -91,10 +84,8 @@
   display: flex;
   align-items: center;
   margin-bottom: 4px;
-  font-family: Anonymous Pro;
-  font-weight: bold;
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  @extend .typography-pre-title;
+  line-height: unset;
   color: $COLOR_BLACK60;
   svg {
     color: $COLOR_BLACK100;
@@ -116,8 +107,7 @@
   margin: 0;
   margin-top: auto;
   text-align: start;
-  font-family: Work Sans;
-  font-size: 14px;
+  @extend .typography-body;
   color: $COLOR_BLACK100;
   text-overflow: ellipsis;
   overflow: hidden;
