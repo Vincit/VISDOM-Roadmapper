@@ -1,5 +1,5 @@
 import { requireAuth } from './../../utils/requireAuth';
-import { requirePermission } from './../../utils/checkPermissions';
+import { requirePermission, requireRole } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import KoaRouter from '@koa/router';
 import {
@@ -46,7 +46,11 @@ roadmapRouter.post(
   postRoadmapsTasks,
 );
 
-roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.allowedMethods());
+roadmapRouter.use('/roadmaps/:roadmapId', requireRole, versionsRouter.routes());
+roadmapRouter.use(
+  '/roadmaps/:roadmapId',
+  requireRole,
+  versionsRouter.allowedMethods(),
+);
 
 export default roadmapRouter;
