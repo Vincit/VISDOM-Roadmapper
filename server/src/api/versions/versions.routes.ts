@@ -1,6 +1,8 @@
 import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import { Context, DefaultState } from 'koa';
+import { requirePermission } from './../../utils/checkPermissions';
+import { Permission } from '../../types/customTypes';
 import {
   deleteVersions,
   getVersions,
@@ -9,11 +11,25 @@ import {
 } from './versions.controller';
 const versionsRouter = new KoaRouter<DefaultState, Context>();
 
-versionsRouter.get('/versions/', requireAuth, getVersions);
+versionsRouter.use(requireAuth);
 
-versionsRouter.post('/versions/', requireAuth, postVersions);
+versionsRouter.get('/versions/', getVersions);
 
-versionsRouter.patch('/versions/:versionId', requireAuth, patchVersions);
+versionsRouter.post(
+  '/versions/',
+  requirePermission(Permission.VersionCreate | Permission.RoadmapEdit),
+  postVersions,
+);
 
-versionsRouter.delete('/versions/:versionId', requireAuth, deleteVersions);
+versionsRouter.patch(
+  '/versions/:versionId',
+  requirePermission(Permission.VersionEdit),
+  patchVersions,
+);
+
+versionsRouter.delete(
+  '/versions/:versionId',
+  requirePermission(Permission.VersionDelete | Permission.RoadmapEdit),
+  deleteVersions,
+);
 export default versionsRouter;
