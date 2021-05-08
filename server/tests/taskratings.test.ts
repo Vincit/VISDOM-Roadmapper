@@ -2,14 +2,19 @@ import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 import { app, loggedInAgent } from './setuptests';
+import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
 import TaskRating from '../src/api/taskratings/taskratings.model';
 
-describe('Test /taskratings/ api', function () {
-  describe('GET /taskratings/', function () {
+describe('Test /roadmap/:roadmapId/taskratings/ api', function () {
+  describe('GET /roadmap/:roadmapId/taskratings/', function () {
     it('Should get all taskratings', async function () {
-      const res = await loggedInAgent.get('/taskratings/');
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const firstTaskId = (await Task.query().first()).id;
+      const res = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`,
+      );
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
       expect(res.body[0]).to.have.property('dimension');
@@ -18,39 +23,58 @@ describe('Test /taskratings/ api', function () {
       expect(res.body[0]).to.have.property('parentTask');
     });
   });
-  describe('POST /taskratings/', function () {
+  describe('POST /roadmap/:roadmapId/taskratings/', function () {
     it('Should add new taskrating', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
       const firstUserId = (await User.query().first()).id;
-      const before = await loggedInAgent.get('/taskratings/');
-      const res = await loggedInAgent.post('/taskratings/').type('json').send({
-        dimension: 1,
-        value: 5,
-        parentTask: firstTaskId,
-        createdByUser: firstUserId,
-      });
+      const before = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`,
+      );
+      const res = await loggedInAgent
+        .post(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`)
+        .type('json')
+        .send({
+          dimension: 1,
+          value: 5,
+          createdByUser: firstUserId,
+        });
       expect(res.status).to.equal(200);
-      const after = await loggedInAgent.get('/taskratings/');
+      const after = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`,
+      );
       expect(before.body.length + 1).to.equal(after.body.length);
     });
   });
 
-  describe('DELETE /taskratings/', function () {
+  describe('DELETE /roadmap/:roadmapId/taskratings/:taskId', function () {
     it('Should delete taskrating', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const firstTaskId = (await Task.query().first()).id;
       const firstRatingId = (await TaskRating.query().first()).id;
-      const before = await loggedInAgent.get('/taskratings/');
-      const res = await loggedInAgent.delete('/taskratings/' + firstRatingId);
+      const before = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`,
+      );
+      const res = await loggedInAgent.delete(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings/${firstRatingId}`,
+      );
       expect(res.status).to.equal(200);
-      const after = await loggedInAgent.get('/taskratings/');
+      const after = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`,
+      );
       expect(before.body.length - 1).to.equal(after.body.length);
     });
   });
 
-  describe('PATCH /taskratings/', function () {
+  describe('PATCH /roadmap/:roadmapId/taskratings/:taskId', function () {
     it('Should patch taskrating', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const firstTaskId = (await Task.query().first()).id;
       const firstRatingId = (await TaskRating.query().first()).id;
       const res = await loggedInAgent
-        .patch('/taskratings/' + firstRatingId)
+        .patch(
+          `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings/${firstRatingId}`,
+        )
         .type('json')
         .send({
           dimension: 1,

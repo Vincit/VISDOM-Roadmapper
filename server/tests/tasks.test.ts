@@ -88,30 +88,4 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(patched.description).to.equal('patched');
     });
   });
-
-  describe('POST /roadmaps/:roadmapId/tasks/:taskId/ratings', function () {
-    it('Should add rating to task', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstTaskId = (await Task.query().first()).id;
-      const secondUserId = (await User.query())[1].id;
-      const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/ratings`)
-        .type('json')
-        .send({
-          dimension: 0,
-          value: 5,
-          createdByUser: secondUserId,
-        });
-      expect(res.status).to.equal(200);
-      const after = await loggedInAgent.get('/taskratings/');
-      const added = after.body.find(
-        (rating: any) =>
-          rating.parentTask === firstTaskId &&
-          rating.createdByUser === secondUserId,
-      );
-      expect(added).to.exist;
-      expect(added.dimension).to.equal(0);
-      expect(added.value).to.equal(5);
-    });
-  });
 });

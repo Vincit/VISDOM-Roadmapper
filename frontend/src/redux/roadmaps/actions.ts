@@ -127,7 +127,10 @@ export const deleteTaskrating = createAsyncThunk<
   'roadmaps/deleteTaskrating',
   async (taskrating: TaskratingRequest, thunkAPI) => {
     try {
-      return await api.deleteTaskrating(taskrating);
+      const currentroadmapId = chosenRoadmapIdSelector(
+        thunkAPI.getState() as RootState,
+      )!;
+      return await api.deleteTaskrating(taskrating, currentroadmapId);
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
@@ -142,7 +145,10 @@ export const patchTaskrating = createAsyncThunk<
   'roadmaps/patchTaskrating',
   async (taskrating: TaskratingRequest, thunkAPI) => {
     try {
-      return await api.patchTaskrating(taskrating);
+      const currentroadmapId = chosenRoadmapIdSelector(
+        thunkAPI.getState() as RootState,
+      )!;
+      return await api.patchTaskrating(taskrating, currentroadmapId);
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
