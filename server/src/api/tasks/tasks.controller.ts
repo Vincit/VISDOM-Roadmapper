@@ -55,11 +55,3 @@ export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
     ctx.body = updated;
   }
 };
-
-export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
-  const child = await Task.relatedQuery('ratings')
-    .for(Number(ctx.params.taskId))
-    .where({ roadmapId: Number(ctx.params.roadmapId) })
-    .insertAndFetch(ctx.request.body);
-  ctx.body = child;
-};

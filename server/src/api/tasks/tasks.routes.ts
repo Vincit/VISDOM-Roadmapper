@@ -5,11 +5,11 @@ import {
   deleteTasks,
   patchTasks,
   postTasks,
-  postTasksRatings,
 } from './tasks.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import { DefaultState, Context } from 'koa';
+import taskratingRouter from '../taskratings/taskratings.routes';
 const tasksRouter = new KoaRouter<DefaultState, Context>();
 
 tasksRouter.get(
@@ -25,6 +25,7 @@ tasksRouter.post(
 tasksRouter.delete('/tasks/:taskId', requireAuth, deleteTasks);
 tasksRouter.patch('/tasks/:taskId', requireAuth, patchTasks);
 
-tasksRouter.post('/tasks/:taskId/ratings', requireAuth, postTasksRatings);
+tasksRouter.use('/tasks/:taskId', taskratingRouter.routes());
+tasksRouter.use('/tasks/:taskId', taskratingRouter.allowedMethods());
 
 export default tasksRouter;
