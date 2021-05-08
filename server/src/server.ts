@@ -13,7 +13,6 @@ import jiraConfigurationRouter from './api/jiraconfigurations/jiraconfigurations
 import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import taskratingRouter from './api/taskratings/taskratings.routes';
 import userRouter from './api/users/users.routes';
-import versionsRouter from './api/versions/versions.routes';
 import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
 
