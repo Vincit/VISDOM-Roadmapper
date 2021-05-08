@@ -14,12 +14,12 @@ jiraConfigurationRouter.post(
   postJiraConfigurations,
 );
 jiraConfigurationRouter.patch(
-  '/jiraconfigurations/:id',
+  '/jiraconfigurations/:jiraId',
   requireAuth,
   patchJiraConfigurations,
 );
 jiraConfigurationRouter.delete(
-  '/jiraconfigurations/:id',
+  '/jiraconfigurations/:jiraId',
   requireAuth,
   deleteJiraConfigurations,
 );

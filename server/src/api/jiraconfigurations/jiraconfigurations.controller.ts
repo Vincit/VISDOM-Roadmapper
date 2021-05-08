@@ -2,13 +2,16 @@ import { RouteHandlerFnc } from '../../types/customTypes';
 import JiraConfiguration from './jiraconfigurations.model';
 
 export const postJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
-  ctx.body = await JiraConfiguration.query().insertAndFetch(ctx.request.body);
+  ctx.body = await JiraConfiguration.query().insertAndFetch({
+    ...ctx.request.body,
+    roadmapId: Number(ctx.params.roadmapId),
+  });
 };
 
 export const patchJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
   const updated = await JiraConfiguration.query().patchAndFetchById(
-    ctx.params.id,
-    ctx.request.body,
+    Number(ctx.params.jiraId),
+    { ...ctx.request.body, roadmapId: Number(ctx.params.roadmapId) },
   );
 
   if (!updated) {
@@ -20,7 +23,8 @@ export const patchJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
 
 export const deleteJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
   const numDeleted = await JiraConfiguration.query()
-    .findById(ctx.params.id)
+    .findById(Number(ctx.params.jiraId))
+    .where({ roadmapId: Number(ctx.params.roadmapId) })
     .delete();
 
   ctx.status = numDeleted == 1 ? 200 : 404;

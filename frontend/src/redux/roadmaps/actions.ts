@@ -214,7 +214,13 @@ export const addJiraConfiguration = createAsyncThunk<
   'jiraconfigurations/addJiraconfiguration',
   async (jiraconfiguration: JiraConfigurationRequest, thunkAPI) => {
     try {
-      return await api.addJiraconfiguration(jiraconfiguration);
+      const currentroadmapId = chosenRoadmapIdSelector(
+        thunkAPI.getState() as RootState,
+      )!;
+      return await api.addJiraconfiguration(
+        jiraconfiguration,
+        currentroadmapId,
+      );
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
@@ -229,7 +235,13 @@ export const patchJiraConfiguration = createAsyncThunk<
   'jiraconfigurations/patchJiraconfiguration',
   async (jiraconfiguration: JiraConfigurationRequest, thunkAPI) => {
     try {
-      return await api.patchJiraconfiguration(jiraconfiguration);
+      const currentroadmapId = chosenRoadmapIdSelector(
+        thunkAPI.getState() as RootState,
+      )!;
+      return await api.patchJiraconfiguration(
+        jiraconfiguration,
+        currentroadmapId,
+      );
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }

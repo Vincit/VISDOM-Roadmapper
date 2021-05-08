@@ -197,16 +197,21 @@ const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
 
 const addJiraconfiguration = async (
   jiraconfiguration: JiraConfigurationRequest,
+  roadmapId: number,
 ) => {
-  const response = await axios.post('/jiraconfigurations', jiraconfiguration);
+  const response = await axios.post(
+    `roadmap/${roadmapId}/jiraconfigurations`,
+    jiraconfiguration,
+  );
   return response.data as JiraConfiguration;
 };
 
 const patchJiraconfiguration = async (
   jiraconfiguration: JiraConfigurationRequest,
+  roadmapId: number,
 ) => {
   const response = await axios.patch(
-    `/jiraconfigurations/${jiraconfiguration.id}`,
+    `roadmap/${roadmapId}/jiraconfigurations/${jiraconfiguration.id}`,
     jiraconfiguration,
   );
   return response.data as JiraConfiguration;
