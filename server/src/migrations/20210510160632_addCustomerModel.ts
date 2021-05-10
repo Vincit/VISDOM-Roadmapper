@@ -4,6 +4,11 @@ export async function up(knex: Knex): Promise<any> {
   return knex.schema
     .createTable('customer', (table) => {
       table.increments('id').primary();
+      table
+        .integer('roadmapId')
+        .references('id')
+        .inTable('roadmaps')
+        .onDelete('CASCADE');
       table.string('name', 75).notNullable();
       table.string('color', 7).nullable();
       table.integer('value').unsigned().defaultTo(0);

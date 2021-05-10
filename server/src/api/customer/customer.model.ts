@@ -3,6 +3,7 @@ import User from '../users/users.model';
 
 export default class Customer extends Model {
   id!: number;
+  roadmapId!: number;
   name!: string;
   value!: number;
   color!: string | null;
