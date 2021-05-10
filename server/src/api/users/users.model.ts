@@ -13,7 +13,6 @@ export default class User extends Password(Model) {
   type!: number;
   password!: string;
   customerValue!: number;
-  hotSwappableUsers?: User[];
   authToken!: string | null;
   roles!: Role[];
 
@@ -47,18 +46,6 @@ export default class User extends Password(Model) {
 
   static get relationMappings() {
     return {
-      hotSwappableUsers: {
-        relation: Model.ManyToManyRelation,
-        modelClass: User,
-        join: {
-          from: 'users.id',
-          through: {
-            from: 'hotSwappableUsers.fromUserId',
-            to: 'hotSwappableUsers.toUserId',
-          },
-          to: 'users.id',
-        },
-      },
       tokens: {
         relation: Model.HasManyRelation,
         modelClass: Token,

@@ -13,8 +13,6 @@ import {
   loginUser,
   getCurrentUser,
   logoutUser,
-  getHotSwappableUsers,
-  hotswapUser,
 } from './users.controller';
 import { DefaultState, Context } from 'koa';
 
@@ -34,17 +32,5 @@ userRouter.post('/users/login', loginUser);
 userRouter.get('/users/logout', logoutUser);
 userRouter.get('/users/whoami', requireAuth, getCurrentUser);
 userRouter.get('/users/roles', requireAuth, getUserRoles);
-userRouter.get(
-  '/users/hotswappableusers',
-  requireAuth,
-  requireLoginSession,
-  getHotSwappableUsers,
-);
-userRouter.post(
-  '/users/hotswap',
-  requireAuth,
-  requireLoginSession,
-  hotswapUser,
-);
 
 export default userRouter;
