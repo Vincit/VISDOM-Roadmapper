@@ -40,17 +40,3 @@ export const logout = createAsyncThunk<
     return thunkAPI.rejectWithValue(err);
   }
 });
-
-export const hotSwapToUser = createAsyncThunk<
-  boolean,
-  number,
-  { rejectValue: AxiosError }
->('user/hotSwapUser', async (targetUserId, thunkAPI) => {
-  try {
-    const success = await api.hotSwapToUser(targetUserId);
-    if (success) await thunkAPI.dispatch(getUserInfo());
-    return success;
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err);
-  }
-});

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUserInfo, login, logout, hotSwapToUser } from './actions';
+import { getUserInfo, login, logout } from './actions';
 import { UserState } from './types';
 import {
   GET_USER_INFO_FULFILLED,
@@ -28,5 +28,4 @@ export const userActions = {
   getUserInfo,
   login,
   logout,
-  hotSwapToUser,
 };

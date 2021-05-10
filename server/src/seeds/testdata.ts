@@ -176,8 +176,4 @@ const createTestUsers = async () => {
     email: 'dummy2@example.com',
     password: 'dummy2',
   });
-
-  await adminPerson1
-    .$relatedQuery('hotSwappableUsers')
-    .relate([customerPerson1, developerPerson1, businessPerson1]);
 };

@@ -11,7 +11,6 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
-import { UserHotSwapWidget } from './UserHotSwapWidget';
 import css from './NavBar.module.scss';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 
@@ -53,10 +52,6 @@ export const NavBar = () => {
         )}
         {userInfo && (
           <>
-            <div className={classes(css.navBarText)}>
-              <Trans i18nKey="Viewing as" />
-            </div>
-            <UserHotSwapWidget />
             <div className={classes(css.navBarText)}>
               <Trans i18nKey="Project" />
             </div>
