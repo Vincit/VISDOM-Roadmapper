@@ -1,4 +1,4 @@
-import chai, { expect } from 'chai';
+import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
@@ -53,7 +53,7 @@ describe('Test /roadmaps/ api', function () {
     });
   });
 
-  describe('PATCH /roadmaps/', function () {
+  describe('PATCH /roadmaps/:roadmapId', function () {
     it('Should patch roadmap', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const res = await loggedInAgent
@@ -70,7 +70,7 @@ describe('Test /roadmaps/ api', function () {
     });
   });
 
-  describe('DELETE /roadmaps/', function () {
+  describe('DELETE /roadmaps/:roadmapId', function () {
     it('Should delete roadmap', async function () {
       const before = await loggedInAgent.get('/roadmaps/');
       const firstRoadmapId = (await Roadmap.query().first()).id;
@@ -78,6 +78,19 @@ describe('Test /roadmaps/ api', function () {
       const after = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(200);
       expect(before.body.length - 1).to.equal(after.body.length);
+    });
+  });
+
+  describe('GET /roadmaps/:roadmapId/users/', function () {
+    it("Should return roadmaps's users names, types, customerValues", async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/users/`);
+      expect(res.status).to.equal(200);
+      assert(res.body.length > 1);
+      assert.property(res.body[0], 'username');
+      assert.property(res.body[0], 'type');
+      assert.property(res.body[0], 'customerValue');
+      assert(res.body[0].username.length > 0);
     });
   });
 

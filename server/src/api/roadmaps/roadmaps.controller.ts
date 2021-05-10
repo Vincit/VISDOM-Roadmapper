@@ -17,7 +17,9 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
-  const users = await Roadmap.relatedQuery('users').for(ctx.params.roadmapId);
+  const users = await Roadmap.relatedQuery('users')
+    .for(ctx.params.roadmapId)
+    .select('id', 'username', 'users.type', 'customerValue');
   ctx.body = users;
 };
 
