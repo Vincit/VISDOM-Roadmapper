@@ -10,6 +10,7 @@ import {
   postRoadmapsTasks,
   getRoadmapsTasks,
   getRoadmapsUsers,
+  inviteRoadmapUser,
 } from './roadmaps.controller';
 import { DefaultState, Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
@@ -44,6 +45,11 @@ roadmapRouter.post(
   '/roadmaps/:roadmapId/tasks',
   requirePermission(Permission.TaskCreate),
   postRoadmapsTasks,
+);
+roadmapRouter.post(
+  '/roadmaps/:roadmapId/inviteUser',
+  requirePermission(Permission.RoadmapInviteUser),
+  inviteRoadmapUser,
 );
 
 roadmapRouter.use('/roadmaps/:roadmapId', requireRole, versionsRouter.routes());

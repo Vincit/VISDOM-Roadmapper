@@ -75,3 +75,11 @@ export const getRoadmapsTasks: RouteHandlerFnc = async (ctx, _) => {
     ctx.body = tasks;
   }
 };
+
+export const inviteRoadmapUser: RouteHandlerFnc = async (ctx, _) => {
+  const created = await Role.query().insertAndFetch({
+    ...ctx.request.body,
+    roadmapId: Number(ctx.params.roadmapId),
+  });
+  ctx.body = created;
+};
