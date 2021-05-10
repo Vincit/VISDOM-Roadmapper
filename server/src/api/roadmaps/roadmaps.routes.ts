@@ -9,6 +9,7 @@ import {
   deleteRoadmaps,
   getRoadmapsUsers,
   inviteRoadmapUser,
+  getCurrentUser,
 } from './roadmaps.controller';
 import { DefaultState, Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
@@ -41,6 +42,7 @@ roadmapRouter.post(
   requirePermission(Permission.RoadmapInviteUser),
   inviteRoadmapUser,
 );
+roadmapRouter.get('/roadmaps/:roadmapId/whoami', requireAuth, getCurrentUser);
 
 roadmapRouter.use('/roadmaps/:roadmapId', requireRole, versionsRouter.routes());
 roadmapRouter.use(

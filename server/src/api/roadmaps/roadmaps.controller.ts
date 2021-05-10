@@ -19,8 +19,17 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
   const users = await Roadmap.relatedQuery('users')
     .for(ctx.params.roadmapId)
-    .select('id', 'username', 'users.type', 'customerValue');
+    .select('id', 'username', 'roles.type', 'customerValue');
   ctx.body = users;
+};
+
+export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
+  const user = await Roadmap.query()
+    .select('users.id', 'username', 'roles.type', 'customerValue')
+    .where({ roadmapId: ctx.params.roadmapId, userId: ctx.state.user.id })
+    .join('roles', 'roadmaps.id', 'roadmapId')
+    .join('users', 'users.id', 'userId');
+  ctx.body = user[0];
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
