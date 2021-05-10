@@ -6,7 +6,7 @@ export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
     ctx.body = await Taskrating.query()
       .for(Number(ctx.params.taskId))
-      .withGraphFetched('[createdBy]');
+      .withGraphFetched('[createdBy, createdFor]');
   } else {
     ctx.body = await Taskrating.query().where({
       parentTask: Number(ctx.params.taskId),

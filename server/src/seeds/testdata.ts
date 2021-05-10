@@ -5,6 +5,7 @@ import User from '../api/users/users.model';
 import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
 import { UserType, RoleType } from '../types/customTypes';
+import Customer from '../api/customer/customer.model';
 
 export async function seed(knex: Knex): Promise<any> {
   Model.knex(knex);
@@ -124,20 +125,32 @@ const createTestUsers = async () => {
     type: UserType.DeveloperUser,
     password: 'test',
   });
+
+  const customer1 = await Customer.query().insert({
+    name: 'Customer 1',
+    value: 500000,
+    color: '#ab1dEf',
+  });
   const customerPerson1 = await User.query().insert({
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
     type: UserType.CustomerUser,
     password: 'test',
-    customerValue: 500000,
   });
-  await User.query().insert({
+  await customerPerson1.$relatedQuery('representativeFor').relate([customer1]);
+
+  const customer2 = await Customer.query().insert({
+    name: 'Customer 2',
+    value: 1000000,
+  });
+  const customerPerson2 = await User.query().insert({
     username: 'CustomerPerson2',
     email: 'customer2@webuystuff.com',
     type: UserType.CustomerUser,
     password: 'test',
-    customerValue: 1000000,
   });
+  await customerPerson2.$relatedQuery('representativeFor').relate([customer2]);
+
   await User.query().insert({
     username: 'CustomerPerson3',
     email: 'customer3@webuystuff.com',

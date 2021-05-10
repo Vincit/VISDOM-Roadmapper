@@ -1,17 +1,16 @@
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
-import { app, loggedInAgent } from './setuptests';
+import { loggedInAgent } from './setuptests';
 import User from '../src/api/users/users.model';
 chai.use(chaiHttp);
 describe('Test /users/ api', function () {
   describe('GET /users/', function () {
-    it('Should return all users names, types, customerValues', async function () {
+    it('Should return all users names, types', async function () {
       const res = await loggedInAgent.get('/users/');
       expect(res.status).to.equal(200);
       assert(res.body.length > 1);
       assert.property(res.body[0], 'username');
       assert.property(res.body[0], 'type');
-      assert.property(res.body[0], 'customerValue');
       assert(res.body[0].username.length > 0);
     });
   });
@@ -58,7 +57,6 @@ describe('Test /users/ api', function () {
   describe('PATCH /users/', function () {
     it('Should patch user', async function () {
       const firstUserId = (await User.query().first()).id;
-      const res = await loggedInAgent.get('/users/');
       const patchResponse = await loggedInAgent
         .patch('/users/' + firstUserId)
         .type('json')
@@ -123,7 +121,6 @@ describe('Test /users/ api', function () {
       expect(res2.body).to.have.property('username');
       expect(res2.body).to.have.property('type');
       expect(res2.body).to.have.property('email');
-      expect(res2.body).to.have.property('customerValue');
     });
   });
 });
