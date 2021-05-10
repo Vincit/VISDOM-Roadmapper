@@ -1,12 +1,11 @@
 import passport from 'passport';
-import { UniqueViolationError } from 'objection';
 import uuid from 'uuid';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
 
 export const getUsers: RouteHandlerFnc = async (ctx, _) => {
   const query = User.query();
-  query.select('id', 'username', 'type', 'customerValue');
+  query.select('id', 'username', 'type');
   ctx.body = await query;
 };
 

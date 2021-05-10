@@ -2,6 +2,7 @@ import { Model } from 'objection';
 import { TaskRatingDimension } from '../../types/customTypes';
 import User from '../users/users.model';
 import Task from '../tasks/tasks.model';
+import Customer from '../customer/customer.model';
 
 export default class TaskRating extends Model {
   id!: number;
@@ -11,6 +12,7 @@ export default class TaskRating extends Model {
 
   belongsToTask?: Task;
   createdBy?: User;
+  createdFor?: Customer;
 
   static tableName = 'taskratings';
 
@@ -41,6 +43,14 @@ export default class TaskRating extends Model {
         join: {
           from: 'taskratings.createdByUser',
           to: 'users.id',
+        },
+      },
+      createdFor: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Customer,
+        join: {
+          from: 'taskratings.forCustomer',
+          to: 'customer.id',
         },
       },
     };
