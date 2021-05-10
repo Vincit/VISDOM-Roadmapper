@@ -16,6 +16,7 @@ const createTestData = async () => {
   await clearData();
   await createTestUsers();
   await createTestRoadmap();
+  await createTestCustomers();
   await createTestRoles();
 };
 
@@ -43,6 +44,33 @@ const createTestRoles = async () => {
         roadmapId: roadmap.id,
       })),
   );
+};
+
+const createTestCustomers = async () => {
+  const roadmap = await Roadmap.query().first();
+  const customer1 = await Customer.query().insert({
+    roadmapId: roadmap.id,
+    name: 'Customer 1',
+    value: 500000,
+    color: '#ab1dEf',
+  });
+  const customerPerson1 = await User.query().findOne(
+    'username',
+    'CustomerPerson1',
+  );
+  await customerPerson1.$relatedQuery('representativeFor').relate([customer1]);
+
+  const customer2 = await Customer.query().insert({
+    roadmapId: roadmap.id,
+    name: 'Customer 2',
+    value: 1000000,
+  });
+
+  const customerPerson2 = await User.query().findOne(
+    'username',
+    'CustomerPerson2',
+  );
+  await customerPerson2.$relatedQuery('representativeFor').relate([customer2]);
 };
 
 const createTestRoadmap = async () => {
@@ -125,32 +153,18 @@ const createTestUsers = async () => {
     type: UserType.DeveloperUser,
     password: 'test',
   });
-
-  const customer1 = await Customer.query().insert({
-    name: 'Customer 1',
-    value: 500000,
-    color: '#ab1dEf',
-  });
   const customerPerson1 = await User.query().insert({
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
     type: UserType.CustomerUser,
     password: 'test',
   });
-  await customerPerson1.$relatedQuery('representativeFor').relate([customer1]);
-
-  const customer2 = await Customer.query().insert({
-    name: 'Customer 2',
-    value: 1000000,
-  });
-  const customerPerson2 = await User.query().insert({
+  await User.query().insert({
     username: 'CustomerPerson2',
     email: 'customer2@webuystuff.com',
     type: UserType.CustomerUser,
     password: 'test',
   });
-  await customerPerson2.$relatedQuery('representativeFor').relate([customer2]);
-
   await User.query().insert({
     username: 'CustomerPerson3',
     email: 'customer3@webuystuff.com',

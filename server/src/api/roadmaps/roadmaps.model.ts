@@ -2,6 +2,7 @@ import { Model, QueryBuilder } from 'objection';
 import Task from './../tasks/tasks.model';
 import { Role } from './../roles/roles.model';
 import User from './../users/users.model';
+import Customer from './../customer/customer.model';
 import JiraConfiguration from './../jiraconfigurations/jiraconfigurations.model';
 
 export default class Roadmap extends Model {
@@ -9,6 +10,7 @@ export default class Roadmap extends Model {
   name!: string;
   description!: string;
 
+  customers!: Customer[];
   roles!: Role[];
   tasks?: Task[];
   jiraconfiguration?: JiraConfiguration;
@@ -34,6 +36,14 @@ export default class Roadmap extends Model {
         join: {
           from: 'roadmaps.id',
           to: 'roles.roadmapId',
+        },
+      },
+      customers: {
+        relation: Model.HasManyRelation,
+        modelClass: Customer,
+        join: {
+          from: 'roadmaps.id',
+          to: 'customer.roadmapId',
         },
       },
       users: {
