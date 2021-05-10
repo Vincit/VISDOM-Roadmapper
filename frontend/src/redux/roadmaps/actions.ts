@@ -23,7 +23,10 @@ export const getPublicUsers = createAsyncThunk<
   { rejectValue: AxiosError }
 >('roadmaps/getPublicUsers', async (_, thunkAPI) => {
   try {
-    return await api.getPublicUsers();
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.getPublicUsers(currentroadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }

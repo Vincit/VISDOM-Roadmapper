@@ -134,8 +134,8 @@ const getCurrentUserInfo = async () => {
   return response.data as UserInfo;
 };
 
-const getPublicUsers = async () => {
-  const response = await axios.get(`/users`);
+const getPublicUsers = async (roadmapId: number) => {
+  const response = await axios.get(`roadmaps/${roadmapId}/users`);
   return response.data as PublicUser[];
 };
 
