@@ -1,4 +1,6 @@
 import { requireAuth, requireLoginSession } from './../../utils/requireAuth';
+import { isCurrentUser } from './../../utils/isCurrentUser';
+import { forbidden } from '../../utils/forbidden';
 import KoaRouter from '@koa/router';
 import {
   getUsers,
@@ -22,10 +24,10 @@ userRouter.get('/users/mytoken', requireAuth, getToken);
 userRouter.post('/users/mytoken', requireAuth, generateToken);
 userRouter.delete('/users/mytoken', requireAuth, deleteToken);
 
-userRouter.get('/users', requireAuth, getUsers);
-userRouter.post('/users', requireAuth, postUsers);
-userRouter.patch('/users/:id', requireAuth, patchUsers);
-userRouter.delete('/users/:id', requireAuth, deleteUsers);
+userRouter.get('/users', requireAuth, forbidden, getUsers);
+userRouter.post('/users', requireAuth, forbidden, postUsers);
+userRouter.patch('/users/:id', requireAuth, isCurrentUser, patchUsers);
+userRouter.delete('/users/:id', requireAuth, isCurrentUser, deleteUsers);
 
 userRouter.post('/users/register', registerUser);
 userRouter.post('/users/login', loginUser);
