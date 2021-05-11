@@ -30,6 +30,14 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.ts'] }],
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      { required: { some: ['nesting', 'id'] } },
+    ],
+    'jsx-a11y/label-has-for': [
+      'error',
+      { required: { some: ['nesting', 'id'] } },
+    ],
     'import/extensions': [
       'error',
       'ignorePackages',
