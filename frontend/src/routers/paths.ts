@@ -3,6 +3,7 @@ export const paths = {
   userInfo: '/user',
   loginPage: '/login',
   logoutPage: '/logout',
+  registerPage: '/register',
   roadmapHome: '/roadmap',
   notFound: '/404',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',

@@ -36,7 +36,7 @@ export const NavBar = () => {
             {pathname.startsWith(paths.loginPage) ? (
               <Link
                 className={classes(css['button-small-filled'])}
-                to={paths.loginPage}
+                to={paths.registerPage}
               >
                 <Trans i18nKey="Register" />
               </Link>

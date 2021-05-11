@@ -82,5 +82,21 @@ export const english = {
     'Predicted milestone durations': 'Predicted milestone durations',
     'Set different weighing for clients': 'Set different weighing for clients',
     'Client Weights': 'Client Weights',
+    register: 'register',
+    'New here?': 'New here?',
+    'Please fill out some info about you.':
+      'Please fill out some info about you.',
+    'Your name': 'Your name',
+    'Your email': 'Your email',
+    'Create account': 'Create account',
+    'Already have an account?': 'Already have an account?',
+    'Example email': 'email@example.com',
+    'Terms of use error':
+      'Please read and accept the terms of use and privacy policy.',
+    'Password type error': 'Password should contain at least 8 characters.',
+    'Terms of use':
+      'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
+    'Username already taken.': 'Username already taken.',
+    'This email is already in use.': 'This email is already in use.',
   },
 };
