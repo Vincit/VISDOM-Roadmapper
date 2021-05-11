@@ -44,7 +44,7 @@ export const TimeEstimationPage = () => {
 
   useEffect(() => {
     if (!roadmapsVersions) dispatch(versionsActions.getVersions(roadmap!.id));
-  }, [dispatch, roadmapsVersions]);
+  }, [roadmap, dispatch, roadmapsVersions]);
 
   const handleMilestoneChange = (e: any) => {
     if (e.currentTarget.value !== '') {

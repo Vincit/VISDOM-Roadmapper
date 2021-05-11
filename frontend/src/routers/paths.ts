@@ -19,6 +19,6 @@ export const paths = {
     graph: '/graph',
     editor: '/editor',
     timeEstimation: '/timeestimation',
-    weights: "/weights"
-  }
+    weights: '/weights',
+  },
 };
