@@ -14,7 +14,14 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { chosenJiraconfigurationSelector } from '../../redux/roadmaps/selectors';
 import '../../shared.scss';
 
-export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
+export interface JiraOauthModalProps extends ModalProps {
+  roadmapId: number;
+}
+
+export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
+  closeModal,
+  roadmapId,
+}) => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
@@ -40,7 +47,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
         return;
       }
       try {
-        const response = await api.getJiraOauthURL({ id });
+        const response = await api.getJiraOauthURL({ id }, roadmapId);
         const { token, tokenSecret } = response;
         setFormValues((prev) => {
           return { ...prev, token, tokenSecret };
@@ -54,7 +61,7 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
     };
 
     getOAuthURL();
-  }, [currentJiraConfiguration]);
+  }, [currentJiraConfiguration, roadmapId]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -65,12 +72,15 @@ export const JiraOauthModal: React.FC<ModalProps> = ({ closeModal }) => {
       setIsLoading(true);
 
       const swapToken = async () => {
-        const success = await api.swapJiraOAuthToken({
-          id: currentJiraConfiguration.id,
-          verifierToken: formValues.oauthVerifierCode,
-          token: formValues.token,
-          tokenSecret: formValues.tokenSecret,
-        });
+        const success = await api.swapJiraOAuthToken(
+          {
+            id: currentJiraConfiguration.id,
+            verifierToken: formValues.oauthVerifierCode,
+            token: formValues.token,
+            tokenSecret: formValues.tokenSecret,
+          },
+          roadmapId,
+        );
         setIsLoading(false);
 
         if (success) {

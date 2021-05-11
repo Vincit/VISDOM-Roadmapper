@@ -175,19 +175,21 @@ const patchUser = async (user: PublicUserRequest) => {
 };
 
 const getJiraBoards = async (request: GetRoadmapBoardsRequest) => {
-  const response = await axios.get(`/jira/boards/${request.roadmapId}`);
+  const response = await axios.get(
+    `/roadmaps/${request.roadmapId}/jira/boards`,
+  );
   return response.data as JiraBoard[];
 };
 
 const getJiraBoardLabels = async (request: GetRoadmapBoardLabelsRequest) => {
   const response = await axios.get(
-    `/jira/boards/${request.roadmapId}/labels/${request.boardId}`,
+    `/roadmaps/${request.roadmapId}/jira/boards/labels/${request.boardId}`,
   );
   return response.data as string[];
 };
 
 const importJiraBoard = async (request: ImportBoardRequest) => {
-  await axios.post('/jira/importboard', request);
+  await axios.post(`/roadmaps/${request.roadmapId}/jira/importboard`, request);
   return true;
 };
 
@@ -201,15 +203,24 @@ const hotSwapToUser = async (targetUserId: number) => {
   return true;
 };
 
-const getJiraOauthURL = async (jiraconfiguration: JiraOAuthURLRequest) => {
+const getJiraOauthURL = async (
+  jiraconfiguration: JiraOAuthURLRequest,
+  roadmapId: number,
+) => {
   const response = await axios.get(
-    `/jira/oauthauthorizationurl/${jiraconfiguration.id}`,
+    `/roadmaps/${roadmapId}/jira/oauthauthorizationurl/${jiraconfiguration.id}`,
   );
   return response.data as JiraOAuthURLResponse;
 };
 
-const swapJiraOAuthToken = async (swapRequest: JiraTokenSwapRequest) => {
-  await axios.post(`/jira/swapoauthtoken/${swapRequest.id}`, swapRequest);
+const swapJiraOAuthToken = async (
+  swapRequest: JiraTokenSwapRequest,
+  roadmapId: number,
+) => {
+  await axios.post(
+    `/roadmaps/${roadmapId}/jira/swapoauthtoken/${swapRequest.id}`,
+    swapRequest,
+  );
   return true;
 };
 
