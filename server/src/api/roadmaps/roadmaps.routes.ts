@@ -19,6 +19,7 @@ import jiraConfigurationRouter from '../jiraconfigurations/jiraconfigurations.ro
 const roadmapRouter = new KoaRouter<DefaultState, Context>();
 
 roadmapRouter.use(requireAuth);
+roadmapRouter.use('/roadmaps/:roadmapId', requireRole);
 
 roadmapRouter.get('/roadmaps', getRoadmaps);
 roadmapRouter.post('/roadmaps', postRoadmaps);
@@ -43,14 +44,10 @@ roadmapRouter.post(
   requirePermission(Permission.RoadmapInviteUser),
   inviteRoadmapUser,
 );
-roadmapRouter.get('/roadmaps/:roadmapId/whoami', requireAuth, getCurrentUser);
+roadmapRouter.get('/roadmaps/:roadmapId/whoami', getCurrentUser);
 
-roadmapRouter.use('/roadmaps/:roadmapId', requireRole, versionsRouter.routes());
-roadmapRouter.use(
-  '/roadmaps/:roadmapId',
-  requireRole,
-  versionsRouter.allowedMethods(),
-);
+roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.routes());
+roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.allowedMethods());
 
 roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.routes());
 roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.allowedMethods());
