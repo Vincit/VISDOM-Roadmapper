@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import { UserLoginRequest, UserInfo } from './types';
+import { UserLoginRequest, UserInfo, UserRegisterRequest } from './types';
 import { api } from '../../api/api';
 import { chosenRoadmapIdSelector } from '../roadmaps/selectors';
 import { RootState } from '../types';
@@ -41,6 +41,18 @@ export const logout = createAsyncThunk<
 >('user/logout', async (_, thunkAPI) => {
   try {
     return await api.logout();
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const register = createAsyncThunk<
+  boolean,
+  UserRegisterRequest,
+  { rejectValue: AxiosError }
+>('user/register', async (newUser: UserRegisterRequest, thunkAPI) => {
+  try {
+    return await api.register(newUser);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }

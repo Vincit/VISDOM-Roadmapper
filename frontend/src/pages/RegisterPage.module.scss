@@ -1,0 +1,47 @@
+@import '../shared.scss';
+
+.formDiv {
+  @extend .typography-h2;
+  padding: 8px;
+  margin: auto;
+  margin-top: 150px;
+  margin-bottom: 150px;
+  width: 600px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 50px 30px;
+}
+
+.about {
+  @extend .typography-subtitle;
+  color: $COLOR_BLACK60;
+  line-height: 10px;
+  margin-bottom: 20px;
+}
+
+.termsLabel {
+  @extend .typography-body;
+  color: $COLOR_BLACK60;
+  margin-left: 10px;
+  margin-top: 15px;
+  line-height: 21px;
+}
+
+.termsLabel > a {
+  color: $COLOR_EMERALD;
+  text-decoration: underline;
+}
+
+.registerFooter {
+  @extend .typography-body;
+  color: $COLOR_BLACK60;
+  margin-left: 160px;
+  margin-top: 50px;
+  line-height: 21px;
+}
+
+.registerFooter > a {
+  color: $COLOR_EMERALD;
+  font-weight: bold;
+  margin-left: 10;
+}

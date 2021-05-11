@@ -9,6 +9,7 @@ import { HomePage } from '../pages/HomePage';
 import { LandingPage } from '../pages/LandingPage';
 import { LoginPage } from '../pages/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage';
+import { RegisterPage } from '../pages/RegisterPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { UserInfoPage } from '../pages/UserInfoPage';
 import { paths } from './paths';
@@ -31,6 +32,11 @@ const routes = [
   {
     path: paths.logoutPage,
     component: () => <NavLayout Content={LogoutPage} />,
+    exact: false,
+  },
+  {
+    path: paths.registerPage,
+    component: () => <NavLayout Content={RegisterPage} />,
     exact: false,
   },
   {

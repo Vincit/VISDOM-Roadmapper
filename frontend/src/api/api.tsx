@@ -19,7 +19,11 @@ import {
   GetRoadmapBoardLabelsRequest,
 } from '../redux/roadmaps/types';
 import { JiraBoard } from '../redux/types';
-import { UserInfo, UserLoginRequest } from '../redux/user/types';
+import {
+  UserInfo,
+  UserLoginRequest,
+  UserRegisterRequest,
+} from '../redux/user/types';
 import { Version, VersionRequest } from '../redux/versions/types';
 
 dotenv.config();
@@ -134,6 +138,11 @@ const getCurrentUserInfo = async (roadmapId: number) => {
   return response.data as UserInfo;
 };
 
+const register = async (newUser: UserRegisterRequest) => {
+  const response = await axios.post(`/users/register`, newUser);
+  return response.status === 200;
+};
+
 const getPublicUsers = async (roadmapId: number) => {
   const response = await axios.get(`roadmaps/${roadmapId}/users`);
   return response.data as PublicUser[];
@@ -242,6 +251,7 @@ export const api = {
   deleteTaskrating,
   login,
   logout,
+  register,
   getCurrentUserInfo,
   getCurrentUserToken,
   generateCurrentUserToken,

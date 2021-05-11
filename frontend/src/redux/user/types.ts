@@ -27,3 +27,10 @@ export enum UserType {
   AdminUser = 3,
   TokenUser = 4,
 }
+
+export interface UserRegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+  type: UserType;
+}
