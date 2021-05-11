@@ -55,7 +55,7 @@ const RoadmapConfigurationPageComponent = () => {
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.SETUP_OAUTH_MODAL,
-        modalProps: {},
+        modalProps: { roadmapId: currentRoadmap.id },
       }),
     );
   };

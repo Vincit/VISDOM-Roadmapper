@@ -14,6 +14,7 @@ import {
 import { DefaultState, Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
 import tasksRouter from '../tasks/tasks.routes';
+import jiraRouter from '../jira/jira.routes';
 import jiraConfigurationRouter from '../jiraconfigurations/jiraconfigurations.routes';
 const roadmapRouter = new KoaRouter<DefaultState, Context>();
 
@@ -53,6 +54,9 @@ roadmapRouter.use(
 
 roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.routes());
 roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.allowedMethods());
+
+roadmapRouter.use('/roadmaps/:roadmapId', jiraRouter.routes());
+roadmapRouter.use('/roadmaps/:roadmapId', jiraRouter.allowedMethods());
 
 roadmapRouter.use('/roadmaps/:roadmapId', jiraConfigurationRouter.routes());
 roadmapRouter.use(

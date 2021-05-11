@@ -8,7 +8,6 @@ import passport from 'koa-passport';
 import session from 'koa-session';
 import { Model } from 'objection';
 import knexConfig from '../knexfile';
-import jiraRouter from './api/jira/jira.routes';
 import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import userRouter from './api/users/users.routes';
 import { setupAuth } from './utils/auth';
@@ -53,8 +52,6 @@ const createServer = async () => {
   rootRouter.use(userRouter.allowedMethods());
   rootRouter.use(roadmapRouter.routes());
   rootRouter.use(roadmapRouter.allowedMethods());
-  rootRouter.use(jiraRouter.routes());
-  rootRouter.use(jiraRouter.allowedMethods());
   rootRouter.get('/', (ctx, next) => {
     ctx.status = 200;
     ctx.body = '';

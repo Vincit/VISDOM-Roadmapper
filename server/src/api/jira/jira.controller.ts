@@ -41,8 +41,7 @@ const jiraClientForRoadmapAndUser = async (
 };
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
-  const roadmapId = ctx.params.id;
-
+  const roadmapId = ctx.params.roadmapId;
   const userId = parseInt(ctx.state.user.id, 10);
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
@@ -69,7 +68,7 @@ const boardLabels = async (
 };
 
 export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
-  const roadmapId = ctx.params.id;
+  const roadmapId = ctx.params.roadmapId;
   const boardId = ctx.params.board;
   const userId = parseInt(ctx.state.user.id, 10);
   const labels = await boardLabels(userId, roadmapId, boardId);
@@ -88,7 +87,8 @@ const filterIssues = <T>(filters: { labels?: string[] }, issues: T[]): T[] => {
 };
 
 export const importBoard: RouteHandlerFnc = async (ctx, _) => {
-  const { boardId, roadmapId, createdByUser, filters } = ctx.request.body;
+  const { boardId, createdByUser, filters } = ctx.request.body;
+  const roadmapId = ctx.params.roadmapId;
 
   const userId = parseInt(ctx.state.user.id, 10);
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
@@ -127,7 +127,7 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
 export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
   try {
     const jiraconfiguration = await JiraConfiguration.query().findById(
-      ctx.params.id,
+      ctx.params.jiraId,
     );
 
     const oauthResponse = await authorizationURL(
@@ -153,7 +153,7 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
 
   try {
     const jiraconfiguration = await JiraConfiguration.query().findById(
-      ctx.params.id,
+      ctx.params.jiraId,
     );
     const oauthResponse = await swapOAuthToken(
       jiraconfiguration.url,
