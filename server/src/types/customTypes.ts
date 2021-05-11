@@ -36,7 +36,7 @@ export const enum Permission {
   RoadmapReadUsers = 1 << 10,
 }
 
-export const enum RoleType {
+export enum RoleType {
   Admin = Permission.All,
   Developer = Permission.TaskRate | Permission.TaskCreate,
   Customer = Permission.TaskRate,
