@@ -16,6 +16,8 @@ import versionsRouter from '../versions/versions.routes';
 import tasksRouter from '../tasks/tasks.routes';
 import jiraRouter from '../jira/jira.routes';
 import jiraConfigurationRouter from '../jiraconfigurations/jiraconfigurations.routes';
+import customerRouter from '../customer/customer.routes';
+
 const roadmapRouter = new KoaRouter<DefaultState, Context>();
 
 roadmapRouter.use(requireAuth);
@@ -60,5 +62,8 @@ roadmapRouter.use(
   '/roadmaps/:roadmapId',
   jiraConfigurationRouter.allowedMethods(),
 );
+
+roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.routes());
+roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.allowedMethods());
 
 export default roadmapRouter;
