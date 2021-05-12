@@ -82,13 +82,14 @@ describe('Test /roadmaps/ api', function () {
   });
 
   describe('GET /roadmaps/:roadmapId/users/', function () {
-    it("Should return roadmaps's users names, types", async function () {
+    it("Should return roadmaps's users id's, names", async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/users/`);
       expect(res.status).to.equal(200);
       assert(res.body.length > 1);
+      expect(Object.keys(res.body[0]).length).to.equal(2);
       assert.property(res.body[0], 'username');
-      assert.property(res.body[0], 'type');
+      assert.property(res.body[0], 'id');
       assert(res.body[0].username.length > 0);
     });
   });
