@@ -1,6 +1,6 @@
 import { requireAuth, requireLoginSession } from './../../utils/requireAuth';
-import { isCurrentUser } from './../../utils/isCurrentUser';
 import { forbidden } from '../../utils/forbidden';
+import { isCurrentUser } from '../../utils/isCurrent';
 import KoaRouter from '@koa/router';
 import {
   getUsers,

@@ -29,16 +29,19 @@ export const enum Permission {
   VersionCreate = 1 << 4,
   VersionEdit = 1 << 5,
   VersionDelete = 1 << 6,
+  VersionRead = 1 << 7,
 
-  RoadmapEdit = 1 << 7,
-  RoadmapDelete = 1 << 8,
-  RoadmapEditRoles = 1 << 9,
-  RoadmapReadUsers = 1 << 10,
+  RoadmapEdit = 1 << 8,
+  RoadmapDelete = 1 << 9,
+  RoadmapEditRoles = 1 << 10,
+  RoadmapReadUsers = 1 << 11,
 }
 
 export enum RoleType {
   Admin = Permission.All,
-  Developer = Permission.TaskRate | Permission.TaskCreate,
+  Developer = Permission.TaskRate |
+    Permission.TaskCreate |
+    Permission.VersionRead,
   Customer = Permission.TaskRate,
   Business = RoleType.Customer,
 }
