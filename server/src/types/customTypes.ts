@@ -41,7 +41,8 @@ export enum RoleType {
   Admin = Permission.All,
   Developer = Permission.TaskRate |
     Permission.TaskCreate |
-    Permission.VersionRead,
+    Permission.VersionRead |
+    Permission.RoadmapReadUsers,
   Customer = Permission.TaskRate,
   Business = RoleType.Customer,
 }
