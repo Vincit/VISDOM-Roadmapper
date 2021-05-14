@@ -1,6 +1,5 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Task from './tasks.model';
-import Roadmap from '../roadmaps/roadmaps.model';
 import Objection from 'objection';
 
 export const getTasks: RouteHandlerFnc = async (ctx, _) => {
@@ -24,14 +23,14 @@ export const getTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postTasks: RouteHandlerFnc = async (ctx, _) => {
-  const child = await Roadmap.relatedQuery('tasks')
-    .for(ctx.params.roadmapId)
-    .insertAndFetch({
-      ...ctx.request.body,
-      roadmapId: Number(ctx.params.roadmapId),
-    });
+  const { jiraId, createdAt, ...others } = ctx.request.body;
+  const task = await Task.query().insertAndFetch({
+    ...others,
+    roadmapId: Number(ctx.params.roadmapId),
+    createdByUser: Number(ctx.state.user.id),
+  });
 
-  ctx.body = child;
+  ctx.body = task;
 };
 
 export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
@@ -44,9 +43,13 @@ export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
+  const { jiraId, createdAt, createdBy, ...others } = ctx.request.body;
   const updated = await Task.query().patchAndFetchById(
     Number(ctx.params.taskId),
-    { ...ctx.request.body, roadmapId: Number(ctx.params.roadmapId) },
+    {
+      ...others,
+      roadmapId: Number(ctx.params.roadmapId),
+    },
   );
 
   if (!updated) {

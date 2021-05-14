@@ -1,4 +1,3 @@
-import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import {
   getTasks,
@@ -6,6 +5,7 @@ import {
   patchTasks,
   postTasks,
 } from './tasks.controller';
+import { isCurrentTaskCreator } from '../../utils/isCurrent';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import { DefaultState, Context } from 'koa';
@@ -14,16 +14,26 @@ const tasksRouter = new KoaRouter<DefaultState, Context>();
 
 tasksRouter.get(
   '/tasks',
-  requirePermission(Permission.RoadmapReadUsers),
+  requirePermission(Permission.RoadmapReadUsers | Permission.TaskRead),
   getTasks,
 );
 tasksRouter.post(
   '/tasks',
-  requirePermission(Permission.RoadmapReadUsers),
+  requirePermission(Permission.RoadmapReadUsers | Permission.TaskCreate),
   postTasks,
 );
-tasksRouter.delete('/tasks/:taskId', requireAuth, deleteTasks);
-tasksRouter.patch('/tasks/:taskId', requireAuth, patchTasks);
+tasksRouter.delete(
+  '/tasks/:taskId',
+  requirePermission(Permission.TaskEdit),
+  isCurrentTaskCreator,
+  deleteTasks,
+);
+tasksRouter.patch(
+  '/tasks/:taskId',
+  requirePermission(Permission.TaskEdit),
+  isCurrentTaskCreator,
+  patchTasks,
+);
 
 tasksRouter.use('/tasks/:taskId', taskratingRouter.routes());
 tasksRouter.use('/tasks/:taskId', taskratingRouter.allowedMethods());

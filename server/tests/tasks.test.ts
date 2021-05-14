@@ -25,7 +25,6 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
   describe('POST /roadmaps/:roadmapId/tasks/', function () {
     it('Should add new task', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstUserId = (await User.query().first()).id;
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
       );
@@ -35,7 +34,6 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
         .send({
           name: 'testtask',
           description: 'testdesc',
-          createdByUser: firstUserId,
         });
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
@@ -45,8 +43,11 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       const added = after.body.find((task: any) => task.name == 'testtask');
       expect(added).to.exist;
       expect(added.description).to.equal('testdesc');
-      expect(added.createdByUser).to.equal(firstUserId);
       expect(added.roadmapId).to.equal(firstRoadmapId);
+      const userId = (
+        await User.query().where({ username: 'AdminPerson1' }).first()
+      ).id;
+      expect(added.createdByUser).to.equal(userId);
     });
   });
 

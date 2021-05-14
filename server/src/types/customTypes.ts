@@ -21,28 +21,31 @@ export const enum Permission {
   Any = 0,
   All = ~0,
 
-  TaskCreate = 1 << 0,
-  TaskEdit = 1 << 1,
-  TaskDelete = 1 << 2,
-  TaskRate = 1 << 3,
+  TaskRead = 1 << 0,
+  TaskCreate = 1 << 1,
+  TaskEdit = 1 << 2,
+  TaskEditOthers = 1 << 3,
+  TaskDelete = 1 << 4,
+  TaskRate = 1 << 5,
 
-  VersionCreate = 1 << 4,
-  VersionEdit = 1 << 5,
-  VersionDelete = 1 << 6,
-  VersionRead = 1 << 7,
+  VersionCreate = 1 << 6,
+  VersionEdit = 1 << 7,
+  VersionDelete = 1 << 8,
+  VersionRead = 1 << 9,
 
-  RoadmapEdit = 1 << 8,
-  RoadmapDelete = 1 << 9,
-  RoadmapEditRoles = 1 << 10,
-  RoadmapReadUsers = 1 << 11,
+  RoadmapEdit = 1 << 10,
+  RoadmapDelete = 1 << 11,
+  RoadmapEditRoles = 1 << 12,
+  RoadmapReadUsers = 1 << 13,
 }
 
 export enum RoleType {
   Admin = Permission.All,
-  Developer = Permission.TaskRate |
+  Developer = Permission.TaskRead |
+    Permission.TaskRate |
     Permission.TaskCreate |
     Permission.VersionRead |
     Permission.RoadmapReadUsers,
-  Customer = Permission.TaskRate,
+  Customer = Permission.TaskRead | Permission.TaskRate,
   Business = RoleType.Customer,
 }
