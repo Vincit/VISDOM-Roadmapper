@@ -1,7 +1,6 @@
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
-import User from '../src/api/users/users.model';
 import { loggedInAgent } from './setuptests';
 chai.use(chaiHttp);
 
@@ -124,29 +123,6 @@ describe('Test /roadmaps/ api', function () {
       expect(res.body[0]).to.have.property('roadmapId');
       expect(res.body[0]).to.have.property('createdByUser');
       expect(res.body[0]).to.have.property('ratings');
-    });
-  });
-  describe('POST /roadmaps/:id/tasks', function () {
-    it('Should add new task to roadmap', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstUserId = (await User.query().first()).id;
-      const before = await loggedInAgent.get(
-        '/roadmaps/' + firstRoadmapId + '/tasks?eager=1',
-      );
-      const res = await loggedInAgent
-        .post('/roadmaps/' + firstRoadmapId + '/tasks')
-        .type('json')
-        .send({
-          name: 'testtask',
-          description: 'testdesc',
-          createdByUser: firstUserId,
-        });
-      const after = await loggedInAgent.get(
-        '/roadmaps/' + firstRoadmapId + '/tasks?eager=1',
-      );
-
-      expect(res.status).to.equal(200);
-      expect(before.body.length + 1).to.equal(after.body.length);
     });
   });
 });
