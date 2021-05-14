@@ -44,6 +44,8 @@ export const enum Permission {
   RoadmapDelete = 1 << 16,
   RoadmapEditRoles = 1 << 17,
   RoadmapReadUsers = 1 << 18,
+
+  JiraConfigurationEdit = 1 << 19,
 }
 
 export enum RoleType {
