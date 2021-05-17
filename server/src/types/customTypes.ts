@@ -32,7 +32,7 @@ export const enum Permission {
 
   RoadmapEdit = 1 << 7,
   RoadmapDelete = 1 << 8,
-  RoadmapInviteUser = 1 << 9,
+  RoadmapEditRoles = 1 << 9,
   RoadmapReadUsers = 1 << 10,
 }
 
