@@ -12,7 +12,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
-import { UserListPage } from '../pages/UserListPage';
+import { CustomerListPage } from '../pages/CustomerListPage';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
@@ -35,7 +35,7 @@ const routes = [
   },
   {
     path: paths.roadmapRelative.users,
-    component: UserListPage,
+    component: CustomerListPage,
   },
   {
     path: paths.roadmapRelative.taskList,

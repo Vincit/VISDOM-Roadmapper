@@ -7,6 +7,10 @@ import {
   deleteRoadmap,
   deleteTask,
   deleteTaskrating,
+  getCustomers,
+  addCustomer,
+  deleteCustomer,
+  patchCustomer,
   getPublicUsers,
   getRoadmaps,
   importJiraBoard,
@@ -23,6 +27,10 @@ import {
   DELETE_ROADMAP_FULFILLED,
   DELETE_TASKRATING_FULFILLED,
   DELETE_TASK_FULFILLED,
+  GET_CUSTOMERS_FULFILLED,
+  ADD_CUSTOMER_FULFILLED,
+  PATCH_CUSTOMER_FULFILLED,
+  DELETE_CUSTOMER_FULFILLED,
   GET_PUBLIC_USERS_FULFILLED,
   GET_ROADMAPS_FULFILLED,
   PATCH_PUBLIC_USER_FULFILLED,
@@ -57,6 +65,10 @@ export const roadmapsSlice = createSlice({
     builder.addCase(addTaskrating.fulfilled, ADD_TASKRATING_FULFILLED);
     builder.addCase(deleteTaskrating.fulfilled, DELETE_TASKRATING_FULFILLED);
     builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
+    builder.addCase(getCustomers.fulfilled, GET_CUSTOMERS_FULFILLED);
+    builder.addCase(patchCustomer.fulfilled, PATCH_CUSTOMER_FULFILLED);
+    builder.addCase(addCustomer.fulfilled, ADD_CUSTOMER_FULFILLED);
+    builder.addCase(deleteCustomer.fulfilled, DELETE_CUSTOMER_FULFILLED);
     builder.addCase(getPublicUsers.fulfilled, GET_PUBLIC_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
     builder.addCase(patchPublicUser.fulfilled, PATCH_PUBLIC_USER_FULFILLED);
@@ -81,6 +93,10 @@ export const roadmapsActions = {
   deleteRoadmap,
   addRoadmap,
   getRoadmaps,
+  getCustomers,
+  addCustomer,
+  deleteCustomer,
+  patchCustomer,
   getPublicUsers,
   patchTask,
   patchTaskrating,

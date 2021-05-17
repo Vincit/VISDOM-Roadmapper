@@ -29,6 +29,16 @@ export const allTasksSelector = () => {
   );
 };
 
+export const allCustomersSelector = createSelector(
+  chosenRoadmapSelector,
+  (roadmap) => roadmap?.customers,
+);
+
+export const customerSelector = (id: number) =>
+  createSelector(allCustomersSelector, (customers) =>
+    customers?.find((customer) => customer.id === id),
+  );
+
 export const publicUsersSelector = createSelector(
   (state: RootState) => state.roadmaps.allUsers,
   (users) => users,
