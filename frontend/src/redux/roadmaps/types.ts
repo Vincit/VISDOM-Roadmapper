@@ -27,7 +27,6 @@ export interface PublicUser {
   id: number;
   username: string;
   type: UserType;
-  customerValue?: number;
 }
 
 export interface Roadmap {
@@ -96,7 +95,6 @@ export interface PublicUserRequest {
   id?: number;
   username?: string;
   type?: UserType;
-  customerValue?: number;
 }
 
 export interface GetRoadmapBoardsRequest {

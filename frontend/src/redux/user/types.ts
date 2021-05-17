@@ -3,7 +3,6 @@ export interface UserInfo {
   email: string;
   id: number;
   type: UserType;
-  customerValue?: number;
 }
 
 export interface UserState {
