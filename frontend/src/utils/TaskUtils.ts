@@ -1,11 +1,11 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
 import {
-  PublicUser,
+  Customer,
   Roadmap,
   Task,
+  Taskrating,
   TaskRatingDimension,
 } from '../redux/roadmaps/types';
-import { UserType } from '../redux/user/types';
 
 export enum FilterTypes {
   SHOW_ALL,
@@ -220,50 +220,47 @@ export const calcTaskValueSum = (task: Task) => {
 
 export const calcTaskWeightedValueSum = (
   task: Task,
-  allUsers: PublicUser[],
+  allCustomers: Customer[],
   roadmap: Roadmap,
 ) => {
-  let customerValuesSum = 0;
-  allUsers.forEach((user) => {
-    if (user.type === UserType.CustomerUser) {
-      if (user.customerValue) {
-        customerValuesSum += user.customerValue;
-      }
-    }
-  });
+  const customerValuesSum = allCustomers.reduce(
+    (total, { value }) => total + value,
+    0,
+  );
 
-  let ratingValuesSum = 0;
-  task.ratings.forEach((rating) => {
-    if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
-    const ratingCreator = allUsers.find(
-      (user) => user.id === rating.createdByUser,
+  const ratingValue = (rating: Taskrating) => {
+    const ratingCreator = allCustomers.find(
+      ({ id }) => id === rating.forCustomer,
     );
 
-    const ratingCreatorValue = ratingCreator?.customerValue || 0;
+    const ratingCreatorValue = ratingCreator?.value || 0;
 
     let creatorPlannerWeight = roadmap.plannerCustomerWeights?.find(
-      (weight) => weight.customerId === rating.createdByUser,
+      ({ customerId }) => customerId === rating.forCustomer,
     )?.weight;
     if (creatorPlannerWeight === undefined) creatorPlannerWeight = 1;
 
     let creatorValueWeight = 0;
-    if (ratingCreator?.type !== UserType.CustomerUser) creatorValueWeight = 1;
+    if (ratingCreator === undefined) creatorValueWeight = 1;
 
     if (ratingCreatorValue > 0 && customerValuesSum > 0) {
       creatorValueWeight = ratingCreatorValue / customerValuesSum;
     }
-    ratingValuesSum += rating.value * creatorValueWeight * creatorPlannerWeight;
-  });
+    return rating.value * creatorValueWeight * creatorPlannerWeight;
+  };
 
-  return ratingValuesSum;
+  return task.ratings
+    .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
+    .map(ratingValue)
+    .reduce((sum, value) => sum + value, 0);
 };
 
 export const calcWeightedTaskPriority = (
   task: Task,
-  allUsers: PublicUser[],
+  allCustomers: Customer[],
   roadmap: Roadmap,
 ) => {
-  const weightedValue = calcTaskWeightedValueSum(task, allUsers, roadmap);
+  const weightedValue = calcTaskWeightedValueSum(task, allCustomers, roadmap);
   if (!weightedValue) return -2;
 
   const avgWorkRating = calcTaskAverageRating(

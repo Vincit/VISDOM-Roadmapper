@@ -14,10 +14,10 @@ import {
 import classNames from 'classnames';
 import {
   chosenRoadmapSelector,
-  publicUsersSelector,
+  allCustomersSelector,
 } from '../redux/roadmaps/selectors';
 import {
-  PublicUser,
+  Customer,
   Roadmap,
   Task,
   TaskRatingDimension,
@@ -48,8 +48,9 @@ export const PlannerChart: React.FC<{
     shallowEqual,
   )!;
   const [savedData, setSavedData] = useState<any[] | undefined>(undefined);
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+
+  const customers = useSelector<RootState, Customer[] | undefined>(
+    allCustomersSelector,
     shallowEqual,
   );
 
@@ -62,8 +63,8 @@ export const PlannerChart: React.FC<{
       name: DataKeys.OptimalRoadmap,
       tasks: [...currentRoadmap.tasks].sort(
         (a, b) =>
-          calcWeightedTaskPriority(b, publicUsers!, currentRoadmap) -
-          calcWeightedTaskPriority(a, publicUsers!, currentRoadmap),
+          calcWeightedTaskPriority(b, customers!, currentRoadmap) -
+          calcWeightedTaskPriority(a, customers!, currentRoadmap),
       ),
     });
   }

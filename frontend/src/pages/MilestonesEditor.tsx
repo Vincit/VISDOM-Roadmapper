@@ -19,9 +19,9 @@ import { ModalTypes } from '../redux/modals/types';
 import {
   allTasksSelector,
   chosenRoadmapSelector,
-  publicUsersSelector,
+  allCustomersSelector,
 } from '../redux/roadmaps/selectors';
-import { PublicUser, Roadmap, Task } from '../redux/roadmaps/types';
+import { Customer, Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
@@ -63,8 +63,8 @@ export const MilestonesEditor = () => {
   const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
     undefined | Version[]
   >(undefined);
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+  const customers = useSelector<RootState, Customer[] | undefined>(
+    allCustomersSelector,
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();
@@ -93,8 +93,8 @@ export const MilestonesEditor = () => {
 
       newVersionLists[ROADMAP_LIST_ID].sort(
         (a, b) =>
-          calcWeightedTaskPriority(b, publicUsers!, currentRoadmap) -
-          calcWeightedTaskPriority(a, publicUsers!, currentRoadmap),
+          calcWeightedTaskPriority(b, customers!, currentRoadmap) -
+          calcWeightedTaskPriority(a, customers!, currentRoadmap),
       );
 
       setVersionLists(newVersionLists);
@@ -104,7 +104,7 @@ export const MilestonesEditor = () => {
     roadmapsVersionsLocal,
     tasks,
     disableUpdates,
-    publicUsers,
+    customers,
     currentRoadmap,
   ]);
 
