@@ -8,7 +8,11 @@ import { roadmapsActions } from '../redux/roadmaps';
 import { allCustomersSelector } from '../redux/roadmaps/selectors';
 import { Customer } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { SortingOrders, SortingTypes } from '../utils/UserUtils';
+import {
+  SortingOrders,
+  SortingTypes,
+  sortCustomers,
+} from '../utils/CustomerUtils';
 import '../shared.scss';
 
 interface TableHeader {
@@ -36,8 +40,7 @@ export const CustomerListPage = () => {
     const searched = customers?.filter(({ name }) =>
       name.toLowerCase().includes(searchString),
     );
-    // TODO: sort
-    return searched || [];
+    return sortCustomers(searched || [], sortingType, sortingOrder);
   };
 
   const onSearchChange = (value: string) => {
