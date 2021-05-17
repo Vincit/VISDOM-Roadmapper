@@ -20,8 +20,9 @@ import { roadmapsActions } from '../redux/roadmaps';
 import {
   chosenRoadmapSelector,
   publicUsersSelector,
+  allCustomersSelector,
 } from '../redux/roadmaps/selectors';
-import { PublicUser, Roadmap } from '../redux/roadmaps/types';
+import { PublicUser, Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
@@ -72,6 +73,11 @@ const RoadmapRouterComponent = () => {
     publicUsersSelector,
     shallowEqual,
   );
+  const [isLoadingCustomers, setIsLoadingCustomers] = useState(false);
+  const customers = useSelector<RootState, Customer[] | undefined>(
+    allCustomersSelector,
+    shallowEqual,
+  );
 
   // Parse query params
   let queryModal = query.get('openModal');
@@ -119,8 +125,14 @@ const RoadmapRouterComponent = () => {
         setIsLoadingUsers(false);
       });
     }
+    if (!customers) {
+      setIsLoadingCustomers(true);
+      dispatch(roadmapsActions.getCustomers()).then(() => {
+        setIsLoadingCustomers(false);
+      });
+    }
     setUseEffectFinished(true);
-  }, [currentRoadmap, roadmapId, dispatch, publicUsers]);
+  }, [currentRoadmap, roadmapId, dispatch, publicUsers, customers]);
 
   const renderOrRedirect = () => {
     if (!useEffectFinished) return;
@@ -132,7 +144,7 @@ const RoadmapRouterComponent = () => {
           </div>
         </>
       );
-    if (!isLoadingRoadmap && !isLoadingUsers) {
+    if (!isLoadingRoadmap && !isLoadingUsers && !isLoadingCustomers) {
       return (
         <div className="layoutRow overflowYAuto">
           <div className="layoutCol roadmapPageContainer">
