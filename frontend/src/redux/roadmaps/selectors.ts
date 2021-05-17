@@ -50,10 +50,10 @@ export const userSelector = (id: number) => {
   );
 };
 
-export const plannerUserWeightsSelector = () => {
+export const plannerCustomerWeightsSelector = () => {
   return createSelector(
     chosenRoadmapSelector,
-    (roadmap) => roadmap?.plannerUserWeights || [],
+    (roadmap) => roadmap?.plannerCustomerWeights || [],
   );
 };
 

@@ -36,7 +36,7 @@ export interface Roadmap {
   description: string;
   tasks: Task[];
   customers: Customer[];
-  plannerUserWeights: PlannerUserWeight[] | undefined;
+  plannerCustomerWeights: PlannerCustomerWeight[] | undefined;
   jiraconfiguration: JiraConfiguration;
 }
 
@@ -115,8 +115,8 @@ export interface ImportBoardRequest {
   };
 }
 
-export interface PlannerUserWeight {
-  userId: number;
+export interface PlannerCustomerWeight {
+  customerId: number;
   weight: number;
 }
 export interface JiraOAuthURLResponse {
