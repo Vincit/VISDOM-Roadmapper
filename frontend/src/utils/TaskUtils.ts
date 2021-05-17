@@ -7,6 +7,16 @@ import {
   TaskRatingDimension,
 } from '../redux/roadmaps/types';
 
+import {
+  SortingOrders,
+  sorted,
+  sortKeyNumeric,
+  sortKeyLocale,
+  SortComparison,
+} from './SortUtils';
+
+export { SortingOrders } from './SortUtils';
+
 export enum FilterTypes {
   SHOW_ALL,
   NOT_RATED_BY_ME,
@@ -22,11 +32,6 @@ export enum SortingTypes {
   SORT_DESC,
   SORT_CREATEDAT,
   SORT_RATINGS,
-}
-
-export enum SortingOrders {
-  ASCENDING,
-  DESCENDING,
 }
 
 const averageRatingsByDimension = (
@@ -127,55 +132,31 @@ export const filterTasks = (
   return taskList.filter(filterFunc);
 };
 
-export const sortTasks = (
-  taskList: Task[],
+const taskCompare = (
   sortingType: SortingTypes,
-  sortingOrder: SortingOrders,
-) => {
-  const tasks = [...taskList];
+): SortComparison<Task> | undefined => {
   switch (sortingType) {
     case SortingTypes.SORT_CREATEDAT:
-      tasks.sort(
-        (a, b) =>
-          (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) *
-          (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-      );
-      break;
+      return sortKeyNumeric((t) => new Date(t.createdAt).getTime());
     case SortingTypes.SORT_NAME:
-      tasks.sort(
-        (a, b) =>
-          a.name.localeCompare(b.name) *
-          (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-      );
-      break;
+      return sortKeyLocale((t) => t.name);
     case SortingTypes.SORT_DESC:
-      tasks.sort(
-        (a, b) =>
-          a.description.localeCompare(b.description) *
-          (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-      );
-      break;
+      return sortKeyLocale((t) => t.description);
     case SortingTypes.SORT_STATUS:
-      tasks.sort(
-        (a, b) =>
-          (+a.completed - +b.completed) *
-          (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-      );
-      break;
+      return sortKeyNumeric((t) => +t.completed);
     case SortingTypes.SORT_RATINGS:
-      tasks.sort(
-        (a, b) =>
-          (calcTaskPriority(a) - calcTaskPriority(b)) *
-          (sortingOrder === SortingOrders.DESCENDING ? -1 : 1),
-      );
-      break;
+      return sortKeyNumeric(calcTaskPriority);
     default:
       // SortingTypes.NO_SORT
       break;
   }
-
-  return tasks;
 };
+
+export const sortTasks = (
+  taskList: Task[],
+  sortingType: SortingTypes,
+  sortingOrder: SortingOrders,
+) => sorted(taskList, taskCompare(sortingType), sortingOrder);
 
 // Function to help with reordering item in list
 export const reorderList = (
