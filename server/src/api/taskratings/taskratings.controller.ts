@@ -1,6 +1,6 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
-import { requirePermission } from './../../utils/checkPermissions';
-import { Permission } from '../../types/customTypes';
+import { hasPermission } from './../../utils/checkPermissions';
+import { Permission, TaskRatingDimension } from '../../types/customTypes';
 import Taskrating from './taskratings.model';
 import Task from '../tasks/tasks.model';
 
@@ -22,22 +22,29 @@ export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
   const child = await Task.relatedQuery('ratings')
     .for(Number(ctx.params.taskId))
     .insertAndFetch({
-      ...(requirePermission(Permission.TaskWorkRate) && {
+      ...(((dimension === TaskRatingDimension.BusinessValue &&
+        hasPermission(ctx, Permission.TaskValueRate)) ||
+        (dimension === TaskRatingDimension.RequiredWork &&
+          hasPermission(ctx, Permission.TaskWorkRate))) && {
         dimension: dimension,
-      }),
-      ...(requirePermission(Permission.TaskValueRate) && {
         value: value,
+        ...others,
+        createdByUser: Number(ctx.state.user.id),
       }),
-      ...others,
-      createdByUser: Number(ctx.state.user.id),
-    });
+    })
+    .where({ roadmapId: Number(ctx.params.roadmapId) });
   ctx.body = child;
 };
 
 export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
   const numDeleted = await Taskrating.query()
     .findById(Number(ctx.params.ratingId))
-    .where({ parentTask: Number(ctx.params.taskId) })
+    .where({
+      parentTask: Number(ctx.params.taskId),
+      ...(!hasPermission(ctx, Permission.TaskRatingEditOthers) && {
+        createdByUser: Number(ctx.state.user.id),
+      }),
+    })
     .delete();
 
   ctx.status = numDeleted == 1 ? 200 : 404;
@@ -45,17 +52,24 @@ export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
 
 export const patchTaskratings: RouteHandlerFnc = async (ctx, _) => {
   const { taskId, roadmapId, dimension, value, ...others } = ctx.request.body;
+
   const updated = await Taskrating.query()
     .patchAndFetchById(Number(ctx.params.ratingId), {
-      ...(requirePermission(Permission.TaskWorkRate) && {
-        dimension: dimension,
-      }),
-      ...(requirePermission(Permission.TaskValueRate) && {
+      ...(((dimension === TaskRatingDimension.BusinessValue &&
+        hasPermission(ctx, Permission.TaskValueRate)) ||
+        (dimension === TaskRatingDimension.RequiredWork &&
+          hasPermission(ctx, Permission.TaskWorkRate))) && {
         value: value,
+        ...others,
       }),
-      ...others,
     })
-    .where({ parentTask: Number(ctx.params.taskId) });
+    .where({
+      parentTask: Number(ctx.params.taskId),
+      dimension: dimension,
+      ...(!hasPermission(ctx, Permission.TaskRatingEditOthers) && {
+        createdByUser: Number(ctx.state.user.id),
+      }),
+    });
 
   if (!updated) {
     ctx.status = 404;

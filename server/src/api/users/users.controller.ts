@@ -17,7 +17,6 @@ export const postUsers: RouteHandlerFnc = async (ctx, _) => {
 
 export const patchUsers: RouteHandlerFnc = async (ctx, _) => {
   const updated = await User.query().patchAndFetchById(ctx.params.id, {
-    id: ctx.request.body.id,
     username: ctx.request.body.username,
     email: ctx.request.body.email,
   });

@@ -1,4 +1,6 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
+import { hasPermission } from './../../utils/checkPermissions';
+import { Permission } from '../../types/customTypes';
 import Task from './tasks.model';
 import Objection from 'objection';
 
@@ -36,7 +38,12 @@ export const postTasks: RouteHandlerFnc = async (ctx, _) => {
 export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
   const numDeleted = await Task.query()
     .findById(Number(ctx.params.taskId))
-    .where({ roadmapId: Number(ctx.params.roadmapId) })
+    .where({
+      roadmapId: Number(ctx.params.roadmapId),
+      ...(!hasPermission(ctx, Permission.TaskEditOthers) && {
+        createdByUser: Number(ctx.state.user.id),
+      }),
+    })
     .delete();
 
   ctx.status = numDeleted == 1 ? 200 : 404;
@@ -44,13 +51,18 @@ export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
 
 export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
   const { jiraId, createdAt, createdBy, ...others } = ctx.request.body;
-  const updated = await Task.query().patchAndFetchById(
-    Number(ctx.params.taskId),
-    {
+  const updated = await Task.query()
+    .patchAndFetchById(Number(ctx.params.taskId), {
       ...others,
       roadmapId: Number(ctx.params.roadmapId),
-    },
-  );
+    })
+    .where({
+      roadmapId: Number(ctx.params.roadmapId),
+      id: Number(ctx.params.taskId),
+      ...(!hasPermission(ctx, Permission.TaskEditOthers) && {
+        createdByUser: Number(ctx.state.user.id),
+      }),
+    });
 
   if (!updated) {
     ctx.status = 404;

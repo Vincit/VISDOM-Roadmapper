@@ -5,7 +5,6 @@ import {
   patchTasks,
   postTasks,
 } from './tasks.controller';
-import { isCurrentTaskCreator } from '../../utils/isCurrent';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import { DefaultState, Context } from 'koa';
@@ -25,13 +24,11 @@ tasksRouter.post(
 tasksRouter.delete(
   '/tasks/:taskId',
   requirePermission(Permission.TaskEdit),
-  isCurrentTaskCreator,
   deleteTasks,
 );
 tasksRouter.patch(
   '/tasks/:taskId',
   requirePermission(Permission.TaskEdit),
-  isCurrentTaskCreator,
   patchTasks,
 );
 

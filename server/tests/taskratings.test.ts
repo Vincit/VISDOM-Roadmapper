@@ -7,8 +7,8 @@ import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
 import TaskRating from '../src/api/taskratings/taskratings.model';
 
-describe('Test /roadmap/:roadmapId/taskratings/ api', function () {
-  describe('GET /roadmap/:roadmapId/taskratings/', function () {
+describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {
+  describe('GET /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
     it('Should get all taskratings', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
@@ -23,7 +23,7 @@ describe('Test /roadmap/:roadmapId/taskratings/ api', function () {
       expect(res.body[0]).to.have.property('parentTask');
     });
   });
-  describe('POST /roadmap/:roadmapId/taskratings/', function () {
+  describe('POST /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
     it('Should add new taskrating', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
@@ -47,7 +47,7 @@ describe('Test /roadmap/:roadmapId/taskratings/ api', function () {
     });
   });
 
-  describe('DELETE /roadmap/:roadmapId/taskratings/:taskId', function () {
+  describe('DELETE /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should delete taskrating', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
@@ -66,7 +66,7 @@ describe('Test /roadmap/:roadmapId/taskratings/ api', function () {
     });
   });
 
-  describe('PATCH /roadmap/:roadmapId/taskratings/:taskId', function () {
+  describe('PATCH /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should patch taskrating', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
@@ -77,11 +77,11 @@ describe('Test /roadmap/:roadmapId/taskratings/ api', function () {
         )
         .type('json')
         .send({
-          dimension: 1,
+          dimension: 0,
           value: 9,
         });
       expect(res.status).to.equal(200);
-      expect(res.body.dimension).to.equal(1);
+      expect(res.body.dimension).to.equal(0);
       expect(res.body.value).to.equal(9);
     });
   });

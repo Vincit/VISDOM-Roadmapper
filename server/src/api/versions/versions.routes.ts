@@ -1,5 +1,4 @@
 import { requireAuth } from './../../utils/requireAuth';
-import { isCurrentRoadmap } from '../../utils/isCurrent';
 import KoaRouter from '@koa/router';
 import { Context, DefaultState } from 'koa';
 import { requirePermission } from './../../utils/checkPermissions';
@@ -23,21 +22,18 @@ versionsRouter.get(
 versionsRouter.post(
   '/versions/',
   requirePermission(Permission.VersionCreate | Permission.RoadmapEdit),
-  isCurrentRoadmap,
   postVersions,
 );
 
 versionsRouter.patch(
   '/versions/:versionId',
   requirePermission(Permission.VersionEdit),
-  isCurrentRoadmap,
   patchVersions,
 );
 
 versionsRouter.delete(
   '/versions/:versionId',
   requirePermission(Permission.VersionDelete | Permission.RoadmapEdit),
-  isCurrentRoadmap,
   deleteVersions,
 );
 export default versionsRouter;

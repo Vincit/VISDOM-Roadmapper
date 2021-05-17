@@ -7,10 +7,6 @@ import {
 } from './taskratings.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
-import {
-  isCurrentRoadmapsTask,
-  isCurrentTaskRatingCreator,
-} from '../../utils/isCurrent';
 import { DefaultState, Context } from 'koa';
 const taskratingRouter = new KoaRouter<DefaultState, Context>();
 
@@ -22,19 +18,16 @@ taskratingRouter.get(
 taskratingRouter.post(
   '/taskratings',
   requirePermission(Permission.TaskRate),
-  isCurrentRoadmapsTask,
   postTasksRatings,
 );
 taskratingRouter.patch(
   '/taskratings/:ratingId',
   requirePermission(Permission.TaskRatingEdit),
-  isCurrentTaskRatingCreator,
   patchTaskratings,
 );
 taskratingRouter.delete(
   '/taskratings/:ratingId',
   requirePermission(Permission.TaskRatingEdit),
-  isCurrentTaskRatingCreator,
   deleteTaskratings,
 );
 

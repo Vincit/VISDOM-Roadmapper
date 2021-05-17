@@ -1,5 +1,4 @@
 import { requireAuth } from './../../utils/requireAuth';
-import { isCurrentRoadmap } from '../../utils/isCurrent';
 import { requirePermission, requireRole } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import KoaRouter from '@koa/router';
