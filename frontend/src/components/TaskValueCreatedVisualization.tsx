@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
-import { publicUsersSelector } from '../redux/roadmaps/selectors';
-import { PublicUser, TaskRatingDimension } from '../redux/roadmaps/types';
+import { allCustomersSelector } from '../redux/roadmaps/selectors';
+import { Customer, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
 import { calcTaskValueSum } from '../utils/TaskUtils';
@@ -21,25 +21,25 @@ export interface DataPoint {
 export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizationProps> = ({
   version,
 }) => {
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+  const customers = useSelector<RootState, Customer[] | undefined>(
+    allCustomersSelector,
     shallowEqual,
   );
   let totalValue = 0;
-  const customerStakes = new Map<PublicUser, number>();
+  const customerStakes = new Map<Customer, number>();
 
   // Calculate total sum of task values in the milestone
   // And map values of how much each user has rated in these tasks
   version.tasks.forEach((task) => {
-    totalValue += calcTaskValueSum(task!) || 0;
     if (task == null) return;
+    totalValue += calcTaskValueSum(task!) || 0;
 
     task.ratings.forEach((rating) => {
       if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
-      const user = publicUsers?.find((u) => u.id === rating.createdByUser);
-      if (user) {
-        const previousVal = customerStakes.get(user) || 0;
-        customerStakes.set(user, previousVal + rating.value);
+      const customer = customers?.find(({ id }) => id === rating.forCustomer);
+      if (customer) {
+        const previousVal = customerStakes.get(customer) || 0;
+        customerStakes.set(customer, previousVal + rating.value);
       }
     });
   });
@@ -48,10 +48,10 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   const data: DataPoint[] = Array.from(customerStakes)
     .sort((a, b) => b[1] - a[1])
-    .map(([key, val], index) => ({
-      name: key.username,
-      value: Math.round(val * 100) / 100,
-      color: COLORS[index % COLORS.length],
+    .map(([key, value], index) => ({
+      name: key.name,
+      value,
+      color: key.color || COLORS[index % COLORS.length],
     }));
 
   const valuePercent = (value: number) => {
