@@ -3,77 +3,67 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import {
-  plannerUserWeightsSelector,
-  publicUsersSelector,
+  plannerCustomerWeightsSelector,
+  allCustomersSelector,
 } from '../redux/roadmaps/selectors';
-import { PlannerUserWeight, PublicUser } from '../redux/roadmaps/types';
+import { PlannerCustomerWeight, Customer } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import { UserType } from '../redux/user/types';
 import css from './PlannerWeightsPage.module.scss';
 
 const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const plannerUserWeights = useSelector<RootState, PlannerUserWeight[]>(
-    plannerUserWeightsSelector(),
+  const customerWeights = useSelector<RootState, PlannerCustomerWeight[]>(
+    plannerCustomerWeightsSelector(),
     shallowEqual,
   );
 
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+  const customers = useSelector<RootState, Customer[] | undefined>(
+    allCustomersSelector,
     shallowEqual,
   );
 
   useEffect(() => {
-    if (!publicUsers) dispatch(roadmapsActions.getPublicUsers());
-  }, [dispatch, publicUsers]);
+    if (!customers) dispatch(roadmapsActions.getCustomers());
+  }, [dispatch, customers]);
 
-  const handleSliderChange = (userId: number, value: number) => {
+  const handleSliderChange = (customerId: number, weight: number) => {
     // TODO: Maybe debounce this so that a dispatch doesnt go off every time slider moves a notch
-    dispatch(roadmapsActions.setPlannerUserWeight({ userId, weight: value }));
+    dispatch(roadmapsActions.setPlannerCustomerWeight({ customerId, weight }));
   };
 
-  const renderUserSliders = () => {
-    return (
-      <>
-        {publicUsers!
-          .filter((user) => user.type === UserType.CustomerUser)
-          .map((user) => {
-            let existingWeight = plannerUserWeights.find(
-              (w) => w.userId === user.id,
-            )?.weight;
-            if (existingWeight === undefined) existingWeight = 1;
-            return (
-              <div className={classes(css.userRow)} key={user.id}>
-                <span>{user.username}</span>
-                <input
-                  type="range"
-                  id="weight"
-                  name="weight"
-                  min="0"
-                  max="2"
-                  defaultValue={existingWeight}
-                  step="0.2"
-                  onChange={(e) =>
-                    handleSliderChange(user.id, Number(e.currentTarget.value))
-                  }
-                />
-              </div>
-            );
-          })}
-      </>
+  const weight = (id: number) => {
+    const customer = customerWeights.find(
+      ({ customerId }) => customerId === id,
     );
+    return customer ? customer.weight : 1;
   };
 
   return (
     <div className={classes(css.plannerPagecontainer)}>
-      <p className={classes(css.title)}>
+      <h2 className={classes(css.title)}>
         <Trans i18nKey="Set different weighing for clients" />
-      </p>
-      {publicUsers && renderUserSliders()}
+      </h2>
+      {customers?.map(({ id, name }) => (
+        <div className={classes(css.userRow)} key={id}>
+          <span>{name}</span>
+          <input
+            type="range"
+            id="weight"
+            name="weight"
+            min="0"
+            max="2"
+            defaultValue={weight(id)}
+            step="0.2"
+            onChange={(e) =>
+              handleSliderChange(id, Number(e.currentTarget.value))
+            }
+          />
+        </div>
+      ))}
     </div>
   );
 };

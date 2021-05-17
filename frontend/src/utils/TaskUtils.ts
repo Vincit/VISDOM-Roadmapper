@@ -241,8 +241,8 @@ export const calcTaskWeightedValueSum = (
 
     const ratingCreatorValue = ratingCreator?.customerValue || 0;
 
-    let creatorPlannerWeight = roadmap.plannerUserWeights?.find(
-      (weight) => weight.userId === rating.createdByUser,
+    let creatorPlannerWeight = roadmap.plannerCustomerWeights?.find(
+      (weight) => weight.customerId === rating.createdByUser,
     )?.weight;
     if (creatorPlannerWeight === undefined) creatorPlannerWeight = 1;
 

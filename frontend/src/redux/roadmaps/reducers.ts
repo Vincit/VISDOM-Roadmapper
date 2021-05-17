@@ -1,6 +1,6 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
-  PlannerUserWeight,
+  PlannerCustomerWeight,
   JiraConfiguration,
   Customer,
   CustomerRequest,
@@ -210,23 +210,23 @@ export const PATCH_PUBLIC_USER_FULFILLED = (
   Object.assign(patchUser, action.payload);
 };
 
-export const SET_PLANNER_USER_WEIGHT: CaseReducer<
+export const SET_PLANNER_CUSTOMER_WEIGHT: CaseReducer<
   RoadmapsState,
-  PayloadAction<PlannerUserWeight>
+  PayloadAction<PlannerCustomerWeight>
 > = (state, action) => {
   const selectedRoadmap = state.roadmaps?.find(
     (roadmap) => roadmap.id === state.selectedRoadmapId,
   );
   if (!selectedRoadmap) throw new Error('No roadmap has been selected');
-  const newUserWeights = selectedRoadmap.plannerUserWeights || [];
-  const existing = newUserWeights.find(
-    (userWeight) => userWeight.userId === action.payload.userId,
+  const weights = selectedRoadmap.plannerCustomerWeights || [];
+  const existing = weights.find(
+    ({ customerId }) => customerId === action.payload.customerId,
   );
   if (existing) Object.assign(existing, action.payload);
   if (!existing) {
-    newUserWeights.push(action.payload);
+    weights.push(action.payload);
   }
-  selectedRoadmap.plannerUserWeights = newUserWeights;
+  selectedRoadmap.plannerCustomerWeights = weights;
 };
 
 export const ADD_JIRA_CONFIGURATION_FULFILLED = (
