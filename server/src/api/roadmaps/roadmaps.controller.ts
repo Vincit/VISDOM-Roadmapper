@@ -61,11 +61,3 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
-
-export const inviteRoadmapUser: RouteHandlerFnc = async (ctx, _) => {
-  const created = await Role.query().insertAndFetch({
-    ...ctx.request.body,
-    roadmapId: Number(ctx.params.roadmapId),
-  });
-  ctx.body = created;
-};

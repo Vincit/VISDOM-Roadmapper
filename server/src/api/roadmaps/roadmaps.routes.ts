@@ -8,7 +8,6 @@ import {
   patchRoadmaps,
   deleteRoadmaps,
   getRoadmapsUsers,
-  inviteRoadmapUser,
   getCurrentUser,
 } from './roadmaps.controller';
 import { DefaultState, Context } from 'koa';
@@ -17,6 +16,7 @@ import tasksRouter from '../tasks/tasks.routes';
 import jiraRouter from '../jira/jira.routes';
 import jiraConfigurationRouter from '../jiraconfigurations/jiraconfigurations.routes';
 import customerRouter from '../customer/customer.routes';
+import rolesRouter from '../roles/roles.routes';
 
 const roadmapRouter = new KoaRouter<DefaultState, Context>();
 
@@ -41,11 +41,6 @@ roadmapRouter.get(
   requirePermission(Permission.RoadmapReadUsers),
   getRoadmapsUsers,
 );
-roadmapRouter.post(
-  '/roadmaps/:roadmapId/inviteUser',
-  requirePermission(Permission.RoadmapInviteUser),
-  inviteRoadmapUser,
-);
 roadmapRouter.get('/roadmaps/:roadmapId/whoami', getCurrentUser);
 
 roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.routes());
@@ -65,5 +60,7 @@ roadmapRouter.use(
 
 roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.routes());
 roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.allowedMethods());
+roadmapRouter.use('/roadmaps/:roadmapId', rolesRouter.routes());
+roadmapRouter.use('/roadmaps/:roadmapId', rolesRouter.allowedMethods());
 
 export default roadmapRouter;
