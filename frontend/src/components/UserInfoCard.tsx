@@ -23,7 +23,6 @@ export const UserInfoCard = () => {
           <div>{userInfo.email}</div>
           <div>{UserType[userInfo.type]}</div>
           <div>{userInfo.id}</div>
-          {userInfo.customerValue && <div>{userInfo.customerValue}</div>}
         </>
       ) : (
         <div>
