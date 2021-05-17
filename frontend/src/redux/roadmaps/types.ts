@@ -6,6 +6,23 @@ export interface RoadmapsState {
   allUsers: PublicUser[] | undefined;
 }
 
+export interface Customer {
+  id: number;
+  roadmapId: number;
+  name: string;
+  value: number;
+  color: string | null;
+  representatives?: PublicUser[];
+}
+
+export interface CustomerRequest {
+  id?: number;
+  name?: string;
+  value?: number;
+  color?: string | null;
+  representatives?: PublicUser[];
+}
+
 export interface PublicUser {
   id: number;
   username: string;
@@ -18,6 +35,7 @@ export interface Roadmap {
   name: string;
   description: string;
   tasks: Task[];
+  customers: Customer[];
   plannerUserWeights: PlannerUserWeight[] | undefined;
   jiraconfiguration: JiraConfiguration;
 }

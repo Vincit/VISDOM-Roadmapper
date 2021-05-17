@@ -5,8 +5,8 @@ import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
-import { userSelector } from '../../redux/roadmaps/selectors';
-import { PublicUserRequest } from '../../redux/roadmaps/types';
+import { customerSelector } from '../../redux/roadmaps/selectors';
+import { CustomerRequest } from '../../redux/roadmaps/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -16,41 +16,41 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import '../../shared.scss';
 
-export interface RateUserModalProps extends ModalProps {
-  userId: number;
+export interface RateCustomerModalProps extends ModalProps {
+  customerId: number;
 }
 
-export const RateUserModal: React.FC<RateUserModalProps> = ({
+export const RateCustomerModal: React.FC<RateCustomerModalProps> = ({
   closeModal,
-  userId,
+  customerId,
 }) => {
-  const user = useSelector(userSelector(userId))!;
+  const customer = useSelector(customerSelector(customerId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [userValue, setUserValue] = useState(user?.customerValue || 0);
+  const [value, setValue] = useState(customer?.value || 0);
 
   useEffect(() => {
-    if (user) setUserValue(user?.customerValue || 0);
-  }, [user]);
+    if (customer) setValue(customer?.value || 0);
+  }, [customer]);
 
-  if (!user) return null;
+  if (!customer) return null;
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
 
     if (form.checkValidity()) {
-      const req: PublicUserRequest = {
-        id: user.id,
-        customerValue: userValue,
+      const req: CustomerRequest = {
+        id: customer.id,
+        value,
       };
 
       setIsLoading(true);
-      dispatch(roadmapsActions.patchPublicUser(req)).then((res) => {
+      dispatch(roadmapsActions.patchCustomer(req)).then((res) => {
         setIsLoading(false);
-        if (roadmapsActions.patchPublicUser.rejected.match(res)) {
+        if (roadmapsActions.patchCustomer.rejected.match(res)) {
           setHasError(true);
           if (res.payload) {
             setErrorMessage(res.payload.message);
@@ -60,10 +60,6 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
         }
       });
     }
-  };
-
-  const onValueChange = (value: number) => {
-    setUserValue(value);
   };
 
   return (
@@ -87,8 +83,8 @@ export const RateUserModal: React.FC<RateUserModalProps> = ({
             min="0"
             name="name"
             id="name"
-            value={userValue}
-            onChange={(e: any) => onValueChange(+e.currentTarget.value)}
+            value={value}
+            onChange={(e: any) => setValue(+e.currentTarget.value)}
           />
           <Alert
             show={hasError}

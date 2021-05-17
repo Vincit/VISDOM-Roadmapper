@@ -2,6 +2,8 @@ import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
   PlannerUserWeight,
   JiraConfiguration,
+  Customer,
+  CustomerRequest,
   PublicUser,
   Roadmap,
   RoadmapRequest,
@@ -17,6 +19,54 @@ export const GET_ROADMAPS_FULFILLED = (
   action: PayloadAction<Roadmap[]>,
 ) => {
   state.roadmaps = action.payload;
+};
+
+export const GET_CUSTOMERS_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; customers: Customer[] }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps?.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.customers = action.payload.customers;
+};
+
+export const ADD_CUSTOMER_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Customer>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.customers.push(action.payload);
+};
+
+export const PATCH_CUSTOMER_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Customer>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+
+  const patched = roadmap.customers.find(({ id }) => id === action.payload.id);
+  Object.assign(patched, action.payload);
+};
+
+export const DELETE_CUSTOMER_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; response: CustomerRequest }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.customers = roadmap.customers.filter(
+    ({ id }) => id !== action.payload.response.id,
+  );
 };
 
 export const GET_PUBLIC_USERS_FULFILLED = (

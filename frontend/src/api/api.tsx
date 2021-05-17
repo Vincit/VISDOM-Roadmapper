@@ -7,6 +7,8 @@ import {
   JiraOAuthURLRequest,
   JiraTokenSwapRequest,
   JiraConfiguration,
+  Customer,
+  CustomerRequest,
   PublicUser,
   PublicUserRequest,
   Roadmap,
@@ -106,6 +108,32 @@ const patchTaskrating = async (
   );
 
   return response.data as Taskrating;
+};
+
+const getCustomers = async (roadmapId: number) => {
+  const response = await axios.get(`roadmaps/${roadmapId}/customers`);
+  return response.data as Customer[];
+};
+
+const addCustomer = async (customer: CustomerRequest, roadmapId: number) => {
+  const response = await axios.post(
+    `roadmaps/${roadmapId}/customers/`,
+    customer,
+  );
+  return response.data as Customer;
+};
+
+const deleteCustomer = async (customer: CustomerRequest, roadmapId: number) => {
+  await axios.delete(`roadmaps/${roadmapId}/customers/${customer.id}`);
+  return customer;
+};
+
+const patchCustomer = async (customer: CustomerRequest, roadmapId: number) => {
+  const response = await axios.patch(
+    `roadmaps/${roadmapId}/customers/${customer.id}`,
+    customer,
+  );
+  return response.data as Customer;
 };
 
 const login = async (loginRequest: UserLoginRequest) => {
@@ -267,6 +295,10 @@ export const api = {
   generateCurrentUserToken,
   deleteCurrentUserToken,
   patchTask,
+  getCustomers,
+  addCustomer,
+  deleteCustomer,
+  patchCustomer,
   getPublicUsers,
   patchTaskrating,
   getVersions,

@@ -5,6 +5,8 @@ import { chosenRoadmapIdSelector } from './selectors';
 import { RootState } from '../types';
 import {
   ImportBoardRequest,
+  Customer,
+  CustomerRequest,
   PublicUser,
   PublicUserRequest,
   Roadmap,
@@ -16,6 +18,72 @@ import {
   JiraConfigurationRequest,
   JiraConfiguration,
 } from './types';
+
+export const getCustomers = createAsyncThunk<
+  { roadmapId: number; customers: Customer[] },
+  void,
+  { rejectValue: AxiosError }
+>('roadmaps/getCustomers', async (_, thunkAPI) => {
+  try {
+    const roadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId,
+      customers: await api.getCustomers(roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const addCustomer = createAsyncThunk<
+  Customer,
+  CustomerRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/addCustomer', async (customer, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.addCustomer(customer, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const deleteCustomer = createAsyncThunk<
+  { roadmapId: number; response: CustomerRequest },
+  CustomerRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/deleteCustomer', async (customer, thunkAPI) => {
+  try {
+    const roadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId,
+      response: await api.deleteCustomer(customer, roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const patchCustomer = createAsyncThunk<
+  Customer,
+  CustomerRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchCustomer', async (customer, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.patchCustomer(customer, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
 
 export const getPublicUsers = createAsyncThunk<
   PublicUser[],
