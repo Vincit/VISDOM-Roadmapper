@@ -78,6 +78,7 @@ export interface Taskrating {
   value: number;
   comment: string;
   createdByUser: number;
+  forCustomer: number;
   parentTask: number;
 }
 
@@ -87,6 +88,7 @@ export interface TaskratingRequest {
   value?: number;
   comment?: string;
   createdByUser?: number;
+  forCustomer?: number;
   parentTask?: number;
 }
 
