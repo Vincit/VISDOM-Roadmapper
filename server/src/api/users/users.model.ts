@@ -1,6 +1,6 @@
 import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
-import { UserType } from 'src/types/customTypes';
+import { UserType, RoleType } from './../../types/customTypes';
 import Token from '../tokens/tokens.model';
 import { Role } from '../roles/roles.model';
 import Roadmap from '../roadmaps/roadmaps.model';
@@ -100,8 +100,7 @@ export default class User extends Password(Model) {
   $formatJson(json: Pojo): Pojo {
     json = super.$formatJson(json);
     /*
-     * Make sure the password hash is never sent to the client
-     * when this model is used in the response body.
+     * Make sure the password, tokens are never sent when this model is sent in response body
      */
     delete json.password;
     delete json.tokens;

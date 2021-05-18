@@ -42,7 +42,7 @@ const jiraClientForRoadmapAndUser = async (
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
   const roadmapId = ctx.params.roadmapId;
-  const userId = parseInt(ctx.state.user.id, 10);
+  const userId = ctx.state.user!.id;
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boards = await jiraApi.getAllBoards();
@@ -70,7 +70,7 @@ const boardLabels = async (
 export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
   const roadmapId = ctx.params.roadmapId;
   const boardId = ctx.params.board;
-  const userId = parseInt(ctx.state.user.id, 10);
+  const userId = ctx.state.user!.id;
   const labels = await boardLabels(userId, roadmapId, boardId);
   ctx.body = labels;
   ctx.status = 200;
@@ -90,7 +90,7 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   const { boardId, createdByUser, filters } = ctx.request.body;
   const roadmapId = ctx.params.roadmapId;
 
-  const userId = parseInt(ctx.state.user.id, 10);
+  const userId = ctx.state.user!.id;
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
@@ -171,14 +171,14 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
       provider: 'jira',
       instance: jiraconfiguration.url,
       type: 'access_token',
-      user: parseInt(ctx.state.user.id, 10),
+      user: ctx.state.user!.id,
       value: oauthResponse.token,
     });
     await insertOrUpdateToken({
       provider: 'jira',
       instance: jiraconfiguration.url,
       type: 'access_token_secret',
-      user: parseInt(ctx.state.user.id, 10),
+      user: ctx.state.user!.id,
       value: tokenSecret,
     });
 

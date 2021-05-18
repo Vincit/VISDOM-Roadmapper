@@ -1,4 +1,3 @@
-import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import { Context, DefaultState } from 'koa';
 import {
@@ -10,7 +9,9 @@ import {
 } from './jira.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
-const jiraRouter = new KoaRouter<DefaultState, Context>();
+import { IKoaState } from 'src/types/customTypes';
+
+const jiraRouter = new KoaRouter<IKoaState, Context>();
 
 jiraRouter.get('/jira/boards', getBoards);
 jiraRouter.get('/jira/boards/labels/:board', getBoardLabels);

@@ -1,6 +1,6 @@
 import { requireAuth } from './../../utils/requireAuth';
 import { requirePermission, requireRole } from './../../utils/checkPermissions';
-import { Permission } from '../../types/customTypes';
+import { IKoaState, Permission } from '../../types/customTypes';
 import KoaRouter from '@koa/router';
 import {
   getRoadmaps,
@@ -18,7 +18,7 @@ import jiraConfigurationRouter from '../jiraconfigurations/jiraconfigurations.ro
 import customerRouter from '../customer/customer.routes';
 import rolesRouter from '../roles/roles.routes';
 
-const roadmapRouter = new KoaRouter<DefaultState, Context>();
+const roadmapRouter = new KoaRouter<IKoaState, Context>();
 
 roadmapRouter.use(requireAuth);
 roadmapRouter.use('/roadmaps/:roadmapId', requireRole);

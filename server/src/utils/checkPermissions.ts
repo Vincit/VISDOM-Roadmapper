@@ -4,12 +4,13 @@ import { Role } from '../api/roles/roles.model';
 export class ForbiddenError extends Error {}
 
 export const requireRole = async (ctx: Context, next: () => Promise<any>) => {
-  const user = Number(ctx.state.user.id);
+  const uid = ctx.state.user?.id;
   const roadmap = Number(ctx.params.roadmapId);
   const role =
-    !isNaN(user) &&
+    ctx.state.user &&
+    !isNaN(uid) &&
     !isNaN(roadmap) &&
-    (await Role.query().findById([user, roadmap]));
+    (await Role.query().findById([uid, roadmap]));
   if (role) {
     ctx.state.role = role.type;
     await next();

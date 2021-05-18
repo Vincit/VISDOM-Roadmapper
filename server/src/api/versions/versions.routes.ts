@@ -2,14 +2,14 @@ import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
 import { Context, DefaultState } from 'koa';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Permission } from '../../types/customTypes';
+import { IKoaState, Permission } from '../../types/customTypes';
 import {
   deleteVersions,
   getVersions,
   patchVersions,
   postVersions,
 } from './versions.controller';
-const versionsRouter = new KoaRouter<DefaultState, Context>();
+const versionsRouter = new KoaRouter<IKoaState, Context>();
 
 versionsRouter.get(
   '/versions/',
