@@ -52,7 +52,10 @@ const setToken = (userId: number, authToken: string | null) =>
   User.query().patchAndFetchById(userId, { authToken });
 
 export const generateToken: RouteHandlerFnc = async (ctx, _) => {
-  const updated = await setToken(ctx.state.user!.id, uuid.v4());
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  const updated = await setToken(ctx.state.user.id, uuid.v4());
   if (!updated) {
     ctx.status = 404;
   } else {
@@ -61,12 +64,18 @@ export const generateToken: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const getToken: RouteHandlerFnc = async (ctx, _) => {
-  ctx.body = ctx.state.user!.authToken;
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  ctx.body = ctx.state.user.authToken;
 };
 
 export const deleteToken: RouteHandlerFnc = async (ctx, _) => {
-  const updated = await setToken(ctx.state.user!.id, null);
-  ctx.state.user!.authToken = null;
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  const updated = await setToken(ctx.state.user.id, null);
+  ctx.state.user.authToken = null;
   ctx.status = updated ? 200 : 404;
 };
 
@@ -105,6 +114,9 @@ export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const getUserRoles: RouteHandlerFnc = async (ctx, _) => {
-  const roles = await User.relatedQuery('roles').for(ctx.state.user!.id);
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  const roles = await User.relatedQuery('roles').for(ctx.state.user.id);
   ctx.body = roles;
 };
