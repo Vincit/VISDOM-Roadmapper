@@ -23,10 +23,7 @@
   margin: 16px;
   margin-bottom: 0;
 
-  font-family: 'IBM Plex Mono';
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  @extend .typography-pre-title;
   text-align: left;
   cursor: pointer;
 
