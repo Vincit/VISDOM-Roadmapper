@@ -17,6 +17,9 @@ export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const { dimension, value, comment } = ctx.request.body;
   if (
     (dimension === TaskRatingDimension.BusinessValue &&
@@ -40,6 +43,9 @@ export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const numDeleted = await Taskrating.query()
     .findById(Number(ctx.params.ratingId))
     .where({
@@ -54,6 +60,9 @@ export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchTaskratings: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const { value, comment, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
@@ -65,7 +74,7 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx, _) => {
     if (!rating) return void (ctx.status = 404);
     if (
       !hasPermission(ctx, Permission.TaskRatingEditOthers) &&
-      rating.createdByUser !== ctx.state.user.id
+      rating.createdByUser !== ctx.state.user!.id
     )
       return void (ctx.status = 403);
     if (

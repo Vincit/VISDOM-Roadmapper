@@ -25,6 +25,9 @@ export const getTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postTasks: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const { jiraId, createdAt, ...others } = ctx.request.body;
   const task = await Task.query().insertAndFetch({
     ...others,
@@ -36,6 +39,9 @@ export const postTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const numDeleted = await Task.query()
     .findById(Number(ctx.params.taskId))
     .where({
@@ -50,6 +56,9 @@ export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const { name, description, completed, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
@@ -61,7 +70,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
     if (!task) return void (ctx.status = 404);
     if (
       !hasPermission(ctx, Permission.TaskEditOthers) &&
-      task.createdByUser !== ctx.state.user.id
+      task.createdByUser !== ctx.state.user!.id
     )
       return void (ctx.status = 403);
 

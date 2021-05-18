@@ -4,7 +4,11 @@ import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
-  const query = User.relatedQuery('roadmaps').for(ctx.state.user!.id);
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+
+  const query = User.relatedQuery('roadmaps').for(ctx.state.user.id);
   if (ctx.query.eager) {
     const eagerResult = await query.withGraphFetched(
       '[tasks.ratings, jiraconfiguration]',
@@ -30,6 +34,10 @@ export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+
   ctx.body = await Roadmap.transaction(async (trx) => {
     const roadmap = await Roadmap.query(trx).insertAndFetch(ctx.request.body);
     await Role.query(trx).insert({

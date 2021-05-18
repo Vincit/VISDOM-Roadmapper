@@ -41,8 +41,11 @@ const jiraClientForRoadmapAndUser = async (
 };
 
 export const getBoards: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const roadmapId = ctx.params.roadmapId;
-  const userId = ctx.state.user!.id;
+  const userId = ctx.state.user.id;
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boards = await jiraApi.getAllBoards();
@@ -68,9 +71,12 @@ const boardLabels = async (
 };
 
 export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
   const roadmapId = ctx.params.roadmapId;
   const boardId = ctx.params.board;
-  const userId = ctx.state.user!.id;
+  const userId = ctx.state.user.id;
   const labels = await boardLabels(userId, roadmapId, boardId);
   ctx.body = labels;
   ctx.status = 200;
@@ -87,10 +93,14 @@ const filterIssues = <T>(filters: { labels?: string[] }, issues: T[]): T[] => {
 };
 
 export const importBoard: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+
   const { boardId, createdByUser, filters } = ctx.request.body;
   const roadmapId = ctx.params.roadmapId;
 
-  const userId = ctx.state.user!.id;
+  const userId = ctx.state.user.id;
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
@@ -149,6 +159,10 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+
   const { verifierToken, token, tokenSecret } = ctx.request.body;
 
   try {
@@ -171,14 +185,14 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
       provider: 'jira',
       instance: jiraconfiguration.url,
       type: 'access_token',
-      user: ctx.state.user!.id,
+      user: ctx.state.user.id,
       value: oauthResponse.token,
     });
     await insertOrUpdateToken({
       provider: 'jira',
       instance: jiraconfiguration.url,
       type: 'access_token_secret',
-      user: ctx.state.user!.id,
+      user: ctx.state.user.id,
       value: tokenSecret,
     });
 
