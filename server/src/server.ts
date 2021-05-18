@@ -12,6 +12,7 @@ import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import userRouter from './api/users/users.routes';
 import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
+import { IKoaState } from './types/customTypes';
 
 Dotenv.config();
 export const knex = Knex(knexConfig);
@@ -19,7 +20,7 @@ export const knex = Knex(knexConfig);
 const createServer = async () => {
   console.log('Creating server');
   setupAuth();
-  const app = new Koa();
+  const app = new Koa<Koa.DefaultState, Koa.DefaultContext>();
   Model.knex(knex);
 
   app.keys = [process.env.SESSION_SECRET!];
@@ -47,7 +48,7 @@ const createServer = async () => {
   app.use(errorHandler);
   app.use(koaBodyParser());
 
-  const rootRouter = new KoaRouter<DefaultState, Context>();
+  const rootRouter = new KoaRouter<IKoaState, Context>();
   rootRouter.use(userRouter.routes());
   rootRouter.use(userRouter.allowedMethods());
   rootRouter.use(roadmapRouter.routes());

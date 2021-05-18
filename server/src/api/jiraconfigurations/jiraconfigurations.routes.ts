@@ -7,7 +7,8 @@ import {
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import { DefaultState, Context } from 'koa';
-const jiraConfigurationRouter = new KoaRouter<DefaultState, Context>();
+import { IKoaState } from 'src/types/customTypes';
+const jiraConfigurationRouter = new KoaRouter<IKoaState, Context>();
 
 jiraConfigurationRouter.post(
   '/jiraconfigurations',

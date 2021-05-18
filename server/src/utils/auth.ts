@@ -23,9 +23,9 @@ const addAuthToPassport = () => {
   passport.deserializeUser(async (id: number, done) => {
     try {
       const user = await fetchUserById(id);
-      done(null, user ? user : false);
+      done(null, user ? user : null);
     } catch (err) {
-      done(err, false);
+      done(err, null);
     }
   });
 

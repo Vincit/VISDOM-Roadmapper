@@ -17,8 +17,9 @@ import {
   logoutUser,
 } from './users.controller';
 import { DefaultState, Context } from 'koa';
+import { IKoaState } from 'src/types/customTypes';
 
-const userRouter = new KoaRouter<DefaultState, Context>();
+const userRouter = new KoaRouter<IKoaState, Context>();
 
 userRouter.get('/users/mytoken', requireAuth, getToken);
 userRouter.post('/users/mytoken', requireAuth, generateToken);

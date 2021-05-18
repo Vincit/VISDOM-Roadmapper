@@ -4,7 +4,7 @@ import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
-  const query = User.relatedQuery('roadmaps').for(ctx.state.user.id);
+  const query = User.relatedQuery('roadmaps').for(ctx.state.user!.id);
   if (ctx.query.eager) {
     const eagerResult = await query.withGraphFetched(
       '[tasks.ratings, jiraconfiguration]',
@@ -22,18 +22,18 @@ export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
-  const { password, authToken, ...userData } = ctx.state.user;
-  ctx.body = {
-    ...userData,
-    role: RoleType[ctx.state.role],
-  };
+  // Stringify user once here to run it through the objection model stringify method
+  // Using the spread operator will not remove fields that are not to be sent
+  const cleanUser = JSON.parse(JSON.stringify(ctx.state.user));
+  cleanUser.roleType = RoleType[ctx.state.role];
+  ctx.body = cleanUser;
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await Roadmap.transaction(async (trx) => {
     const roadmap = await Roadmap.query(trx).insertAndFetch(ctx.request.body);
     await Role.query(trx).insert({
-      userId: ctx.state.user.id,
+      userId: ctx.state.user!.id,
       roadmapId: roadmap.id,
       type: RoleType.Admin,
     });

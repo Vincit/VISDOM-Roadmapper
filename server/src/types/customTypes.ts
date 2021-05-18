@@ -1,7 +1,11 @@
 import { Context, Next } from 'koa';
+import User from 'src/api/users/users.model';
+import KoaRouter from '@koa/router';
 
-export interface RouteHandlerFnc {
-  (ctx: Context, next: Next): Promise<void>;
+export type RouteHandlerFnc = KoaRouter.Middleware<IKoaState, Context>;
+
+export interface IKoaState {
+  user?: User;
 }
 
 export const enum TaskRatingDimension {

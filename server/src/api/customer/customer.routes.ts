@@ -1,5 +1,5 @@
 import { requirePermission } from './../../utils/checkPermissions';
-import { Permission } from './../../types/customTypes';
+import { IKoaState, Permission } from './../../types/customTypes';
 import KoaRouter from '@koa/router';
 import {
   getCustomers,
@@ -9,7 +9,7 @@ import {
 } from './customer.controller';
 import { DefaultState, Context } from 'koa';
 
-const customerRouter = new KoaRouter<DefaultState, Context>();
+const customerRouter = new KoaRouter<IKoaState, Context>();
 
 customerRouter.get(
   '/customers',

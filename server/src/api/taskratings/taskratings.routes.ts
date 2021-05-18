@@ -8,7 +8,8 @@ import {
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../types/customTypes';
 import { DefaultState, Context } from 'koa';
-const taskratingRouter = new KoaRouter<DefaultState, Context>();
+import { IKoaState } from 'src/types/customTypes';
+const taskratingRouter = new KoaRouter<IKoaState, Context>();
 
 taskratingRouter.get(
   '/taskratings',
