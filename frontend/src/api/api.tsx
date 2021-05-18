@@ -56,7 +56,11 @@ const addTask = async (task: TaskRequest) => {
 const patchTask = async (task: TaskRequest, roadmapId: number) => {
   const response = await axios.patch(
     `/roadmaps/${roadmapId}/tasks/${task.id}`,
-    task,
+    {
+      name: task.name,
+      description: task.description,
+      completed: task.completed,
+    },
   );
   return response.data as Task;
 };
@@ -94,7 +98,7 @@ const patchTaskrating = async (
 ) => {
   const response = await axios.patch(
     `/roadmaps/${roadmapId}/tasks/${taskrating.parentTask}/taskratings/${taskrating.id}`,
-    taskrating,
+    { value: taskrating.value, comment: taskrating.comment },
   );
 
   return response.data as Taskrating;
@@ -160,13 +164,19 @@ const deleteVersion = async (version: VersionRequest) => {
 const patchVersion = async (version: VersionRequest) => {
   const response = await axios.patch(
     `/roadmaps/${version.roadmapId}/versions/${version.id}`,
-    version,
+    {
+      name: version.name,
+      tasks: version.tasks,
+      sortingRank: version.sortingRank,
+    },
   );
   return response.data as Version;
 };
 
 const patchUser = async (user: PublicUserRequest) => {
-  const response = await axios.patch(`/users/${user.id}`, user);
+  const response = await axios.patch(`/users/${user.id}`, {
+    username: user.username,
+  });
   return response.data as PublicUser;
 };
 
@@ -227,7 +237,7 @@ const patchJiraconfiguration = async (
 ) => {
   const response = await axios.patch(
     `roadmap/${roadmapId}/jiraconfigurations/${jiraconfiguration.id}`,
-    jiraconfiguration,
+    { url: jiraconfiguration.url, privatekey: jiraconfiguration.privatekey },
   );
   return response.data as JiraConfiguration;
 };

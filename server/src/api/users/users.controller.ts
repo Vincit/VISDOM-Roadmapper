@@ -16,14 +16,17 @@ export const postUsers: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchUsers: RouteHandlerFnc = async (ctx, _) => {
+  const { username, email, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
+
   const updated = await User.query().patchAndFetchById(ctx.params.id, {
-    username: ctx.request.body.username,
-    email: ctx.request.body.email,
+    username: username,
+    email: email,
   });
   if (!updated) {
-    ctx.status = 404;
+    return void (ctx.status = 404);
   } else {
-    ctx.body = updated;
+    return void (ctx.body = updated);
   }
 };
 

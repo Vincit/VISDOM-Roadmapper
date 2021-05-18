@@ -42,15 +42,18 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+  const { name, description, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
+
   const updated = await Roadmap.query().patchAndFetchById(
     ctx.params.roadmapId,
-    ctx.request.body,
+    { name: name, description: description },
   );
 
   if (!updated) {
-    ctx.status = 404;
+    return void (ctx.status = 404);
   } else {
-    ctx.body = updated;
+    return void (ctx.body = updated);
   }
 };
 

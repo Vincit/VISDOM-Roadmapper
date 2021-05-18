@@ -66,6 +66,11 @@ export const deleteVersions: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
+  let { sortingRank } = ctx.request.body;
+  delete ctx.request.body.sortingRank;
+  const { name, tasks, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
+
   const updated = await Version.transaction(async (trx) => {
     const originalVersion = await Version.query(trx)
       .findById(Number(ctx.params.versionId))
@@ -74,9 +79,9 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
     const previousRank = originalVersion.sortingRank;
 
     if (
-      ctx.request.body.sortingRank !== undefined &&
-      ctx.request.body.sortingRank !== null &&
-      ctx.request.body.sortingRank !== previousRank
+      sortingRank !== undefined &&
+      sortingRank !== null &&
+      sortingRank !== previousRank
     ) {
       await Version.query(trx)
         .where({ roadmapId: roadmapId })
@@ -88,37 +93,39 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
         .max('sortingRank')
         .first()) as any;
       const maxRank = maxVersion.max === null ? -1 : maxVersion.max; // Treat null as -1 so next insertion goes to 0
-      if (ctx.request.body.sortingRank > maxRank + 1) {
-        ctx.request.body.sortingRank = maxRank + 1;
+      if (sortingRank > maxRank + 1) {
+        sortingRank = maxRank + 1;
       }
       await Version.query(trx)
         .where({ roadmapId: roadmapId })
-        .andWhere('sortingRank', '>=', ctx.request.body.sortingRank)
+        .andWhere('sortingRank', '>=', sortingRank)
         .increment('sortingRank', 1);
     }
 
     // TODO: separate adding/deleting from updating
     const versionId = Number(ctx.params.versionId);
     let ok = await trx('versionTasks').where('versionId', versionId).delete();
-    if (ctx.request.body.tasks?.length) {
-      const tasks = ctx.request.body.tasks as number[];
+    if (tasks?.length) {
       ok = await trx('versionTasks').insert(
-        tasks.map((taskId, order) => ({ taskId, versionId, order })),
+        tasks.map((taskId: number, order: number) => ({
+          taskId,
+          versionId,
+          order,
+        })),
       );
     }
-    delete ctx.request.body.tasks;
 
     const patched = await Version.query(trx).patchAndFetchById(
       Number(ctx.params.versionId),
-      { ...ctx.request.body, roadmapId: Number(ctx.params.roadmapId) },
+      { name: name },
     );
 
     return patched || ok;
   });
 
   if (!updated) {
-    ctx.status = 404;
+    return void (ctx.status = 404);
   } else {
-    ctx.body = updated;
+    return void (ctx.body = updated);
   }
 };

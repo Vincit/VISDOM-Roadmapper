@@ -17,23 +17,26 @@ export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
-  const { dimension, value, ...others } = ctx.request.body;
+  const { dimension, value, comment } = ctx.request.body;
+  if (
+    (dimension === TaskRatingDimension.BusinessValue &&
+      !hasPermission(ctx, Permission.TaskValueRate)) ||
+    (dimension === TaskRatingDimension.RequiredWork &&
+      !hasPermission(ctx, Permission.TaskWorkRate))
+  )
+    return void (ctx.status = 403);
 
   const child = await Task.relatedQuery('ratings')
     .for(Number(ctx.params.taskId))
     .insertAndFetch({
-      ...(((dimension === TaskRatingDimension.BusinessValue &&
-        hasPermission(ctx, Permission.TaskValueRate)) ||
-        (dimension === TaskRatingDimension.RequiredWork &&
-          hasPermission(ctx, Permission.TaskWorkRate))) && {
-        dimension: dimension,
-        value: value,
-        ...others,
-        createdByUser: Number(ctx.state.user.id),
-      }),
+      dimension: dimension,
+      value: value,
+      comment: comment,
+      parentTask: Number(ctx.params.taskId),
+      createdByUser: Number(ctx.state.user.id),
     })
     .where({ roadmapId: Number(ctx.params.roadmapId) });
-  ctx.body = child;
+  return void (ctx.body = child);
 };
 
 export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
@@ -51,29 +54,30 @@ export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchTaskratings: RouteHandlerFnc = async (ctx, _) => {
-  const { taskId, roadmapId, dimension, value, ...others } = ctx.request.body;
+  const { value, comment, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
 
-  const updated = await Taskrating.query()
-    .patchAndFetchById(Number(ctx.params.ratingId), {
-      ...(((dimension === TaskRatingDimension.BusinessValue &&
-        hasPermission(ctx, Permission.TaskValueRate)) ||
-        (dimension === TaskRatingDimension.RequiredWork &&
-          hasPermission(ctx, Permission.TaskWorkRate))) && {
-        value: value,
-        ...others,
-      }),
-    })
-    .where({
-      parentTask: Number(ctx.params.taskId),
-      dimension: dimension,
-      ...(!hasPermission(ctx, Permission.TaskRatingEditOthers) && {
-        createdByUser: Number(ctx.state.user.id),
-      }),
-    });
+  return await Taskrating.transaction(async (trx) => {
+    const rating = await Taskrating.query(trx)
+      .findById(Number(ctx.params.ratingId))
+      .where({ parentTask: Number(ctx.params.taskId) });
 
-  if (!updated) {
-    ctx.status = 404;
-  } else {
-    ctx.body = updated;
-  }
+    if (!rating) return void (ctx.status = 404);
+    if (
+      !hasPermission(ctx, Permission.TaskRatingEditOthers) &&
+      rating.createdByUser !== ctx.state.user.id
+    )
+      return void (ctx.status = 403);
+    if (
+      (rating.dimension === TaskRatingDimension.BusinessValue &&
+        !hasPermission(ctx, Permission.TaskValueRate)) ||
+      (rating.dimension === TaskRatingDimension.RequiredWork &&
+        !hasPermission(ctx, Permission.TaskWorkRate))
+    )
+      return void (ctx.status = 403);
+
+    return void (ctx.body = await rating
+      .$query(trx)
+      .patchAndFetch({ value: value, comment: comment }));
+  });
 };

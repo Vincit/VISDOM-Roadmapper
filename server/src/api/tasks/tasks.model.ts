@@ -15,6 +15,8 @@ export default class Task extends Model {
   ratings?: TaskRating[];
   createdBy?: User;
 
+  createdByUser?: number;
+
   static tableName = 'tasks';
 
   static jsonSchema = {

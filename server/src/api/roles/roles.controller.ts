@@ -11,17 +11,18 @@ export const inviteRoadmapUser: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchRoadmapUserRoles: RouteHandlerFnc = async (ctx, _) => {
+  const { type, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
+
   const patched = await Role.query().patchAndFetchById(
     [Number(ctx.params.userId), Number(ctx.params.roadmapId)],
-    {
-      type: Number(ctx.request.body.type),
-    },
+    { type: type },
   );
 
   if (patched) {
-    ctx.body = patched;
+    return void (ctx.body = patched);
   } else {
-    ctx.status = 404;
+    return void (ctx.status = 404);
   }
 };
 

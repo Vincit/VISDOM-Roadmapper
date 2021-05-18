@@ -9,15 +9,18 @@ export const postJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
+  const { url, privatekey, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
+
   const updated = await JiraConfiguration.query().patchAndFetchById(
     Number(ctx.params.jiraId),
-    { ...ctx.request.body, roadmapId: Number(ctx.params.roadmapId) },
+    { url: url, privatekey: privatekey },
   );
 
   if (!updated) {
-    ctx.status = 404;
+    return void (ctx.status = 404);
   } else {
-    ctx.body = updated;
+    return void (ctx.body = updated);
   }
 };
 

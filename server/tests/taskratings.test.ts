@@ -27,7 +27,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
     it('Should add new taskrating', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const firstTaskId = (await Task.query().first()).id;
-      const firstUserId = (await User.query().first()).id;
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`,
       );
@@ -37,7 +36,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .send({
           dimension: 1,
           value: 5,
-          createdByUser: firstUserId,
         });
       expect(res.status).to.equal(200);
       const after = await loggedInAgent.get(
@@ -77,7 +75,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         )
         .type('json')
         .send({
-          dimension: 0,
           value: 9,
         });
       expect(res.status).to.equal(200);

@@ -40,8 +40,10 @@ const difference = <T>(old: T[], updated: T[]) => {
 };
 
 export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
-  const { id, roadmapId, representatives, ...body } = ctx.request.body;
+  const { name, value, color, representatives, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
   const roadmap = Number(ctx.params.roadmapId);
+
   const updated = await Customer.transaction(async (trx) => {
     const customer = await Customer.query(trx)
       .findById(Number(ctx.params.customerId))
@@ -49,7 +51,9 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
       .withGraphFetched('representatives');
     if (!customer) return false;
 
-    const ok = await customer.$query(trx).patch(body);
+    const ok = await customer
+      .$query(trx)
+      .patch({ name: name, value: value, color: color });
     if (!representatives) return ok && customer;
 
     const { added, removed } = difference(
@@ -74,9 +78,9 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
     return await customer.$query(trx).withGraphFetched('representatives');
   });
   if (!updated) {
-    ctx.status = 404;
+    return void (ctx.status = 404);
   } else {
-    ctx.body = updated;
+    return void (ctx.body = updated);
   }
 };
 

@@ -50,23 +50,25 @@ export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
-  const { jiraId, createdAt, createdBy, ...others } = ctx.request.body;
-  const updated = await Task.query()
-    .patchAndFetchById(Number(ctx.params.taskId), {
-      ...others,
-      roadmapId: Number(ctx.params.roadmapId),
-    })
-    .where({
-      roadmapId: Number(ctx.params.roadmapId),
-      id: Number(ctx.params.taskId),
-      ...(!hasPermission(ctx, Permission.TaskEditOthers) && {
-        createdByUser: Number(ctx.state.user.id),
-      }),
-    });
+  const { name, description, completed, ...others } = ctx.request.body;
+  if (Object.keys(others).length) return void (ctx.status = 400);
 
-  if (!updated) {
-    ctx.status = 404;
-  } else {
-    ctx.body = updated;
-  }
+  return await Task.transaction(async (trx) => {
+    const task = await Task.query(trx)
+      .findById(ctx.params.taskId)
+      .where({ roadmapId: Number(ctx.params.roadmapId) });
+
+    if (!task) return void (ctx.status = 404);
+    if (
+      !hasPermission(ctx, Permission.TaskEditOthers) &&
+      task.createdByUser !== ctx.state.user.id
+    )
+      return void (ctx.status = 403);
+
+    return void (ctx.body = await task.$query(trx).patchAndFetch({
+      name: name,
+      description: description,
+      completed: completed,
+    }));
+  });
 };
