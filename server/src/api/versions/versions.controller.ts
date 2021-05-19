@@ -72,8 +72,9 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const updated = await Version.transaction(async (trx) => {
+    const versionId = Number(ctx.params.versionId);
     const originalVersion = await Version.query(trx)
-      .findById(Number(ctx.params.versionId))
+      .findById(versionId)
       .where({ roadmapId: Number(ctx.params.roadmapId) });
     const roadmapId = originalVersion.roadmapId;
     const previousRank = originalVersion.sortingRank;
@@ -103,24 +104,25 @@ export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
     }
 
     // TODO: separate adding/deleting from updating
-    const versionId = Number(ctx.params.versionId);
-    let ok = await trx('versionTasks').where('versionId', versionId).delete();
-    if (tasks?.length) {
-      ok = await trx('versionTasks').insert(
-        tasks.map((taskId: number, order: number) => ({
-          taskId,
-          versionId,
-          order,
-        })),
-      );
+    if (tasks) {
+      await trx('versionTasks').where('versionId', versionId).delete();
+      if (tasks?.length) {
+        await trx('versionTasks').insert(
+          tasks.map((taskId: number, order: number) => ({
+            taskId,
+            versionId,
+            order,
+          })),
+        );
+      }
     }
 
     const patched = await Version.query(trx).patchAndFetchById(
       Number(ctx.params.versionId),
-      { name: name },
+      { name: name, sortingRank: sortingRank },
     );
 
-    return patched || ok;
+    return patched || tasks;
   });
 
   if (!updated) {
