@@ -247,10 +247,14 @@ export const MilestonesEditor = () => {
       })
       .sort((a, b) => a.sortingRank - b.sortingRank);
     setRoadmapsVersionsLocal(versionsCopy);
+    const versionTasks = versionsCopy[destination!.index].tasks.map(
+      (task) => task.id,
+    );
     dispatch(
       versionsActions.patchVersion({
         id: dragVersionId,
         sortingRank: destination!.index,
+        tasks: versionTasks,
       }),
     ).then(() => {
       setDisableDrag(false);
