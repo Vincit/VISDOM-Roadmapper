@@ -2,6 +2,9 @@ import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import Version from '../src/api/versions/versions.model';
+import User from '../src/api/users/users.model';
+import { Role } from '../src/api/roles/roles.model';
+import { Permission, RoleType } from '../src/types/customTypes';
 import { app, loggedInAgent } from './setuptests';
 chai.use(chaiHttp);
 
@@ -21,6 +24,25 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(res.body.length).to.be.greaterThan(0);
       assert.property(res.body[0], 'tasks');
       assert.property(res.body[0], 'name');
+    });
+    it('Should not return versions with incorrect permissions', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const userId = (
+        await User.query().where({ username: 'AdminPerson1' }).first()
+      ).id;
+      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
+        type: RoleType.Admin & ~Permission.VersionRead,
+      });
+      const testVersion = {
+        name: 'Test version',
+        roadmapId: firstRoadmapId,
+        sortingRank: 0,
+      };
+      await Version.query().insert(testVersion);
+      const res = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/versions`,
+      );
+      expect(res.status).to.equal(403);
     });
   });
 
@@ -51,6 +73,40 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       assert(lenAfter === lenBefore + 1, 'Length must increase');
       expect(insertedVersion).to.exist;
     });
+    it('Should not add new version with incorrect permissions', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const userId = (
+        await User.query().where({ username: 'AdminPerson1' }).first()
+      ).id;
+      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
+        type:
+          RoleType.Admin & ~Permission.VersionCreate & ~Permission.RoadmapEdit,
+      });
+      const testVersion = {
+        name: 'Test version',
+        roadmapId: firstRoadmapId,
+        tasks: [],
+        sortingRank: 0,
+      };
+      const res = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/versions`,
+      );
+      const lenBefore = res.body.length;
+      const postResponse = await loggedInAgent
+        .post(`/roadmaps/${firstRoadmapId}/versions`)
+        .type('json')
+        .send(testVersion);
+      expect(postResponse.status).to.equal(403);
+      const res2 = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/versions`,
+      );
+      const lenAfter = res2.body.length;
+      const insertedVersion = res2.body.find((ver: any) => {
+        return ver.name == testVersion.name;
+      });
+      assert(lenAfter === lenBefore, 'Length must be same');
+      expect(insertedVersion).not.to.exist;
+    });
   });
 
   describe('DELETE /roadmaps/:roadmapId/versions/:versionId', function () {
@@ -79,6 +135,39 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       const lenAfter = res2.body.length;
       assert(lenAfter === lenBefore - 1, 'Length must decrease');
     });
+    it('Should not delete version with incorrect permissions', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const userId = (
+        await User.query().where({ username: 'AdminPerson1' }).first()
+      ).id;
+      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
+        type:
+          RoleType.Admin & ~Permission.VersionDelete & ~Permission.RoadmapEdit,
+      });
+      const testVersion = {
+        name: 'Test version',
+        roadmapId: firstRoadmapId,
+        tasks: [],
+        sortingRank: 0,
+      };
+      await Version.query().insert(testVersion);
+      const res = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/versions`,
+      );
+      const lenBefore = res.body.length;
+      const delResponse = await loggedInAgent.delete(
+        `/roadmaps/${firstRoadmapId}/versions/${
+          (await Version.query().first()).id
+        }`,
+      );
+      expect(delResponse.status).to.equal(403);
+
+      const res2 = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/versions`,
+      );
+      const lenAfter = res2.body.length;
+      assert(lenAfter === lenBefore, 'Length must be same');
+    });
   });
 
   describe('PATCH /roadmaps/:roadmapId/versions/:versionId', function () {
@@ -91,9 +180,6 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       };
       await Version.query().insert(testVersion);
       const firstVersionId = (await Version.query().first()).id;
-      const res = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
       const patchResponse = await loggedInAgent
         .patch(`/roadmaps/${testVersion.roadmapId}/versions/${firstVersionId}`)
         .type('json')
@@ -109,6 +195,36 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
         return ver.name == 'patched';
       });
       expect(patchedVersion).to.exist;
+    });
+    it('Should not patch version with incorrect permissions', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const userId = (
+        await User.query().where({ username: 'AdminPerson1' }).first()
+      ).id;
+      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
+        type: RoleType.Admin & ~Permission.VersionEdit,
+      });
+      const testVersion = {
+        name: 'Test version',
+        roadmapId: firstRoadmapId,
+        tasks: [],
+        sortingRank: 0,
+      };
+      await Version.query().insert(testVersion);
+      const firstVersionId = (await Version.query().first()).id;
+      const patchResponse = await loggedInAgent
+        .patch(`/roadmaps/${firstRoadmapId}/versions/${firstVersionId}`)
+        .type('json')
+        .send({ name: 'patched' });
+      expect(patchResponse.status).to.equal(403);
+
+      const res2 = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/versions`,
+      );
+      const patchedVersion = res2.body.find((ver: any) => {
+        return ver.name == 'patched';
+      });
+      expect(patchedVersion).not.to.exist;
     });
   });
 });
