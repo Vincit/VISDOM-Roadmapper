@@ -11,8 +11,6 @@ import {
 } from './versions.controller';
 const versionsRouter = new KoaRouter<DefaultState, Context>();
 
-versionsRouter.use(requireAuth);
-
 versionsRouter.get(
   '/versions/',
   requirePermission(Permission.VersionRead),
