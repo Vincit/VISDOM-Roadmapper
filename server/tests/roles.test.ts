@@ -1,4 +1,4 @@
-import chai, { assert, expect } from 'chai';
+import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 import { app, loggedInAgent } from './setuptests';
@@ -7,6 +7,16 @@ import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
 import { Permission, RoleType, UserType } from '../src/types/customTypes';
 
+const registerNewUser = async (user: object) =>
+  (
+    await chai
+      .request(app)
+      .keepOpen()
+      .post('/users/register')
+      .type('json')
+      .send(user)
+  ).body;
+
 describe('Test /roadmaps/:roadmapId/roles/ api', function () {
   describe('POST /roadmaps/:roadmapId/inviteUser/', function () {
     it('Should invite user to roadmap', async function () {
@@ -14,14 +24,12 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/users/`,
       );
-      const newUser = (
-        await loggedInAgent.post('/users/register').type('json').send({
-          username: 'test',
-          email: 'test@email.com',
-          password: 'test',
-          type: UserType.DeveloperUser,
-        })
-      ).body;
+      const newUser = await registerNewUser({
+        username: 'test',
+        email: 'test@email.com',
+        password: 'test',
+        type: UserType.DeveloperUser,
+      });
       const res2 = await loggedInAgent
         .post(`/roadmaps/${firstRoadmapId}/inviteUser`)
         .type('json')
@@ -43,14 +51,12 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/users/`,
       );
-      const newUser = (
-        await loggedInAgent.post('/users/register').type('json').send({
-          username: 'test',
-          email: 'test@email.com',
-          password: 'test',
-          type: UserType.DeveloperUser,
-        })
-      ).body;
+      const newUser = await registerNewUser({
+        username: 'test',
+        email: 'test@email.com',
+        password: 'test',
+        type: UserType.DeveloperUser,
+      });
       const res = await loggedInAgent
         .post(`/roadmaps/${firstRoadmapId}/inviteUser`)
         .type('json')
