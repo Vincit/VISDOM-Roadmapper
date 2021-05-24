@@ -1,16 +1,5 @@
 @import '../shared.scss';
 
-.taskBar {
-  display: flex;
-  vertical-align: middle;
-  align-items: center;
-  padding: 9px;
-  padding-right: 15px;
-  background-color: white;
-  border-radius: 52px;
-  margin-bottom: 15px;
-}
-
 .addNewButtonContainer {
   min-width: 10em;
   position: relative;
