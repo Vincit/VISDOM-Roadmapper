@@ -10,9 +10,9 @@ before(async () => {
 
 beforeEach(async () => {
   await knex.seed.run();
-  loggedInAgent = await chai.request.agent(app);
+  loggedInAgent = chai.request.agent(app);
 
-  const res = await loggedInAgent
+  await loggedInAgent
     .post('/users/login')
     .type('json')
     .send({ username: 'AdminPerson1', password: 'test' });
