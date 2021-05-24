@@ -18,6 +18,7 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getUserInfo.fulfilled, GET_USER_INFO_FULFILLED);
+    builder.addCase(register.fulfilled, LOGIN_FULFILLED);
     builder.addCase(login.fulfilled, LOGIN_FULFILLED);
     builder.addCase(logout.fulfilled, LOGOUT_FULFILLED);
   },

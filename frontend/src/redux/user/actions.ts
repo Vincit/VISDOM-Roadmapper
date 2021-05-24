@@ -52,7 +52,11 @@ export const register = createAsyncThunk<
   { rejectValue: AxiosError }
 >('user/register', async (newUser: UserRegisterRequest, thunkAPI) => {
   try {
-    return await api.register(newUser);
+    if (await api.register(newUser)) {
+      await thunkAPI.dispatch(getUserInfo());
+      return true;
+    }
+    return false;
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
