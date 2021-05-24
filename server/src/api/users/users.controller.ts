@@ -44,6 +44,7 @@ export const registerUser: RouteHandlerFnc = async (ctx, _) => {
   );
 
   const user = await User.query().insertAndFetch(request);
+  await ctx.login(user);
   ctx.body = user;
   ctx.status = 200;
 };
@@ -87,20 +88,12 @@ export const loginUser: RouteHandlerFnc = async (ctx, _) => {
       return;
     } else {
       ctx.status = 200;
-
-      // Store id of user for user hot swap feature
-      ctx.session!.originalUserId = user.id;
       return ctx.login(user);
     }
   })(ctx);
 };
 
 export const logoutUser: RouteHandlerFnc = async (ctx, _) => {
-  if (ctx.session && ctx.session.originalUserId) {
-    // Remove field so hot-swap cannot be used after logout
-    delete ctx.session.originalUserId;
-  }
-
   if (ctx.isAuthenticated()) {
     ctx.logout();
     ctx.status = 200;
