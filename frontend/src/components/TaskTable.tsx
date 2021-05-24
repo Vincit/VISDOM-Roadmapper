@@ -113,7 +113,7 @@ export const TaskTable: React.FC<{
 
   const renderTopbar = () => {
     return (
-      <div className={classes(css.taskBar)}>
+      <div className={classes(css.topBar)}>
         <div className={classes(css.searchBarContainer)}>
           {!nosearch && (
             <>
