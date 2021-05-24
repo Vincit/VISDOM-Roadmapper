@@ -32,12 +32,12 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
   // And map values of how much each user has rated in these tasks
   version.tasks.forEach((task) => {
     if (task == null) return;
-    totalValue += calcTaskValueSum(task!) || 0;
 
     task.ratings.forEach((rating) => {
       if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
       const customer = customers?.find(({ id }) => id === rating.forCustomer);
       if (customer) {
+        totalValue += rating.value;
         const previousVal = customerStakes.get(customer) || 0;
         customerStakes.set(customer, previousVal + rating.value);
       }
