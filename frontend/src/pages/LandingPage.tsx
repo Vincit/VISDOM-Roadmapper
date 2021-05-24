@@ -40,7 +40,7 @@ const cardData = [
 export const LandingPage = () => {
   return (
     <div className={classes(css.background)}>
-      <LoginNavBar />
+      <LoginNavBar type="landing" />
       <div>
         <div className={classes(css.gradient)}>
           <VisdomLogo className={classes(css.bigLogo)} />

@@ -12,7 +12,7 @@ import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
 import css from './NavBar.module.scss';
-import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
+import { LoginNavBar } from './LoginNavBar';
 
 const classes = classNames.bind(css);
 
@@ -24,48 +24,33 @@ export const NavBar = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className={classes(css.navBarDiv)}>
-      <CornerPiece />
-      <div className={classes(css.navBarRightSide)}>
-        {!userInfo && (
-          <div className={classes(css.loginNavBar)}>
-            <Link to={paths.home} className={classes(css.visdomLogo)}>
-              <VisdomLogo />
-            </Link>
-            <span />
-            {pathname.startsWith(paths.loginPage) ? (
-              <Link
-                className={classes(css['button-small-filled'])}
-                to={paths.registerPage}
-              >
-                <Trans i18nKey="Register" />
+    <>
+      {!userInfo &&
+        (pathname.startsWith(paths.loginPage) ? (
+          <LoginNavBar type="login" />
+        ) : (
+          <LoginNavBar type="register" />
+        ))}
+      {userInfo && (
+        <div className={classes(css.navBarDiv)}>
+          <CornerPiece />
+          <div className={classes(css.navBarRightSide)}>
+            <>
+              <div className={classes(css.navBarText)}>
+                <Trans i18nKey="Project" />
+              </div>
+              <RoadmapSelectorWidget />
+              <div className={classes(css.navBarDivider)} />
+              <Link className={classes(css.navBarLink)} to={paths.userInfo}>
+                <PermIdentityIcon className={classes(css.icon)} />
               </Link>
-            ) : (
-              <Link
-                className={classes(css['button-small-filled'])}
-                to={paths.loginPage}
-              >
-                <Trans i18nKey="Login" />
+              <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
+                <PowerSettingsNewIcon className={classes(css.icon)} />
               </Link>
-            )}
+            </>
           </div>
-        )}
-        {userInfo && (
-          <>
-            <div className={classes(css.navBarText)}>
-              <Trans i18nKey="Project" />
-            </div>
-            <RoadmapSelectorWidget />
-            <div className={classes(css.navBarDivider)} />
-            <Link className={classes(css.navBarLink)} to={paths.userInfo}>
-              <PermIdentityIcon className={classes(css.icon)} />
-            </Link>
-            <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
-              <PowerSettingsNewIcon className={classes(css.icon)} />
-            </Link>
-          </>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 };
