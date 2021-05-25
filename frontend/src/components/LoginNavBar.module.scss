@@ -27,19 +27,13 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
 
-  position: sticky;
+  position: relative;
   z-index: 10;
   height: 0px;
   top: 46px;
-  transition: transform 0.3s ease-in-out, opacity 0.6s;
 
   svg {
     height: 32px;
     width: auto;
-  }
-  &.hidden {
-    transform: translateY(-90px);
-    opacity: 0;
-    transition: transform 0.4s, opacity 0.6s;
   }
 }

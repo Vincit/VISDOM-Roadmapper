@@ -2,8 +2,6 @@
 
 .appContent {
   background-color: $COLOR_BLACK5;
-  &.loggedIn {
-    min-height: 100vh;
-    max-height: 100vh;
-  }
+  min-height: 100vh;
+  max-height: 100vh;
 }
