@@ -73,6 +73,7 @@ const modalCustomStyles = {
   },
 };
 
+Modal.setAppElement('#root');
 export const ModalRoot = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const modalsState = useSelector<RootState, ModalsState>(
