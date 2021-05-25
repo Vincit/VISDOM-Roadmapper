@@ -7,8 +7,12 @@ const fetchUserById = async (id: number) => {
   return await User.query().findById(id).first();
 };
 
-const fetchUserByName = async (username: string) => {
-  return await User.query().modify('searchByUsernameExact', username).first();
+const fetchUserByNameOrEmail = (nameOrEmail: string) => {
+  if (/@/.test(nameOrEmail)) {
+    return User.query().modify('findByEmail', nameOrEmail).first();
+  } else {
+    return User.query().modify('searchByUsernameExact', nameOrEmail).first();
+  }
 };
 
 const fetchUserByToken = async (token: string) => {
@@ -51,7 +55,7 @@ const addAuthToPassport = () => {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        const user = await fetchUserByName(username);
+        const user = await fetchUserByNameOrEmail(username);
         if (!user) return done(null, false);
 
         if (await user.verifyPassword(password)) {
