@@ -129,5 +129,10 @@ export default class User extends Password(Model) {
         query.orWhereRaw('lower(username) = ?', [name.toLowerCase()]);
       });
     },
+    findByEmail(query, email) {
+      query.where((query) => {
+        query.orWhereRaw('lower(email) = ?', [email.toLowerCase()]);
+      });
+    },
   };
 }
