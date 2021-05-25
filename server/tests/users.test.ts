@@ -92,19 +92,86 @@ describe('Test /users/ api', function () {
       const after = (await User.query()).length;
       assert(after === before + 1, 'Length must increase');
     });
+    it('Should disallow @ in username', async function () {
+      const before = (await User.query()).length;
+      const res = await loggedInAgent
+        .post('/users/register')
+        .type('json')
+        .send({
+          username: 'test@name',
+          email: 'test@email.com',
+          password: 'test',
+          type: UserType.AdminUser,
+        });
+      expect(res.status).to.equal(400);
+      const after = (await User.query()).length;
+      assert(after === before, 'Length must not change');
+    });
+    it('Should disallow registering with existing username case insensitively', async function () {
+      const names = ['test', 'TEST', 'TeSt', 'tEsT'];
+      const res = await loggedInAgent
+        .post('/users/register')
+        .type('json')
+        .send({
+          username: names[0],
+          email: 'test@email.com',
+          password: 'test',
+          type: UserType.AdminUser,
+        });
+      expect(res.status).to.equal(200);
+      for (const name of names) {
+        const res = await loggedInAgent
+          .post('/users/register')
+          .type('json')
+          .send({
+            username: name,
+            email: 'another@email.com',
+            password: 'test',
+            type: UserType.AdminUser,
+          });
+        expect(res.status).to.equal(400);
+      }
+    });
   });
 
   describe('POST /users/login', function () {
-    it('Should login user with correct credentials', async function () {
-      // We dont wanna be logged in before this test so logout manually
-      await loggedInAgent.get('/users/logout');
+    describe('Login with correct credentials', function () {
+      [
+        { type: 'username', value: 'BusinessPerson1' },
+        { type: 'email', value: 'biz@business.com' },
+      ].forEach(({ type, value }) => {
+        it(`Should login using ${type}`, async function () {
+          // We dont wanna be logged in before this test so logout manually
+          await loggedInAgent.get('/users/logout');
 
-      const res = await loggedInAgent
-        .post('/users/login')
-        .type('json')
-        .send({ username: 'BusinessPerson1', password: 'test' });
-      expect(res.status).to.equal(200);
-      expect(res).to.have.cookie('koa.sess');
+          const res = await loggedInAgent
+            .post('/users/login')
+            .type('json')
+            .send({ username: value, password: 'test' });
+          expect(res.status).to.equal(200);
+          expect(res).to.have.cookie('koa.sess');
+        });
+      });
+
+      it('Should be case insensitive', async function () {
+        const cases = [
+          'BusinessPerson1',
+          'bUSINESSpERSON1',
+          'businessperson1',
+          'BUSINESSPERSON1',
+        ];
+        for (const value of cases) {
+          // We dont wanna be logged in before this test so logout manually
+          await loggedInAgent.get('/users/logout');
+
+          const res = await loggedInAgent
+            .post('/users/login')
+            .type('json')
+            .send({ username: value, password: 'test' });
+          expect(res.status).to.equal(200);
+          expect(res).to.have.cookie('koa.sess');
+        }
+      });
     });
 
     it('Should fail login user with wrong credentials', async function () {
