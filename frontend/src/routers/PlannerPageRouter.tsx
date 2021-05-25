@@ -42,7 +42,7 @@ export const PlannerPageRouter = () => {
   return (
     <>
       <PlannerPageNavbar />
-      <div className="layoutCol plannerPagecontainer">
+      <div className="layoutCol">
         <Switch>
           {routes.map((route) => (
             <Route

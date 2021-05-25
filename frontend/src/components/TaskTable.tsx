@@ -201,7 +201,7 @@ export const TaskTable: React.FC<{
     return (
       <table className={classes(css.styledTable)}>
         <thead>
-          <tr>
+          <tr className={classes(css.styledTr)}>
             {tableHeaders.map((header) => {
               return (
                 <th

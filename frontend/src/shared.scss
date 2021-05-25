@@ -124,7 +124,7 @@ form {
     overflow-y: visible;
   }
   &.roadmapPageContainer {
-    padding: 16px 16px 0 16px;
+    padding: 0 23px 0 20px;
   }
   &.unorderedTasksCol {
     flex: 1;
@@ -151,6 +151,13 @@ form {
   }
 }
 
+.plannerPagecontainer {
+  margin-top: 45px;
+  &.timeEstimation {
+    margin-left: 26px;
+  }
+}
+
 .topBar {
   display: flex;
   justify-content: start;
@@ -171,6 +178,10 @@ form {
   &.clickable {
     cursor: pointer;
     user-select: none;
+  }
+  > td:first-child,
+  > th:first-child {
+    padding-left: 26px;
   }
 }
 
@@ -363,6 +374,7 @@ input {
     border-radius: 49px;
     min-height: 40px;
     height: 40px;
+    padding-left: 18px;
   }
 }
 

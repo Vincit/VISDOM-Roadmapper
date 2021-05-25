@@ -34,7 +34,7 @@ export const RoadmapGraphPage = () => {
   }, [roadmapsVersions, selectedVersion]);
 
   return (
-    <>
+    <div className={classes(css.plannerPagecontainer)}>
       <div className={classes(css.graphOuter)}>
         <h2 className={classes(css.graphTitle)}>Work / Value</h2>
         <div className={classes(css.graphInner)}>
@@ -98,13 +98,13 @@ export const RoadmapGraphPage = () => {
       <p className={classes(css.graphLabel, css.vertical)}>Total value</p>
 
       <div className={classes(css.footer)}>
-        <h2 className={classes(css.graphTitle)}>
+        <h2 className={classes(css.graphTitle, css.lowerGraphTitle)}>
           Customers stakes in milestone
         </h2>
         {selectedVersion && (
           <TaskValueCreatedVisualization version={selectedVersion} />
         )}
       </div>
-    </>
+    </div>
   );
 };

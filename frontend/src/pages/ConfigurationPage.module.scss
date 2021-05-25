@@ -1,5 +1,10 @@
 @import '../shared.scss';
 
+.configurationPage {
+  @extend .layoutCol;
+  margin-left: 27px;
+}
+
 .columnHeader {
   text-align: left;
   border-bottom: 1px solid $COLOR_BLACK100;
