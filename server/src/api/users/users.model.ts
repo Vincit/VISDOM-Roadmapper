@@ -1,6 +1,6 @@
 import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
-import { UserType, RoleType } from './../../types/customTypes';
+import { UserType } from './../../types/customTypes';
 import Token from '../tokens/tokens.model';
 import { Role } from '../roles/roles.model';
 import Roadmap from '../roadmaps/roadmaps.model';
@@ -27,7 +27,12 @@ export default class User extends Password(Model) {
 
     properties: {
       id: { type: 'integer' },
-      username: { type: 'string', minLength: 1, maxLength: 255 },
+      username: {
+        type: 'string',
+        pattern: '^[^@]*$',
+        minLength: 1,
+        maxLength: 255,
+      },
       email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
       password: { type: 'string', minLength: 1, maxLength: 255 },
       authToken: { type: ['string', 'null'], format: 'uuid' },
