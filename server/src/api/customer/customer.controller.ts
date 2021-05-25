@@ -41,6 +41,7 @@ const difference = <T>(old: T[], updated: T[]) => {
 
 export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
   const {
+    id,
     name,
     email,
     value,
