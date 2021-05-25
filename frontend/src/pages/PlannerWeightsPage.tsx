@@ -71,11 +71,11 @@ export const PlannerWeightsPage = () => {
   };
 
   return (
-    <>
+    <div className={classes(css.plannerPagecontainer)}>
       <p className={classes(css.title)}>
         <Trans i18nKey="Set different weighing for clients" />
       </p>
       {publicUsers && renderUserSliders()}
-    </>
+    </div>
   );
 };

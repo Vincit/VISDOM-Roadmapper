@@ -164,7 +164,7 @@ export const TimeEstimationPage = () => {
   };
 
   return (
-    <>
+    <div className={classes(css.plannerPagecontainer, css.timeEstimation)}>
       <p className={classes(css.graphTitle)}>
         <Trans i18nKey="Estimate milestone durations" />
       </p>
@@ -224,6 +224,6 @@ export const TimeEstimationPage = () => {
           </Alert>
         )}
       {calculatedDaysPerWork !== undefined && renderMilestoneTimeline()}
-    </>
+    </div>
   );
 };

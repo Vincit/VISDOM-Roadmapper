@@ -71,7 +71,7 @@ const RoadmapConfigurationPageComponent = () => {
   };
 
   return (
-    <>
+    <div className={classes(css.configurationPage)}>
       This is the roadmap configuration page.
       {userInfo?.type === UserType.AdminUser && (
         <>
@@ -116,7 +116,7 @@ const RoadmapConfigurationPageComponent = () => {
           </button>
         </span>
       </div>
-    </>
+    </div>
   );
 };
 

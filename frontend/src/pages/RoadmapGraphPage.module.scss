@@ -13,6 +13,11 @@
 .graphTitle {
   text-align: start;
   line-height: 150%;
+  margin-left: 6px;
+  margin-bottom: 39px;
+  &.lowerGraphTitle {
+    margin-bottom: 29px;
+  }
 }
 
 .graphLabel {
@@ -22,8 +27,11 @@
     width: 100px;
     transform: rotate(-90deg);
     position: relative;
-    left: -40px;
+    left: -43px;
     top: -250px;
+  }
+  &:not(.vertical) {
+    margin-top: 9px;
   }
 }
 
@@ -36,8 +44,8 @@
   border-bottom: 1px solid $COLOR_BLACK40;
   justify-content: flex-start;
   align-items: flex-end;
-  padding-left: 12px;
-  padding-bottom: 12px;
+  padding-left: 23px;
+  padding-bottom: 20px;
 }
 
 .graphItems {
@@ -54,7 +62,7 @@
   flex-direction: column;
   overflow-x: visible;
   border-radius: 8px;
-  margin-right: 12px;
+  margin-right: 11px;
   padding: 8px;
   background-color: white;
   cursor: pointer;
@@ -72,6 +80,8 @@
 
 .footer {
   min-height: 200px;
+  margin-left: 20px;
+  margin-bottom: 45px;
 }
 
 .versionData {
