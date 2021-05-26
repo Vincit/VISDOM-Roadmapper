@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Redirect, useLocation, Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
@@ -116,6 +116,12 @@ export const LoginPage = () => {
               </button>
             )}
           </form>
+          <div className={classes(css.loginFooter)}>
+            <Trans i18nKey="No account?" />{' '}
+            <Link to={paths.registerPage}>
+              <Trans i18nKey="Register" />
+            </Link>
+          </div>
         </ModalContent>
       </div>
       <Footer />

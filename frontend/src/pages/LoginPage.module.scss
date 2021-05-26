@@ -12,3 +12,16 @@
 
   font-size: 30px; // for spacing form elements
 }
+
+.loginFooter {
+  @extend .typography-body;
+  color: $COLOR_BLACK60;
+  margin-left: 160px;
+  margin-top: 50px;
+  line-height: 21px;
+  a {
+    color: $COLOR_EMERALD;
+    font-weight: bold;
+    margin-left: 10;
+  }
+}
