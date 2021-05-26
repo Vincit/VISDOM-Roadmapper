@@ -118,20 +118,20 @@ export default class User extends Password(Model) {
     searchByUsernamePartial(query, name) {
       query.where((query) => {
         for (const namePart of name.trim().split(/\s+/)) {
-          query.orWhereRaw('lower(username) like ?', [
-            '%' + namePart.toLowerCase() + '%',
+          query.orWhereRaw('lower(username) like lower(?)', [
+            '%' + namePart + '%',
           ]);
         }
       });
     },
     searchByUsernameExact(query, name) {
       query.where((query) => {
-        query.orWhereRaw('lower(username) = ?', [name.toLowerCase()]);
+        query.orWhereRaw('lower(username) = lower(?)', [name]);
       });
     },
     findByEmail(query, email) {
       query.where((query) => {
-        query.orWhereRaw('lower(email) = ?', [email.toLowerCase()]);
+        query.orWhereRaw('lower(email) = lower(?)', [email]);
       });
     },
   };
