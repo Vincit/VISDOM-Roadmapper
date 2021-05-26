@@ -29,7 +29,7 @@ export default class Task extends Model {
       description: { type: 'string', minLength: 1, maxLength: 1000 },
       roadmapId: { type: 'integer' },
       completed: { type: 'boolean' },
-      createdAt: { type: 'string' },
+      createdAt: { type: 'string', format: 'date-time' },
       createdByUser: { type: 'integer' },
     },
   };
