@@ -205,3 +205,39 @@
     color: $COLOR_BLACK100;
   }
 }
+
+.login {
+  background: $COLOR_EMERALD;
+  position: relative;
+  width: 100vw;
+  min-height: 402px;
+  text-align: center;
+  color: white;
+  h3 {
+    @extend .typography-subtitle;
+    margin: 86px 0px 63px 0px;
+  }
+  div {
+    width: 200px;
+    margin: 0 auto 63px;
+  }
+  a:not(.registerButton) {
+    color: white;
+    font-weight: bold;
+    margin-left: 10;
+  }
+}
+
+.registerButton {
+  @extend .button-large;
+  background-color: white;
+  color: $COLOR_BLACK100;
+
+  display: flex;
+  justify-content: center;
+
+  &:hover:not(.cancel, :disabled) {
+    color: $COLOR_BLACK100;
+    background-color: white;
+  }
+}
