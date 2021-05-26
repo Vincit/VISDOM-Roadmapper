@@ -28,7 +28,7 @@ export const postTasks: RouteHandlerFnc = async (ctx, _) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const { jiraId, createdAt, ...others } = ctx.request.body;
+  const { jiraId, createdAt, id, ...others } = ctx.request.body;
   const task = await Task.query().insertAndFetch({
     ...others,
     roadmapId: Number(ctx.params.roadmapId),
@@ -59,7 +59,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const { name, description, completed, ...others } = ctx.request.body;
+  const { id, name, description, completed, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   return await Task.transaction(async (trx) => {

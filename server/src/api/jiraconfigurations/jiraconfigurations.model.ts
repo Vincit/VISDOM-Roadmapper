@@ -1,4 +1,3 @@
-
 import { Model } from 'objection';
 import Roadmap from './../roadmaps/roadmaps.model';
 
@@ -8,6 +7,8 @@ export default class JiraConfiguration extends Model {
   privatekey!: string;
 
   belongsToRoadmap!: Roadmap;
+
+  roadmapId?: number;
 
   static tableName = 'jiraconfigurations';
 

@@ -63,7 +63,7 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx, _) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const { value, comment, ...others } = ctx.request.body;
+  const { id, value, comment, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   return await Taskrating.transaction(async (trx) => {

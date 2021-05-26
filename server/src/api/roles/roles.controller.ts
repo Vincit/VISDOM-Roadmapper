@@ -4,14 +4,15 @@ import { Role } from './roles.model';
 
 export const inviteRoadmapUser: RouteHandlerFnc = async (ctx, _) => {
   const created = await Role.query().insertAndFetch({
-    ...ctx.request.body,
+    type: ctx.request.body.type,
+    userId: ctx.request.body.userId,
     roadmapId: Number(ctx.params.roadmapId),
   });
   ctx.body = created;
 };
 
 export const patchRoadmapUserRoles: RouteHandlerFnc = async (ctx, _) => {
-  const { type, ...others } = ctx.request.body;
+  const { id, type, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const patched = await Role.query().patchAndFetchById(

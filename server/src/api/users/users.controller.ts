@@ -10,13 +10,14 @@ export const getUsers: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const postUsers: RouteHandlerFnc = async (ctx, _) => {
-  const inserted = await User.query().insertAndFetch(ctx.request.body);
+  const { id, ...others } = ctx.request.body;
+  const inserted = await User.query().insertAndFetch(others);
 
   ctx.body = inserted;
 };
 
 export const patchUsers: RouteHandlerFnc = async (ctx, _) => {
-  const { username, email, ...others } = ctx.request.body;
+  const { id, username, email, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const updated = await User.query().patchAndFetchById(ctx.params.id, {
