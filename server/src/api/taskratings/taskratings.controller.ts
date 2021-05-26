@@ -1,6 +1,9 @@
-import { RouteHandlerFnc } from '../../types/customTypes';
+import {
+  RouteHandlerFnc,
+  Permission,
+  TaskRatingDimension,
+} from '../../types/customTypes';
 import { hasPermission } from './../../utils/checkPermissions';
-import { Permission, TaskRatingDimension } from '../../types/customTypes';
 import Taskrating from './taskratings.model';
 import Task from '../tasks/tasks.model';
 

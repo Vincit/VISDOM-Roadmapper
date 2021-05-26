@@ -1,4 +1,3 @@
-import { RoleType } from './../../types/customTypes';
 import { RouteHandlerFnc } from 'src/types/customTypes';
 import { Role } from './roles.model';
 

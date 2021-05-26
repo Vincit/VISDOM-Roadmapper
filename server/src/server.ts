@@ -2,7 +2,7 @@ import cors from '@koa/cors';
 import KoaRouter from '@koa/router';
 import Dotenv from 'dotenv';
 import Knex from 'knex';
-import Koa, { Context, DefaultState } from 'koa';
+import Koa, { Context } from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import passport from 'koa-passport';
 import session from 'koa-session';
@@ -53,7 +53,7 @@ const createServer = async () => {
   rootRouter.use(userRouter.allowedMethods());
   rootRouter.use(roadmapRouter.routes());
   rootRouter.use(roadmapRouter.allowedMethods());
-  rootRouter.get('/', (ctx, next) => {
+  rootRouter.get('/', (ctx) => {
     ctx.status = 200;
     ctx.body = '';
   });

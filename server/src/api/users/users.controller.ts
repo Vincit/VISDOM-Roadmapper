@@ -82,7 +82,7 @@ export const deleteToken: RouteHandlerFnc = async (ctx, _) => {
 };
 
 export const loginUser: RouteHandlerFnc = async (ctx, _) => {
-  return passport.authenticate('local', (err, user, info, status) => {
+  return passport.authenticate('local', (_err, user) => {
     if (user === false) {
       ctx.body = { message: 'Incorrect username or password.' };
       ctx.status = 401;

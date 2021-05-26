@@ -1,5 +1,5 @@
 import KoaRouter from '@koa/router';
-import { Context, DefaultState } from 'koa';
+import { Context } from 'koa';
 import {
   getBoards,
   getBoardLabels,
@@ -8,8 +8,7 @@ import {
   swapOauthAuthorizationToken,
 } from './jira.controller';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Permission } from '../../types/customTypes';
-import { IKoaState } from 'src/types/customTypes';
+import { Permission, IKoaState } from '../../types/customTypes';
 
 const jiraRouter = new KoaRouter<IKoaState, Context>();
 

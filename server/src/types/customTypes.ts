@@ -1,4 +1,4 @@
-import { Context, Next } from 'koa';
+import { Context } from 'koa';
 import User from 'src/api/users/users.model';
 import KoaRouter from '@koa/router';
 

@@ -1,6 +1,5 @@
-import { requireAuth } from './../../utils/requireAuth';
 import KoaRouter from '@koa/router';
-import { Context, DefaultState } from 'koa';
+import { Context } from 'koa';
 import { requirePermission } from './../../utils/checkPermissions';
 import { IKoaState, Permission } from '../../types/customTypes';
 import {

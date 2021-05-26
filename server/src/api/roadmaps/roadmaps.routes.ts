@@ -10,7 +10,7 @@ import {
   getRoadmapsUsers,
   getCurrentUser,
 } from './roadmaps.controller';
-import { DefaultState, Context } from 'koa';
+import { Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
 import tasksRouter from '../tasks/tasks.routes';
 import jiraRouter from '../jira/jira.routes';
