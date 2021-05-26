@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Alert } from 'react-bootstrap';
