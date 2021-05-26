@@ -39,7 +39,9 @@ export const postVersions: RouteHandlerFnc = async (ctx, _) => {
     }
 
     return await Version.query().insertAndFetch({
-      ...ctx.request.body,
+      name: ctx.request.body.name,
+      tasks: ctx.request.body.name,
+      sortingRank: ctx.request.body.sortingRank,
       roadmapId: Number(ctx.params.roadmapId),
     });
   });
@@ -68,7 +70,7 @@ export const deleteVersions: RouteHandlerFnc = async (ctx, _) => {
 export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
   let { sortingRank } = ctx.request.body;
   delete ctx.request.body.sortingRank;
-  const { name, tasks, ...others } = ctx.request.body;
+  const { id, name, tasks, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const updated = await Version.transaction(async (trx) => {

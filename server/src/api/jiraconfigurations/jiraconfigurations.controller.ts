@@ -3,19 +3,22 @@ import JiraConfiguration from './jiraconfigurations.model';
 
 export const postJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await JiraConfiguration.query().insertAndFetch({
-    ...ctx.request.body,
+    url: ctx.request.body.url,
+    privatekey: ctx.request.body.privatekey,
     roadmapId: Number(ctx.params.roadmapId),
   });
 };
 
 export const patchJiraConfigurations: RouteHandlerFnc = async (ctx, _) => {
-  const { url, privatekey, ...others } = ctx.request.body;
+  const { id, url, privatekey, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
-  const updated = await JiraConfiguration.query().patchAndFetchById(
-    Number(ctx.params.jiraId),
-    { url: url, privatekey: privatekey },
-  );
+  const updated = await JiraConfiguration.query()
+    .patchAndFetchById(Number(ctx.params.jiraId), {
+      url: url,
+      privatekey: privatekey,
+    })
+    .where({ roadmapId: Number(ctx.params.roadmapId) });
 
   if (!updated) {
     return void (ctx.status = 404);
