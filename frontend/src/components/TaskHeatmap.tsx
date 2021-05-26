@@ -28,11 +28,6 @@ function lerpColor(a: string, b: string, amount: number): string {
     .slice(1)}`;
 }
 
-interface DataPoint {
-  xVal: number;
-  yVal: number;
-}
-
 export const TaskHeatmap = () => {
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
