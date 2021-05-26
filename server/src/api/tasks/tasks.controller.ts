@@ -1,6 +1,5 @@
-import { RouteHandlerFnc } from '../../types/customTypes';
+import { RouteHandlerFnc, Permission } from '../../types/customTypes';
 import { hasPermission } from './../../utils/checkPermissions';
-import { Permission } from '../../types/customTypes';
 import Task from './tasks.model';
 import Objection from 'objection';
 

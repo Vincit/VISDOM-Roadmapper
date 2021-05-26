@@ -1,4 +1,4 @@
-import { requireAuth, requireLoginSession } from './../../utils/requireAuth';
+import { requireAuth } from './../../utils/requireAuth';
 import { forbidden } from '../../utils/forbidden';
 import { isCurrentUser } from '../../utils/isCurrent';
 import KoaRouter from '@koa/router';
@@ -16,7 +16,7 @@ import {
   getCurrentUser,
   logoutUser,
 } from './users.controller';
-import { DefaultState, Context } from 'koa';
+import { Context } from 'koa';
 import { IKoaState } from 'src/types/customTypes';
 
 const userRouter = new KoaRouter<IKoaState, Context>();

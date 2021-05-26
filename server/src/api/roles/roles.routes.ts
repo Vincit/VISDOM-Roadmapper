@@ -1,6 +1,6 @@
 import KoaRouter from '@koa/router';
-import { requirePermission, requireRole } from './../../utils/checkPermissions';
-import { Context, DefaultState } from 'koa';
+import { requirePermission } from './../../utils/checkPermissions';
+import { Context } from 'koa';
 import { IKoaState, Permission } from 'src/types/customTypes';
 import {
   deleteRoadmapUserRoles,

@@ -129,7 +129,7 @@ const clearData = async () => {
 };
 
 const createTestUsers = async () => {
-  const businessPerson1 = await User.query().insert({
+  await User.query().insert({
     username: 'BusinessPerson1',
     email: 'biz@business.com',
     type: UserType.BusinessUser,
@@ -141,7 +141,7 @@ const createTestUsers = async () => {
     type: UserType.BusinessUser,
     password: 'test',
   });
-  const developerPerson1 = await User.query().insert({
+  await User.query().insert({
     username: 'DeveloperPerson1',
     email: 'dev@coders.com',
     type: UserType.DeveloperUser,
@@ -153,7 +153,7 @@ const createTestUsers = async () => {
     type: UserType.DeveloperUser,
     password: 'test',
   });
-  const customerPerson1 = await User.query().insert({
+  await User.query().insert({
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
     type: UserType.CustomerUser,
@@ -183,7 +183,7 @@ const createTestUsers = async () => {
     type: UserType.CustomerUser,
     password: 'test',
   });
-  const adminPerson1 = await User.query().insert({
+  await User.query().insert({
     username: 'AdminPerson1',
     email: 'admin@admins.com',
     type: UserType.AdminUser,

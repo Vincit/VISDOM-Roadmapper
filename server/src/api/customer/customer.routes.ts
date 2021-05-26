@@ -7,7 +7,7 @@ import {
   patchCustomer,
   deleteCustomer,
 } from './customer.controller';
-import { DefaultState, Context } from 'koa';
+import { Context } from 'koa';
 
 const customerRouter = new KoaRouter<IKoaState, Context>();
 

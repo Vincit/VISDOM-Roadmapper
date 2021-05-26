@@ -5,7 +5,7 @@ import Version from '../src/api/versions/versions.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
 import { Permission, RoleType } from '../src/types/customTypes';
-import { app, loggedInAgent } from './setuptests';
+import { loggedInAgent } from './setuptests';
 chai.use(chaiHttp);
 
 describe('Test /roadmaps/:roadmapId/versions/ api', function () {

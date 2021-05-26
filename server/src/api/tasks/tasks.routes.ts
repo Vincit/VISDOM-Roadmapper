@@ -7,7 +7,7 @@ import {
 } from './tasks.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { IKoaState, Permission } from '../../types/customTypes';
-import { DefaultState, Context } from 'koa';
+import { Context } from 'koa';
 import taskratingRouter from '../taskratings/taskratings.routes';
 const tasksRouter = new KoaRouter<IKoaState, Context>();
 
