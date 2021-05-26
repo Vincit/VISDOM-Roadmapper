@@ -1,4 +1,6 @@
 import React from 'react';
+import { Trans } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { ReactComponent as RoamappingSvg } from '../assets/images/roadmapping.svg';
@@ -6,6 +8,7 @@ import { ReactComponent as RationaleSvg } from '../assets/images/rationale.svg';
 import { ReactComponent as FeaturesSvg } from '../assets/images/features.svg';
 import { LoginNavBar } from '../components/LoginNavBar';
 import { Footer } from '../components/Footer';
+import { paths } from '../routers/paths';
 import css from './LandingPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -202,6 +205,18 @@ export const LandingPage = () => {
           </div>
           <FeaturesSvg />
         </div>
+      </div>
+      <div className={classes(css.login)}>
+        <h3>Ready to visualize your roadmap?</h3>
+        <div>
+          <Link className={classes(css.registerButton)} to={paths.registerPage}>
+            <Trans i18nKey="Create an account" />
+          </Link>
+        </div>
+        <Trans i18nKey="Already have an account?" />{' '}
+        <Link to={paths.loginPage}>
+          <Trans i18nKey="Log in" />
+        </Link>
       </div>
       <div className={classes(css.contact)}>
         <h3>Contact us</h3>
