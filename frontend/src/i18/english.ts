@@ -90,6 +90,7 @@ export const english = {
     'Your email': 'Your email',
     'Create account': 'Create account',
     'Already have an account?': 'Already have an account?',
+    'No account?': 'No account?',
     'Example email': 'email@example.com',
     'Terms of use error':
       'Please read and accept the terms of use and privacy policy.',
