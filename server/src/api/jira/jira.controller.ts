@@ -127,16 +127,20 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   );
 
   const importedTasks: Task[] = [];
-  for (let task of tasks) {
-    const existing = await Task.query().where('jiraId', task.jiraId).first();
-    if (existing) {
-      const imported = await Task.query().patchAndFetchById(existing.id, task);
-      importedTasks.push(imported);
-    } else {
-      const imported = await Task.query().insert(task);
-      importedTasks.push(imported);
+  await Task.transaction(async (trx) => {
+    for (let task of tasks) {
+      const existing = await Task.query(trx)
+        .where('jiraId', task.jiraId)
+        .first();
+      if (existing) {
+        const imported = await existing.$query(trx).patchAndFetch(task);
+        importedTasks.push(imported);
+      } else {
+        const imported = await Task.query(trx).insert(task);
+        importedTasks.push(imported);
+      }
     }
-  }
+  });
 
   ctx.body = importedTasks.length + ' tasks imported';
   ctx.status = 200;
