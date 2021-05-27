@@ -92,6 +92,16 @@ const filterIssues = <T>(filters: { labels?: string[] }, issues: T[]): T[] => {
   );
 };
 
+type JiraTask = {
+  name: string;
+  description: string;
+  createdAt: string;
+  completed: boolean;
+  jiraId: number;
+  createdByUser: number;
+  roadmapId: number;
+};
+
 export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
@@ -104,23 +114,21 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
 
   const boardissues = await jiraApi.getIssuesForBoard(boardId);
-  const issues = filterIssues(filters, boardissues.issues);
+  const tasks = filterIssues(filters, boardissues.issues).map(
+    (issue: any): JiraTask => ({
+      name: issue.fields.summary,
+      description: issue.fields.description || 'No description',
+      createdAt: issue.fields.created,
+      completed: false,
+      jiraId: Number(issue.id),
+      createdByUser,
+      roadmapId,
+    }),
+  );
 
   const importedTasks: Task[] = [];
-  for (let issue of issues) {
-    const convertedIssue = issue as any;
-    const task = {
-      name: convertedIssue.fields.summary,
-      description: convertedIssue.fields.description || 'No description',
-      createdAt: convertedIssue.fields.created,
-      completed: false,
-      jiraId: parseInt(convertedIssue.id, 10),
-      createdByUser: createdByUser,
-      roadmapId: roadmapId,
-    };
-    const existing = await Task.query()
-      .where('jiraId', parseInt(convertedIssue.id, 10))
-      .first();
+  for (let task of tasks) {
+    const existing = await Task.query().where('jiraId', task.jiraId).first();
     if (existing) {
       const imported = await Task.query().patchAndFetchById(existing.id, task);
       importedTasks.push(imported);
