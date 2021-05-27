@@ -98,7 +98,7 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   }
 
   const { boardId, createdByUser, filters } = ctx.request.body;
-  const roadmapId = ctx.params.roadmapId;
+  const roadmapId = Number(ctx.params.roadmapId);
 
   const userId = ctx.state.user.id;
   const jiraApi = await jiraClientForRoadmapAndUser(roadmapId, userId);
