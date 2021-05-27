@@ -234,7 +234,7 @@ const addJiraconfiguration = async (
   roadmapId: number,
 ) => {
   const response = await axios.post(
-    `roadmap/${roadmapId}/jiraconfigurations`,
+    `roadmaps/${roadmapId}/jiraconfigurations`,
     jiraconfiguration,
   );
   return response.data as JiraConfiguration;
@@ -245,7 +245,7 @@ const patchJiraconfiguration = async (
   roadmapId: number,
 ) => {
   const response = await axios.patch(
-    `roadmap/${roadmapId}/jiraconfigurations/${jiraconfiguration.id}`,
+    `roadmaps/${roadmapId}/jiraconfigurations/${jiraconfiguration.id}`,
     { url: jiraconfiguration.url, privatekey: jiraconfiguration.privatekey },
   );
   return response.data as JiraConfiguration;
