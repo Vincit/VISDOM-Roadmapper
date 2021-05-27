@@ -200,7 +200,6 @@ export const PATCH_JIRA_CONFIGURATION_FULFILLED = (
   )!;
 
   if (parentRoadmap) {
-    const jiraconfiguration = parentRoadmap.jiraconfiguration;
-    Object.assign(jiraconfiguration, action.payload);
+    Object.assign(parentRoadmap.jiraconfiguration, action.payload);
   }
 };
