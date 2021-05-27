@@ -33,9 +33,7 @@ export const PlannerWeightsPage = () => {
 
   const handleSliderChange = (userId: number, value: number) => {
     // TODO: Maybe debounce this so that a dispatch doesnt go off every time slider moves a notch
-    dispatch(
-      roadmapsActions.setPlannerUserWeight({ userId: userId, weight: value }),
-    );
+    dispatch(roadmapsActions.setPlannerUserWeight({ userId, weight: value }));
   };
 
   const renderUserSliders = () => {

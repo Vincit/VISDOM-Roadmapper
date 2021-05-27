@@ -19,12 +19,13 @@ export const addVersion = createAsyncThunk<
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
+    const roadmapId = version.roadmapId || currentroadmapId;
     await api.addVersion({
-      roadmapId: version.roadmapId || currentroadmapId,
+      roadmapId,
       name: version.name,
       tasks: [],
     });
-    return await api.getVersions(version.roadmapId || currentroadmapId);
+    return await api.getVersions(roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -54,12 +55,12 @@ export const patchVersion = createAsyncThunk<
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
-    version = {
+    const roadmapId = version.roadmapId || currentroadmapId;
+    await api.patchVersion({
       ...version,
-      roadmapId: version.roadmapId || currentroadmapId,
-    };
-    await api.patchVersion(version);
-    return await api.getVersions(version.roadmapId!);
+      roadmapId,
+    });
+    return await api.getVersions(roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -74,12 +75,12 @@ export const deleteVersion = createAsyncThunk<
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
-    version = {
+    const roadmapId = version.roadmapId || currentroadmapId;
+    await api.deleteVersion({
       ...version,
-      roadmapId: version.roadmapId || currentroadmapId,
-    };
-    await api.deleteVersion(version);
-    return await api.getVersions(version.roadmapId!);
+      roadmapId,
+    });
+    return await api.getVersions(roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
