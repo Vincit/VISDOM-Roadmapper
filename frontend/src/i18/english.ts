@@ -99,5 +99,8 @@ export const english = {
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
     'Username already taken.': 'Username already taken.',
     'This email is already in use.': 'This email is already in use.',
+    'Remove client': 'Remove client',
+    'No, go back': 'No, go back',
+    'Yes, remove it': 'Yes, remove it',
   },
 };
