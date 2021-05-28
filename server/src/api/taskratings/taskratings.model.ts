@@ -14,6 +14,7 @@ export default class TaskRating extends Model {
   createdBy?: User;
   createdFor?: Customer;
 
+  forCustomer?: number;
   createdByUser?: number;
   parentTask?: number;
 

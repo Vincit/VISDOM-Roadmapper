@@ -6,6 +6,7 @@ import {
 import { hasPermission } from './../../utils/checkPermissions';
 import Taskrating from './taskratings.model';
 import Task from '../tasks/tasks.model';
+import Customer from '../customer/customer.model';
 
 export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
   if (ctx.query.eager) {
@@ -23,7 +24,7 @@ export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const { dimension, value, comment } = ctx.request.body;
+  const { dimension, value, comment, forCustomer } = ctx.request.body;
   if (
     (dimension === TaskRatingDimension.BusinessValue &&
       !hasPermission(ctx, Permission.TaskValueRate)) ||
@@ -32,17 +33,33 @@ export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
   )
     return void (ctx.status = 403);
 
-  const child = await Task.relatedQuery('ratings')
-    .for(Number(ctx.params.taskId))
-    .insertAndFetch({
-      dimension: dimension,
-      value: value,
-      comment: comment,
-      parentTask: Number(ctx.params.taskId),
-      createdByUser: Number(ctx.state.user.id),
-    })
-    .where({ roadmapId: Number(ctx.params.roadmapId) });
-  return void (ctx.body = child);
+  const userId = Number(ctx.state.user.id);
+  const child = await Task.transaction(async (trx) => {
+    if (forCustomer !== undefined) {
+      // check that user is representative for given customer
+      const found = await Customer.relatedQuery('representatives', trx)
+        .for(forCustomer)
+        .findById(userId);
+      if (!found) return false;
+    }
+    return await Task.relatedQuery('ratings', trx)
+      .for(Number(ctx.params.taskId))
+      .insertAndFetch({
+        dimension: dimension,
+        value: value,
+        comment: comment,
+        forCustomer: forCustomer,
+        parentTask: Number(ctx.params.taskId),
+        createdByUser: userId,
+      })
+      .where({ roadmapId: Number(ctx.params.roadmapId) });
+  });
+  if (child) {
+    ctx.body = child;
+  } else {
+    ctx.status = 403;
+  }
+  return;
 };
 
 export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
