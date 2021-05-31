@@ -1,0 +1,38 @@
+@import '../../../shared.scss';
+
+.container {
+  margin: 20px 0;
+}
+
+.saturation {
+  width: 418px;
+  height: 230px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.hue {
+  width: 418px;
+  height: 20px;
+  position: relative;
+}
+
+.hex {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+
+  input {
+    width: 110px;
+    margin-left: 10px;
+  }
+}
+
+.picker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.8px solid white;
+  position: relative;
+  right: 10px;
+}

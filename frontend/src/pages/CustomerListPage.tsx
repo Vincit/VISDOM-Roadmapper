@@ -85,6 +85,7 @@ export const CustomerListPage = () => {
   );
 
   const tableHeaders: TableHeader[] = [
+    { label: 'ID', sorting: SortingTypes.SORT_NAME },
     { label: 'Name', sorting: SortingTypes.SORT_NAME },
     { label: 'Value', sorting: SortingTypes.SORT_VALUE },
   ];

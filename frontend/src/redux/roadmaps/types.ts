@@ -18,6 +18,7 @@ export interface Customer {
 export interface CustomerRequest {
   id?: number;
   name?: string;
+  email?: string | null;
   value?: number;
   color?: string | null;
   representatives?: PublicUser[];

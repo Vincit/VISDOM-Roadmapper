@@ -40,6 +40,7 @@ export const english = {
     'task list': 'task list',
     Plan: 'Plan',
     Cancel: 'Cancel',
+    Confirm: 'Confirm',
     'Overview for': 'Overview for',
     Logout: 'Logout',
     'Log in': 'Log in',
@@ -104,5 +105,13 @@ export const english = {
     'Remove client': 'Remove client',
     'No, go back': 'No, go back',
     'Yes, remove it': 'Yes, remove it',
+    'Modify client information': 'Modify client information',
+    'Client name': 'Client name',
+    'Contact information': 'Contact information',
+    'Client color': 'Client color',
+    Generate: 'Generate',
+    'Pick a color': 'Pick a color',
+    "Who's responsible for the client value ratings?":
+      "Who's responsible for the client value ratings?",
   },
 };

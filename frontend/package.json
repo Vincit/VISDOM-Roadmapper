@@ -29,6 +29,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
+    "color-convert": "^2.0.1",
     "dotenv": "^8.2.0",
     "i18next": "^19.4.4",
     "immutability-helper": "^3.1.1",
@@ -37,6 +38,7 @@
     "react-beautiful-dnd": "^13.0.0",
     "react-bootstrap": "^1.0.1",
     "react-bootstrap-icons": "^1.0.3-alpha4",
+    "react-color": "^2.19.3",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.4.0",
     "react-modal": "^3.12.1",
@@ -74,6 +76,8 @@
     ]
   },
   "devDependencies": {
+    "@types/color-convert": "^2.0.0",
+    "@types/react-color": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "eslint": "^6.8.0",
