@@ -33,6 +33,6 @@ export const HomePage = () => {
   return roadmaps && roadmaps.length > 0 ? (
     <Redirect to={`${paths.roadmapHome}/${roadmaps[0].id}/dashboard`} />
   ) : (
-    <NavLayout Content={PlaceholderComponent} />
+    <PlaceholderComponent />
   );
 };
