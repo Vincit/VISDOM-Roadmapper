@@ -133,7 +133,7 @@ const deleteCurrentUserToken = async () => {
   return response.status === 200;
 };
 
-const getCurrentUserInfo = async (roadmapId: number) => {
+const getCurrentUserInfo = async (roadmapId?: number) => {
   if (roadmapId) {
     const response = await axios.get(`/roadmaps/${roadmapId}/whoami`);
     return response.data as UserInfo;
