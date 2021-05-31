@@ -40,7 +40,14 @@ const difference = <T>(old: T[], updated: T[]) => {
 };
 
 export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
-  const { name, value, color, representatives, ...others } = ctx.request.body;
+  const {
+    name,
+    email,
+    value,
+    color,
+    representatives,
+    ...others
+  } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
   const roadmap = Number(ctx.params.roadmapId);
 
@@ -53,7 +60,7 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
 
     const ok = await customer
       .$query(trx)
-      .patch({ name: name, value: value, color: color });
+      .patch({ name: name, email: email, value: value, color: color });
     if (!representatives) return ok && customer;
 
     const { added, removed } = difference(

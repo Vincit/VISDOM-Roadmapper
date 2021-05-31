@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<any> {
         .inTable('roadmaps')
         .onDelete('CASCADE');
       table.string('name', 75).notNullable();
+      table.string('email', 255).nullable();
       table.string('color', 7).nullable();
       table.integer('value').unsigned().defaultTo(0);
     })
