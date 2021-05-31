@@ -34,7 +34,7 @@ export default class User extends Password(Model) {
         maxLength: 255,
       },
       email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
-      password: { type: 'string', minLength: 1, maxLength: 255 },
+      password: { type: 'string', minLength: 1, maxLength: 72 },
       authToken: { type: ['string', 'null'], format: 'uuid' },
       type: {
         type: 'integer',
