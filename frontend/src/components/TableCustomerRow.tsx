@@ -2,6 +2,7 @@ import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { DeleteButton } from './forms/DeleteButton';
+import { EditButton } from './forms/EditButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
@@ -18,7 +19,7 @@ interface TableRowProps {
 }
 
 export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
-  const { id, name, value } = customer;
+  const { id, name, value, color } = customer;
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -50,8 +51,27 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
     );
   };
 
+  const editUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.EDIT_CUSTOMER_MODAL,
+        modalProps: {
+          customer,
+        },
+      }),
+    );
+  };
+
   return (
     <tr>
+      <td className="styledTd">
+        <div
+          className={classes(css.customerCircle)}
+          style={{ backgroundColor: color || '' }}
+        />
+      </td>
       <td className="styledTd">{name}</td>
       <td className="styledTd">{value}</td>
       <td className="styledTd nowrap textAlignEnd">
@@ -73,6 +93,13 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
                 }&modalProps=${encodeURIComponent(
                   JSON.stringify({ customerId: id, customerName: name }),
                 )}`}
+              />
+              <EditButton
+                type="default"
+                onClick={editUserClicked}
+                href={`?openModal=${
+                  ModalTypes.EDIT_CUSTOMER_MODAL
+                }&modalProps=${encodeURIComponent(JSON.stringify(customer))}`}
               />
             </div>
           </div>

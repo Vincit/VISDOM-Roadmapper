@@ -2,8 +2,11 @@
 
 .editIcon {
   path {
-    fill: $COLOR_BLACK100;
-    opacity: 0.25;
+    fill: $COLOR_BLACK40;
+    transition: 150ms ease-out;
+  }
+  &:hover path {
+    fill: $COLOR_AZURE;
   }
   cursor: pointer;
 }
