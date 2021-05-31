@@ -13,7 +13,7 @@ export const getUserInfo = createAsyncThunk<
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
-    )!;
+    );
     return await api.getCurrentUserInfo(currentroadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
