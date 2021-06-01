@@ -1,8 +1,11 @@
+import { Customer } from '../roadmaps/types';
+
 export interface UserInfo {
   username: string;
   email: string;
   id: number;
   type: UserType;
+  representativeFor?: Customer[];
 }
 
 export interface UserState {
