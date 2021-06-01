@@ -4,19 +4,27 @@ import TokenStrategy from 'passport-auth-token';
 import User from '../api/users/users.model';
 
 const fetchUserById = async (id: number) => {
-  return await User.query().findById(id).first();
+  return await User.query()
+    .findById(id)
+    .withGraphFetched('representativeFor')
+    .first();
 };
 
 const fetchUserByNameOrEmail = (nameOrEmail: string) => {
-  if (/@/.test(nameOrEmail)) {
-    return User.query().modify('findByEmail', nameOrEmail).first();
-  } else {
-    return User.query().modify('searchByUsernameExact', nameOrEmail).first();
-  }
+  const modifier = /@/.test(nameOrEmail)
+    ? 'findByEmail'
+    : 'searchByUsernameExact';
+  return User.query()
+    .modify(modifier, nameOrEmail)
+    .withGraphFetched('representativeFor')
+    .first();
 };
 
 const fetchUserByToken = async (token: string) => {
-  return await User.query().where('authToken', token).first();
+  return await User.query()
+    .where('authToken', token)
+    .withGraphFetched('representativeFor')
+    .first();
 };
 
 const addAuthToPassport = () => {

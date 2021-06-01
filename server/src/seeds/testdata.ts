@@ -71,6 +71,11 @@ const createTestCustomers = async () => {
     'CustomerPerson2',
   );
   await customerPerson2.$relatedQuery('representativeFor').relate([customer2]);
+
+  const adminUser = await User.query().findOne('username', 'AdminPerson1');
+  await adminUser
+    .$relatedQuery('representativeFor')
+    .relate([customer1, customer2]);
 };
 
 const createTestRoadmap = async () => {

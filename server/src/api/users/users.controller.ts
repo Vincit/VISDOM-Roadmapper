@@ -103,6 +103,7 @@ export const logoutUser: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
+// TODO: same as in roadmap router
 export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = ctx.state.user;
 };
