@@ -1,0 +1,28 @@
+@import '../../shared.scss';
+
+.customerHeader {
+  @extend .layout-row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.taskHeader {
+  @extend .layout-column;
+  margin-bottom: 3rem;
+  max-width: 60ch;
+}
+
+.taskTitle {
+  @extend .typography-body-bold;
+  color: $COLOR_AZURE;
+}
+
+.dimText {
+  @extend .typography-body;
+  color: $COLOR_BLACK40;
+}
+
+.rating {
+  @extend .layout-column;
+  gap: 1rem;
+}
