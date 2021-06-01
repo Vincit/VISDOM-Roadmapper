@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from 'react';
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Alert } from 'react-bootstrap';
@@ -21,6 +22,7 @@ const classes = classNames.bind(css);
 
 export const TimeEstimationPage = () => {
   const { t } = useTranslation();
+  const durationInput = useRef<HTMLInputElement>(null);
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
     roadmapsVersionsSelector,
     shallowEqual,
@@ -50,6 +52,9 @@ export const TimeEstimationPage = () => {
     if (e.currentTarget.value !== '') {
       const selectedId = parseInt(e.currentTarget.value, 10);
       setSelectedMilestoneId(selectedId);
+    if (timeEstimates.filter((e) => e.id === version.id).length === 0) {
+      if (durationInput.current !== null) durationInput.current!.value = '';
+    }
     } else {
       setSelectedMilestoneId(undefined);
     }
@@ -194,27 +199,30 @@ export const TimeEstimationPage = () => {
           </label>
         </div>
 
-        <div className={classes(css.textInputWrapper)}>
-          <label className={classes(css.formLabel)} htmlFor="duration">
-            <Trans i18nKey="Working days estimation" />
-            <input
-              className="number"
-              required
-              name="duration"
-              id="duration"
-              type="number"
-              placeholder={t('Duration')}
-              value={milestoneDuration}
-              onChange={(e: any) => onDurationChange(e.currentTarget.value)}
-              onKeyPress={(e: any) => {
-                // Prevents input of non-numeric characters
-                if (e.which < 48 || e.which > 57) {
-                  e.preventDefault();
-                }
-              }}
-            />
-          </label>
-        </div>
+        {selectedMilestoneId && (
+          <div className={classes(css.textInputWrapper)}>
+            <label className={classes(css.formLabel)} htmlFor="duration">
+              <Trans i18nKey="Working days estimation" />
+              <input
+                className={classes(css.durationInput)}
+                required
+                ref={durationInput}
+                name="duration"
+                id="duration"
+                type="number"
+                placeholder={t('Duration')}
+                value={milestoneDuration}
+                onChange={(e: any) => onDurationChange(e.currentTarget.value)}
+                onKeyPress={(e: any) => {
+                  // Prevents input of non-numeric characters
+                  if (e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                  }
+                }}
+              />
+            </label>
+          </div>
+        )}
       </div>
       {calculatedDaysPerWork === undefined &&
         selectedMilestoneId !== undefined &&
