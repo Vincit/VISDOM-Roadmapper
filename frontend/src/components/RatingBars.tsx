@@ -26,7 +26,6 @@ export const TaskRatingBar: React.FC<RatingBarProps> = ({
       initialRating={initialValue}
       start={0}
       stop={10}
-      fractions={2}
       onChange={onChange}
       emptySymbol={
         dimension === TaskRatingDimension.BusinessValue ? (
