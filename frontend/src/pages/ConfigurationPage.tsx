@@ -9,7 +9,8 @@ import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo, UserType } from '../redux/user/types';
+import { UserInfo } from '../redux/user/types';
+import { UserType } from '../../../shared/types/customTypes';
 import { requireLogin } from '../utils/requirelogin';
 import css from './ConfigurationPage.module.scss';
 

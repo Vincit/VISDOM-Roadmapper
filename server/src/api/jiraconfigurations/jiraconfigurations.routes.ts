@@ -5,8 +5,10 @@ import {
   deleteJiraConfigurations,
 } from './jiraconfigurations.controller';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Permission, IKoaState } from '../../types/customTypes';
+import { IKoaState } from '../../types/customTypes';
 import { Context } from 'koa';
+import { Permission } from '../../../../shared/types/customTypes';
+
 const jiraConfigurationRouter = new KoaRouter<IKoaState, Context>();
 
 jiraConfigurationRouter.post(

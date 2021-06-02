@@ -1,5 +1,5 @@
 import { RoadmapUser } from '../redux/roadmaps/types';
-import { RoleType } from '../redux/user/types';
+import { RoleType } from '../../../shared/types/customTypes';
 import {
   SortingOrders,
   SortComparison,

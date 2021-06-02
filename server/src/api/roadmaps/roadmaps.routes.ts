@@ -1,6 +1,7 @@
 import { requireAuth } from './../../utils/requireAuth';
 import { requirePermission, requireRole } from './../../utils/checkPermissions';
-import { IKoaState, Permission } from '../../types/customTypes';
+import { IKoaState } from '../../types/customTypes';
+import { Permission } from '../../../../shared/types/customTypes';
 import KoaRouter from '@koa/router';
 import {
   getRoadmaps,

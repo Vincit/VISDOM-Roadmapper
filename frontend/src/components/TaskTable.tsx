@@ -13,7 +13,8 @@ import { ModalTypes } from '../redux/modals/types';
 import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo, UserType } from '../redux/user/types';
+import { UserInfo } from '../redux/user/types';
+import { UserType } from '../../../shared/types/customTypes';
 import {
   filterTasks,
   FilterTypes,

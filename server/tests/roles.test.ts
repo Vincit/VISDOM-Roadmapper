@@ -5,7 +5,7 @@ import { app, loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType, UserType } from '../src/types/customTypes';
+import { Permission, RoleType, UserType } from '../../shared/types/customTypes';
 
 const registerNewUser = async (user: object) =>
   (

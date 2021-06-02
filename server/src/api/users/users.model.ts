@@ -1,6 +1,6 @@
 import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
-import { UserType } from './../../types/customTypes';
+import { UserType } from '../../../../shared/types/customTypes';
 import Token from '../tokens/tokens.model';
 import { Role } from '../roles/roles.model';
 import Roadmap from '../roadmaps/roadmaps.model';

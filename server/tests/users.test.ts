@@ -2,7 +2,7 @@ import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import { loggedInAgent } from './setuptests';
 import User from '../src/api/users/users.model';
-import { UserType } from '../src/types/customTypes';
+import { UserType } from '../../shared/types/customTypes';
 chai.use(chaiHttp);
 
 describe('Test /users/ api', function () {

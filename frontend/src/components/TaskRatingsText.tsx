@@ -1,7 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
-import { Task, TaskRatingDimension } from '../redux/roadmaps/types';
+import { Task } from '../redux/roadmaps/types';
+import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { calcTaskAverageRating } from '../utils/TaskUtils';
 
 import css from './TaskRatingsText.module.scss';

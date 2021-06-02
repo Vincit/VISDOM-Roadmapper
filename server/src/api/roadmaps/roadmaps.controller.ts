@@ -1,4 +1,5 @@
-import { RouteHandlerFnc, RoleType } from '../../types/customTypes';
+import { RouteHandlerFnc } from '../../types/customTypes';
+import { RoleType } from '../../../../shared/types/customTypes';
 import Roadmap from './roadmaps.model';
 import User from '../users/users.model';
 import { Role } from '../roles/roles.model';

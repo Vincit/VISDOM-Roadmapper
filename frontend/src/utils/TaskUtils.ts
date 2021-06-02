@@ -1,12 +1,6 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
-import {
-  Customer,
-  Roadmap,
-  Task,
-  Taskrating,
-  TaskRatingDimension,
-} from '../redux/roadmaps/types';
-
+import { Customer, Roadmap, Task, Taskrating } from '../redux/roadmaps/types';
+import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import {
   SortingOrders,
   sorted,

@@ -1,4 +1,8 @@
-import { UserType, RoleType } from '../user/types';
+import {
+  TaskRatingDimension,
+  UserType,
+  RoleType,
+} from '../../../../shared/types/customTypes';
 
 export interface RoadmapsState {
   roadmaps: Roadmap[] | undefined;
@@ -83,11 +87,6 @@ export interface TaskRequest {
   completed?: boolean;
   roadmapId?: number;
   createdByUser?: number;
-}
-
-export enum TaskRatingDimension {
-  BusinessValue = 0,
-  RequiredWork = 1,
 }
 
 export interface Taskrating {

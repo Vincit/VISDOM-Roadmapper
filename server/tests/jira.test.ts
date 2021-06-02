@@ -5,7 +5,7 @@ import { loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType } from '../src/types/customTypes';
+import { Permission, RoleType } from '../../shared/types/customTypes';
 
 describe('Test /roadmaps/:roadmapId/jira/ api', function () {
   describe('POST /roadmaps/:roadmapId/jira/importboard/', function () {

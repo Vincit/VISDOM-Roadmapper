@@ -1,6 +1,6 @@
 import React from 'react';
 import Rating from 'react-rating';
-import { TaskRatingDimension } from '../redux/roadmaps/types';
+import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import {
   BusinessValueEmpty,
   BusinessValueFilled,

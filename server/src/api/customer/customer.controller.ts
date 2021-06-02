@@ -1,7 +1,7 @@
 import { hasPermission } from './../../utils/checkPermissions';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Customer from './customer.model';
-import { Permission } from '../../types/customTypes';
+import { Permission } from '../../../../shared/types/customTypes';
 import User from '../users/users.model';
 
 export const getCustomers: RouteHandlerFnc = async (ctx, _) => {
