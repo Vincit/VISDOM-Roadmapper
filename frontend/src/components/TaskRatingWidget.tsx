@@ -14,130 +14,68 @@ import css from './TaskRatingWidget.module.scss';
 const classes = classNames.bind(css);
 
 interface TaskRatingWidgetProps {
-  initialBusinessValueRating?: {
+  initialRating?: {
     value: number;
     comment: string | undefined;
   };
-  initialRequiredWorkRating?: {
-    value: number;
-    comment: string | undefined;
-  };
-  onBusinessRatingChange?: (rating: {
+  onRatingChange?: (rating: {
     value: number;
     comment: string | undefined;
   }) => void;
-  onRequiredWorkRatingChange?: (rating: {
-    value: number;
-    comment: string | undefined;
-  }) => void;
+  ratingDimension: TaskRatingDimension;
 }
 
 export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
-  initialBusinessValueRating,
-  initialRequiredWorkRating,
-  onBusinessRatingChange,
-  onRequiredWorkRatingChange,
+  initialRating,
+  onRatingChange,
+  ratingDimension,
 }) => {
   const { t } = useTranslation();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
-  const [businessValueRating, setBusinessValueRating] = useState(
-    initialBusinessValueRating || {
+  const [rating, setRating] = useState(
+    initialRating || {
       value: 0,
       comment: undefined,
     },
   );
-  const [requiredWorkRating, setRequiredWorkRating] = useState(
-    initialRequiredWorkRating || {
-      value: 0,
-      comment: undefined,
-    },
-  );
+
   const [commentBoxOpen, setCommentBoxOpen] = useState(false);
-  const [commentBoxTarget, setCommentBoxTarget] = useState(
-    TaskRatingDimension.BusinessValue,
-  );
 
-  const businessValueChanged = (value: number) => {
-    setBusinessValueRating({ ...businessValueRating, value });
-    if (onBusinessRatingChange)
-      onBusinessRatingChange({ ...businessValueRating, value });
+  const ratingChanged = (value: number) => {
+    setRating({ ...rating, value });
+    if (onRatingChange) onRatingChange({ ...rating, value });
   };
 
-  const businessCommentChanged = (comment: string) => {
-    setBusinessValueRating({ ...businessValueRating, comment });
-    if (onBusinessRatingChange)
-      onBusinessRatingChange({ ...businessValueRating, comment });
+  const commentChanged = (comment: string) => {
+    setRating({ ...rating, comment });
+    if (onRatingChange) onRatingChange({ ...rating, comment });
   };
 
-  const requiredWorkValueChanged = (value: number) => {
-    setRequiredWorkRating({ ...requiredWorkRating, value });
-    if (onRequiredWorkRatingChange)
-      onRequiredWorkRatingChange({ ...requiredWorkRating, value });
-  };
+  const shouldShow =
+    ratingDimension === TaskRatingDimension.BusinessValue
+      ? userInfo!.type !== UserType.DeveloperUser
+      : userInfo!.type !== UserType.CustomerUser &&
+        userInfo!.type !== UserType.BusinessUser;
 
-  const requiredWorkCommentChanged = (comment: string) => {
-    setRequiredWorkRating({ ...requiredWorkRating, comment });
-    if (onRequiredWorkRatingChange)
-      onRequiredWorkRatingChange({ ...requiredWorkRating, comment });
-  };
-
-  const openCommentBox = (whichRating: TaskRatingDimension) => {
-    setCommentBoxOpen(true);
-    setCommentBoxTarget(whichRating);
-  };
-
-  const onCommentChange = (comment: string) => {
-    if (commentBoxTarget === TaskRatingDimension.BusinessValue) {
-      businessCommentChanged(comment);
-    } else {
-      requiredWorkCommentChanged(comment);
-    }
-  };
-
-  const renderRatingBars = () => {
-    return (
-      <>
-        {userInfo!.type !== UserType.DeveloperUser && (
-          <Form.Group>
-            <div className="d-flex justify-content-around">
-              <TaskRatingBar
-                dimension={TaskRatingDimension.BusinessValue}
-                initialValue={businessValueRating.value}
-                onChange={businessValueChanged}
-              />
-              <ChatDots
-                className={classes(css.commentButton)}
-                onClick={() =>
-                  openCommentBox(TaskRatingDimension.BusinessValue)
-                }
-              />
-            </div>
-          </Form.Group>
-        )}
-        {userInfo!.type !== UserType.CustomerUser &&
-          userInfo!.type !== UserType.BusinessUser && (
-            <Form.Group>
-              <div className="d-flex justify-content-around">
-                <TaskRatingBar
-                  dimension={TaskRatingDimension.RequiredWork}
-                  initialValue={requiredWorkRating.value}
-                  onChange={requiredWorkValueChanged}
-                />
-                <ChatDots
-                  className={classes(css.commentButton)}
-                  onClick={() =>
-                    openCommentBox(TaskRatingDimension.RequiredWork)
-                  }
-                />
-              </div>
-            </Form.Group>
-          )}
-      </>
+  const renderRatingBars = () =>
+    shouldShow && (
+      <Form.Group>
+        <div className="d-flex justify-content-around">
+          <TaskRatingBar
+            dimension={ratingDimension}
+            initialValue={rating.value}
+            onChange={ratingChanged}
+          />
+          <ChatDots
+            className={classes(css.commentButton)}
+            onClick={() => setCommentBoxOpen(true)}
+          />
+        </div>
+      </Form.Group>
     );
-  };
 
   const renderCommentBox = () => {
     return (
@@ -148,12 +86,8 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
           id="description"
           draggable="false"
           placeholder={t('Comment your rating...')}
-          value={
-            commentBoxTarget === TaskRatingDimension.BusinessValue
-              ? businessValueRating.comment
-              : requiredWorkRating.comment
-          }
-          onChange={(e) => onCommentChange(e.currentTarget.value)}
+          value={rating.comment}
+          onChange={(e) => commentChanged(e.currentTarget.value)}
         />
         <span
           className={classes(css.closeCommentButton)}
