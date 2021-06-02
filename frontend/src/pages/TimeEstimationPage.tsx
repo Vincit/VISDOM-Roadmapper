@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
-import { StarFill, Wrench, List } from 'react-bootstrap-icons';
 import classNames from 'classnames';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -17,6 +16,9 @@ import { calcTaskAverageRating, totalValueAndWork } from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
 import css from './TimeEstimationPage.module.scss';
+
+import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
+import { Dropdown } from '../components/forms/Dropdown';
 
 const classes = classNames.bind(css);
 
@@ -40,23 +42,28 @@ export const TimeEstimationPage = () => {
   const [selectedMilestoneId, setSelectedMilestoneId] = useState<
     undefined | number
   >(undefined);
+  const [selectedTitle, setSelectedTitle] = useState<string | undefined>(
+    undefined,
+  );
   const [calculatedDaysPerWork, setCalculatedDaysPerWork] = useState<
     undefined | number
   >(undefined);
 
   useEffect(() => {
     if (!roadmapsVersions) dispatch(versionsActions.getVersions(roadmap!.id));
-  }, [roadmap, dispatch, roadmapsVersions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, roadmapsVersions]);
 
-  const handleMilestoneChange = (e: any) => {
-    if (e.currentTarget.value !== '') {
-      const selectedId = parseInt(e.currentTarget.value, 10);
-      setSelectedMilestoneId(selectedId);
+  const handleMilestoneChange = (version: Version) => {
     if (timeEstimates.filter((e) => e.id === version.id).length === 0) {
       if (durationInput.current !== null) durationInput.current!.value = '';
     }
+    if (version) {
+      setSelectedMilestoneId(version.id);
+      setSelectedTitle(version.name);
     } else {
       setSelectedMilestoneId(undefined);
+      setSelectedTitle(undefined);
     }
   };
 
@@ -114,57 +121,88 @@ export const TimeEstimationPage = () => {
 
   const renderMilestoneTimeline = () => {
     return (
-      <>
+      <div className={classes(css.timelineContainer)}>
         <p className={classes(css.graphTitle)}>
-          <Trans i18nKey="Predicted milestone durations" />
+          <Trans i18nKey="This is how other milestones look" />
+          <InfoOutlinedIcon className={classes(css.infoIcon)} />
         </p>
         <div className={classes(css.graphInner)}>
           <div className={classes(css.graphItems)}>
-            {roadmapsVersions?.map((ver) => {
-              const numTasks = ver.tasks.length;
-              const { value, work } = totalValueAndWork(ver.tasks);
-              const duration = work * calculatedDaysPerWork!;
-              return (
-                <div className={classes(css.graphItemWrapper)} key={ver.id}>
-                  <div
-                    className={classes(css.graphItem)}
-                    style={{ width: '200px', height: '225px' }}
-                  >
-                    <p className={classes(css.versionData, css.versionTitle)}>
-                      {ver.name}
-                    </p>
-                    <p className={classes(css.versionData)}>
-                      <StarFill />
-                      {value.toLocaleString(undefined, {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 1,
-                      })}
-                    </p>
-                    <p className={classes(css.versionData)}>
-                      <Wrench />
-                      {work.toLocaleString(undefined, {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 1,
-                      })}
-                    </p>
-                    <p className={classes(css.versionData)}>
-                      <List />
-                      {numTasks}
-                    </p>
-                  </div>
-                  <div className={classes(css.graphItemDuration)}>
-                    {duration.toLocaleString(undefined, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 1,
-                    })}{' '}
-                    days
-                  </div>
-                </div>
-              );
-            })}
+            <table className={classes(css.timelineTable)}>
+              <tbody>
+                <tr className={classes(css.graphItemRow)}>
+                  {roadmapsVersions?.map((ver) => {
+                    return (
+                      <td
+                        key={`graphItem-${ver.id}`}
+                        className={classes(css.graphItemWrapper)}
+                      >
+                        <div
+                          className={
+                            ver.name === selectedTitle
+                              ? classes(css.selectedGraphItem)
+                              : classes(css.graphItem)
+                          }
+                        >
+                          <p
+                            className={classes(
+                              css.versionData,
+                              css.versionTitle,
+                            )}
+                          >
+                            {ver.name}
+                          </p>
+                          <hr className={classes(css.horizontalLine)} />
+                          <div
+                            className={
+                              (ver.name === selectedTitle &&
+                                classes(css.test)) ||
+                              undefined
+                            }
+                          >
+                            <MilestoneRatingsSummary tasks={ver.tasks || []} />
+                          </div>
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+                <tr className={classes(css.verticalLineRow)}>
+                  {roadmapsVersions?.map((ver) => {
+                    return (
+                      <td key={`verticalLine-${ver.id}`}>
+                        <div className={classes(css.verticalLine)} />
+                      </td>
+                    );
+                  })}
+                </tr>
+                <tr>
+                  {roadmapsVersions?.map((ver) => {
+                    const { work } = totalValueAndWork(ver.tasks);
+                    const duration = work * calculatedDaysPerWork!;
+                    return (
+                      <td
+                        key={`graphItemDuration-${ver.id}`}
+                        className={
+                          ver.name === selectedTitle
+                            ? classes(css.selectedGraphItemDuration)
+                            : classes(css.graphItemDuration)
+                        }
+                      >
+                        {duration.toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 1,
+                        })}{' '}
+                        days
+                      </td>
+                    );
+                  })}
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -175,28 +213,30 @@ export const TimeEstimationPage = () => {
       </p>
       <div className={classes(css.inputContainer)}>
         <div>
-          <label className={classes(css.formLabel)} htmlFor="milestones">
+          <div className={classes(css.formLabel)}>
             <Trans i18nKey="Milestone to be compared to" />
-            <select
-              className={classes(css.versionSelect)}
-              name="milestones"
-              id="milestones"
-              onChange={handleMilestoneChange}
-              placeholder={t('Select milestone')}
-              defaultValue=""
-            >
-              <option disabled value="">
-                Select a milestone
-              </option>
-              {roadmapsVersions?.map((ver) => {
-                return (
-                  <option key={ver.id} value={ver.id}>
-                    {ver.name}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
+          </div>
+          {!roadmapsVersions ||
+            (roadmapsVersions.length === 0 ? (
+              <Dropdown css={css} title="No milestones available" empty />
+            ) : (
+              <Dropdown title={selectedTitle} css={css} maxLength={40}>
+                {roadmapsVersions
+                  ?.filter((e) => e.name !== selectedTitle)
+                  .map((ver) => {
+                    return (
+                      <option
+                        className={classes(css.dropItem)}
+                        key={ver.id}
+                        value={ver.id}
+                        onClick={() => handleMilestoneChange(ver)}
+                      >
+                        {ver.name}
+                      </option>
+                    );
+                  })}
+              </Dropdown>
+            ))}
         </div>
 
         {selectedMilestoneId && (
@@ -211,7 +251,7 @@ export const TimeEstimationPage = () => {
                 id="duration"
                 type="number"
                 placeholder={t('Duration')}
-                value={milestoneDuration}
+                value={milestoneDuration || ''}
                 onChange={(e: any) => onDurationChange(e.currentTarget.value)}
                 onKeyPress={(e: any) => {
                   // Prevents input of non-numeric characters
