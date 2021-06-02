@@ -15,9 +15,6 @@
     "rootDir": "./",
     "outDir": "./build",
     "baseUrl": ".",
-    "paths": {
-      "objection-password": ["./src/types/objection-password"]
-    }
-  },
-  "references": [{ "path": "../shared" }]
+    "composite": true
+  }
 }

@@ -16,12 +16,8 @@ import {
   chosenRoadmapSelector,
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
-import {
-  Customer,
-  Roadmap,
-  Task,
-  TaskRatingDimension,
-} from '../redux/roadmaps/types';
+import { Customer, Roadmap, Task } from '../redux/roadmaps/types';
+import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import {
   calcTaskAverageRating,

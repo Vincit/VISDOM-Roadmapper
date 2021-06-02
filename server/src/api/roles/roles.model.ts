@@ -1,5 +1,5 @@
 import { Model } from 'objection';
-import { RoleType } from '../../types/customTypes';
+import { RoleType } from '../../../../shared/types/customTypes';
 
 export class Role extends Model {
   userId!: number;

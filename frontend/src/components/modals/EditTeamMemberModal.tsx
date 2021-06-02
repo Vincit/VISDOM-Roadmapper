@@ -10,7 +10,7 @@ import { RadioButton } from '../forms/RadioButton';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { RoadmapUser } from '../../redux/roadmaps/types';
-import { RoleType } from '../../redux/user/types';
+import { RoleType } from '../../../../shared/types/customTypes';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';

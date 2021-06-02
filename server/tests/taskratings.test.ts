@@ -6,7 +6,7 @@ import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
 import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType } from '../src/types/customTypes';
+import { Permission, RoleType } from '../../shared/types/customTypes';
 import TaskRating from '../src/api/taskratings/taskratings.model';
 
 describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {

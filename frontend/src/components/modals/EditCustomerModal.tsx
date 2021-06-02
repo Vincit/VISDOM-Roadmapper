@@ -13,7 +13,7 @@ import {
   roadmapUsersSelector,
 } from '../../redux/roadmaps/selectors';
 import { RoadmapUser, Customer } from '../../redux/roadmaps/types';
-import { RoleType } from '../../redux/user/types';
+import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';

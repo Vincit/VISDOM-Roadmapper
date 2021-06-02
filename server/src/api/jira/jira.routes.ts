@@ -8,7 +8,8 @@ import {
   swapOauthAuthorizationToken,
 } from './jira.controller';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Permission, IKoaState } from '../../types/customTypes';
+import { Permission } from '../../../../shared/types/customTypes';
+import { IKoaState } from '../../types/customTypes';
 
 const jiraRouter = new KoaRouter<IKoaState, Context>();
 

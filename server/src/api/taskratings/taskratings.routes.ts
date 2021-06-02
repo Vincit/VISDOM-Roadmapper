@@ -6,8 +6,9 @@ import {
   patchTaskratings,
 } from './taskratings.controller';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Permission, IKoaState } from '../../types/customTypes';
 import { Context } from 'koa';
+import { Permission } from '../../../../shared/types/customTypes';
+import { IKoaState } from '../../types/customTypes';
 const taskratingRouter = new KoaRouter<IKoaState, Context>();
 
 taskratingRouter.get(

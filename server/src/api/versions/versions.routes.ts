@@ -1,7 +1,8 @@
 import KoaRouter from '@koa/router';
 import { Context } from 'koa';
 import { requirePermission } from './../../utils/checkPermissions';
-import { IKoaState, Permission } from '../../types/customTypes';
+import { IKoaState } from '../../types/customTypes';
+import { Permission } from '../../../../shared/types/customTypes';
 import {
   deleteVersions,
   getVersions,

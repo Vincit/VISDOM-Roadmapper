@@ -18,7 +18,8 @@
     "start": "knex --knexfile=./knexfile.ts migrate:latest && knex --knexfile=./knexfile.ts seed:run && npx ts-node ./src/server.ts",
     "start-db": "cd .. && docker-compose -f docker-compose.yml up -d roadmapper-database",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 10000",
-    "start-prod": "tsc && knex --knexfile=./knexfile.ts migrate:latest && knex --knexfile=./knexfile.ts seed:run && node ./build/src/server.js"
+    "start-prod": "tsc --build && knex --knexfile=./knexfile.ts migrate:latest && knex --knexfile=./knexfile.ts seed:run && node ./build/src/server.js",
+    "build": "tsc --build"
   },
   "dependencies": {
     "@koa/cors": "^3.1.0",

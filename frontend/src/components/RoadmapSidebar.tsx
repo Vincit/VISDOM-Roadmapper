@@ -13,7 +13,8 @@ import { ReactComponent as VisdomIcon } from '../icons/visdom_icon.svg';
 import css from './RoadmapSidebar.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo, UserType } from '../redux/user/types';
+import { UserInfo } from '../redux/user/types';
+import { UserType } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 

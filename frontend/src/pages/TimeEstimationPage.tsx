@@ -5,7 +5,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, TaskRatingDimension } from '../redux/roadmaps/types';
+import { Roadmap } from '../redux/roadmaps/types';
+import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import {
   roadmapsVersionsSelector,

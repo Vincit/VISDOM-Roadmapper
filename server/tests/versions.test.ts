@@ -4,7 +4,7 @@ import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import Version from '../src/api/versions/versions.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType } from '../src/types/customTypes';
+import { Permission, RoleType } from '../../shared/types/customTypes';
 import { loggedInAgent } from './setuptests';
 chai.use(chaiHttp);
 

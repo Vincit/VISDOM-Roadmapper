@@ -4,10 +4,13 @@ import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { TaskRatingDimension } from '../redux/roadmaps/types';
+import {
+  TaskRatingDimension,
+  UserType,
+} from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo, UserType } from '../redux/user/types';
+import { UserInfo } from '../redux/user/types';
 import { TaskRatingBar } from './RatingBars';
 import css from './TaskRatingWidget.module.scss';
 

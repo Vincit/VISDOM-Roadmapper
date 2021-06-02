@@ -9,12 +9,15 @@ import { taskSelector } from '../../redux/roadmaps/selectors';
 import {
   Customer,
   Taskrating,
-  TaskRatingDimension,
   TaskratingRequest,
 } from '../../redux/roadmaps/types';
+import {
+  TaskRatingDimension,
+  UserType,
+} from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
-import { UserInfo, UserType } from '../../redux/user/types';
+import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TaskRatingWidget } from '../TaskRatingWidget';
 import { ModalProps } from '../types';

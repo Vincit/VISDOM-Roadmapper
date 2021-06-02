@@ -80,7 +80,7 @@ const getJiraAccessTokens = (
   user: User,
 ): {
   accessToken: string | undefined;
-  accessTokenSecret: string | undefined;
+  accessTokenSecret: string | undefined;
 } => {
   const requestToken = user.tokens.find((token) => {
     return (
@@ -102,11 +102,11 @@ const getJiraAccessTokens = (
   };
 };
 
-const createClient = (
-  jiraconfig: JiraConfiguration,
-  user: User,
-): JiraApi => {
-  const {accessToken, accessTokenSecret} = getJiraAccessTokens(jiraconfig, user);
+const createClient = (jiraconfig: JiraConfiguration, user: User): JiraApi => {
+  const { accessToken, accessTokenSecret } = getJiraAccessTokens(
+    jiraconfig,
+    user,
+  );
 
   const pkey = new NodeRSA();
   pkey.importKey(jiraconfig.privatekey);

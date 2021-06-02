@@ -1,5 +1,5 @@
 import { Model } from 'objection';
-import { TaskRatingDimension } from '../../types/customTypes';
+import { TaskRatingDimension } from '../../../../shared/types/customTypes';
 import User from '../users/users.model';
 import Task from '../tasks/tasks.model';
 import Customer from '../customer/customer.model';
