@@ -35,6 +35,12 @@ export const RegisterPage = () => {
     if (formValues.password.length < 8)
       return setErrorMessage(t('Password type error'));
 
+    if (formValues.name.length > 74)
+      return setErrorMessage(t('Invalid username'));
+
+    if (formValues.email.length > 74)
+      return setErrorMessage(t('Invalid email'));
+
     dispatch(
       userActions.register({
         username: formValues.name,
@@ -44,13 +50,26 @@ export const RegisterPage = () => {
       }),
     ).then((res) => {
       if (userActions.register.rejected.match(res)) {
-        if (res.payload) {
-          if (res.payload.response?.data.message.includes('username'))
-            return setErrorMessage(t('Username already taken.'));
-          if (res.payload.response?.data.message.includes('email'))
-            return setErrorMessage(t('This email is already in use.'));
-          return setErrorMessage(res.payload.response?.data.message);
+        if (!res.payload || !res.payload.response?.data.message)
+          return setErrorMessage(t('Internal server error'));
+
+        if (res.payload.response?.data.message.includes('username')) {
+          return setErrorMessage(
+            res.payload.response?.data.error === 'UniqueViolationError'
+              ? t('Username already taken.')
+              : t('Invalid username.'),
+          );
         }
+
+        if (res.payload.response?.data.message.includes('email')) {
+          return setErrorMessage(
+            res.payload.response?.data.error === 'UniqueViolationError'
+              ? t('Email already taken.')
+              : t('Invalid email.'),
+          );
+        }
+
+        return setErrorMessage('Internal server error');
       }
       if (userActions.register.fulfilled.match(res)) {
         history.push('/login');
