@@ -7,7 +7,6 @@ export interface UserInfo {
 
 export interface UserState {
   info?: UserInfo;
-  loggedIn: boolean;
 }
 
 export interface GetUserInfoError {
