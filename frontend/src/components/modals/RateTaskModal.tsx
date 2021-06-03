@@ -200,7 +200,10 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
             {ratings.map((rating, idx) => {
               const { value = 0, comment = undefined } = rating;
               return (
-                <div className={classes(css.rating)} key={rating.id}>
+                <div
+                  className={classes(css.rating)}
+                  key={`${rating.createdByUser}-${rating.forCustomer}`}
+                >
                   {rating.customer && (
                     <CustomerHeader
                       customer={rating.customer}
