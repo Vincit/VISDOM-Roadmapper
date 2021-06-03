@@ -8,6 +8,10 @@ import {
 } from 'objection';
 import { ForbiddenError } from './checkPermissions';
 
+// clean up column name e.g. "lower(username::text)" => "username"
+export const cleanColumnName = (column: string) =>
+  /^\w+\((?<name>[^:)]+).*\)$/.exec(column)?.groups?.name || column;
+
 export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
   try {
     await next();
@@ -16,7 +20,7 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       const columns = Object.entries(err.data as ErrorHash).flatMap(
         ([column, errors]) =>
           errors.map(({ message }) => ({
-            column,
+            column: cleanColumnName(column),
             message,
           })),
       );
@@ -31,13 +35,14 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
         columns,
       };
     } else if (err instanceof UniqueViolationError) {
-      const errors = err.columns.map((column) => `"${column}" must be unique.`);
+      const columns = err.columns.map(cleanColumnName);
+      const errors = columns.map((column) => `"${column}" must be unique.`);
 
       ctx.status = 400;
       ctx.body = {
         error: 'UniqueViolationError',
         message: errors.join('\n'),
-        columns: err.columns,
+        columns,
       };
     } else if (err instanceof SyntaxError) {
       ctx.status = 400;
