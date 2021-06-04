@@ -1,18 +1,19 @@
-import { UserType } from '../user/types';
+import { UserType, RoleType } from '../user/types';
 
 export interface RoadmapsState {
   roadmaps: Roadmap[] | undefined;
   selectedRoadmapId?: number;
-  allUsers: PublicUser[] | undefined;
+  allUsers: RoadmapUser[] | undefined;
 }
 
 export interface Customer {
   id: number;
   roadmapId: number;
   name: string;
+  email: string;
   value: number;
   color: string | null;
-  representatives?: PublicUser[];
+  representatives?: RoadmapUser[];
 }
 
 export interface CustomerRequest {
@@ -21,13 +22,19 @@ export interface CustomerRequest {
   email?: string | null;
   value?: number;
   color?: string | null;
-  representatives?: PublicUser[];
+  representatives?: number[];
 }
 
 export interface PublicUser {
   id: number;
   username: string;
   type: UserType;
+}
+
+export interface RoadmapUser {
+  id: number;
+  username: string;
+  type: RoleType;
 }
 
 export interface Roadmap {

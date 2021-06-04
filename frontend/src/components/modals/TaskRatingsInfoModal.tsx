@@ -6,10 +6,10 @@ import { modalsActions } from '../../redux/modals';
 import { ModalTypes } from '../../redux/modals/types';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
-  publicUsersSelector,
+  roadmapUsersSelector,
   taskSelector,
 } from '../../redux/roadmaps/selectors';
-import { PublicUser } from '../../redux/roadmaps/types';
+import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
@@ -31,8 +31,8 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
 }) => {
   const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
+    roadmapUsersSelector,
     shallowEqual,
   );
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -52,8 +52,8 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
   };
 
   useEffect(() => {
-    if (!publicUsers) dispatch(roadmapsActions.getPublicUsers());
-  }, [dispatch, publicUsers]);
+    if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
+  }, [dispatch, roadmapUsers]);
 
   const renderOwnRatings = () => {
     const userRatings = task.ratings.filter(
@@ -111,7 +111,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
               <div className={css.teamRatingUsername}>
                 @
                 {
-                  publicUsers?.find((user) => user.id === rating.createdByUser)
+                  roadmapUsers?.find((user) => user.id === rating.createdByUser)
                     ?.username
                 }
               </div>

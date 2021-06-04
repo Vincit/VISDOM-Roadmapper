@@ -19,10 +19,10 @@ import { ModalTypes } from '../redux/modals/types';
 import { roadmapsActions } from '../redux/roadmaps';
 import {
   chosenRoadmapSelector,
-  publicUsersSelector,
+  roadmapUsersSelector,
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
-import { PublicUser, Customer, Roadmap } from '../redux/roadmaps/types';
+import { RoadmapUser, Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { requireLogin } from '../utils/requirelogin';
 import { paths } from './paths';
@@ -69,8 +69,8 @@ const RoadmapRouterComponent = () => {
   const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [useEffectFinished, setUseEffectFinished] = useState(false);
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
+    roadmapUsersSelector,
     shallowEqual,
   );
   const [isLoadingCustomers, setIsLoadingCustomers] = useState(false);
@@ -119,9 +119,9 @@ const RoadmapRouterComponent = () => {
         setIsLoadingRoadmap(false);
       });
     }
-    if (!publicUsers) {
+    if (!roadmapUsers) {
       setIsLoadingUsers(true);
-      dispatch(roadmapsActions.getPublicUsers()).then(() => {
+      dispatch(roadmapsActions.getRoadmapUsers()).then(() => {
         setIsLoadingUsers(false);
       });
     }
@@ -132,7 +132,7 @@ const RoadmapRouterComponent = () => {
       });
     }
     setUseEffectFinished(true);
-  }, [currentRoadmap, roadmapId, dispatch, publicUsers, customers]);
+  }, [currentRoadmap, roadmapId, dispatch, roadmapUsers, customers]);
 
   const renderOrRedirect = () => {
     if (!useEffectFinished) return;

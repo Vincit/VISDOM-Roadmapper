@@ -4,10 +4,10 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
-  publicUsersSelector,
+  roadmapUsersSelector,
   taskSelector,
 } from '../../redux/roadmaps/selectors';
-import { PublicUser } from '../../redux/roadmaps/types';
+import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { TaskRatingsText } from '../TaskRatingsText';
 import { ModalProps } from '../types';
@@ -27,14 +27,14 @@ export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
 }) => {
   const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
-  const publicUsers = useSelector<RootState, PublicUser[] | undefined>(
-    publicUsersSelector,
+  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
+    roadmapUsersSelector,
     shallowEqual,
   );
 
   useEffect(() => {
-    if (!publicUsers) dispatch(roadmapsActions.getPublicUsers());
-  }, [dispatch, publicUsers]);
+    if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
+  }, [dispatch, roadmapUsers]);
 
   return (
     <>
@@ -65,7 +65,7 @@ export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
             <Trans i18nKey="Created by" />
           </p>
           {
-            publicUsers?.find((user) => user.id === task.createdByUser)
+            roadmapUsers?.find((user) => user.id === task.createdByUser)
               ?.username
           }
         </div>
