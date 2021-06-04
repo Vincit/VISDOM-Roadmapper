@@ -8,6 +8,7 @@ import {
   Customer,
   CustomerRequest,
   PublicUser,
+  RoadmapUser,
   PublicUserRequest,
   Roadmap,
   RoadmapRequest,
@@ -85,8 +86,8 @@ export const patchCustomer = createAsyncThunk<
   }
 });
 
-export const getPublicUsers = createAsyncThunk<
-  PublicUser[],
+export const getRoadmapUsers = createAsyncThunk<
+  RoadmapUser[],
   void,
   { rejectValue: AxiosError }
 >('roadmaps/getPublicUsers', async (_, thunkAPI) => {
@@ -94,7 +95,7 @@ export const getPublicUsers = createAsyncThunk<
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
-    return await api.getPublicUsers(currentroadmapId);
+    return await api.getRoadmapUsers(currentroadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }

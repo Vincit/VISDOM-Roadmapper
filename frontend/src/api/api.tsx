@@ -10,6 +10,7 @@ import {
   Customer,
   CustomerRequest,
   PublicUser,
+  RoadmapUser,
   PublicUserRequest,
   Roadmap,
   RoadmapRequest,
@@ -175,9 +176,9 @@ const register = async (newUser: UserRegisterRequest) => {
   return response.status === 200;
 };
 
-const getPublicUsers = async (roadmapId: number) => {
+const getRoadmapUsers = async (roadmapId: number) => {
   const response = await axios.get(`roadmaps/${roadmapId}/users`);
-  return response.data as PublicUser[];
+  return response.data as RoadmapUser[];
 };
 
 const getVersions = async (roadmapId: number) => {
@@ -299,7 +300,7 @@ export const api = {
   addCustomer,
   deleteCustomer,
   patchCustomer,
-  getPublicUsers,
+  getRoadmapUsers,
   patchTaskrating,
   getVersions,
   addVersion,

@@ -5,6 +5,7 @@ import {
   Customer,
   CustomerRequest,
   PublicUser,
+  RoadmapUser,
   Roadmap,
   RoadmapRequest,
   RoadmapsState,
@@ -69,9 +70,9 @@ export const DELETE_CUSTOMER_FULFILLED = (
   );
 };
 
-export const GET_PUBLIC_USERS_FULFILLED = (
+export const GET_ROADMAP_USERS_FULFILLED = (
   state: RoadmapsState,
-  action: PayloadAction<PublicUser[]>,
+  action: PayloadAction<RoadmapUser[]>,
 ) => {
   state.allUsers = action.payload;
 };

@@ -50,7 +50,9 @@ export const enum Permission {
   RoadmapReadUsers = 1 << 18,
   RoadmapReadCustomerValues = 1 << 19,
 
-  JiraConfigurationEdit = 1 << 20,
+  CustomerRepresent = 1 << 20,
+
+  JiraConfigurationEdit = 1 << 21,
 }
 
 export enum RoleType {
@@ -66,5 +68,5 @@ export enum RoleType {
     Permission.TaskRate |
     Permission.TaskRatingEdit |
     Permission.TaskValueRate,
-  Business = RoleType.Customer,
+  Business = RoleType.Customer | Permission.CustomerRepresent,
 }
