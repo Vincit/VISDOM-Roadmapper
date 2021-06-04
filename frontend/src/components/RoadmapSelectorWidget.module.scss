@@ -1,4 +1,4 @@
-@import '../../shared.scss';
+@import '../shared.scss';
 
 .dropContainer {
   margin-top: 12px;
@@ -60,6 +60,10 @@
   z-index: 999;
 }
 
+.emptyTitle {
+  color: #696969;
+}
+
 .dropItem {
   background-color: white;
   border: none;
@@ -96,4 +100,6 @@
   left: 82%;
   margin-top: 26.47px;
   margin-bottom: 24.58px;
+  width: 17px !important;
+  height: 17px !important;
 }

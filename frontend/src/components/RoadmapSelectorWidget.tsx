@@ -12,7 +12,7 @@ import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { paths } from '../routers/paths';
 import { Dropdown } from './forms/Dropdown';
-import css from './forms/Dropdown.module.scss';
+import css from './RoadmapSelectorWidget.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -47,11 +47,11 @@ export const RoadmapSelectorWidget = () => {
   }, [chosenRoadmap]);
 
   if (!roadmaps || roadmaps.length === 0) {
-    return <Dropdown title="No roadmaps available" disabled empty />;
+    return <Dropdown css={css} title="No roadmaps available" disabled empty />;
   }
 
   return (
-    <Dropdown title={selectedRoadmap}>
+    <Dropdown css={css} title={selectedRoadmap} maxLength={21}>
       {roadmaps.map((roadmap) => (
         <Link
           key={roadmap.id}

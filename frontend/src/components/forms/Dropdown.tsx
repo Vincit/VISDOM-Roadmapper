@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import classNames from 'classnames';
-import css from './Dropdown.module.scss';
-
-const classes = classNames.bind(css);
 
 export const Dropdown: React.FC<{
-  title: string;
+  css: any;
+  title?: string;
   children?: any;
   disabled?: boolean;
   empty?: boolean;
-}> = ({ title, children, disabled, empty }) => {
+  maxLength?: number;
+}> = ({
+  css,
+  title = 'Not selected',
+  children,
+  disabled,
+  empty,
+  maxLength,
+}) => {
+  const classes = classNames.bind(css);
   const [open, setOpen] = useState(false);
 
   const closeMenu = () => {
@@ -26,7 +33,9 @@ export const Dropdown: React.FC<{
   };
 
   const shortenString = (target: string) => {
-    if (target.length > 21) return `${target.slice(0, 19)}..`;
+    if (maxLength)
+      if (target.length > maxLength)
+        return `${target.slice(0, maxLength - 1)}..`;
     return target;
   };
 
@@ -38,7 +47,7 @@ export const Dropdown: React.FC<{
           className={classes(css.dropButton)}
           disabled={disabled}
         >
-          {shortenString(title)}
+          <div className={classes(css.emptyTitle)}>{shortenString(title)}</div>
         </button>
       </div>
     );
@@ -52,8 +61,16 @@ export const Dropdown: React.FC<{
         onClick={() => showMenu()}
         disabled={disabled}
       >
-        {shortenString(title)}
-        <ExpandMoreIcon className={classes(css.expandIcon)} fontSize="small" />
+        <div
+          className={
+            title === 'Not selected'
+              ? classes(css.notSelected)
+              : classes(css.dropTitle)
+          }
+        >
+          {shortenString(title)}
+        </div>
+        <ExpandMoreIcon className={classes(css.expandIcon)} />
       </button>
       {open && (
         <div className={classes(css.dropMenu)}>
