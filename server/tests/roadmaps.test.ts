@@ -122,9 +122,10 @@ describe('Test /roadmaps/ api', function () {
       const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/users/`);
       expect(res.status).to.equal(200);
       assert(res.body.length > 1);
-      expect(Object.keys(res.body[0]).length).to.equal(2);
+      expect(Object.keys(res.body[0]).length).to.equal(3);
       assert.property(res.body[0], 'username');
       assert.property(res.body[0], 'id');
+      assert.property(res.body[0], 'type');
       assert(res.body[0].username.length > 0);
     });
     it("Should not return roadmaps's users with incorrect permissions", async function () {
