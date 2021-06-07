@@ -1,0 +1,13 @@
+@import '../../shared.scss';
+
+.radioButtonChecked {
+  path {
+    fill: $COLOR_EMERALD;
+  }
+}
+
+.radioButtonUnchecked {
+  path {
+    fill: $COLOR_BLACK40;
+  }
+}

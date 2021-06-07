@@ -35,17 +35,26 @@ label.radioLabel {
 .representativeContainer {
   display: flex;
   align-items: center;
-  margin-left: 28px;
-
-  :first-child {
-    margin-right: 10px;
-  }
-
+  margin-left: 20px;
   margin-top: 14px;
+
   font-family: Work Sans;
   font-size: 14px;
 
+  :first-child {
+    margin-right: 14px;
+  }
+
   &.checked {
     font-weight: 600;
+  }
+}
+
+.radioButton {
+  display: flex;
+  align-items: baseline;
+
+  :first-child {
+    margin-right: 6px;
   }
 }
