@@ -12,7 +12,7 @@ import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { UserInfo, UserType } from '../redux/user/types';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
@@ -105,17 +105,19 @@ export const DashboardPage = () => {
         </p>
         <RoadmapOverview />
       </div>
-      <div className={classes(css.chartFlexbox)}>
-        <div className={classes(css.meterWrapper)}>
-          <TaskHeatmap />
+      {userInfo?.type === UserType.AdminUser && (
+        <div className={classes(css.chartFlexbox)}>
+          <div className={classes(css.meterWrapper)}>
+            <TaskHeatmap />
+          </div>
+          <div className={classes(css.chartWrapper)}>
+            <PlannerChart versions={chartVersionLists} hideButtons />
+          </div>
+          <div className={classes(css.meterWrapper)}>
+            <RoadmapCompletionMeter />
+          </div>
         </div>
-        <div className={classes(css.chartWrapper)}>
-          <PlannerChart versions={chartVersionLists} hideButtons />
-        </div>
-        <div className={classes(css.meterWrapper)}>
-          <RoadmapCompletionMeter />
-        </div>
-      </div>
+      )}
       <div className={classes(css.taskTableWrapper)}>
         <p className={classes(css.header)}>
           <Trans i18nKey="Unrated tasks" />
