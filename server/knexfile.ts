@@ -6,10 +6,10 @@ const config = {
     client: 'postgresql',
     connection: {
       port: parseInt(process.env.RDS_PORT!),
-      host: process.env.RDS_HOSTNAME,
-      database: process.env.RDS_DB_NAME,
-      user: process.env.RDS_USERNAME,
-      password: process.env.RDS_PASSWORD,
+      host: process.env.RDS_HOSTNAME!,
+      database: process.env.RDS_DB_NAME!,
+      user: process.env.RDS_USERNAME!,
+      password: process.env.RDS_PASSWORD!,
     },
     migrations: {
       directory: './src/migrations',
