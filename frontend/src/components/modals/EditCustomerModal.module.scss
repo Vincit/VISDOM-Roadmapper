@@ -31,3 +31,21 @@ label.radioLabel {
     color: $COLOR_BLACK100;
   }
 }
+
+.representativeContainer {
+  display: flex;
+  align-items: center;
+  margin-left: 28px;
+
+  :first-child {
+    margin-right: 10px;
+  }
+
+  margin-top: 14px;
+  font-family: Work Sans;
+  font-size: 14px;
+
+  &.checked {
+    font-weight: 600;
+  }
+}

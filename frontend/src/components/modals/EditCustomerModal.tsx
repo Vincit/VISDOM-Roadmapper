@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import Radio from '@material-ui/core/Radio';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
-import { allCustomersSelector } from '../../redux/roadmaps/selectors';
+import {
+  allCustomersSelector,
+  roadmapUsersSelector,
+} from '../../redux/roadmaps/selectors';
+import { RoadmapUser, Customer } from '../../redux/roadmaps/types';
+import { RoleType } from '../../redux/user/types';
 import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
@@ -16,9 +23,8 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import '../../shared.scss';
-import { Customer } from '../../redux/roadmaps/types';
 import { ColorPicker } from './modalparts/ColorPicker';
-import { randomColor } from '../../utils/randomColor';
+import { randomColor } from '../../utils/CustomerUtils';
 import css from './EditCustomerModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -36,26 +42,62 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
     allCustomersSelector,
     shallowEqual,
   );
+  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
+    roadmapUsersSelector,
+    shallowEqual,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [colorType, setColorType] = useState('generate');
   const [formValues, setFormValues] = useState({
     name: customer.name,
-    email: 'example@email.com',
+    email: customer.email,
     color: customer.color,
-    representatives: '',
   });
+  const [representatives, setRepresentatives] = useState(
+    roadmapUsers
+      ?.filter(
+        (user) =>
+          user.type === RoleType.Admin || user.type === RoleType.Business,
+      )
+      .map((obj) => ({ ...obj, checked: false })),
+  );
+
+  useEffect(() => {
+    setRepresentatives(
+      roadmapUsers
+        ?.filter(
+          (user) =>
+            user.type === RoleType.Admin || user.type === RoleType.Business,
+        )
+        .map((obj) =>
+          customer.representatives?.find((rep) => rep.id === obj.id)
+            ? { ...obj, checked: true }
+            : { ...obj, checked: false },
+        ),
+    );
+  }, [roadmapUsers, customer.representatives]);
+
+  useEffect(() => {
+    if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
+  }, [dispatch, roadmapUsers]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setIsLoading(true);
-    // TODO: add email & representatives
+
+    const checked = representatives
+      ?.filter((rep) => rep.checked === true)
+      .map(({ id }) => id);
+
     const res = await dispatch(
       roadmapsActions.patchCustomer({
         id: customer.id,
         name: formValues.name,
+        email: formValues.email,
         color: colorType === 'pick' ? formValues.color : randomColor(customers),
+        representatives: checked,
       }),
     );
     setIsLoading(false);
@@ -76,6 +118,13 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
 
   const onColorChange = (value: string) => {
     setFormValues({ ...formValues, color: value });
+  };
+
+  const onRepresentativeChange = (idx: number, checked: boolean) => {
+    const copy = representatives?.slice();
+    if (!copy) return;
+    copy[idx].checked = checked;
+    setRepresentatives(copy);
   };
 
   return (
@@ -108,6 +157,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
               required
               name="email"
               id="email"
+              type="email"
               value={formValues.email}
               onChange={(e: any) => onEmailChange(e.currentTarget.value)}
             />
@@ -123,7 +173,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                     checked={colorType === 'generate'}
                     value="generate"
                     name="generate"
-                    onChange={(e) => setColorType(e.target.value)}
+                    onChange={(e: any) => setColorType(e.target.value)}
                   />
                   <label
                     className={classes(css.radioLabel, {
@@ -139,7 +189,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                     checked={colorType === 'pick'}
                     value="pick"
                     name="pick"
-                    onChange={(e) => setColorType(e.target.value)}
+                    onChange={(e: any) => setColorType(e.target.value)}
                   />
                   <label
                     className={classes(css.radioLabel, {
@@ -163,6 +213,27 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             <label htmlFor="representatives">
               <Trans i18nKey="Who's responsible for the client value ratings?" />
             </label>
+            {representatives?.map((rep, idx) => (
+              <div
+                className={classes(css.representativeContainer, {
+                  [css.checked]: rep.checked,
+                })}
+                onClick={() => onRepresentativeChange(idx, !rep.checked)}
+                onKeyPress={() => onRepresentativeChange(idx, !rep.checked)}
+                role="checkbox"
+                aria-checked={rep.checked}
+                tabIndex={idx}
+              >
+                {rep.checked ? (
+                  <CheckBoxIcon className={classes(css.checkBox)} />
+                ) : (
+                  <CheckBoxBlankIcon
+                    className={classes(css.checkBox, css.unchecked)}
+                  />
+                )}
+                {rep.username}
+              </div>
+            ))}
           </div>
           <Alert
             show={errorMessage.length > 0}
