@@ -29,6 +29,8 @@ import css from './EditCustomerModal.module.scss';
 
 const classes = classNames.bind(css);
 
+type CheckableUser = RoadmapUser & { checked: boolean };
+
 export interface EditCustomerModalProps extends ModalProps {
   customer: Customer;
 }
@@ -54,16 +56,10 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
     email: customer.email,
     color: customer.color,
   });
-  const [representatives, setRepresentatives] = useState(
-    roadmapUsers
-      ?.filter(
-        (user) =>
-          user.type === RoleType.Admin || user.type === RoleType.Business,
-      )
-      .map((obj) => ({ ...obj, checked: false })),
-  );
+  const [representatives, setRepresentatives] = useState<CheckableUser[]>([]);
 
   useEffect(() => {
+    if (!roadmapUsers) return;
     setRepresentatives(
       roadmapUsers
         ?.filter(
@@ -121,7 +117,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
   };
 
   const onRepresentativeChange = (idx: number, checked: boolean) => {
-    const copy = representatives?.slice();
+    const copy = [...(representatives ?? [])];
     if (!copy) return;
     copy[idx].checked = checked;
     setRepresentatives(copy);
@@ -229,6 +225,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                 role="checkbox"
                 aria-checked={rep.checked}
                 tabIndex={idx}
+                key={idx}
               >
                 {rep.checked ? (
                   <CheckBoxIcon className={classes(css.checkBox)} />
