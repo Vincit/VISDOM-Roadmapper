@@ -1,12 +1,18 @@
+import { hasPermission } from './../../utils/checkPermissions';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Customer from './customer.model';
+import { Permission } from '../../types/customTypes';
 import User from '../users/users.model';
 
 export const getCustomers: RouteHandlerFnc = async (ctx, _) => {
-  const customers = await Customer.query()
+  let query = Customer.query()
     .where('roadmapId', Number(ctx.params.roadmapId))
     .withGraphFetched('[representatives]');
-  ctx.body = customers;
+
+  if (!hasPermission(ctx, Permission.RoadmapReadCustomerValues)) {
+    query = query.select('roadmapId', 'id', 'name', 'email', 'color');
+  }
+  ctx.body = await query;
 };
 
 export const postCustomer: RouteHandlerFnc = async (ctx, _) => {
