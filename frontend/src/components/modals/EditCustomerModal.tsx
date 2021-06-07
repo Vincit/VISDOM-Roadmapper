@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import Radio from '@material-ui/core/Radio';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import { RadioButton } from '../forms/RadioButton';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
@@ -168,13 +168,16 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             </label>
             <div className={classes(css.colorSection)}>
               <div className={classes(css.colorType)}>
-                <div>
-                  <Radio
-                    checked={colorType === 'generate'}
-                    value="generate"
-                    name="generate"
-                    onChange={(e: any) => setColorType(e.target.value)}
-                  />
+                <div className={classes(css.radioButton)}>
+                  <div
+                    onClick={() => setColorType('generate')}
+                    onKeyPress={() => setColorType('generate')}
+                    tabIndex={0}
+                    role="radio"
+                    aria-checked={colorType === 'generate'}
+                  >
+                    <RadioButton checked={colorType === 'generate'} />
+                  </div>
                   <label
                     className={classes(css.radioLabel, {
                       [css.active]: colorType === 'generate',
@@ -184,13 +187,16 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                     <Trans i18nKey="Generate" />
                   </label>
                 </div>
-                <div>
-                  <Radio
-                    checked={colorType === 'pick'}
-                    value="pick"
-                    name="pick"
-                    onChange={(e: any) => setColorType(e.target.value)}
-                  />
+                <div className={classes(css.radioButton)}>
+                  <div
+                    onClick={() => setColorType('pick')}
+                    onKeyPress={() => setColorType('pick')}
+                    tabIndex={0}
+                    role="radio"
+                    aria-checked={colorType === 'pick'}
+                  >
+                    <RadioButton checked={colorType === 'pick'} />
+                  </div>
                   <label
                     className={classes(css.radioLabel, {
                       [css.active]: colorType === 'pick',
