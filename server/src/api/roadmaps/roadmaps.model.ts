@@ -3,7 +3,7 @@ import Task from './../tasks/tasks.model';
 import { Role } from './../roles/roles.model';
 import User from './../users/users.model';
 import Customer from './../customer/customer.model';
-import JiraConfiguration from './../jiraconfigurations/jiraconfigurations.model';
+import Integration from './../integration/integration.model';
 
 export default class Roadmap extends Model {
   id!: number;
@@ -13,7 +13,7 @@ export default class Roadmap extends Model {
   customers!: Customer[];
   roles!: Role[];
   tasks?: Task[];
-  jiraconfiguration?: JiraConfiguration;
+  integrations?: Integration[];
 
   static tableName = 'roadmaps';
 
@@ -68,12 +68,12 @@ export default class Roadmap extends Model {
           to: 'tasks.roadmapId',
         },
       },
-      jiraconfiguration: {
-        relation: Model.HasOneRelation,
-        modelClass: JiraConfiguration,
+      integrations: {
+        relation: Model.HasManyRelation,
+        modelClass: Integration,
         join: {
           from: 'roadmaps.id',
-          to: 'jiraconfigurations.roadmapId',
+          to: 'integration.roadmapId',
         },
       },
     };

@@ -12,7 +12,7 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   const query = User.relatedQuery('roadmaps').for(ctx.state.user.id);
   if (ctx.query.eager) {
     const eagerResult = await query.withGraphFetched(
-      '[tasks.ratings, jiraconfiguration]',
+      '[tasks.ratings, integrations]',
     );
     ctx.body = eagerResult;
   } else {
