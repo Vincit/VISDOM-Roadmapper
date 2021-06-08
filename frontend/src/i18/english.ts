@@ -97,8 +97,10 @@ export const english = {
     'Password type error': 'Password should contain at least 8 characters.',
     'Terms of use':
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
-    'Username already taken.': 'Username already taken.',
-    'This email is already in use.': 'This email is already in use.',
+    'Internal server error': 'Internal server error',
+    email: 'email',
+    uniqueViolation: 'This {{field}} is already in use.',
+    ValidationError: 'Invalid {{field}}.',
     'Remove client': 'Remove client',
     'No, go back': 'No, go back',
     'Yes, remove it': 'Yes, remove it',

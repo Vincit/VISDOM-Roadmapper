@@ -28,6 +28,16 @@ export const RegisterPage = () => {
   const [checked, setChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const errorHandler = (err: String, msg: String) => {
+    let field;
+    if (msg.includes('username')) field = t('username');
+    if (msg.includes('email')) field = t('email');
+
+    if (err === 'UniqueViolationError') return t('uniqueViolation', { field });
+    if (err === 'ValidationError') return t('validationError', { field });
+    return t('Internal server error.');
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -44,13 +54,14 @@ export const RegisterPage = () => {
       }),
     ).then((res) => {
       if (userActions.register.rejected.match(res)) {
-        if (res.payload) {
-          if (res.payload.response?.data.message.includes('username'))
-            return setErrorMessage(t('Username already taken.'));
-          if (res.payload.response?.data.message.includes('email'))
-            return setErrorMessage(t('This email is already in use.'));
-          return setErrorMessage(res.payload.response?.data.message);
-        }
+        if (!res.payload) return setErrorMessage(t('Internal server error'));
+
+        return setErrorMessage(
+          errorHandler(
+            res.payload.response?.data.error,
+            res.payload.response?.data.message,
+          ),
+        );
       }
       if (userActions.register.fulfilled.match(res)) {
         history.push('/login');
@@ -95,6 +106,7 @@ export const RegisterPage = () => {
               id="name"
               placeholder={t('Your name')}
               value={formValues.name}
+              maxLength={255}
               onChange={(e) =>
                 setFormValues({ ...formValues, name: e.currentTarget.value })
               }
@@ -111,6 +123,7 @@ export const RegisterPage = () => {
               placeholder={t('Example email')}
               autoComplete="off"
               value={formValues.email}
+              maxLength={255}
               onChange={(e) =>
                 setFormValues({ ...formValues, email: e.currentTarget.value })
               }
@@ -127,6 +140,7 @@ export const RegisterPage = () => {
               type="password"
               autoComplete="new-password"
               value={formValues.password}
+              maxLength={72}
               onChange={(e) =>
                 setFormValues({
                   ...formValues,
