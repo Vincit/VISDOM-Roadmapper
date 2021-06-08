@@ -1,7 +1,7 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
   PlannerCustomerWeight,
-  JiraConfiguration,
+  IntegrationConfiguration,
   Customer,
   CustomerRequest,
   teamMemberRequest,
@@ -254,27 +254,29 @@ export const SET_PLANNER_CUSTOMER_WEIGHT: CaseReducer<
   selectedRoadmap.plannerCustomerWeights = weights;
 };
 
-export const ADD_JIRA_CONFIGURATION_FULFILLED = (
+export const ADD_INTEGRATION_CONFIGURATION_FULFILLED = (
   state: RoadmapsState,
-  action: PayloadAction<JiraConfiguration>,
+  action: PayloadAction<IntegrationConfiguration>,
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   const parent = state.roadmaps.find(
     (roadmap) => roadmap.id === action.payload.roadmapId,
   )!;
-  parent.jiraconfiguration = action.payload;
+  parent.integrations.push(action.payload);
 };
 
-export const PATCH_JIRA_CONFIGURATION_FULFILLED = (
+export const PATCH_INTEGRATION_CONFIGURATION_FULFILLED = (
   state: RoadmapsState,
-  action: PayloadAction<JiraConfiguration>,
+  action: PayloadAction<IntegrationConfiguration>,
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
   const parentRoadmap = state.roadmaps.find(
     (roadmap) => roadmap.id === action.payload.roadmapId,
-  )!;
-
-  if (parentRoadmap) {
-    Object.assign(parentRoadmap.jiraconfiguration, action.payload);
+  );
+  const target = parentRoadmap?.integrations.find(
+    ({ id }) => id === action.payload.id,
+  );
+  if (target) {
+    Object.assign(target, action.payload);
   }
 };

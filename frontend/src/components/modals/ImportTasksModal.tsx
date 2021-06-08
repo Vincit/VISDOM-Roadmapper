@@ -7,7 +7,7 @@ import { api } from '../../api/api';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
-import { JiraBoard, RootState } from '../../redux/types';
+import { IntegrationBoard, RootState } from '../../redux/types';
 import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
@@ -18,18 +18,22 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { titleCase } from '../../utils/string';
 import '../../shared.scss';
 
-export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
+export const ImportTasksModal: React.FC<ModalProps & { name: string }> = ({
+  name,
+  closeModal,
+}) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [jiraBoards, setJiraBoards] = useState<JiraBoard[]>([]);
-  const [selectedBoardId, setSelectedBoardId] = useState<number | undefined>();
+  const [boards, setBoards] = useState<IntegrationBoard[]>([]);
+  const [selectedBoardId, setSelectedBoardId] = useState<string | undefined>();
   const [availableLabels, setAvailableLabels] = useState<
     string[] | undefined
   >();
-  const [selectedLabels, setSelectedLabels] = useState<Map<number, string[]>>(
+  const [selectedLabels, setSelectedLabels] = useState<Map<string, string[]>>(
     new Map(),
   );
   const [loadedBoards, setLoadedBoards] = useState(false);
@@ -46,17 +50,19 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
   }, [userInfo, dispatch]);
 
   useEffect(() => {
-    const getJiraBoards = async () => {
-      const boards = await api.getJiraBoards({ roadmapId: chosenRoadmapId! });
-      setJiraBoards(boards);
+    const getBoards = async () => {
+      const newBoards = await api.getIntegrationBoards(name, {
+        roadmapId: chosenRoadmapId!,
+      });
+      setBoards(newBoards);
       setLoadedBoards(true);
     };
-    getJiraBoards();
-  }, [chosenRoadmapId]);
+    getBoards();
+  }, [chosenRoadmapId, name]);
 
   useEffect(() => {
     const getLabels = async () => {
-      const labels = await api.getJiraBoardLabels({
+      const labels = await api.getIntegrationBoardLabels(name, {
         roadmapId: chosenRoadmapId!,
         boardId: selectedBoardId!,
       });
@@ -65,13 +71,13 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
     if (selectedBoardId !== undefined) {
       getLabels();
     }
-  }, [selectedBoardId, chosenRoadmapId]);
+  }, [selectedBoardId, chosenRoadmapId, name]);
 
   useEffect(() => {
-    if (jiraBoards.length > 0) {
-      setSelectedBoardId(jiraBoards[0].id);
+    if (boards.length > 0) {
+      setSelectedBoardId(boards[0].id);
     }
-  }, [jiraBoards]);
+  }, [boards]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -82,7 +88,8 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
       setIsLoading(true);
 
       dispatch(
-        roadmapsActions.importJiraBoard({
+        roadmapsActions.importIntegrationBoard({
+          name,
           boardId: selectedBoardId!,
           createdByUser: userInfo!.id,
           roadmapId: chosenRoadmapId!,
@@ -92,7 +99,7 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
         }),
       ).then((res) => {
         setIsLoading(false);
-        if (roadmapsActions.importJiraBoard.rejected.match(res)) {
+        if (roadmapsActions.importIntegrationBoard.rejected.match(res)) {
           if (res.payload) {
             setErrorMessage(res.payload.message);
           }
@@ -108,33 +115,33 @@ export const ImportTasksModal: React.FC<ModalProps> = ({ closeModal }) => {
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
           <h3>
-            <Trans i18nKey="Import Jira tasks" />
+            <Trans i18nKey="Import tasks from" /> {titleCase(name)}
           </h3>
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
-          <label htmlFor="board">Select JIRA board:</label>
+          <label htmlFor="board">Select {titleCase(name)} board:</label>
           {loadedBoards ? (
             <>
               <Select
                 name="board"
                 id="board"
                 placeholder="No boards available"
-                isDisabled={jiraBoards.length === 0}
+                isDisabled={boards.length === 0}
                 onChange={(selected) =>
                   selected && setSelectedBoardId(selected.value)
                 }
                 defaultValue={
-                  jiraBoards.length > 0
+                  boards.length > 0
                     ? {
-                        value: jiraBoards[0].id,
-                        label: jiraBoards[0].name,
+                        value: boards[0].id,
+                        label: boards[0].name,
                       }
                     : null
                 }
-                options={jiraBoards.map(({ id, name }) => ({
-                  value: id,
-                  label: name,
+                options={boards.map((board) => ({
+                  value: board.id,
+                  label: board.name,
                 }))}
               />
               <label htmlFor="labels" style={{ marginTop: '1em' }}>

@@ -53,7 +53,7 @@ export interface Roadmap {
   tasks: Task[];
   customers: Customer[];
   plannerCustomerWeights: PlannerCustomerWeight[] | undefined;
-  jiraconfiguration: JiraConfiguration;
+  integrations: IntegrationConfiguration[];
 }
 
 export interface RoadmapRequest {
@@ -121,11 +121,11 @@ export interface GetRoadmapBoardsRequest {
 
 export interface GetRoadmapBoardLabelsRequest {
   roadmapId: number;
-  boardId: number;
+  boardId: string;
 }
 
 export interface ImportBoardRequest {
-  boardId: number;
+  boardId: string;
   createdByUser: number;
   roadmapId: number;
   filters?: {
@@ -137,33 +137,31 @@ export interface PlannerCustomerWeight {
   customerId: number;
   weight: number;
 }
-export interface JiraOAuthURLResponse {
+export interface OAuthURLResponse {
   url: URL;
   token: string;
   tokenSecret: string;
 }
 
-export interface JiraOAuthURLRequest {
-  id: number;
-}
-
-export interface JiraTokenSwapRequest {
+export interface OAuthTokenSwapRequest {
   id: number;
   verifierToken: string;
   token: string;
   tokenSecret: string;
 }
 
-export interface JiraConfigurationRequest {
-  id?: number;
-  url: string;
+interface IntegrationBase {
+  name: string;
+  host?: string;
+  consumerkey: string;
   privatekey: string;
   roadmapId: number;
 }
 
-export interface JiraConfiguration {
+export interface IntegrationConfigurationRequest extends IntegrationBase {
+  id?: number;
+}
+
+export interface IntegrationConfiguration extends IntegrationBase {
   id: number;
-  roadmapId: number;
-  url: string;
-  privatekey: string;
 }

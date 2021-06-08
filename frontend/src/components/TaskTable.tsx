@@ -9,11 +9,12 @@ import { TableTaskRow } from './TableTaskRow';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
-import { Task } from '../redux/roadmaps/types';
+import { Task, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { UserType } from '../../../shared/types/customTypes';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import {
   filterTasks,
   FilterTypes,
@@ -21,6 +22,7 @@ import {
   SortingTypes,
   sortTasks,
 } from '../utils/TaskUtils';
+import { titleCase } from '../utils/string';
 import css from './TaskTable.module.scss';
 
 const classes = classNames.bind(css);
@@ -45,6 +47,10 @@ export const TaskTable: React.FC<{
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
+    shallowEqual,
+  );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();
@@ -99,14 +105,31 @@ export const TaskTable: React.FC<{
     );
   };
 
-  const onImportTasksClick = (e: any) => {
+  const onImportTasksClick = (name: string) => (e: any) => {
     e.preventDefault();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.IMPORT_TASKS_MODAL,
-        modalProps: {},
+        modalProps: { name },
       }),
     );
+  };
+
+  const renderImportButton = (name: string) => {
+    // TODO: disable button if oauth is not completed
+    // or maybe open the oauth modal first then
+    if (currentRoadmap?.integrations.some((it) => it.name === name)) {
+      return (
+        <button
+          className={classes(css['button-small-filled'])}
+          type="submit"
+          onClick={onImportTasksClick(name)}
+        >
+          <Trans i18nKey="Import tasks from" /> {titleCase(name)}
+        </button>
+      );
+    }
+    return null;
   };
 
   const renderTopbar = () => {
@@ -134,13 +157,8 @@ export const TaskTable: React.FC<{
           )}
           {userInfo!.type === UserType.AdminUser && (
             <>
-              <button
-                className={classes(css['button-small-filled'])}
-                type="submit"
-                onClick={onImportTasksClick}
-              >
-                <Trans i18nKey="Import tasks from JIRA" />
-              </button>
+              {renderImportButton('trello')}
+              {renderImportButton('jira')}
               <button
                 className={classes(css['button-small-filled'])}
                 type="submit"
