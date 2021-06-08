@@ -1,13 +1,15 @@
+import { Customer } from '../roadmaps/types';
+
 export interface UserInfo {
   username: string;
   email: string;
   id: number;
   type: UserType;
+  representativeFor?: Customer[];
 }
 
 export interface UserState {
   info?: UserInfo;
-  loggedIn: boolean;
 }
 
 export interface GetUserInfoError {

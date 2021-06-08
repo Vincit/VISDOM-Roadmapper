@@ -101,5 +101,8 @@ export const english = {
     email: 'email',
     uniqueViolation: 'This {{field}} is already in use.',
     ValidationError: 'Invalid {{field}}.',
+    'Remove client': 'Remove client',
+    'No, go back': 'No, go back',
+    'Yes, remove it': 'Yes, remove it',
   },
 };

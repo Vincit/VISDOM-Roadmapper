@@ -1,0 +1,10 @@
+@import './../shared.scss';
+
+.editCustomer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  :not(:first-child) {
+    margin-left: 20px;
+  }
+}
