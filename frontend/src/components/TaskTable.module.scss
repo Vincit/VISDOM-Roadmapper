@@ -5,13 +5,11 @@
   position: relative;
   display: flex;
   flex-grow: 1;
+  gap: 10px;
   justify-content: flex-end;
   align-items: center;
   & > :first-child {
     margin-right: 20px;
-  }
-  & > :nth-last-child(2) {
-    margin-right: 10px;
   }
 }
 

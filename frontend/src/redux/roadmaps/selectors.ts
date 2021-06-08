@@ -57,9 +57,7 @@ export const plannerCustomerWeightsSelector = () => {
   );
 };
 
-export const chosenJiraconfigurationSelector = () => {
-  return createSelector(
-    chosenRoadmapSelector,
-    (roadmap) => roadmap?.jiraconfiguration,
+export const chosenIntegrationSelector = (name: string) =>
+  createSelector(chosenRoadmapSelector, (roadmap) =>
+    roadmap?.integrations.find((it) => it.name === name),
   );
-};

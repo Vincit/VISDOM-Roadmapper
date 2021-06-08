@@ -12,15 +12,11 @@ import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
-import { JiraOauthModal } from './JiraOauthModal';
+import { OauthModal } from './IntegrationOauthModal';
 import {
-  AddJiraConfigurationModal,
-  AddJiraConfigurationModalProps,
-} from './AddJiraConfigurationModal';
-import {
-  EditJiraConfigurationModal,
-  EditJiraConfigurationModalProps,
-} from './EditJiraConfigurationModal';
+  IntegrationConfigurationModal,
+  IntegrationConfigurationModalProps,
+} from './IntegrationConfigurationModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RateCustomerModal, RateCustomerModalProps } from './RateCustomerModal';
 import { RemovePeopleModal, RemovePeopleModalProps } from './RemovePeopleModal';
@@ -47,8 +43,7 @@ type ModalTypeToComponent = {
     | React.FC<RemovePeopleModalProps>
     | React.FC<EditCustomerModalProps>
     | React.FC<EditTeamMemberModalProps>
-    | React.FC<AddJiraConfigurationModalProps>
-    | React.FC<EditJiraConfigurationModalProps>;
+    | React.FC<IntegrationConfigurationModalProps>;
 };
 
 const Modals: ModalTypeToComponent = {
@@ -63,12 +58,12 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: EditTeamMemberModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
-  [ModalTypes.SETUP_OAUTH_MODAL]: JiraOauthModal,
-  [ModalTypes.ADD_JIRA_CONFIGURATION_MODAL]: AddJiraConfigurationModal,
-  [ModalTypes.EDIT_JIRA_CONFIGURATION_MODAL]: EditJiraConfigurationModal,
+  [ModalTypes.SETUP_OAUTH_MODAL]: OauthModal,
+  [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: IntegrationConfigurationModal,
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: UserAuthTokenModal,
 };
 
+// TODO: move this to css file
 const modalCustomStyles = {
   content: {
     top: '35%',

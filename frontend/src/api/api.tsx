@@ -2,11 +2,10 @@ import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import {
   ImportBoardRequest,
-  JiraConfigurationRequest,
-  JiraOAuthURLResponse,
-  JiraOAuthURLRequest,
-  JiraTokenSwapRequest,
-  JiraConfiguration,
+  IntegrationConfigurationRequest,
+  OAuthURLResponse,
+  OAuthTokenSwapRequest,
+  IntegrationConfiguration,
   Customer,
   CustomerRequest,
   teamMemberRequest,
@@ -23,7 +22,7 @@ import {
   GetRoadmapBoardsRequest,
   GetRoadmapBoardLabelsRequest,
 } from '../redux/roadmaps/types';
-import { JiraBoard } from '../redux/types';
+import { IntegrationBoard, Integrations } from '../redux/types';
 import {
   UserInfo,
   UserLoginRequest,
@@ -47,7 +46,7 @@ const getRoadmaps = async () => {
 const addRoadmap = async (roadmap: RoadmapRequest) => {
   const response = await axios.post('/roadmaps', roadmap);
   if (!response.data.tasks) response.data.tasks = [];
-  if (!response.data.jiraconfiguration) response.data.jiraconfiguration = null;
+  if (!response.data.integrations) response.data.integrations = [];
   return response.data as Roadmap;
 };
 
@@ -239,66 +238,84 @@ const patchUser = async (user: PublicUserRequest) => {
   return response.data as PublicUser;
 };
 
-const getJiraBoards = async (request: GetRoadmapBoardsRequest) => {
-  const response = await axios.get(
-    `/roadmaps/${request.roadmapId}/jira/boards`,
-  );
-  return response.data as JiraBoard[];
+const getIntegrations = async (roadmapId: number) => {
+  const response = await axios.get(`roadmaps/${roadmapId}/integrations`);
+  return response.data as Integrations;
 };
 
-const getJiraBoardLabels = async (request: GetRoadmapBoardLabelsRequest) => {
+const getIntegrationBoards = async (
+  name: string,
+  request: GetRoadmapBoardsRequest,
+) => {
   const response = await axios.get(
-    `/roadmaps/${request.roadmapId}/jira/boards/labels/${request.boardId}`,
+    `/roadmaps/${request.roadmapId}/integrations/${name}/boards`,
+  );
+  return response.data as IntegrationBoard[];
+};
+
+const getIntegrationBoardLabels = async (
+  name: string,
+  request: GetRoadmapBoardLabelsRequest,
+) => {
+  const response = await axios.get(
+    `/roadmaps/${request.roadmapId}/integrations/${name}/boards/${request.boardId}/labels`,
   );
   return response.data as string[];
 };
 
-const importJiraBoard = async (request: ImportBoardRequest) => {
-  await axios.post(`/roadmaps/${request.roadmapId}/jira/importboard`, request);
+const importIntegrationBoard = async (
+  name: string,
+  request: ImportBoardRequest,
+) => {
+  await axios.post(
+    `/roadmaps/${request.roadmapId}/integrations/${name}/boards/${request.boardId}/import`,
+    request,
+  );
   return true;
 };
 
-const getJiraOauthURL = async (
-  jiraconfiguration: JiraOAuthURLRequest,
-  roadmapId: number,
-) => {
+const getIntegrationOauthURL = async (name: string, roadmapId: number) => {
   const response = await axios.get(
-    `/roadmaps/${roadmapId}/jira/oauthauthorizationurl/${jiraconfiguration.id}`,
+    `/roadmaps/${roadmapId}/integrations/${name}/oauth/authorizationurl`,
   );
-  return response.data as JiraOAuthURLResponse;
+  return response.data as OAuthURLResponse;
 };
 
-const swapJiraOAuthToken = async (
-  swapRequest: JiraTokenSwapRequest,
+const swapIntegrationOAuthToken = async (
+  name: string,
+  swapRequest: OAuthTokenSwapRequest,
   roadmapId: number,
 ) => {
   await axios.post(
-    `/roadmaps/${roadmapId}/jira/swapoauthtoken/${swapRequest.id}`,
+    `/roadmaps/${roadmapId}/integrations/${name}/oauth/swaptoken`,
     swapRequest,
   );
   return true;
 };
 
-const addJiraconfiguration = async (
-  jiraconfiguration: JiraConfigurationRequest,
+const addIntegrationConfiguration = async (
+  name: string,
+  configuration: IntegrationConfigurationRequest,
   roadmapId: number,
 ) => {
   const response = await axios.post(
-    `roadmaps/${roadmapId}/jiraconfigurations`,
-    jiraconfiguration,
+    `roadmaps/${roadmapId}/integrations/${name}/configuration`,
+    configuration,
   );
-  return response.data as JiraConfiguration;
+  return response.data as IntegrationConfiguration;
 };
 
-const patchJiraconfiguration = async (
-  jiraconfiguration: JiraConfigurationRequest,
+const patchIntegrationConfiguration = async (
+  name: string,
+  configuration: IntegrationConfigurationRequest,
   roadmapId: number,
 ) => {
+  const { host, consumerkey, privatekey } = configuration;
   const response = await axios.patch(
-    `roadmaps/${roadmapId}/jiraconfigurations/${jiraconfiguration.id}`,
-    { url: jiraconfiguration.url, privatekey: jiraconfiguration.privatekey },
+    `roadmaps/${roadmapId}/integrations/${name}/configuration/${configuration.id}`,
+    { host, consumerkey, privatekey },
   );
-  return response.data as JiraConfiguration;
+  return response.data as IntegrationConfiguration;
 };
 
 export const api = {
@@ -330,11 +347,12 @@ export const api = {
   patchVersion,
   deleteVersion,
   patchUser,
-  getJiraBoards,
-  getJiraBoardLabels,
-  importJiraBoard,
-  getJiraOauthURL,
-  swapJiraOAuthToken,
-  addJiraconfiguration,
-  patchJiraconfiguration,
+  getIntegrations,
+  getIntegrationBoards,
+  getIntegrationBoardLabels,
+  importIntegrationBoard,
+  getIntegrationOauthURL,
+  swapIntegrationOAuthToken,
+  addIntegrationConfiguration,
+  patchIntegrationConfiguration,
 };

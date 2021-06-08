@@ -7,11 +7,13 @@ import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../redux/modals/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { RootState, Integrations } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { UserType } from '../../../shared/types/customTypes';
 import { requireLogin } from '../utils/requirelogin';
+import { titleCase } from '../utils/string';
+import { api } from '../api/api';
 import css from './ConfigurationPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -27,36 +29,32 @@ const RoadmapConfigurationPageComponent = () => {
   );
   const dispatch = useDispatch<StoreDispatchType>();
 
-  const onJiraConfigurationClick = (e: any) => {
+  const onConfigurationClick = (target: string, fields: any[]) => (e: any) => {
     e.preventDefault();
 
-    if (currentRoadmap.jiraconfiguration) {
-      dispatch(
-        modalsActions.showModal({
-          modalType: ModalTypes.EDIT_JIRA_CONFIGURATION_MODAL,
-          modalProps: {
-            jiraconfigurationId: currentRoadmap.jiraconfiguration.id,
-          },
-        }),
-      );
-    } else {
-      dispatch(
-        modalsActions.showModal({
-          modalType: ModalTypes.ADD_JIRA_CONFIGURATION_MODAL,
-          modalProps: {
-            roadmap: currentRoadmap,
-          },
-        }),
-      );
-    }
+    const configuration = currentRoadmap.integrations.find(
+      ({ name }) => name === target,
+    );
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.INTEGRATION_CONFIGURATION_MODAL,
+        modalProps: {
+          name: target,
+          roadmapId: currentRoadmap.id,
+          roadmapName: currentRoadmap.name,
+          configuration,
+          fields,
+        },
+      }),
+    );
   };
 
-  const onOAuthClick = (e: any) => {
+  const onOAuthClick = (target: string) => (e: any) => {
     e.preventDefault();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.SETUP_OAUTH_MODAL,
-        modalProps: { roadmapId: currentRoadmap.id },
+        modalProps: { name: target, roadmapId: currentRoadmap.id },
       }),
     );
   };
@@ -71,37 +69,48 @@ const RoadmapConfigurationPageComponent = () => {
     );
   };
 
+  const [integrations, setIntegrations] = React.useState<Integrations>({});
+
+  React.useEffect(() => {
+    if (currentRoadmap)
+      api.getIntegrations(currentRoadmap.id).then(setIntegrations);
+  }, [currentRoadmap]);
+
   return (
     <div className={classes(css.configurationPage)}>
       This is the roadmap configuration page.
       {userInfo?.type === UserType.AdminUser && (
         <>
-          <div className={classes(css.layoutRow)}>
-            <span className={classes(css.columnHeader)}>
-              {currentRoadmap.name} <Trans i18nKey="jiraconfiguration" />
-              <br />
-              <button
-                className={classes(css['button-small-filled'])}
-                type="submit"
-                onClick={onJiraConfigurationClick}
-              >
-                + <Trans i18nKey="Configure Jira" />
-              </button>
-            </span>
-          </div>
-          <div className={classes(css.layoutRow)}>
-            <span className={classes(css.columnHeader)}>
-              {currentRoadmap.name} <Trans i18nKey="authentication" />
-              <br />
-              <button
-                className={classes(css['button-small-filled'])}
-                type="submit"
-                onClick={onOAuthClick}
-              >
-                + <Trans i18nKey="OAuth" />
-              </button>
-            </span>
-          </div>
+          {Object.entries(integrations).flatMap(([name, fields]) => [
+            <div key={`config-${name}`} className={classes(css.layoutRow)}>
+              <span className={classes(css.columnHeader)}>
+                {currentRoadmap.name} {titleCase(name)}{' '}
+                <Trans i18nKey="configuration" />
+                <br />
+                <button
+                  className={classes(css['button-small-filled'])}
+                  type="submit"
+                  onClick={onConfigurationClick(name, fields)}
+                >
+                  + <Trans i18nKey="Configure" /> {titleCase(name)}
+                </button>
+              </span>
+            </div>,
+            <div key={`oauth-${name}`} className={classes(css.layoutRow)}>
+              <span className={classes(css.columnHeader)}>
+                {currentRoadmap.name} {titleCase(name)}{' '}
+                <Trans i18nKey="authentication" />
+                <br />
+                <button
+                  className={classes(css['button-small-filled'])}
+                  type="submit"
+                  onClick={onOAuthClick(name)}
+                >
+                  + <Trans i18nKey="OAuth" />
+                </button>
+              </span>
+            </div>,
+          ])}
         </>
       )}
       <div className={classes(css.layoutRow)}>

@@ -15,12 +15,12 @@ import {
   patchTeamMember,
   getRoadmapUsers,
   getRoadmaps,
-  importJiraBoard,
+  importIntegrationBoard,
   patchPublicUser,
   patchTask,
   patchTaskrating,
-  addJiraConfiguration,
-  patchJiraConfiguration,
+  addIntegrationConfiguration,
+  patchIntegrationConfiguration,
 } from './actions';
 import {
   ADD_ROADMAP_FULFILLED,
@@ -42,8 +42,8 @@ import {
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
   SET_PLANNER_CUSTOMER_WEIGHT,
-  ADD_JIRA_CONFIGURATION_FULFILLED,
-  PATCH_JIRA_CONFIGURATION_FULFILLED,
+  ADD_INTEGRATION_CONFIGURATION_FULFILLED,
+  PATCH_INTEGRATION_CONFIGURATION_FULFILLED,
 } from './reducers';
 import { RoadmapsState } from './types';
 
@@ -78,14 +78,14 @@ export const roadmapsSlice = createSlice({
     builder.addCase(getRoadmapUsers.fulfilled, GET_ROADMAP_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
     builder.addCase(patchPublicUser.fulfilled, PATCH_PUBLIC_USER_FULFILLED);
-    builder.addCase(importJiraBoard.fulfilled, GET_ROADMAPS_FULFILLED);
+    builder.addCase(importIntegrationBoard.fulfilled, GET_ROADMAPS_FULFILLED);
     builder.addCase(
-      addJiraConfiguration.fulfilled,
-      ADD_JIRA_CONFIGURATION_FULFILLED,
+      addIntegrationConfiguration.fulfilled,
+      ADD_INTEGRATION_CONFIGURATION_FULFILLED,
     );
     builder.addCase(
-      patchJiraConfiguration.fulfilled,
-      PATCH_JIRA_CONFIGURATION_FULFILLED,
+      patchIntegrationConfiguration.fulfilled,
+      PATCH_INTEGRATION_CONFIGURATION_FULFILLED,
     );
   },
 });
@@ -110,7 +110,7 @@ export const roadmapsActions = {
   patchTaskrating,
   addOrPatchTaskrating,
   patchPublicUser,
-  importJiraBoard,
-  addJiraConfiguration,
-  patchJiraConfiguration,
+  importIntegrationBoard,
+  addIntegrationConfiguration,
+  patchIntegrationConfiguration,
 };

@@ -10,7 +10,14 @@ export interface RootState {
   versions: VersionsState;
 }
 
-export interface JiraBoard {
-  id: number;
+export interface IntegrationBoard {
+  id: string;
   name: string;
+}
+
+export interface Integrations {
+  [name: string]: {
+    field: string;
+    secret?: boolean;
+  }[];
 }

@@ -10,25 +10,26 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
-import { chosenJiraconfigurationSelector } from '../../redux/roadmaps/selectors';
+import { chosenIntegrationSelector } from '../../redux/roadmaps/selectors';
+import { titleCase } from '../../utils/string';
 import '../../shared.scss';
 
-export interface JiraOauthModalProps extends ModalProps {
+export interface OauthModalProps extends ModalProps {
+  name: string;
   roadmapId: number;
 }
 
-export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
+export const OauthModal: React.FC<OauthModalProps> = ({
   closeModal,
   roadmapId,
+  name,
 }) => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentJiraConfiguration = useSelector(
-    chosenJiraconfigurationSelector(),
-  )!;
+  const currentConfiguration = useSelector(chosenIntegrationSelector(name))!;
 
   const [formValues, setFormValues] = useState({
     token: '',
@@ -38,15 +39,17 @@ export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
 
   useEffect(() => {
     const getOAuthURL = async () => {
-      const id = currentJiraConfiguration?.id;
+      const id = currentConfiguration?.id;
       if (id === undefined) {
         setErrorMessage(
-          'No Jira configuration found. Please configure Jira first.',
+          `No ${titleCase(
+            name,
+          )} configuration found. Please configure ${titleCase(name)} first.`,
         );
         return;
       }
       try {
-        const response = await api.getJiraOauthURL({ id }, roadmapId);
+        const response = await api.getIntegrationOauthURL(name, roadmapId);
         const { token, tokenSecret } = response;
         setFormValues((prev) => {
           return { ...prev, token, tokenSecret };
@@ -54,13 +57,15 @@ export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
         setOAuthURL(response.url);
       } catch (error) {
         setErrorMessage(
-          'Unable to query Jira OAuth URL. Please contact an administrator if the problem persists.',
+          `Unable to query ${titleCase(
+            name,
+          )} OAuth URL. Please contact an administrator if the problem persists.`,
         );
       }
     };
 
     getOAuthURL();
-  }, [currentJiraConfiguration, roadmapId]);
+  }, [currentConfiguration, roadmapId, name]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -71,9 +76,10 @@ export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
       setIsLoading(true);
 
       const swapToken = async () => {
-        const success = await api.swapJiraOAuthToken(
+        const success = await api.swapIntegrationOAuthToken(
+          name,
           {
-            id: currentJiraConfiguration.id,
+            id: currentConfiguration.id,
             verifierToken: formValues.oauthVerifierCode,
             token: formValues.token,
             tokenSecret: formValues.tokenSecret,
@@ -86,7 +92,9 @@ export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
           closeModal();
         } else {
           setErrorMessage(
-            'Unable to swap Jira OAuth token. Please contact an administrator if the problem persists.',
+            `Unable to swap ${titleCase(
+              name,
+            )} OAuth token. Please contact an administrator if the problem persists.`,
           );
         }
       };
@@ -103,7 +111,7 @@ export const JiraOauthModal: React.FC<JiraOauthModalProps> = ({
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
           <h3>
-            <Trans i18nKey="Setup Jira OAuth" />
+            <Trans i18nKey="Setup OAuth for" /> {titleCase(name)}
           </h3>
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>

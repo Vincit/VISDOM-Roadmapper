@@ -18,8 +18,8 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
-  JiraConfigurationRequest,
-  JiraConfiguration,
+  IntegrationConfigurationRequest,
+  IntegrationConfiguration,
 } from './types';
 
 export const getCustomers = createAsyncThunk<
@@ -297,35 +297,34 @@ export const patchPublicUser = createAsyncThunk<
   }
 });
 
-export const importJiraBoard = createAsyncThunk<
+export const importIntegrationBoard = createAsyncThunk<
   Roadmap[],
-  ImportBoardRequest,
+  ImportBoardRequest & { name: string },
   { rejectValue: AxiosError }
->(
-  'roadmaps/importJiraBoard',
-  async (importBoardRequest: ImportBoardRequest, thunkAPI) => {
-    try {
-      await api.importJiraBoard(importBoardRequest);
-      return await api.getRoadmaps();
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err as AxiosError<any>);
-    }
-  },
-);
+>('roadmaps/importIntegrationBoard', async (importBoardRequest, thunkAPI) => {
+  const { name, ...request } = importBoardRequest;
+  try {
+    await api.importIntegrationBoard(name, request);
+    return await api.getRoadmaps();
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
 
-export const addJiraConfiguration = createAsyncThunk<
-  JiraConfiguration,
-  JiraConfigurationRequest,
+export const addIntegrationConfiguration = createAsyncThunk<
+  IntegrationConfiguration,
+  IntegrationConfigurationRequest,
   { rejectValue: AxiosError }
 >(
-  'jiraconfigurations/addJiraconfiguration',
-  async (jiraconfiguration: JiraConfigurationRequest, thunkAPI) => {
+  'configurations/addIntegrationConfiguration',
+  async (configuration: IntegrationConfigurationRequest, thunkAPI) => {
     try {
       const currentroadmapId = chosenRoadmapIdSelector(
         thunkAPI.getState() as RootState,
       )!;
-      return await api.addJiraconfiguration(
-        jiraconfiguration,
+      return await api.addIntegrationConfiguration(
+        configuration.name,
+        configuration,
         currentroadmapId,
       );
     } catch (err) {
@@ -334,19 +333,20 @@ export const addJiraConfiguration = createAsyncThunk<
   },
 );
 
-export const patchJiraConfiguration = createAsyncThunk<
-  JiraConfiguration,
-  JiraConfigurationRequest,
+export const patchIntegrationConfiguration = createAsyncThunk<
+  IntegrationConfiguration,
+  IntegrationConfigurationRequest,
   { rejectValue: AxiosError }
 >(
-  'jiraconfigurations/patchJiraconfiguration',
-  async (jiraconfiguration: JiraConfigurationRequest, thunkAPI) => {
+  'configurations/patchIntegrationConfiguration',
+  async (configuration: IntegrationConfigurationRequest, thunkAPI) => {
     try {
       const currentroadmapId = chosenRoadmapIdSelector(
         thunkAPI.getState() as RootState,
       )!;
-      return await api.patchJiraconfiguration(
-        jiraconfiguration,
+      return await api.patchIntegrationConfiguration(
+        configuration.name,
+        configuration,
         currentroadmapId,
       );
     } catch (err) {
