@@ -9,7 +9,9 @@ export default class Task extends Model {
   description!: string;
   completed!: boolean;
   createdAt!: string;
-  jiraId!: number;
+  importedFrom!: string | null;
+  externalId!: string | null;
+  externalLink!: string | null;
 
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
@@ -31,6 +33,9 @@ export default class Task extends Model {
       completed: { type: 'boolean' },
       createdAt: { type: 'string', format: 'date-time' },
       createdByUser: { type: 'integer' },
+      importedFrom: { type: ['string', 'null'], minLength: 1, maxLength: 255 },
+      externalId: { type: ['string', 'null'], minLength: 1, maxLength: 255 },
+      externalLink: { type: ['string', 'null'], format: 'uri' },
     },
   };
 
