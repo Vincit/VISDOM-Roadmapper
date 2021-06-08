@@ -1,24 +1,33 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, Circle } from 'react-bootstrap-icons';
+import BuildIcon from '@material-ui/icons/Build';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import Tooltip from '@material-ui/core/Tooltip';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { StylesProvider } from '@material-ui/core/styles';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
 import { roadmapsActions } from '../redux/roadmaps/index';
-import { Task } from '../redux/roadmaps/types';
+import { Task, Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { UserType } from '../../../shared/types/customTypes';
+import { RoleType, UserType } from '../../../shared/types/customTypes';
+import {
+  roadmapUsersSelector,
+  allCustomersSelector,
+} from '../redux/roadmaps/selectors';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { InfoButton } from './forms/InfoButton';
 import { RatingsButton } from './forms/RatingsButton';
 import { TaskRatingsText } from './TaskRatingsText';
+import { Dot } from './Dot';
 import css from './TableTaskRow.module.scss';
 
 const classes = classNames.bind(css);
@@ -34,6 +43,65 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     userInfoSelector,
     shallowEqual,
   );
+  const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
+    roadmapUsersSelector,
+    shallowEqual,
+  );
+  const allCustomers = useSelector<RootState, Customer[] | undefined>(
+    allCustomersSelector,
+    shallowEqual,
+  );
+  const [missingRatings, setMissingRatings] = useState<Customer[] | undefined>(
+    undefined,
+  );
+  const [missingDevRatings, setMissingDevRatings] = useState<
+    RoadmapUser[] | undefined
+  >([]);
+  const [userRatingMissing, setUserRatingMissing] = useState<boolean>(true);
+
+  /*
+    AdminUsers can see missing customer and developer ratings
+    DeveloperUser can see missing developer ratings
+    CustomerUser and BusinessUser can see their own missing ratings
+  */
+  useEffect(() => {
+    if (userInfo?.type === UserType.AdminUser) {
+      const givenRatings = task.ratings
+        .map((rating) => {
+          return rating.forCustomer;
+        })
+        .filter((value) => value !== null);
+
+      const unratedCustomers = allCustomers?.filter(
+        (customer) => !givenRatings.includes(customer.id),
+      );
+      setMissingRatings(unratedCustomers);
+    }
+
+    if (
+      userInfo?.type === UserType.AdminUser ||
+      userInfo?.type === UserType.DeveloperUser
+    ) {
+      const ratingIds = task.ratings.map((rating) => rating.createdByUser);
+      const developers = allUsers?.filter(
+        (user) => user.type === RoleType.Developer,
+      );
+      const missingDevs = developers?.filter(
+        (developer) => !ratingIds.includes(developer.id),
+      );
+      setMissingDevRatings(missingDevs);
+    }
+
+    if (
+      userInfo?.type === UserType.CustomerUser ||
+      userInfo?.type === UserType.BusinessUser
+    ) {
+      // if task doesn't have ratings from the user that is logged in, display icon to them.
+      setUserRatingMissing(
+        !task.ratings.some((rating) => rating.createdByUser === userInfo?.id),
+      );
+    }
+  }, [task.ratings, allCustomers, allUsers, userInfo]);
 
   const deleteTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
@@ -119,6 +187,69 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         {description.length > 75
           ? `${description.slice(0, 75)}...`
           : description}
+      </td>
+      <td className="styledTd">
+        <div className={classes(css.missingContainer)}>
+          <StylesProvider injectFirst>
+            {missingRatings && (
+              <div className={classes(css.missingContainer)}>
+                {missingRatings.map((customer) => (
+                  <div key={customer.id}>
+                    <Tooltip
+                      classes={{
+                        arrow: classNames(css.tooltipArrow),
+                        tooltip: classNames(css.tooltip),
+                      }}
+                      title={customer.name}
+                      placement="top"
+                      arrow
+                    >
+                      <div className={classes(css.dotContainer)}>
+                        <Dot fill={customer.color || 'red'} />
+                      </div>
+                    </Tooltip>
+                  </div>
+                ))}
+              </div>
+            )}
+            {missingDevRatings && (
+              <div>
+                {missingDevRatings.map((dev) => (
+                  <Tooltip
+                    classes={{
+                      arrow: classNames(css.tooltipArrow),
+                      tooltip: classNames(css.tooltip),
+                    }}
+                    key={dev.username}
+                    title={dev.username}
+                    placement="top"
+                    arrow
+                  >
+                    <BuildIcon className={classes(css.developerIcon)} />
+                  </Tooltip>
+                ))}
+              </div>
+            )}
+            {userRatingMissing &&
+              (userInfo?.type === UserType.CustomerUser ||
+                userInfo?.type === UserType.BusinessUser) && (
+                <div>
+                  <Tooltip
+                    classes={{
+                      arrow: classNames(css.tooltipArrow),
+                      tooltip: classNames(css.tooltip),
+                    }}
+                    key={userInfo?.username}
+                    title={userInfo?.username || ''}
+                    placement="top"
+                    arrow
+                  >
+                    <PermIdentityIcon className={classes(css.userIcon)} />
+                  </Tooltip>
+                </div>
+              )}
+          </StylesProvider>
+        </div>
       </td>
       <td className="styledTd nowrap">
         <TaskRatingsText task={task} />

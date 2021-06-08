@@ -186,6 +186,7 @@ export const TaskTable: React.FC<{
     },
     { label: 'Title', sorting: SortingTypes.SORT_NAME },
     { label: 'Description', sorting: SortingTypes.SORT_DESC },
+    { label: 'Waiting for ratings', sorting: SortingTypes.NO_SORT },
     {
       label: 'Rating',
       sorting: SortingTypes.SORT_RATINGS,
