@@ -33,7 +33,7 @@ export const getCustomers = createAsyncThunk<
       customers: await api.getCustomers(roadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -48,7 +48,7 @@ export const addCustomer = createAsyncThunk<
     )!;
     return await api.addCustomer(customer, currentroadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -66,7 +66,7 @@ export const deleteCustomer = createAsyncThunk<
       response: await api.deleteCustomer(customer, roadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -81,7 +81,7 @@ export const patchCustomer = createAsyncThunk<
     )!;
     return await api.patchCustomer(customer, currentroadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -96,7 +96,7 @@ export const getPublicUsers = createAsyncThunk<
     )!;
     return await api.getPublicUsers(currentroadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -108,7 +108,7 @@ export const getRoadmaps = createAsyncThunk<
   try {
     return await api.getRoadmaps();
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -120,7 +120,7 @@ export const addRoadmap = createAsyncThunk<
   try {
     return await api.addRoadmap(roadmap);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -132,7 +132,7 @@ export const deleteRoadmap = createAsyncThunk<
   try {
     return await api.deleteRoadmap(roadmap);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -144,7 +144,7 @@ export const addTask = createAsyncThunk<
   try {
     return await api.addTask(task);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -159,7 +159,7 @@ export const patchTask = createAsyncThunk<
     )!;
     return await api.patchTask(task, currentroadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -171,7 +171,7 @@ export const deleteTask = createAsyncThunk<
   try {
     return await api.deleteTask(task);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -186,7 +186,7 @@ export const addTaskrating = createAsyncThunk<
     )!;
     return await api.addTaskrating(taskrating, currentroadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -203,7 +203,7 @@ export const deleteTaskrating = createAsyncThunk<
       )!;
       return await api.deleteTaskrating(taskrating, currentroadmapId);
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
@@ -221,7 +221,7 @@ export const patchTaskrating = createAsyncThunk<
       )!;
       return await api.patchTaskrating(taskrating, currentroadmapId);
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
@@ -257,7 +257,7 @@ export const patchPublicUser = createAsyncThunk<
   try {
     return await api.patchUser(user);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -272,7 +272,7 @@ export const importJiraBoard = createAsyncThunk<
       await api.importJiraBoard(importBoardRequest);
       return await api.getRoadmaps();
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
@@ -293,7 +293,7 @@ export const addJiraConfiguration = createAsyncThunk<
         currentroadmapId,
       );
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
@@ -314,7 +314,7 @@ export const patchJiraConfiguration = createAsyncThunk<
         currentroadmapId,
       );
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
