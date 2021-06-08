@@ -78,6 +78,11 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
     if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
   }, [dispatch, roadmapUsers]);
 
+  useEffect(() => {
+    if (!formValues.color)
+      setFormValues({ ...formValues, color: randomColor(customers) });
+  }, [formValues, customers]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -162,10 +167,11 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             <label htmlFor="color">
               <Trans i18nKey="Client color" />
             </label>
-            <div className={classes(css.colorSection)}>
+            <div id="color" className={classes(css.colorSection)}>
               <div className={classes(css.colorType)}>
                 <div className={classes(css.radioButton)}>
                   <div
+                    id="generate"
                     onClick={() => setColorType('generate')}
                     onKeyPress={() => setColorType('generate')}
                     tabIndex={0}
@@ -185,6 +191,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                 </div>
                 <div className={classes(css.radioButton)}>
                   <div
+                    id="pick"
                     onClick={() => setColorType('pick')}
                     onKeyPress={() => setColorType('pick')}
                     tabIndex={0}
@@ -197,7 +204,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                     className={classes(css.radioLabel, {
                       [css.active]: colorType === 'pick',
                     })}
-                    htmlFor="generate"
+                    htmlFor="pick"
                   >
                     <Trans i18nKey="Pick a color" />
                   </label>
@@ -215,28 +222,31 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             <label htmlFor="representatives">
               <Trans i18nKey="Who's responsible for the client value ratings?" />
             </label>
-            {representatives?.map((rep, idx) => (
-              <div
-                className={classes(css.representativeContainer, {
-                  [css.checked]: rep.checked,
-                })}
-                onClick={() => onRepresentativeChange(idx, !rep.checked)}
-                onKeyPress={() => onRepresentativeChange(idx, !rep.checked)}
-                role="checkbox"
-                aria-checked={rep.checked}
-                tabIndex={idx}
-                key={idx}
-              >
-                {rep.checked ? (
-                  <CheckBoxIcon className={classes(css.checkBox)} />
-                ) : (
-                  <CheckBoxBlankIcon
-                    className={classes(css.checkBox, css.unchecked)}
-                  />
-                )}
-                {rep.username}
-              </div>
-            ))}
+            <div id="representatives">
+              {representatives?.map((rep, idx) => (
+                <div
+                  className={classes(css.representativeContainer, {
+                    [css.checked]: rep.checked,
+                  })}
+                  onClick={() => onRepresentativeChange(idx, !rep.checked)}
+                  onKeyPress={() => onRepresentativeChange(idx, !rep.checked)}
+                  role="checkbox"
+                  aria-checked={rep.checked}
+                  aria-label={rep.username}
+                  tabIndex={idx}
+                  key={rep.id}
+                >
+                  {rep.checked ? (
+                    <CheckBoxIcon className={classes(css.checkBox)} />
+                  ) : (
+                    <CheckBoxBlankIcon
+                      className={classes(css.checkBox, css.unchecked)}
+                    />
+                  )}
+                  {rep.username}
+                </div>
+              ))}
+            </div>
           </div>
           <Alert
             show={errorMessage.length > 0}
