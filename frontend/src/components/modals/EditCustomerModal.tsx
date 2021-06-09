@@ -50,11 +50,11 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [colorType, setColorType] = useState('generate');
+  const [colorType, setColorType] = useState('pick');
   const [formValues, setFormValues] = useState({
     name: customer.name,
     email: customer.email,
-    color: customer.color,
+    color: customer.color ?? randomColor(customers),
   });
   const [representatives, setRepresentatives] = useState<CheckableUser[]>([]);
 
@@ -77,11 +77,6 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
   useEffect(() => {
     if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
   }, [dispatch, roadmapUsers]);
-
-  useEffect(() => {
-    if (!formValues.color)
-      setFormValues({ ...formValues, color: randomColor(customers) });
-  }, [formValues, customers]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -210,7 +205,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                   </label>
                 </div>
               </div>
-              {colorType === 'pick' && (
+              {colorType === 'pick' && formValues.color && (
                 <ColorPicker
                   color={formValues.color}
                   setColor={onColorChange}
