@@ -1,3 +1,4 @@
+import { validateEnv } from './utils/validateEnv';
 import cors from '@koa/cors';
 import KoaRouter from '@koa/router';
 import Dotenv from 'dotenv';
@@ -15,6 +16,10 @@ import { errorHandler } from './utils/errorhandler';
 import { IKoaState } from './types/customTypes';
 
 Dotenv.config();
+if (!validateEnv()) {
+  throw new Error('Invalid environment variables');
+}
+
 export const knex = Knex(knexConfig);
 
 const createServer = async () => {
