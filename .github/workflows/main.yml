@@ -43,7 +43,4 @@ jobs:
           SERVER_PORT: "5000"
           CHOKIDAR_USEPOLLING: "true"
           REACT_APP_API_BASE_URL: "http://localhost:5000/"
-          JIRA_PRIVATE_KEY_FILE: "fakekey.mock"
-          JIRA_ACCESS_TOKEN: "123"
-          JIRA_ACCESS_TOKEN_SECRET: "123"
-          JIRA_HOST: "visdom-sandbox.atlassian.net"
+          JIRA_CONSUMER_KEY: "roadmapper"
