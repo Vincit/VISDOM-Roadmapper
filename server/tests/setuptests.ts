@@ -23,7 +23,7 @@ afterEach(async () => {
 });
 
 after(async () => {
-  loggedInAgent.close();
+  loggedInAgent?.close();
   await app.close();
   await knex.destroy();
 });
