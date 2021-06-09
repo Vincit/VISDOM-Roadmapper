@@ -32,7 +32,7 @@ export default class Token extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
-          from: 'tokens.userId',
+          from: 'tokens.user',
           to: 'users.id',
         },
       },
