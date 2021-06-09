@@ -37,6 +37,8 @@ label.radioLabel {
   align-items: center;
   margin-left: 20px;
   margin-top: 14px;
+  cursor: pointer;
+  user-select: none;
 
   font-family: Work Sans;
   font-size: 14px;
