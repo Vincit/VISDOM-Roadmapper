@@ -10,6 +10,7 @@ import {
   getCustomers,
   addCustomer,
   deleteCustomer,
+  deleteTeamMember,
   patchCustomer,
   getRoadmapUsers,
   getRoadmaps,
@@ -31,6 +32,7 @@ import {
   ADD_CUSTOMER_FULFILLED,
   PATCH_CUSTOMER_FULFILLED,
   DELETE_CUSTOMER_FULFILLED,
+  DELETE_TEAM_MEMBER_FULFILLED,
   GET_ROADMAP_USERS_FULFILLED,
   GET_ROADMAPS_FULFILLED,
   PATCH_PUBLIC_USER_FULFILLED,
@@ -69,6 +71,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(patchCustomer.fulfilled, PATCH_CUSTOMER_FULFILLED);
     builder.addCase(addCustomer.fulfilled, ADD_CUSTOMER_FULFILLED);
     builder.addCase(deleteCustomer.fulfilled, DELETE_CUSTOMER_FULFILLED);
+    builder.addCase(deleteTeamMember.fulfilled, DELETE_TEAM_MEMBER_FULFILLED);
     builder.addCase(getRoadmapUsers.fulfilled, GET_ROADMAP_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
     builder.addCase(patchPublicUser.fulfilled, PATCH_PUBLIC_USER_FULFILLED);
@@ -96,6 +99,7 @@ export const roadmapsActions = {
   getCustomers,
   addCustomer,
   deleteCustomer,
+  deleteTeamMember,
   patchCustomer,
   getRoadmapUsers,
   patchTask,

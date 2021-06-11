@@ -4,6 +4,7 @@ import {
   JiraConfiguration,
   Customer,
   CustomerRequest,
+  teamMemberRequest,
   PublicUser,
   RoadmapUser,
   Roadmap,
@@ -66,6 +67,16 @@ export const DELETE_CUSTOMER_FULFILLED = (
     ({ id }) => id === action.payload.roadmapId,
   )!;
   roadmap.customers = roadmap.customers.filter(
+    ({ id }) => id !== action.payload.response.id,
+  );
+};
+
+export const DELETE_TEAM_MEMBER_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; response: teamMemberRequest }>,
+) => {
+  if (!state.allUsers) throw new Error('Users havent been fetched yet');
+  state.allUsers = state.allUsers?.filter(
     ({ id }) => id !== action.payload.response.id,
   );
 };

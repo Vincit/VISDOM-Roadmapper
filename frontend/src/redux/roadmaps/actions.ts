@@ -7,6 +7,7 @@ import {
   ImportBoardRequest,
   Customer,
   CustomerRequest,
+  teamMemberRequest,
   PublicUser,
   RoadmapUser,
   PublicUserRequest,
@@ -68,6 +69,24 @@ export const deleteCustomer = createAsyncThunk<
     };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
+export const deleteTeamMember = createAsyncThunk<
+  { roadmapId: number; response: teamMemberRequest },
+  teamMemberRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/deleteTeamMember', async (member, thunkAPI) => {
+  try {
+    const roadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId,
+      response: await api.deleteTeamMember(member, roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
   }
 });
 

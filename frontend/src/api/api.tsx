@@ -9,6 +9,7 @@ import {
   JiraConfiguration,
   Customer,
   CustomerRequest,
+  teamMemberRequest,
   PublicUser,
   RoadmapUser,
   PublicUserRequest,
@@ -127,6 +128,14 @@ const addCustomer = async (customer: CustomerRequest, roadmapId: number) => {
 const deleteCustomer = async (customer: CustomerRequest, roadmapId: number) => {
   await axios.delete(`roadmaps/${roadmapId}/customers/${customer.id}`);
   return customer;
+};
+
+const deleteTeamMember = async (
+  member: teamMemberRequest,
+  roadmapId: number,
+) => {
+  await axios.delete(`roadmaps/${roadmapId}/users/${member.id}/roles`);
+  return member;
 };
 
 const patchCustomer = async (customer: CustomerRequest, roadmapId: number) => {
@@ -299,6 +308,7 @@ export const api = {
   getCustomers,
   addCustomer,
   deleteCustomer,
+  deleteTeamMember,
   patchCustomer,
   getRoadmapUsers,
   patchTaskrating,

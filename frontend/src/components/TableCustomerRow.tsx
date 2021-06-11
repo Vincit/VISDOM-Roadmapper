@@ -42,10 +42,11 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
     e.stopPropagation();
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.REMOVE_CUSTOMER_MODAL,
+        modalType: ModalTypes.REMOVE_PEOPLE_MODAL,
         modalProps: {
-          customerId: id,
-          customerName: name,
+          userId: id,
+          userName: name,
+          type: 'customer',
         },
       }),
     );
@@ -89,9 +90,13 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
                 type="filled"
                 onClick={deleteUserClicked}
                 href={`?openModal=${
-                  ModalTypes.REMOVE_CUSTOMER_MODAL
+                  ModalTypes.REMOVE_PEOPLE_MODAL
                 }&modalProps=${encodeURIComponent(
-                  JSON.stringify({ customerId: id, customerName: name }),
+                  JSON.stringify({
+                    userId: id,
+                    userName: name,
+                    type: 'customer',
+                  }),
                 )}`}
               />
               <EditButton

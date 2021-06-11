@@ -103,6 +103,7 @@ export const english = {
     uniqueViolation: 'This {{field}} is already in use.',
     ValidationError: 'Invalid {{field}}.',
     'Remove client': 'Remove client',
+    'Remove team member': 'Remove team member',
     'No, go back': 'No, go back',
     'Yes, remove it': 'Yes, remove it',
     'Modify client information': 'Modify client information',

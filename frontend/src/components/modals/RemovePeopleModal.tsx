@@ -13,29 +13,26 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
-import css from './RemoveCustomerModal.module.scss';
+import css from './RemovePeopleModal.module.scss';
 
-export interface RemoveCustomerModalProps extends ModalProps {
-  customerId: number;
-  customerName: string;
+export interface RemovePeopleModalProps extends ModalProps {
+  userId: number;
+  userName: string;
+  type: 'customer' | 'team';
 }
 
-export const RemoveCustomerModal: React.FC<RemoveCustomerModalProps> = ({
+export const RemovePeopleModal: React.FC<RemovePeopleModalProps> = ({
   closeModal,
-  customerId,
-  customerName,
+  userId,
+  userName,
+  type,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsLoading(true);
-    const res = await dispatch(
-      roadmapsActions.deleteCustomer({ id: customerId }),
-    );
+  const deleteCustomer = async () => {
+    const res = await dispatch(roadmapsActions.deleteCustomer({ id: userId }));
     setIsLoading(false);
     if (roadmapsActions.deleteCustomer.rejected.match(res)) {
       if (res.payload?.message) setErrorMessage(res.payload.message);
@@ -44,21 +41,58 @@ export const RemoveCustomerModal: React.FC<RemoveCustomerModalProps> = ({
     closeModal();
   };
 
+  const deleteTeamMember = async () => {
+    const res = await dispatch(
+      roadmapsActions.deleteTeamMember({ id: userId }),
+    );
+    setIsLoading(false);
+    if (roadmapsActions.deleteTeamMember.rejected.match(res)) {
+      if (res.payload?.message) setErrorMessage(res.payload.message);
+      return;
+    }
+    closeModal();
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsLoading(true);
+    if (type === 'customer') deleteCustomer();
+    else deleteTeamMember();
+  };
+
   return (
     <>
       <Form onSubmit={handleSubmit}>
         <ModalHeader>
           <h3>
-            <Trans i18nKey="Remove client" />
+            {type === 'customer' ? (
+              <Trans i18nKey="Remove client" />
+            ) : (
+              <Trans i18nKey="Remove team member" />
+            )}
           </h3>
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <div className={css.descriptionDiv}>
             <AlertIcon />
-            <h6>
-              Are you sure you want to remove <b>{customerName}</b>?
-            </h6>
+            {type === 'customer' ? (
+              <h6>
+                Are you sure you want to remove <b>{userName}</b>?
+              </h6>
+            ) : (
+              <>
+                <h6>
+                  Are you sure you want to remove <b>{userName}</b> from the
+                  project?
+                </h6>
+                <h6>
+                  This won’t delete their account; only removes them from this
+                  project.
+                </h6>
+              </>
+            )}
           </div>
           <Alert
             show={errorMessage.length > 0}

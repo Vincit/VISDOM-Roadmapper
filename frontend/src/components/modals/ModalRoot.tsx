@@ -23,10 +23,7 @@ import {
 } from './EditJiraConfigurationModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RateCustomerModal, RateCustomerModalProps } from './RateCustomerModal';
-import {
-  RemoveCustomerModal,
-  RemoveCustomerModalProps,
-} from './RemoveCustomerModal';
+import { RemovePeopleModal, RemovePeopleModalProps } from './RemovePeopleModal';
 import { EditCustomerModal, EditCustomerModalProps } from './EditCustomerModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
 import {
@@ -43,7 +40,7 @@ type ModalTypeToComponent = {
     | React.FC<TaskInfoModalProps>
     | React.FC<TaskRatingsInfoModalProps>
     | React.FC<RateCustomerModalProps>
-    | React.FC<RemoveCustomerModalProps>
+    | React.FC<RemovePeopleModalProps>
     | React.FC<EditCustomerModalProps>
     | React.FC<AddJiraConfigurationModalProps>
     | React.FC<EditJiraConfigurationModalProps>;
@@ -56,7 +53,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
   [ModalTypes.RATE_CUSTOMER_MODAL]: RateCustomerModal,
-  [ModalTypes.REMOVE_CUSTOMER_MODAL]: RemoveCustomerModal,
+  [ModalTypes.REMOVE_PEOPLE_MODAL]: RemovePeopleModal,
   [ModalTypes.EDIT_CUSTOMER_MODAL]: EditCustomerModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
