@@ -7,8 +7,8 @@ import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
 import { Permission, RoleType } from '../../shared/types/customTypes';
 
-describe('Test /roadmaps/:roadmapId/jira/ api', function () {
-  describe('POST /roadmaps/:roadmapId/jira/importboard/', function () {
+describe('Test /roadmaps/:roadmapId/integrations/jira/ api', function () {
+  describe('POST /roadmaps/:roadmapId/integrations/jira/boards/:boardId/import/', function () {
     it('Should not import board with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
@@ -18,7 +18,7 @@ describe('Test /roadmaps/:roadmapId/jira/ api', function () {
         type: RoleType.Admin & ~Permission.TaskCreate & ~Permission.TaskEdit,
       });
       const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/jira/importboard/`)
+        .post(`/roadmaps/${firstRoadmapId}/integrations/jira/boards/1/import/`)
         .type('json')
         .send({});
       expect(res.status).to.equal(403);
@@ -26,7 +26,7 @@ describe('Test /roadmaps/:roadmapId/jira/ api', function () {
     it('Should not receive 403 error with correct permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/jira/importboard/`)
+        .post(`/roadmaps/${firstRoadmapId}/integrations/jira/boards/1/import/`)
         .type('json')
         .send({});
       expect(res.status).not.to.equal(403);
