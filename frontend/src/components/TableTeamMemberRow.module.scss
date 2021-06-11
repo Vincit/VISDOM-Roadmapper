@@ -1,0 +1,24 @@
+@import './../shared.scss';
+
+.editMember {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  :not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.memberIcon {
+  path {
+    fill: $COLOR_BLACK40;
+  }
+  &.Business svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.userText {
+  color: $COLOR_AZURE;
+}

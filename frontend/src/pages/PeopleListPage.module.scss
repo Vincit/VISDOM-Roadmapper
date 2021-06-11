@@ -1,0 +1,16 @@
+@import '../shared.scss';
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  h2 {
+    margin-left: 16px;
+    margin-bottom: 47px;
+  }
+
+  &.clients {
+    margin-bottom: 90px;
+  }
+}
