@@ -15,7 +15,7 @@ describe('Test /roadmaps/:roadmapId/jiraconfigurations/ api', function () {
         await User.query().where({ username: 'AdminPerson1' }).first()
       ).id;
       await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.JiraConfigurationEdit,
+        type: RoleType.Admin & ~Permission.IntegrationConfigurationEdit,
       });
       const res = await loggedInAgent
         .post(`/roadmaps/${firstRoadmapId}/jiraconfigurations`)
@@ -39,7 +39,7 @@ describe('Test /roadmaps/:roadmapId/jiraconfigurations/ api', function () {
         await User.query().where({ username: 'AdminPerson1' }).first()
       ).id;
       await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.JiraConfigurationEdit,
+        type: RoleType.Admin & ~Permission.IntegrationConfigurationEdit,
       });
       const res = await loggedInAgent
         .patch(`/roadmaps/${firstRoadmapId}/jiraconfigurations/1`)
@@ -55,7 +55,7 @@ describe('Test /roadmaps/:roadmapId/jiraconfigurations/ api', function () {
         await User.query().where({ username: 'AdminPerson1' }).first()
       ).id;
       await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.JiraConfigurationEdit,
+        type: RoleType.Admin & ~Permission.IntegrationConfigurationEdit,
       });
       const res = await loggedInAgent
         .delete(`/roadmaps/${firstRoadmapId}/jiraconfigurations/1`)
