@@ -42,7 +42,7 @@ export enum Permission {
 
   CustomerRepresent = 1 << 20,
 
-  JiraConfigurationEdit = 1 << 21,
+  IntegrationConfigurationEdit = 1 << 21,
 }
 
 export enum RoleType {

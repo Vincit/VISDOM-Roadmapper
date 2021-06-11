@@ -39,17 +39,17 @@ integrationRouter.use('/:integrationName', async (ctx, next) => {
 
 integrationRouter.post(
   '/:integrationName/configuration/',
-  requirePermission(Permission.JiraConfigurationEdit),
+  requirePermission(Permission.IntegrationConfigurationEdit),
   postConfigurations,
 );
 integrationRouter.patch(
   '/:integrationName/configuration/:integrationId',
-  requirePermission(Permission.JiraConfigurationEdit),
+  requirePermission(Permission.IntegrationConfigurationEdit),
   patchConfigurations,
 );
 integrationRouter.delete(
   '/:integrationName/configuration/:integrationId',
-  requirePermission(Permission.JiraConfigurationEdit),
+  requirePermission(Permission.IntegrationConfigurationEdit),
   deleteConfigurations,
 );
 
