@@ -11,7 +11,7 @@ import {
 
 export { SortingOrders } from './SortUtils';
 
-export enum SortingTypes {
+export enum CustomerSortingTypes {
   NO_SORT,
   SORT_NAME,
   SORT_VALUE,
@@ -19,14 +19,14 @@ export enum SortingTypes {
 }
 
 const customerCompare = (
-  sortingType: SortingTypes,
+  sortingType: CustomerSortingTypes,
 ): SortComparison<Customer> | undefined => {
   switch (sortingType) {
-    case SortingTypes.SORT_NAME:
+    case CustomerSortingTypes.SORT_NAME:
       return sortKeyLocale(({ name }) => name);
-    case SortingTypes.SORT_VALUE:
+    case CustomerSortingTypes.SORT_VALUE:
       return sortKeyNumeric(({ value }) => value);
-    case SortingTypes.SORT_COLOR:
+    case CustomerSortingTypes.SORT_COLOR:
       return sortKeyLocale(({ color }) => color || '');
     default:
       // SortingTypes.NO_SORT
@@ -36,7 +36,7 @@ const customerCompare = (
 
 export const sortCustomers = (
   customers: Customer[],
-  type: SortingTypes,
+  type: CustomerSortingTypes,
   order: SortingOrders,
 ) => sorted(customers, customerCompare(type), order);
 
