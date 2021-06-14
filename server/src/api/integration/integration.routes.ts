@@ -11,10 +11,17 @@ import {
   getOauthAuthorizationURL,
   swapOauthAuthorizationToken,
 } from './integration.controller';
-import { hasIntegration, availableIntegrations } from '../integration';
+import {
+  hasIntegration,
+  availableIntegrations,
+  registerIntegration,
+} from '../integration';
 import { requirePermission } from './../../utils/checkPermissions';
 import { IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
+import { JiraIntegration } from '../jira/jiraIntegration';
+
+registerIntegration('jira', JiraIntegration);
 
 const integrationRouter = new KoaRouter<IKoaState, Context>({
   prefix: '/integrations',
