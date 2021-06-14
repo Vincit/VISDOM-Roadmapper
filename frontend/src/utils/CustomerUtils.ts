@@ -15,6 +15,7 @@ export enum SortingTypes {
   NO_SORT,
   SORT_NAME,
   SORT_VALUE,
+  SORT_COLOR,
 }
 
 const customerCompare = (
@@ -25,6 +26,8 @@ const customerCompare = (
       return sortKeyLocale(({ name }) => name);
     case SortingTypes.SORT_VALUE:
       return sortKeyNumeric(({ value }) => value);
+    case SortingTypes.SORT_COLOR:
+      return sortKeyLocale(({ color }) => color || '');
     default:
       // SortingTypes.NO_SORT
       break;

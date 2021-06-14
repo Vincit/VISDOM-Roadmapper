@@ -106,7 +106,7 @@ export const PeopleListPage = () => {
   );
 
   const customerTableHeaders: TableHeader[] = [
-    { label: 'ID', sorting: SortingTypes.SORT_NAME },
+    { label: 'ID', sorting: SortingTypes.SORT_COLOR },
     { label: 'Name', sorting: SortingTypes.SORT_NAME },
     { label: 'Value', sorting: SortingTypes.SORT_VALUE },
   ];
