@@ -75,6 +75,13 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
       <td className="styledTd nowrap textAlignEnd">
         {userInfo!.type === UserType.AdminUser && id !== userInfo?.id && (
           <div className={classes(css.editMember)}>
+            <EditButton
+              type="default"
+              onClick={editTeamMemberClicked}
+              href={`?openModal=${
+                ModalTypes.EDIT_TEAM_MEMBER_MODAL
+              }&modalProps=${encodeURIComponent(JSON.stringify(member))}`}
+            />
             <DeleteButton
               type="filled"
               onClick={deleteUserClicked}
@@ -87,13 +94,6 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
                   type: 'team',
                 }),
               )}`}
-            />
-            <EditButton
-              type="default"
-              onClick={editTeamMemberClicked}
-              href={`?openModal=${
-                ModalTypes.EDIT_TEAM_MEMBER_MODAL
-              }&modalProps=${encodeURIComponent(JSON.stringify(member))}`}
             />
           </div>
         )}

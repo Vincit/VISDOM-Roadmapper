@@ -86,6 +86,13 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
               Rate
             </button>
             <div>
+              <EditButton
+                type="default"
+                onClick={editUserClicked}
+                href={`?openModal=${
+                  ModalTypes.EDIT_CUSTOMER_MODAL
+                }&modalProps=${encodeURIComponent(JSON.stringify(customer))}`}
+              />
               <DeleteButton
                 type="filled"
                 onClick={deleteUserClicked}
@@ -98,13 +105,6 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
                     type: 'customer',
                   }),
                 )}`}
-              />
-              <EditButton
-                type="default"
-                onClick={editUserClicked}
-                href={`?openModal=${
-                  ModalTypes.EDIT_CUSTOMER_MODAL
-                }&modalProps=${encodeURIComponent(JSON.stringify(customer))}`}
               />
             </div>
           </div>
