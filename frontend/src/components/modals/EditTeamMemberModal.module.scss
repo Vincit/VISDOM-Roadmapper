@@ -1,0 +1,56 @@
+@import '../../shared.scss';
+
+.section {
+  margin-bottom: 20px;
+}
+
+.memberSection {
+  padding: 20px 23px;
+  display: flex;
+  path {
+    fill: $COLOR_BLACK40;
+  }
+  .business {
+    width: 18px;
+    height: 18px;
+  }
+  .memberName {
+    margin-left: 23px;
+  }
+}
+
+.roleSection {
+  margin: 2px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+label.radioLabel {
+  font-family: 'Work Sans';
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: $COLOR_BLACK60;
+  &.active {
+    font-weight: 600;
+    color: $COLOR_BLACK100;
+  }
+}
+
+.radioButton {
+  display: flex;
+  align-items: baseline;
+  margin-top: 16px;
+
+  :first-child {
+    margin-right: 6px;
+  }
+}
+
+.warning {
+  width: 422px;
+  margin-top: 20px;
+  font-family: Work Sans;
+  color: $COLOR_RASPBERRY;
+}

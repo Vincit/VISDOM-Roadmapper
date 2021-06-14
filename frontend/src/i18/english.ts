@@ -114,5 +114,10 @@ export const english = {
     'Pick a color': 'Pick a color',
     "Who's responsible for the client value ratings?":
       "Who's responsible for the client value ratings?",
+    'Modify team members': 'Modify team members',
+    'Member role': 'Member role',
+    Developer: 'Developer',
+    Businessperson: 'Businessperson',
+    Admin: 'Admin',
   },
 };

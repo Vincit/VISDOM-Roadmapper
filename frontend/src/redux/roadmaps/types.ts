@@ -59,6 +59,12 @@ export interface RoadmapRequest {
   tasks?: Task[];
 }
 
+export interface RoadmapRoleResponse {
+  type: RoleType;
+  userId: number;
+  roadmapId: number;
+}
+
 export interface Task {
   id: number;
   name: string;

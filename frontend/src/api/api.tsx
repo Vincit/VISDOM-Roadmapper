@@ -12,6 +12,7 @@ import {
   teamMemberRequest,
   PublicUser,
   RoadmapUser,
+  RoadmapRoleResponse,
   PublicUserRequest,
   Roadmap,
   RoadmapRequest,
@@ -144,6 +145,17 @@ const patchCustomer = async (customer: CustomerRequest, roadmapId: number) => {
     customer,
   );
   return response.data as Customer;
+};
+
+const patchTeamMember = async (
+  member: teamMemberRequest,
+  roadmapId: number,
+) => {
+  const response = await axios.patch(
+    `roadmaps/${roadmapId}/users/${member.id}/roles`,
+    member,
+  );
+  return response.data as RoadmapRoleResponse;
 };
 
 const login = async (loginRequest: UserLoginRequest) => {
@@ -310,6 +322,7 @@ export const api = {
   deleteCustomer,
   deleteTeamMember,
   patchCustomer,
+  patchTeamMember,
   getRoadmapUsers,
   patchTaskrating,
   getVersions,

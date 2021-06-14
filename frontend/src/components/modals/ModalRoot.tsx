@@ -25,6 +25,10 @@ import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RateCustomerModal, RateCustomerModalProps } from './RateCustomerModal';
 import { RemovePeopleModal, RemovePeopleModalProps } from './RemovePeopleModal';
 import { EditCustomerModal, EditCustomerModalProps } from './EditCustomerModal';
+import {
+  EditTeamMemberModal,
+  EditTeamMemberModalProps,
+} from './EditTeamMemberModal';
 import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
 import {
   TaskRatingsInfoModal,
@@ -42,6 +46,7 @@ type ModalTypeToComponent = {
     | React.FC<RateCustomerModalProps>
     | React.FC<RemovePeopleModalProps>
     | React.FC<EditCustomerModalProps>
+    | React.FC<EditTeamMemberModalProps>
     | React.FC<AddJiraConfigurationModalProps>
     | React.FC<EditJiraConfigurationModalProps>;
 };
@@ -55,6 +60,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.RATE_CUSTOMER_MODAL]: RateCustomerModal,
   [ModalTypes.REMOVE_PEOPLE_MODAL]: RemovePeopleModal,
   [ModalTypes.EDIT_CUSTOMER_MODAL]: EditCustomerModal,
+  [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: EditTeamMemberModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
   [ModalTypes.SETUP_OAUTH_MODAL]: JiraOauthModal,

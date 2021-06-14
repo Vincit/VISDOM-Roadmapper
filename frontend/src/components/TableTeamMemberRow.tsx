@@ -5,6 +5,7 @@ import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
 import { DeleteButton } from './forms/DeleteButton';
+import { EditButton } from './forms/EditButton';
 import { BusinessValueFilled } from './RatingIcons';
 import { RoadmapUser } from '../redux/roadmaps/types';
 import { RoleType, UserType, UserInfo } from '../redux/user/types';
@@ -43,6 +44,19 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
     );
   };
 
+  const editTeamMemberClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.EDIT_TEAM_MEMBER_MODAL,
+        modalProps: {
+          member,
+        },
+      }),
+    );
+  };
+
   return (
     <tr>
       <td className="styledTd roleIcon">
@@ -61,21 +75,26 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
       <td className="styledTd nowrap textAlignEnd">
         {userInfo!.type === UserType.AdminUser && id !== userInfo?.id && (
           <div className={classes(css.editMember)}>
-            <div>
-              <DeleteButton
-                type="filled"
-                onClick={deleteUserClicked}
-                href={`?openModal=${
-                  ModalTypes.REMOVE_PEOPLE_MODAL
-                }&modalProps=${encodeURIComponent(
-                  JSON.stringify({
-                    userId: id,
-                    userName: username,
-                    type: 'team',
-                  }),
-                )}`}
-              />
-            </div>
+            <DeleteButton
+              type="filled"
+              onClick={deleteUserClicked}
+              href={`?openModal=${
+                ModalTypes.REMOVE_PEOPLE_MODAL
+              }&modalProps=${encodeURIComponent(
+                JSON.stringify({
+                  userId: id,
+                  userName: username,
+                  type: 'team',
+                }),
+              )}`}
+            />
+            <EditButton
+              type="default"
+              onClick={editTeamMemberClicked}
+              href={`?openModal=${
+                ModalTypes.EDIT_TEAM_MEMBER_MODAL
+              }&modalProps=${encodeURIComponent(JSON.stringify(member))}`}
+            />
           </div>
         )}
       </td>

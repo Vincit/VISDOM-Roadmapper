@@ -10,6 +10,7 @@ import {
   teamMemberRequest,
   PublicUser,
   RoadmapUser,
+  RoadmapRoleResponse,
   PublicUserRequest,
   Roadmap,
   RoadmapRequest,
@@ -102,6 +103,21 @@ export const patchCustomer = createAsyncThunk<
     return await api.patchCustomer(customer, currentroadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
+export const patchTeamMember = createAsyncThunk<
+  RoadmapRoleResponse,
+  teamMemberRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchTeamMember', async (member, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.patchTeamMember(member, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
   }
 });
 

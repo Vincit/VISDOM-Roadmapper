@@ -12,6 +12,7 @@ import {
   deleteCustomer,
   deleteTeamMember,
   patchCustomer,
+  patchTeamMember,
   getRoadmapUsers,
   getRoadmaps,
   importJiraBoard,
@@ -31,6 +32,7 @@ import {
   GET_CUSTOMERS_FULFILLED,
   ADD_CUSTOMER_FULFILLED,
   PATCH_CUSTOMER_FULFILLED,
+  PATCH_TEAM_MEMBER_FULFILLED,
   DELETE_CUSTOMER_FULFILLED,
   DELETE_TEAM_MEMBER_FULFILLED,
   GET_ROADMAP_USERS_FULFILLED,
@@ -69,6 +71,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
     builder.addCase(getCustomers.fulfilled, GET_CUSTOMERS_FULFILLED);
     builder.addCase(patchCustomer.fulfilled, PATCH_CUSTOMER_FULFILLED);
+    builder.addCase(patchTeamMember.fulfilled, PATCH_TEAM_MEMBER_FULFILLED);
     builder.addCase(addCustomer.fulfilled, ADD_CUSTOMER_FULFILLED);
     builder.addCase(deleteCustomer.fulfilled, DELETE_CUSTOMER_FULFILLED);
     builder.addCase(deleteTeamMember.fulfilled, DELETE_TEAM_MEMBER_FULFILLED);
@@ -101,6 +104,7 @@ export const roadmapsActions = {
   deleteCustomer,
   deleteTeamMember,
   patchCustomer,
+  patchTeamMember,
   getRoadmapUsers,
   patchTask,
   patchTaskrating,

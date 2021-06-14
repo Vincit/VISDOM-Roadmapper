@@ -7,6 +7,7 @@ import {
   teamMemberRequest,
   PublicUser,
   RoadmapUser,
+  RoadmapRoleResponse,
   Roadmap,
   RoadmapRequest,
   RoadmapsState,
@@ -56,6 +57,18 @@ export const PATCH_CUSTOMER_FULFILLED = (
 
   const patched = roadmap.customers.find(({ id }) => id === action.payload.id);
   Object.assign(patched, action.payload);
+};
+
+export const PATCH_TEAM_MEMBER_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<RoadmapRoleResponse>,
+) => {
+  if (!state.allUsers) throw new Error('Users havent been fetched yet');
+  const patched = state.allUsers?.find(
+    ({ id }) => id === action.payload.userId,
+  );
+
+  Object.assign(patched, { ...patched, type: action.payload.type });
 };
 
 export const DELETE_CUSTOMER_FULFILLED = (
