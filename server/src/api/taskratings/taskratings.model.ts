@@ -25,7 +25,13 @@ export default class TaskRating extends Model {
     required: ['dimension', 'value'],
     properties: {
       id: { type: 'integer' },
-      dimension: { type: 'integer', enum: [0, 1] },
+      dimension: {
+        type: 'integer',
+        enum: [
+          TaskRatingDimension.RequiredWork,
+          TaskRatingDimension.BusinessValue,
+        ],
+      },
       value: { type: 'number', minimum: 0, maximum: 10 },
       comment: { type: 'string' },
     },
