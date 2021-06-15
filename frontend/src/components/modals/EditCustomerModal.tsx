@@ -164,46 +164,18 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             </label>
             <div id="color" className={classes(css.colorSection)}>
               <div className={classes(css.colorType)}>
-                <div className={classes(css.radioButton)}>
-                  <div
-                    id="generate"
-                    onClick={() => setColorType('generate')}
-                    onKeyPress={() => setColorType('generate')}
-                    tabIndex={0}
-                    role="radio"
-                    aria-checked={colorType === 'generate'}
-                  >
-                    <RadioButton checked={colorType === 'generate'} />
-                  </div>
-                  <label
-                    className={classes(css.radioLabel, {
-                      [css.active]: colorType === 'generate',
-                    })}
-                    htmlFor="generate"
-                  >
-                    <Trans i18nKey="Generate" />
-                  </label>
-                </div>
-                <div className={classes(css.radioButton)}>
-                  <div
-                    id="pick"
-                    onClick={() => setColorType('pick')}
-                    onKeyPress={() => setColorType('pick')}
-                    tabIndex={0}
-                    role="radio"
-                    aria-checked={colorType === 'pick'}
-                  >
-                    <RadioButton checked={colorType === 'pick'} />
-                  </div>
-                  <label
-                    className={classes(css.radioLabel, {
-                      [css.active]: colorType === 'pick',
-                    })}
-                    htmlFor="pick"
-                  >
-                    <Trans i18nKey="Pick a color" />
-                  </label>
-                </div>
+                <RadioButton
+                  label="Generate"
+                  value="generate"
+                  checked={colorType === 'generate'}
+                  onChange={(value: string) => setColorType(value)}
+                />
+                <RadioButton
+                  label="Pick a color"
+                  value="pick"
+                  checked={colorType === 'pick'}
+                  onChange={(value: string) => setColorType(value)}
+                />
               </div>
               {colorType === 'pick' && formValues.color && (
                 <ColorPicker

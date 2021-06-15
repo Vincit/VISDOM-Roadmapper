@@ -4,11 +4,6 @@
   margin-bottom: 20px;
 }
 
-.radioGroup {
-  display: flex;
-  flex-direction: column;
-}
-
 .colorSection {
   margin: 10px 20px 0 20px;
   .colorType {
@@ -16,19 +11,6 @@
     > :first-child {
       margin-right: 50px;
     }
-  }
-}
-
-label.radioLabel {
-  font-family: 'Work Sans';
-  font-size: 14px;
-  font-weight: normal;
-  letter-spacing: 0;
-  text-transform: none;
-  color: $COLOR_BLACK60;
-  &.active {
-    font-weight: 600;
-    color: $COLOR_BLACK100;
   }
 }
 
@@ -43,20 +25,9 @@ label.radioLabel {
   font-family: Work Sans;
   font-size: 14px;
 
-  :first-child {
-    margin-right: 14px;
-  }
+  gap: 12px;
 
   &.checked {
     font-weight: 600;
-  }
-}
-
-.radioButton {
-  display: flex;
-  align-items: baseline;
-
-  :first-child {
-    margin-right: 6px;
   }
 }

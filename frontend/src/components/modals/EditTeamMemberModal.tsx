@@ -78,73 +78,31 @@ export const EditTeamMemberModal: React.FC<EditTeamMemberModalProps> = ({
             {selectedRole === 'Business' && (
               <BusinessValueFilled className={classes(css.business)} />
             )}
-            <div className={classes(css.memberName)}>{member.username}</div>
+            {member.username}
           </div>
           <div className={classes(css.section)}>
             <label htmlFor="role">
               <Trans i18nKey="Member role" />
             </label>
             <div id="role" className={classes(css.roleSection)}>
-              <div className={classes(css.radioButton)}>
-                <div
-                  id="developer"
-                  onClick={() => setSelectedRole('Developer')}
-                  onKeyPress={() => setSelectedRole('Developer')}
-                  tabIndex={0}
-                  role="radio"
-                  aria-checked={selectedRole === 'Developer'}
-                >
-                  <RadioButton checked={selectedRole === 'Developer'} />
-                </div>
-                <label
-                  className={classes(css.radioLabel, {
-                    [css.active]: selectedRole === 'Developer',
-                  })}
-                  htmlFor="developer"
-                >
-                  <Trans i18nKey="Developer" />
-                </label>
-              </div>
-              <div className={classes(css.radioButton)}>
-                <div
-                  id="business"
-                  onClick={() => setSelectedRole('Business')}
-                  onKeyPress={() => setSelectedRole('Business')}
-                  tabIndex={0}
-                  role="radio"
-                  aria-checked={selectedRole === 'Business'}
-                >
-                  <RadioButton checked={selectedRole === 'Business'} />
-                </div>
-                <label
-                  className={classes(css.radioLabel, {
-                    [css.active]: selectedRole === 'Business',
-                  })}
-                  htmlFor="business"
-                >
-                  <Trans i18nKey="Businessperson" />
-                </label>
-              </div>
-              <div className={classes(css.radioButton)}>
-                <div
-                  id="admin"
-                  onClick={() => setSelectedRole('Admin')}
-                  onKeyPress={() => setSelectedRole('Admin')}
-                  tabIndex={0}
-                  role="radio"
-                  aria-checked={selectedRole === 'Admin'}
-                >
-                  <RadioButton checked={selectedRole === 'Admin'} />
-                </div>
-                <label
-                  className={classes(css.radioLabel, {
-                    [css.active]: selectedRole === 'Admin',
-                  })}
-                  htmlFor="admin"
-                >
-                  <Trans i18nKey="Admin" />
-                </label>
-              </div>
+              <RadioButton
+                label="Developer"
+                value="Developer"
+                checked={selectedRole === 'Developer'}
+                onChange={(value: string) => setSelectedRole(value)}
+              />
+              <RadioButton
+                label="Businessperson"
+                value="Business"
+                checked={selectedRole === 'Business'}
+                onChange={(value: string) => setSelectedRole(value)}
+              />
+              <RadioButton
+                label="Admin"
+                value="Admin"
+                checked={selectedRole === 'Admin'}
+                onChange={(value: string) => setSelectedRole(value)}
+              />
               {selectedRole === 'Admin' && (
                 <div className={classes(css.warning)}>
                   <b>Caution:</b> giving Admin role to this member let’s them
