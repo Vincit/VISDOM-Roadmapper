@@ -14,16 +14,3 @@
     margin-right: 10px;
   }
 }
-
-.filterSelectContainer {
-  display: flex;
-  align-items: center;
-
-  @extend .typography-body;
-
-  cursor: pointer;
-
-  & > :first-child {
-    margin-right: 8px;
-  }
-}

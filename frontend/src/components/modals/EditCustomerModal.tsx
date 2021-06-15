@@ -3,9 +3,8 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import { RadioButton } from '../forms/RadioButton';
+import { Checkbox } from '../forms/Checkbox';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
@@ -189,29 +188,16 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             <label htmlFor="representatives">
               <Trans i18nKey="Who's responsible for the client value ratings?" />
             </label>
-            <div id="representatives">
+            <div id="representatives" className={classes(css.representatives)}>
               {representatives?.map((rep, idx) => (
-                <div
-                  className={classes(css.representativeContainer, {
-                    [css.checked]: rep.checked,
-                  })}
-                  onClick={() => onRepresentativeChange(idx, !rep.checked)}
-                  onKeyPress={() => onRepresentativeChange(idx, !rep.checked)}
-                  role="checkbox"
-                  aria-checked={rep.checked}
-                  aria-label={rep.username}
-                  tabIndex={idx}
+                <Checkbox
+                  label={rep.username}
+                  checked={rep.checked}
+                  onChange={(checked: boolean) =>
+                    onRepresentativeChange(idx, checked)
+                  }
                   key={rep.id}
-                >
-                  {rep.checked ? (
-                    <CheckBoxIcon className={classes(css.checkBox)} />
-                  ) : (
-                    <CheckBoxBlankIcon
-                      className={classes(css.checkBox, css.unchecked)}
-                    />
-                  )}
-                  {rep.username}
-                </div>
+                />
               ))}
             </div>
           </div>

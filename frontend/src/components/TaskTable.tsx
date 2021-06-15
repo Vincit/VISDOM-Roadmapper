@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import classNames from 'classnames';
+import { Checkbox } from './forms/Checkbox';
 import { TableTaskRow } from './TableTaskRow';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
@@ -67,9 +66,7 @@ export const TaskTable: React.FC<{
     setSearchString(value.toLowerCase());
   };
 
-  const toggleCheckedClicked = (e: React.MouseEvent<any, MouseEvent>) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const toggleCheckedClicked = () => {
     setChecked(!checked);
     if (checked) setSearchFilter(FilterTypes.NOT_RATED_BY_ME);
     else setSearchFilter(FilterTypes.SHOW_ALL);
@@ -129,22 +126,11 @@ export const TaskTable: React.FC<{
         </div>
         <div className={classes(css.addNewButtonContainer)}>
           {!nofilter && (
-            <div
-              className={classes(css.filterSelectContainer)}
-              onClick={toggleCheckedClicked}
-              role="checkbox"
-              aria-checked={checked}
-              tabIndex={0}
-            >
-              {checked ? (
-                <CheckBoxIcon className={classes(css.checkBox)} />
-              ) : (
-                <CheckBoxBlankIcon
-                  className={classes(css.checkBox, css.unchecked)}
-                />
-              )}
-              Show completed tasks
-            </div>
+            <Checkbox
+              label="Show completed tasks"
+              onChange={toggleCheckedClicked}
+              checked={checked}
+            />
           )}
           {userInfo!.type === UserType.AdminUser && (
             <>

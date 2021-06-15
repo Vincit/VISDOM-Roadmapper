@@ -1,0 +1,19 @@
+@import '../../shared.scss';
+
+.checkBoxDiv {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  font-family: Work Sans;
+  font-size: 14px;
+  color: $COLOR_BLACK60;
+
+  gap: 12px;
+
+  &.checked {
+    font-weight: 600;
+    color: $COLOR_BLACK100;
+  }
+}

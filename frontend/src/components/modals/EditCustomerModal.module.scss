@@ -14,20 +14,7 @@
   }
 }
 
-.representativeContainer {
-  display: flex;
-  align-items: center;
+.representatives {
   margin-left: 20px;
-  margin-top: 14px;
-  cursor: pointer;
-  user-select: none;
-
-  font-family: Work Sans;
-  font-size: 14px;
-
-  gap: 12px;
-
-  &.checked {
-    font-weight: 600;
-  }
+  margin-top: 10px;
 }
