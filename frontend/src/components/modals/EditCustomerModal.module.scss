@@ -18,3 +18,19 @@
   margin-left: 20px;
   margin-top: 10px;
 }
+
+.representative {
+  display: flex;
+  align-items: center;
+  color: $COLOR_AZURE;
+
+  > :last-child {
+    margin-left: 20px;
+    position: relative;
+    top: -2px;
+  }
+  .Business svg {
+    width: 13.5px;
+    height: 13.5px;
+  }
+}

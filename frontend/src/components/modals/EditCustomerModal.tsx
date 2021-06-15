@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
+import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { BusinessValueFilled } from '../RatingIcons';
 import { RadioButton } from '../forms/RadioButton';
 import { Checkbox } from '../forms/Checkbox';
 import { StoreDispatchType } from '../../redux';
@@ -190,14 +192,22 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             </label>
             <div id="representatives" className={classes(css.representatives)}>
               {representatives?.map((rep, idx) => (
-                <Checkbox
-                  label={rep.username}
-                  checked={rep.checked}
-                  onChange={(checked: boolean) =>
-                    onRepresentativeChange(idx, checked)
-                  }
-                  key={rep.id}
-                />
+                <div className={classes(css.representative)}>
+                  <Checkbox
+                    label={rep.username}
+                    checked={rep.checked}
+                    onChange={(checked: boolean) =>
+                      onRepresentativeChange(idx, checked)
+                    }
+                    key={rep.id}
+                  />
+                  <div className={classes(css.icon, css[RoleType[rep.type]])}>
+                    {rep.type === RoleType.Admin && (
+                      <StarSharpIcon fontSize="small" />
+                    )}
+                    {rep.type === RoleType.Business && <BusinessValueFilled />}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
