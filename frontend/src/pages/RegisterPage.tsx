@@ -24,6 +24,7 @@ export const RegisterPage = () => {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
   const [checked, setChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -44,6 +45,8 @@ export const RegisterPage = () => {
     if (!checked) return setErrorMessage(t('Terms of use error'));
     if (formValues.password.length < 8)
       return setErrorMessage(t('Password type error'));
+    if (formValues.password !== formValues.confirmPassword)
+      return setErrorMessage(t('Password confirmation error'));
 
     dispatch(
       userActions.register({
@@ -145,6 +148,26 @@ export const RegisterPage = () => {
                 setFormValues({
                   ...formValues,
                   password: e.currentTarget.value,
+                })
+              }
+            />
+
+            <label htmlFor="confirm-password">
+              <Trans i18nKey="Confirm password" />
+            </label>
+            <input
+              required
+              name="confirm-password"
+              id="confirm-password"
+              placeholder="-"
+              type="password"
+              autoComplete="confirm-password"
+              value={formValues.confirmPassword}
+              maxLength={72}
+              onChange={(e) =>
+                setFormValues({
+                  ...formValues,
+                  confirmPassword: e.currentTarget.value,
                 })
               }
             />
