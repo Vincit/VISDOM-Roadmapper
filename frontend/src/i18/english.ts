@@ -16,6 +16,7 @@ export const english = {
     Login: 'Login',
     Username: 'Username',
     Password: 'Password',
+    'Confirm password': 'Confirm password',
     'Not logged in': 'Not logged in',
     'Invalid username or password': 'Invalid username or password',
     'How to rate?': 'How to rate?',
@@ -96,6 +97,7 @@ export const english = {
     'Terms of use error':
       'Please read and accept the terms of use and privacy policy.',
     'Password type error': 'Password should contain at least 8 characters.',
+    'Password confirmation error': 'Passwords do not match.',
     'Terms of use':
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
     'Internal server error': 'Internal server error',
