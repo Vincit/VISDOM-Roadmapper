@@ -5,7 +5,6 @@ import {
   Customer,
   CustomerRequest,
   teamMemberRequest,
-  PublicUser,
   RoadmapUser,
   RoadmapRoleResponse,
   Roadmap,
@@ -221,18 +220,6 @@ export const SELECT_CURRENT_ROADMAP: CaseReducer<
   PayloadAction<number>
 > = (state, action) => {
   state.selectedRoadmapId = action.payload;
-};
-
-export const PATCH_PUBLIC_USER_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<PublicUser>,
-) => {
-  if (!state.allUsers) throw new Error('Users havent been fetched yet');
-  const patchUser = state.allUsers.find(
-    (user) => user.id === action.payload.id,
-  )!;
-
-  Object.assign(patchUser, action.payload);
 };
 
 export const SET_PLANNER_CUSTOMER_WEIGHT: CaseReducer<

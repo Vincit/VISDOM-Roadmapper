@@ -16,7 +16,6 @@ import {
   getRoadmapUsers,
   getRoadmaps,
   importIntegrationBoard,
-  patchPublicUser,
   patchTask,
   patchTaskrating,
   addIntegrationConfiguration,
@@ -37,7 +36,6 @@ import {
   DELETE_TEAM_MEMBER_FULFILLED,
   GET_ROADMAP_USERS_FULFILLED,
   GET_ROADMAPS_FULFILLED,
-  PATCH_PUBLIC_USER_FULFILLED,
   PATCH_TASKRATING_FULFILLED,
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
@@ -77,7 +75,6 @@ export const roadmapsSlice = createSlice({
     builder.addCase(deleteTeamMember.fulfilled, DELETE_TEAM_MEMBER_FULFILLED);
     builder.addCase(getRoadmapUsers.fulfilled, GET_ROADMAP_USERS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
-    builder.addCase(patchPublicUser.fulfilled, PATCH_PUBLIC_USER_FULFILLED);
     builder.addCase(importIntegrationBoard.fulfilled, GET_ROADMAPS_FULFILLED);
     builder.addCase(
       addIntegrationConfiguration.fulfilled,
@@ -109,7 +106,6 @@ export const roadmapsActions = {
   patchTask,
   patchTaskrating,
   addOrPatchTaskrating,
-  patchPublicUser,
   importIntegrationBoard,
   addIntegrationConfiguration,
   patchIntegrationConfiguration,

@@ -33,11 +33,6 @@ export interface teamMemberRequest {
   type?: RoleType | null;
 }
 
-export interface PublicUser {
-  id: number;
-  username: string;
-}
-
 export interface RoadmapUser {
   id: number;
   username: string;
@@ -105,11 +100,6 @@ export interface TaskratingRequest {
   createdByUser?: number;
   forCustomer?: number;
   parentTask?: number;
-}
-
-export interface PublicUserRequest {
-  id?: number;
-  username?: string;
 }
 
 export interface GetRoadmapBoardsRequest {

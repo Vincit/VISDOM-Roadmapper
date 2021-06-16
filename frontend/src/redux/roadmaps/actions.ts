@@ -8,10 +8,8 @@ import {
   Customer,
   CustomerRequest,
   teamMemberRequest,
-  PublicUser,
   RoadmapUser,
   RoadmapRoleResponse,
-  PublicUserRequest,
   Roadmap,
   RoadmapRequest,
   Task,
@@ -284,18 +282,6 @@ export const addOrPatchTaskrating = createAsyncThunk<
     return res.payload;
   },
 );
-
-export const patchPublicUser = createAsyncThunk<
-  PublicUser,
-  PublicUserRequest,
-  { rejectValue: AxiosError }
->('roadmaps/patchPublicUser', async (user: PublicUserRequest, thunkAPI) => {
-  try {
-    return await api.patchUser(user);
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err as AxiosError<any>);
-  }
-});
 
 export const importIntegrationBoard = createAsyncThunk<
   Roadmap[],
