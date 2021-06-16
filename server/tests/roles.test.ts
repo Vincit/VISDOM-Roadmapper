@@ -5,7 +5,7 @@ import { app, loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType, UserType } from '../../shared/types/customTypes';
+import { Permission, RoleType } from '../../shared/types/customTypes';
 
 const registerNewUser = async (user: object) =>
   (
@@ -28,7 +28,6 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
         username: 'test',
         email: 'test@email.com',
         password: 'test',
-        type: UserType.DeveloperUser,
       });
       const res2 = await loggedInAgent
         .post(`/roadmaps/${firstRoadmapId}/inviteUser`)
@@ -55,7 +54,6 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
         username: 'test',
         email: 'test@email.com',
         password: 'test',
-        type: UserType.DeveloperUser,
       });
       const res = await loggedInAgent
         .post(`/roadmaps/${firstRoadmapId}/inviteUser`)

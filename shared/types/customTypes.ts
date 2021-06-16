@@ -3,14 +3,6 @@ export enum TaskRatingDimension {
   RequiredWork = 1,
 }
 
-export enum UserType {
-  BusinessUser = 0,
-  DeveloperUser = 1,
-  CustomerUser = 2,
-  AdminUser = 3,
-  TokenUser = 4,
-}
-
 export enum Permission {
   Any = 0,
   All = ~0,

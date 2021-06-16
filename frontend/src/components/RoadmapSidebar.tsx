@@ -14,7 +14,7 @@ import css from './RoadmapSidebar.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { UserType } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -53,7 +53,7 @@ export const RoadmapSidebar: React.FC = () => {
           <ListIcon />
           <Trans i18nKey="Tasks" />
         </Link>
-        {userInfo?.type === UserType.AdminUser && (
+        {userInfo?.type === RoleType.Admin && (
           <>
             <Link
               to={url + paths.roadmapRelative.users}

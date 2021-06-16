@@ -54,7 +54,6 @@ export const RegisterPage = () => {
         username: formValues.name,
         email: formValues.email,
         password: formValues.password,
-        type: 2,
       }),
     ).then((res) => {
       if (userActions.register.rejected.match(res)) {

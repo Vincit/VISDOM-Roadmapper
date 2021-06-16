@@ -17,7 +17,7 @@ import { Task, Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { RoleType, UserType } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import {
   roadmapUsersSelector,
   allCustomersSelector,
@@ -65,7 +65,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     CustomerUser and BusinessUser can see their own missing ratings
   */
   useEffect(() => {
-    if (userInfo?.type === UserType.AdminUser) {
+    if (userInfo?.type === RoleType.Admin) {
       const givenRatings = task.ratings
         .map((rating) => {
           return rating.forCustomer;
@@ -79,8 +79,8 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     }
 
     if (
-      userInfo?.type === UserType.AdminUser ||
-      userInfo?.type === UserType.DeveloperUser
+      userInfo?.type === RoleType.Admin ||
+      userInfo?.type === RoleType.Developer
     ) {
       const ratingIds = task.ratings.map((rating) => rating.createdByUser);
       const developers = allUsers?.filter(
@@ -93,8 +93,8 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     }
 
     if (
-      userInfo?.type === UserType.CustomerUser ||
-      userInfo?.type === UserType.BusinessUser
+      userInfo?.type === RoleType.Customer ||
+      userInfo?.type === RoleType.Business
     ) {
       // if task doesn't have ratings from the user that is logged in, display icon to them.
       setUserRatingMissing(
@@ -231,8 +231,8 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
               </div>
             )}
             {userRatingMissing &&
-              (userInfo?.type === UserType.CustomerUser ||
-                userInfo?.type === UserType.BusinessUser) && (
+              (userInfo?.type === RoleType.Customer ||
+                userInfo?.type === RoleType.Business) && (
                 <div>
                   <Tooltip
                     classes={{
@@ -292,7 +292,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
               JSON.stringify({ taskId: task.id }),
             )}`}
           />
-          {userInfo!.type === UserType.AdminUser && (
+          {userInfo!.type === RoleType.Admin && (
             <>
               <EditButton
                 type="default"

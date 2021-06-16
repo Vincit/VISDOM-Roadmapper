@@ -1,6 +1,5 @@
 import {
   TaskRatingDimension,
-  UserType,
   RoleType,
 } from '../../../../shared/types/customTypes';
 
@@ -37,7 +36,6 @@ export interface teamMemberRequest {
 export interface PublicUser {
   id: number;
   username: string;
-  type: UserType;
 }
 
 export interface RoadmapUser {
@@ -112,7 +110,6 @@ export interface TaskratingRequest {
 export interface PublicUserRequest {
   id?: number;
   username?: string;
-  type?: UserType;
 }
 
 export interface GetRoadmapBoardsRequest {

@@ -13,8 +13,8 @@ import { Task, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { UserType } from '../../../shared/types/customTypes';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { RoleType } from '../../../shared/types/customTypes';
 import {
   filterTasks,
   FilterTypes,
@@ -155,7 +155,7 @@ export const TaskTable: React.FC<{
               checked={checked}
             />
           )}
-          {userInfo!.type === UserType.AdminUser && (
+          {userInfo!.type === RoleType.Admin && (
             <>
               {renderImportButton('trello')}
               {renderImportButton('jira')}

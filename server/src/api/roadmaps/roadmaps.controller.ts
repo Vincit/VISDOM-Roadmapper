@@ -30,7 +30,7 @@ export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
   // Stringify user once here to run it through the objection model stringify method
   // Using the spread operator will not remove fields that are not to be sent
   const cleanUser = JSON.parse(JSON.stringify(ctx.state.user));
-  cleanUser.roleType = RoleType[ctx.state.role];
+  cleanUser.type = ctx.state.role;
   ctx.body = cleanUser;
 };
 

@@ -10,7 +10,7 @@ import { Customer } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { UserType } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import css from './TableCustomerRow.module.scss';
 
 const classes = classNames.bind(css);
@@ -77,7 +77,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
       <td className="styledTd">{name}</td>
       <td className="styledTd">{value}</td>
       <td className="styledTd nowrap textAlignEnd">
-        {userInfo!.type === UserType.AdminUser && (
+        {userInfo!.type === RoleType.Admin && (
           <div className={classes(css.editCustomer)}>
             <button
               className="button-small-filled"

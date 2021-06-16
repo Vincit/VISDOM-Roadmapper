@@ -9,7 +9,7 @@ import { EditButton } from './forms/EditButton';
 import { BusinessValueFilled } from './RatingIcons';
 import { RoadmapUser } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
-import { RoleType, UserType } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import css from './TableTeamMemberRow.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -74,7 +74,7 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
         )}
       </td>
       <td className="styledTd nowrap textAlignEnd">
-        {userInfo!.type === UserType.AdminUser && id !== userInfo?.id && (
+        {userInfo!.type === RoleType.Admin && id !== userInfo?.id && (
           <div className={classes(css.editMember)}>
             <EditButton
               type="default"

@@ -13,7 +13,7 @@ import {
 } from '../../redux/roadmaps/types';
 import {
   TaskRatingDimension,
-  UserType,
+  RoleType,
 } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
@@ -84,7 +84,7 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
   );
 
   const dimension =
-    userInfo?.type === UserType.DeveloperUser
+    userInfo?.type === RoleType.Developer
       ? TaskRatingDimension.RequiredWork
       : TaskRatingDimension.BusinessValue;
 

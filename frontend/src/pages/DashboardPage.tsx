@@ -13,11 +13,12 @@ import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { UserType } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import css from './DashboardPage.module.scss';
+import { userActions } from '../redux/user';
 
 const classes = classNames.bind(css);
 
@@ -55,6 +56,10 @@ export const DashboardPage = () => {
         !task.ratings.find((rating) => rating.createdByUser === userInfo!.id),
     );
   };
+
+  useEffect(() => {
+    if (!userInfo?.type) dispatch(userActions.getUserInfo());
+  }, [dispatch, userInfo]);
 
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
@@ -106,7 +111,7 @@ export const DashboardPage = () => {
         </p>
         <RoadmapOverview />
       </div>
-      {userInfo?.type === UserType.AdminUser && (
+      {userInfo?.type === RoleType.Admin && (
         <div className={classes(css.chartFlexbox)}>
           <div className={classes(css.meterWrapper)}>
             <TaskHeatmap />

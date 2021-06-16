@@ -125,7 +125,7 @@ export const getRoadmapUsers = createAsyncThunk<
   RoadmapUser[],
   void,
   { rejectValue: AxiosError }
->('roadmaps/getPublicUsers', async (_, thunkAPI) => {
+>('roadmaps/getRoadmapUsers', async (_, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,

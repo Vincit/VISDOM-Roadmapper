@@ -6,7 +6,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import {
   TaskRatingDimension,
-  UserType,
+  RoleType,
 } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -59,9 +59,9 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
 
   const shouldShow =
     ratingDimension === TaskRatingDimension.BusinessValue
-      ? userInfo!.type !== UserType.DeveloperUser
-      : userInfo!.type !== UserType.CustomerUser &&
-        userInfo!.type !== UserType.BusinessUser;
+      ? userInfo!.type !== RoleType.Developer
+      : userInfo!.type !== RoleType.Customer &&
+        userInfo!.type !== RoleType.Business;
 
   const renderRatingBars = () =>
     shouldShow && (

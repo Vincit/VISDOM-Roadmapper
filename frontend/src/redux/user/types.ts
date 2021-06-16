@@ -1,12 +1,12 @@
 /* eslint-disable no-bitwise */
 import { Customer } from '../roadmaps/types';
-import { UserType } from '../../../../shared/types/customTypes';
+import { RoleType } from '../../../../shared/types/customTypes';
 
 export interface UserInfo {
   username: string;
   email: string;
   id: number;
-  type: UserType;
+  type?: RoleType;
   representativeFor?: Customer[];
 }
 
@@ -27,5 +27,4 @@ export interface UserRegisterRequest {
   username: string;
   email: string;
   password: string;
-  type: UserType;
 }

@@ -1,6 +1,5 @@
 import { Model, ModelOptions, Modifiers, Pojo, QueryContext } from 'objection';
 import objectionPassword from 'objection-password';
-import { UserType } from '../../../../shared/types/customTypes';
 import Token from '../tokens/tokens.model';
 import { Role } from '../roles/roles.model';
 import Roadmap from '../roadmaps/roadmaps.model';
@@ -11,7 +10,6 @@ export default class User extends Password(Model) {
   id!: number;
   username!: string;
   email!: string;
-  type!: number;
   password!: string;
   authToken!: string | null;
   roles!: Role[];
@@ -23,7 +21,7 @@ export default class User extends Password(Model) {
 
   static jsonSchema = {
     type: 'object',
-    required: ['username', 'email', 'type', 'password'],
+    required: ['username', 'email', 'password'],
 
     properties: {
       id: { type: 'integer' },
@@ -36,16 +34,6 @@ export default class User extends Password(Model) {
       email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
       password: { type: 'string', minLength: 1, maxLength: 72 },
       authToken: { type: ['string', 'null'], format: 'uuid' },
-      type: {
-        type: 'integer',
-        enum: [
-          UserType.BusinessUser,
-          UserType.DeveloperUser,
-          UserType.CustomerUser,
-          UserType.AdminUser,
-          UserType.TokenUser,
-        ],
-      },
     },
   };
 

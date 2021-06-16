@@ -4,7 +4,7 @@ import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
 import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
-import { UserType, RoleType } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import Customer from '../api/customer/customer.model';
 
 export async function seed(knex: Knex): Promise<any> {
@@ -138,73 +138,61 @@ const createTestUsers = async () => {
   await User.query().insert({
     username: 'BusinessPerson1',
     email: 'biz@business.com',
-    type: UserType.BusinessUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'BusinessPerson2',
     email: 'biz2@business.com',
-    type: UserType.BusinessUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'DeveloperPerson1',
     email: 'dev@coders.com',
-    type: UserType.DeveloperUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'DeveloperPerson2',
     email: 'dev2@coders.com',
-    type: UserType.DeveloperUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'CustomerPerson1',
     email: 'customer@webuystuff.com',
-    type: UserType.CustomerUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'CustomerPerson2',
     email: 'customer2@webuystuff.com',
-    type: UserType.CustomerUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'CustomerPerson3',
     email: 'customer3@webuystuff.com',
-    type: UserType.CustomerUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'CustomerPerson4',
     email: 'customer4@webuystuff.com',
-    type: UserType.CustomerUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'CustomerPerson5',
     email: 'customer5@webuystuff.com',
-    type: UserType.CustomerUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'AdminPerson1',
     email: 'admin@admins.com',
-    type: UserType.AdminUser,
     password: 'test',
   });
   await User.query().insert({
     username: 'TokenUser1',
     authToken: '61682a02-47aa-4f64-b290-a6958a2beb7b',
-    type: UserType.TokenUser,
     email: 'dummy1@example.com',
     password: 'dummy1',
   });
   await User.query().insert({
     username: 'TokenUser2',
-    type: UserType.TokenUser,
     authToken: '21682a02-47aa-4f64-b290-a6958a2beb7b',
     email: 'dummy2@example.com',
     password: 'dummy2',

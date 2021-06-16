@@ -2,7 +2,6 @@ import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import { loggedInAgent } from './setuptests';
 import User from '../src/api/users/users.model';
-import { UserType } from '../../shared/types/customTypes';
 chai.use(chaiHttp);
 
 describe('Test /users/ api', function () {
@@ -86,7 +85,6 @@ describe('Test /users/ api', function () {
           username: 'test',
           email: 'test@email.com',
           password: 'test',
-          type: UserType.AdminUser,
         });
       expect(res.status).to.equal(200);
       const after = (await User.query()).length;
@@ -101,7 +99,6 @@ describe('Test /users/ api', function () {
           username: 'test@name',
           email: 'test@email.com',
           password: 'test',
-          type: UserType.AdminUser,
         });
       expect(res.status).to.equal(400);
       const after = (await User.query()).length;
@@ -116,7 +113,6 @@ describe('Test /users/ api', function () {
           username: names[0],
           email: 'test@email.com',
           password: 'test',
-          type: UserType.AdminUser,
         });
       expect(res.status).to.equal(200);
       for (const name of names) {
@@ -127,7 +123,6 @@ describe('Test /users/ api', function () {
             username: name,
             email: 'another@email.com',
             password: 'test',
-            type: UserType.AdminUser,
           });
         expect(res.status).to.equal(400);
       }
@@ -207,7 +202,6 @@ describe('Test /users/ api', function () {
       expect(res2.status).to.equal(200);
       expect(res2.body).to.have.property('id');
       expect(res2.body).to.have.property('username');
-      expect(res2.body).to.have.property('type');
       expect(res2.body).to.have.property('email');
     });
   });
