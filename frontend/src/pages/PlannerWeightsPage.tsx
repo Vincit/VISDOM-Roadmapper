@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
+import { Slider } from '../components/forms/Slider';
 import {
   plannerCustomerWeightsSelector,
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
 import { PlannerCustomerWeight, Customer } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { Dot } from '../components/Dot';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import css from './PlannerWeightsPage.module.scss';
@@ -39,7 +41,7 @@ export const PlannerWeightsPage = () => {
     const customer = customerWeights.find(
       ({ customerId }) => customerId === id,
     );
-    return customer ? customer.weight : 1;
+    return customer ? customer.weight : 0;
   };
 
   return (
@@ -47,20 +49,23 @@ export const PlannerWeightsPage = () => {
       <h2 className={classes(css.title)}>
         <Trans i18nKey="Set different weighing for clients" />
       </h2>
-      {customers?.map(({ id, name }) => (
+      {customers?.map(({ id, name, color }) => (
         <div className={classes(css.userRow)} key={id}>
-          <span>{name}</span>
-          <input
-            type="range"
+          <div className={classes(css.customerDot)}>
+            <Dot fill={color} />
+          </div>
+          <div className={classes(css.customer)}>{name}</div>
+          <Slider
             id="weight"
             name="weight"
-            min="0"
-            max="2"
+            className={classes(css.slider)}
+            min={0}
+            max={2}
+            value={weight(id)}
             defaultValue={weight(id)}
-            step="0.2"
-            onChange={(e) =>
-              handleSliderChange(id, Number(e.currentTarget.value))
-            }
+            step={0.4}
+            marks
+            onChange={(e, value) => handleSliderChange(id, Number(value))}
           />
         </div>
       ))}
