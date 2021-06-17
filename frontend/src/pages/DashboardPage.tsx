@@ -58,7 +58,7 @@ export const DashboardPage = () => {
   };
 
   useEffect(() => {
-    if (!userInfo?.type) dispatch(userActions.getUserInfo());
+    dispatch(userActions.getUserInfo());
   }, [dispatch, userInfo]);
 
   // TODO move duplicate version organizing / charting logic into custom hook
