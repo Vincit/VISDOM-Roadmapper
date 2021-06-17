@@ -7,7 +7,7 @@ export default class Customer extends Model {
   name!: string;
   email!: string | null;
   value!: number;
-  color!: string | null;
+  color!: string;
 
   representatives?: User[];
 
@@ -15,7 +15,7 @@ export default class Customer extends Model {
 
   static jsonSchema = {
     type: 'object',
-    required: ['name'],
+    required: ['name', 'color'],
 
     properties: {
       id: { type: 'integer' },

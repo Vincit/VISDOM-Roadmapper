@@ -55,7 +55,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
   const [formValues, setFormValues] = useState({
     name: customer.name,
     email: customer.email,
-    color: customer.color ?? randomColor(customers),
+    color: customer.color,
   });
   const [representatives, setRepresentatives] = useState<CheckableUser[]>([]);
 
@@ -178,7 +178,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                   onChange={(value: string) => setColorType(value)}
                 />
               </div>
-              {colorType === 'pick' && formValues.color && (
+              {colorType === 'pick' && (
                 <ColorPicker
                   color={formValues.color}
                   setColor={onColorChange}

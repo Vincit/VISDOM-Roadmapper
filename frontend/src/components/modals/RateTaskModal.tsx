@@ -43,7 +43,7 @@ const CustomerHeader: React.FC<{
     );
   return (
     <div className={classes(css.customerHeader)} style={{ gap: 10 }}>
-      <Dot fill={customer.color || '#ff0000'} />
+      <Dot fill={customer.color} />
       <span>{customer.name}</span>
       <span className={classes(css.dimText)}>—</span>
       <span className={classes(css.dimText)}>
