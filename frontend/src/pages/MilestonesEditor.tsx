@@ -93,15 +93,14 @@ export const MilestonesEditor = () => {
       );
       uncheckedTasks.forEach((task) => {
         const allRatings = task.ratings.map((rating) => rating.createdByUser);
-        const customerRatings = task.ratings
-          .map((rating) => {
-            return rating.forCustomer;
-          })
-          .filter((value) => value !== null);
 
-        const unratedByCustomer = customers?.some(
-          (customer) => !customerRatings.includes(customer.id),
-        );
+        const unratedByCustomer = customers?.some((customer) => {
+          const representativeIds = customer?.representatives?.map(
+            (rep) => rep.id,
+          );
+          return !representativeIds?.every((rep) => allRatings?.includes(rep));
+        });
+
         const unratedByDeveloper = developers?.some(
           (developer) => !allRatings.includes(developer.id),
         );
