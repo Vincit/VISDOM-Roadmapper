@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -8,6 +8,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { RoleType } from '../../../shared/types/customTypes';
 import { DeleteButton } from '../components/forms/DeleteButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
@@ -20,8 +21,9 @@ import {
   allTasksSelector,
   chosenRoadmapSelector,
   allCustomersSelector,
+  roadmapUsersSelector,
 } from '../redux/roadmaps/selectors';
-import { Customer, Roadmap, Task } from '../redux/roadmaps/types';
+import { Customer, Roadmap, Task, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
@@ -67,6 +69,10 @@ export const MilestonesEditor = () => {
     allCustomersSelector,
     shallowEqual,
   );
+  const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
+    roadmapUsersSelector,
+    shallowEqual,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [disableUpdates, setDisableUpdates] = useState(false);
@@ -78,13 +84,44 @@ export const MilestonesEditor = () => {
     setRoadmapsVersionsLocal(roadmapsVersions);
   }, [roadmapsVersions]);
 
+  // Checks if tasks in the tasks list have been given ratings, returns only tasks with ratings from everyone involved
+  const checkRatings = useCallback(
+    (uncheckedTasks: Task[]) => {
+      const ratedTasks: Task[] = [];
+      const developers = allUsers?.filter(
+        (user) => user.type === RoleType.Developer,
+      );
+      uncheckedTasks.forEach((task) => {
+        const allRatings = task.ratings.map((rating) => rating.createdByUser);
+        const customerRatings = task.ratings
+          .map((rating) => {
+            return rating.forCustomer;
+          })
+          .filter((value) => value !== null);
+
+        const unratedByCustomer = customers?.some(
+          (customer) => !customerRatings.includes(customer.id),
+        );
+        const unratedByDeveloper = developers?.some(
+          (developer) => !allRatings.includes(developer.id),
+        );
+
+        if (!unratedByCustomer && !unratedByDeveloper) ratedTasks.push(task);
+      });
+      return ratedTasks;
+    },
+    [allUsers, customers],
+  );
+
   useEffect(() => {
     if (disableUpdates) return;
     if (roadmapsVersionsLocal === undefined) {
       dispatch(versionsActions.getVersions(currentRoadmap!.id));
     } else {
       const newVersionLists: VersionListsObject = {};
-      const unversioned = new Map(tasks.map((task) => [task.id, task]));
+      const unversioned = new Map(
+        checkRatings(tasks).map((task) => [task.id, task]),
+      );
       roadmapsVersionsLocal.forEach((v) => {
         newVersionLists[v.id] = v.tasks;
         v.tasks.forEach((task) => unversioned.delete(task.id));
@@ -106,6 +143,7 @@ export const MilestonesEditor = () => {
     disableUpdates,
     customers,
     currentRoadmap,
+    checkRatings,
   ]);
 
   const addVersion = () => {
