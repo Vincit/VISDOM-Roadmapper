@@ -16,7 +16,7 @@ export interface Customer {
   name: string;
   email: string;
   value: number;
-  color: string | null;
+  color: string;
   representatives?: RoadmapUser[];
 }
 

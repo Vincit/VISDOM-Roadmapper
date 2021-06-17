@@ -71,7 +71,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
       <td className="styledTd">
         <div
           className={classes(css.customerCircle)}
-          style={{ backgroundColor: color || '' }}
+          style={{ backgroundColor: color }}
         />
       </td>
       <td className="styledTd">{name}</td>

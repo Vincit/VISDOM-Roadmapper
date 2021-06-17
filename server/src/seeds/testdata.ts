@@ -52,7 +52,7 @@ const createTestCustomers = async () => {
     roadmapId: roadmap.id,
     name: 'Customer 1',
     value: 500000,
-    color: '#ab1dEf',
+    color: '#AA75EE',
   });
   const customerPerson1 = await User.query().findOne(
     'username',
@@ -64,6 +64,7 @@ const createTestCustomers = async () => {
     roadmapId: roadmap.id,
     name: 'Customer 2',
     value: 1000000,
+    color: '#FBD92A',
   });
 
   const customerPerson2 = await User.query().findOne(
