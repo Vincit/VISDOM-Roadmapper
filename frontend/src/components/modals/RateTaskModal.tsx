@@ -26,21 +26,10 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { Dot } from '../Dot';
 import css from './RateTaskModal.module.scss';
 
 const classes = classNames.bind(css);
-
-const Dot: React.FC<{ fill: string }> = ({ fill }) => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="7" cy="7" r="7" fill={fill} />
-  </svg>
-);
 
 const CustomerHeader: React.FC<{
   customer: Customer;

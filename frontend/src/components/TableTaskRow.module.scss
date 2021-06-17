@@ -4,3 +4,34 @@
   display: inline-block;
   margin: 4px;
 }
+
+.missingContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.dotContainer {
+  margin-right: 10px;
+  margin-top: 5px; // Put the container on the same level as developer icon
+  display: flex;
+}
+
+.developerIcon {
+  height: 16px !important;
+  width: 16px !important;
+  color: $COLOR_BLACK60;
+  margin-right: 7px;
+}
+
+.userIcon {
+  color: $COLOR_BLACK60;
+}
+
+.tooltip {
+  @extend .tooltip-base;
+  margin: 0px 0px 10px 0px;
+}
+
+.tooltipArrow {
+  color: white;
+}
