@@ -347,6 +347,11 @@ form {
   }
 }
 
+.react-select input {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
 input {
   display: flex;
   align-items: center;

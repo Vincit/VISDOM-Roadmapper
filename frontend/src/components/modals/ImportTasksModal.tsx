@@ -126,6 +126,7 @@ export const ImportTasksModal: React.FC<ModalProps & { name: string }> = ({
               <Select
                 name="board"
                 id="board"
+                className="react-select"
                 placeholder="No boards available"
                 isDisabled={boards.length === 0}
                 onChange={(selected) =>
@@ -150,6 +151,7 @@ export const ImportTasksModal: React.FC<ModalProps & { name: string }> = ({
               <Select
                 id="labels"
                 key={selectedBoardId}
+                className="react-select"
                 placeholder="Import all issues"
                 isMulti
                 isClearable
