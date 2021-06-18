@@ -6,7 +6,7 @@ import User from '../api/users/users.model';
 const fetchUserById = async (id: number) => {
   return await User.query()
     .findById(id)
-    .withGraphFetched('representativeFor')
+    .withGraphFetched('[representativeFor, roles]')
     .first();
 };
 
@@ -16,14 +16,14 @@ const fetchUserByNameOrEmail = (nameOrEmail: string) => {
     : 'searchByUsernameExact';
   return User.query()
     .modify(modifier, nameOrEmail)
-    .withGraphFetched('representativeFor')
+    .withGraphFetched('[representativeFor, roles]')
     .first();
 };
 
 const fetchUserByToken = async (token: string) => {
   return await User.query()
     .where('authToken', token)
-    .withGraphFetched('representativeFor')
+    .withGraphFetched('[representativeFor, roles]')
     .first();
 };
 
