@@ -44,7 +44,9 @@ export const registerUser: RouteHandlerFnc = async (ctx, _) => {
     {},
   );
 
-  const user = await User.query().insertAndFetch(request);
+  const user = await User.query()
+    .insertAndFetch(request)
+    .withGraphFetched('[representativeFor, roles]');
   await ctx.login(user);
   ctx.body = user;
   ctx.status = 200;
