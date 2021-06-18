@@ -5,23 +5,33 @@ import Task from './tasks.model';
 import Objection from 'objection';
 
 export const getTasks: RouteHandlerFnc = async (ctx, _) => {
-  if (ctx.query.eager) {
-    ctx.body = await Task.query()
-      .where({ roadmapId: Number(ctx.params.roadmapId) })
-      .withGraphFetched('[ratings, createdBy]');
-  } else {
-    ctx.body = await Task.query()
-      .where({ roadmapId: Number(ctx.params.roadmapId) })
-      .withGraphFetched('[ratings(selectRatingId), createdBy(selectUserId)]')
-      .modifiers({
-        selectRatingId: (builder: Objection.AnyQueryBuilder) => {
-          builder.select('taskratings.id');
-        },
-        selectUserId: (builder: Objection.AnyQueryBuilder) => {
-          builder.select('users.id');
-        },
-      });
+  const { user, role } = ctx.state;
+  if (!user || !role) {
+    throw new Error('User and role are required');
   }
+
+  ctx.body = await Task.query()
+    .where({ roadmapId: Number(ctx.params.roadmapId) })
+    .withGraphFetched('[ratings(ratingModifier), createdBy(userModifier)]')
+    .modifiers(
+      ctx.query.eager
+        ? {
+            ratingModifier: (builder: Objection.AnyQueryBuilder) => {
+              builder.modify('keepVisible', user, role);
+            },
+            userModifier: () => {},
+          }
+        : {
+            ratingModifier: (builder: Objection.AnyQueryBuilder) => {
+              builder
+                .modify('keepVisible', user, role)
+                .select('taskratings.id');
+            },
+            userModifier: (builder: Objection.AnyQueryBuilder) => {
+              builder.select('users.id');
+            },
+          },
+    );
 };
 
 export const postTasks: RouteHandlerFnc = async (ctx, _) => {
