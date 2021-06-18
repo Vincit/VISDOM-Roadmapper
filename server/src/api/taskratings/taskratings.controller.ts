@@ -9,15 +9,18 @@ import Task from '../tasks/tasks.model';
 import Customer from '../customer/customer.model';
 
 export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
-  if (ctx.query.eager) {
-    ctx.body = await Taskrating.query()
-      .for(Number(ctx.params.taskId))
-      .withGraphFetched('[createdBy, createdFor]');
-  } else {
-    ctx.body = await Taskrating.query().where({
-      parentTask: Number(ctx.params.taskId),
-    });
+  const { user, role } = ctx.state;
+  if (!user || !role) {
+    throw new Error('User and role are required');
   }
+
+  const query = Taskrating.query()
+    .for(Number(ctx.params.taskId))
+    .modify('keepVisible', user, role);
+  if (ctx.query.eager) {
+    query.withGraphFetched('[createdBy, createdFor]');
+  }
+  ctx.body = await query;
 };
 
 export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
