@@ -13,6 +13,7 @@ import { Footer } from '../components/Footer';
 import { paths } from '../routers/paths';
 import { StoreDispatchType } from '../redux';
 import css from './RegisterPage.module.scss';
+import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -76,7 +77,7 @@ export const RegisterPage = () => {
     root: {
       color: '#DADADA',
       '&$checked': {
-        color: '#0ec679',
+        color: colors.emerald,
       },
     },
     checked: {},

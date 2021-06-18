@@ -1,17 +1,5 @@
-$COLOR_EMERALD: #0ec679;
-$COLOR_AZURE: #00a3ff;
-$COLOR_FOREST: #289c6b;
-$COLOR_SKY: #a6dfff;
-$COLOR_CLOUD: #f6fcff;
-$COLOR_RASPBERRY: #ff3062;
-
-$COLOR_BLACK100: #000000;
-$COLOR_BLACK60: #6a6a6a;
-$COLOR_BLACK40: #c6c6c6;
-$COLOR_BLACK10: #e3e3e3;
-$COLOR_BLACK5: #f5f5f5;
-
 @import './typography.scss';
+@import './colors.module.scss';
 
 .shadow-landing {
   -webkit-box-shadow: 0px 20px 70px 0px rgba(0, 0, 0, 0.2);

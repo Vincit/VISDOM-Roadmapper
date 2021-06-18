@@ -1,14 +1,15 @@
 import { withStyles } from '@material-ui/core/styles';
 import { Slider as MaterialSlider } from '@material-ui/core';
+import colors from '../../colors.module.scss';
 
 export const Slider = withStyles({
   root: {
-    color: '#0ec679',
+    color: colors.emerald,
   },
   thumb: {
     height: 14,
     width: 14,
-    backgroundColor: '#0ec679',
+    backgroundColor: colors.emerald,
     marginTop: -7,
     marginLeft: -7,
   },
@@ -17,20 +18,20 @@ export const Slider = withStyles({
     top: -25,
     '& *': {
       background: 'transparent',
-      color: '#0ec679',
+      color: colors.emerald,
     },
   },
   rail: {
     height: 2,
     opacity: 0.8,
-    backgroundColor: '#C6C6C6',
+    backgroundColor: colors.black40,
   },
   track: {
     height: 4,
     marginTop: -1,
   },
   mark: {
-    backgroundColor: '#C6C6C6',
+    backgroundColor: colors.black40,
     height: 10,
     width: 1,
     marginTop: -4,

@@ -1,0 +1,27 @@
+$COLOR_EMERALD: #0ec679;
+$COLOR_AZURE: #00a3ff;
+$COLOR_FOREST: #289c6b;
+$COLOR_SKY: #a6dfff;
+$COLOR_CLOUD: #f6fcff;
+$COLOR_RASPBERRY: #ff3062;
+
+$COLOR_BLACK100: #000000;
+$COLOR_BLACK60: #6a6a6a;
+$COLOR_BLACK40: #c6c6c6;
+$COLOR_BLACK10: #e3e3e3;
+$COLOR_BLACK5: #f5f5f5;
+
+:export {
+  emerald: $COLOR_EMERALD;
+  azure: $COLOR_AZURE;
+  forest: $COLOR_FOREST;
+  sky: $COLOR_SKY;
+  cloud: $COLOR_CLOUD;
+  rasberry: $COLOR_RASPBERRY;
+
+  black100: $COLOR_BLACK100;
+  black60: $COLOR_BLACK60;
+  black40: $COLOR_BLACK40;
+  black10: $COLOR_BLACK10;
+  black5: $COLOR_BLACK5;
+}

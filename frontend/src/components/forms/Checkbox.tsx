@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Checkbox as MaterialCheckbox } from '@material-ui/core';
 import classNames from 'classnames';
 import css from './Checkbox.module.scss';
+import colors from '../../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -15,7 +16,7 @@ export const Checkbox: React.FC<{
     root: {
       color: '#DADADA',
       '&$checked': {
-        color: '#0ec679',
+        color: colors.emerald,
       },
     },
     checked: {},
