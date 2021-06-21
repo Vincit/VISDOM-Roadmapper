@@ -2,7 +2,14 @@
 
 .title {
   text-align: start;
+}
+
+.weightsHeader {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 20px;
   margin-left: 25px;
+  margin-right: 25px;
   margin-bottom: 35px;
 }
 

@@ -248,7 +248,11 @@ form {
 .button-small-filled {
   background: $COLOR_EMERALD;
 
-  &:hover {
+  &:disabled {
+    background: $COLOR_BLACK40;
+  }
+
+  &:hover:not(:disabled) {
     background: $COLOR_FOREST;
   }
 
@@ -269,7 +273,11 @@ form {
   border: 2px solid;
   border-color: $COLOR_EMERALD;
 
-  &:hover {
+  &:disabled {
+    border-color: $COLOR_BLACK40;
+  }
+
+  &:hover:not(:disabled) {
     border-color: $COLOR_FOREST;
   }
 

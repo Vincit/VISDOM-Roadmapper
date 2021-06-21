@@ -1,6 +1,7 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
 import { Customer, Roadmap, Task, Taskrating } from '../redux/roadmaps/types';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
+import { customerWeight } from './CustomerUtils';
 import {
   SortingOrders,
   sorted,
@@ -199,7 +200,7 @@ export const calcTaskWeightedValueSum = (
   roadmap: Roadmap,
 ) => {
   const customerValuesSum = allCustomers.reduce(
-    (total, { value }) => total + value,
+    (total, customer) => total + customerWeight(customer),
     0,
   );
 
@@ -208,7 +209,9 @@ export const calcTaskWeightedValueSum = (
       ({ id }) => id === rating.forCustomer,
     );
 
-    const ratingCreatorValue = ratingCreator?.value || 0;
+    const ratingCreatorValue = ratingCreator
+      ? customerWeight(ratingCreator, roadmap.plannerCustomerWeights)
+      : 0;
 
     let creatorPlannerWeight = roadmap.plannerCustomerWeights?.find(
       ({ customerId }) => customerId === rating.forCustomer,
