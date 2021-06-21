@@ -33,17 +33,6 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
     shallowEqual,
   );
 
-  const rateCustomer = () => {
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.RATE_CUSTOMER_MODAL,
-        modalProps: {
-          customerId: id,
-        },
-      }),
-    );
-  };
-
   const deleteUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -85,13 +74,6 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
       <td className="styledTd nowrap textAlignEnd">
         {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <div className={classes(css.editCustomer)}>
-            <button
-              className="button-small-filled"
-              type="button"
-              onClick={rateCustomer}
-            >
-              Rate
-            </button>
             <div>
               <EditButton
                 type="default"

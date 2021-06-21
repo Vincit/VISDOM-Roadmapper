@@ -18,7 +18,6 @@ import {
   IntegrationConfigurationModalProps,
 } from './IntegrationConfigurationModal';
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
-import { RateCustomerModal, RateCustomerModalProps } from './RateCustomerModal';
 import { RemovePeopleModal, RemovePeopleModalProps } from './RemovePeopleModal';
 import { EditCustomerModal, EditCustomerModalProps } from './EditCustomerModal';
 import {
@@ -39,7 +38,6 @@ type ModalTypeToComponent = {
     | React.FC<EditTaskModalProps>
     | React.FC<TaskInfoModalProps>
     | React.FC<TaskRatingsInfoModalProps>
-    | React.FC<RateCustomerModalProps>
     | React.FC<RemovePeopleModalProps>
     | React.FC<EditCustomerModalProps>
     | React.FC<EditTeamMemberModalProps>
@@ -52,7 +50,6 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.EDIT_TASK_MODAL]: EditTaskModal,
   [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
-  [ModalTypes.RATE_CUSTOMER_MODAL]: RateCustomerModal,
   [ModalTypes.REMOVE_PEOPLE_MODAL]: RemovePeopleModal,
   [ModalTypes.EDIT_CUSTOMER_MODAL]: EditCustomerModal,
   [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: EditTeamMemberModal,
