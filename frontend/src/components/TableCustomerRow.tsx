@@ -6,11 +6,13 @@ import { EditButton } from './forms/EditButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
-import { Customer } from '../redux/roadmaps/types';
+import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
+import { getType } from '../utils/UserUtils';
 import css from './TableCustomerRow.module.scss';
 
 const classes = classNames.bind(css);
@@ -24,6 +26,10 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
+    shallowEqual,
+  );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
 
@@ -77,7 +83,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
       <td className="styledTd">{name}</td>
       <td className="styledTd">{value}</td>
       <td className="styledTd nowrap textAlignEnd">
-        {userInfo!.type === RoleType.Admin && (
+        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <div className={classes(css.editCustomer)}>
             <button
               className="button-small-filled"

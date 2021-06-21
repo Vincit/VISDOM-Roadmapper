@@ -28,6 +28,7 @@ import { InfoButton } from './forms/InfoButton';
 import { RatingsButton } from './forms/RatingsButton';
 import { TaskRatingsText } from './TaskRatingsText';
 import { Dot } from './Dot';
+import { getType } from '../utils/UserUtils';
 import css from './TableTaskRow.module.scss';
 
 const classes = classNames.bind(css);
@@ -43,6 +44,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     userInfoSelector,
     shallowEqual,
   );
+  const type = getType(userInfo?.roles, roadmapId);
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
     roadmapUsersSelector,
     shallowEqual,
@@ -65,7 +67,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     CustomerUser and BusinessUser can see their own missing ratings
   */
   useEffect(() => {
-    if (userInfo?.type === RoleType.Admin) {
+    if (type === RoleType.Admin) {
       const givenRatings = task.ratings
         .map((rating) => {
           return rating.forCustomer;
@@ -78,10 +80,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       setMissingRatings(unratedCustomers);
     }
 
-    if (
-      userInfo?.type === RoleType.Admin ||
-      userInfo?.type === RoleType.Developer
-    ) {
+    if (type === RoleType.Admin || type === RoleType.Developer) {
       const ratingIds = task.ratings.map((rating) => rating.createdByUser);
       const developers = allUsers?.filter(
         (user) => user.type === RoleType.Developer,
@@ -92,16 +91,13 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       setMissingDevRatings(missingDevs);
     }
 
-    if (
-      userInfo?.type === RoleType.Customer ||
-      userInfo?.type === RoleType.Business
-    ) {
+    if (type === RoleType.Customer || type === RoleType.Business) {
       // if task doesn't have ratings from the user that is logged in, display icon to them.
       setUserRatingMissing(
         !task.ratings.some((rating) => rating.createdByUser === userInfo?.id),
       );
     }
-  }, [task.ratings, allCustomers, allUsers, userInfo]);
+  }, [task.ratings, allCustomers, allUsers, userInfo, type]);
 
   const deleteTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
@@ -231,8 +227,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
               </div>
             )}
             {userRatingMissing &&
-              (userInfo?.type === RoleType.Customer ||
-                userInfo?.type === RoleType.Business) && (
+              (type === RoleType.Customer || type === RoleType.Business) && (
                 <div>
                   <Tooltip
                     classes={{
@@ -292,7 +287,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
               JSON.stringify({ taskId: task.id }),
             )}`}
           />
-          {userInfo!.type === RoleType.Admin && (
+          {type === RoleType.Admin && (
             <>
               <EditButton
                 type="default"

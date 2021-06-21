@@ -8,10 +8,13 @@ import {
   TaskRatingDimension,
   RoleType,
 } from '../../../shared/types/customTypes';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { TaskRatingBar } from './RatingBars';
+import { getType } from '../utils/UserUtils';
 import css from './TaskRatingWidget.module.scss';
 
 const classes = classNames.bind(css);
@@ -38,6 +41,11 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
     userInfoSelector,
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
+  const role = getType(userInfo?.roles, currentRoadmap?.id);
   const [rating, setRating] = useState(
     initialRating || {
       value: 0,
@@ -59,9 +67,8 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
 
   const shouldShow =
     ratingDimension === TaskRatingDimension.BusinessValue
-      ? userInfo!.type !== RoleType.Developer
-      : userInfo!.type !== RoleType.Customer &&
-        userInfo!.type !== RoleType.Business;
+      ? role !== RoleType.Developer
+      : role !== RoleType.Customer && role !== RoleType.Business;
 
   const renderRatingBars = () =>
     shouldShow && (

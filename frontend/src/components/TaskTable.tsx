@@ -23,6 +23,7 @@ import {
   sortTasks,
 } from '../utils/TaskUtils';
 import { titleCase } from '../utils/string';
+import { getType } from '../utils/UserUtils';
 import css from './TaskTable.module.scss';
 
 const classes = classNames.bind(css);
@@ -155,7 +156,7 @@ export const TaskTable: React.FC<{
               checked={checked}
             />
           )}
-          {userInfo!.type === RoleType.Admin && (
+          {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
             <>
               {renderImportButton('trello')}
               {renderImportButton('jira')}

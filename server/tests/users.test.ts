@@ -203,6 +203,7 @@ describe('Test /users/ api', function () {
       expect(res2.body).to.have.property('id');
       expect(res2.body).to.have.property('username');
       expect(res2.body).to.have.property('email');
+      expect(res2.body).to.have.property('roles');
     });
   });
 

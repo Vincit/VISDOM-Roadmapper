@@ -9,7 +9,6 @@ import {
   patchRoadmaps,
   deleteRoadmaps,
   getRoadmapsUsers,
-  getCurrentUser,
 } from './roadmaps.controller';
 import { Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
@@ -41,7 +40,6 @@ roadmapRouter.get(
   requirePermission(Permission.RoadmapReadUsers),
   getRoadmapsUsers,
 );
-roadmapRouter.get('/roadmaps/:roadmapId/whoami', getCurrentUser);
 
 roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.routes());
 roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.allowedMethods());

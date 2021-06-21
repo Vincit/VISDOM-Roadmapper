@@ -5,11 +5,15 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
-import { taskSelector } from '../../redux/roadmaps/selectors';
+import {
+  taskSelector,
+  chosenRoadmapSelector,
+} from '../../redux/roadmaps/selectors';
 import {
   Customer,
   Taskrating,
   TaskratingRequest,
+  Roadmap,
 } from '../../redux/roadmaps/types';
 import {
   TaskRatingDimension,
@@ -27,6 +31,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Dot } from '../Dot';
+import { getType } from '../../utils/UserUtils';
 import css from './RateTaskModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -82,9 +87,13 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
     userInfoSelector,
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
 
   const dimension =
-    userInfo?.type === RoleType.Developer
+    getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Developer
       ? TaskRatingDimension.RequiredWork
       : TaskRatingDimension.BusinessValue;
 

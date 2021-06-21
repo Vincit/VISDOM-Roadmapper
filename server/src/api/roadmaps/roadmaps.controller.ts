@@ -26,14 +26,6 @@ export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = users;
 };
 
-export const getCurrentUser: RouteHandlerFnc = async (ctx, _) => {
-  // Stringify user once here to run it through the objection model stringify method
-  // Using the spread operator will not remove fields that are not to be sent
-  const cleanUser = JSON.parse(JSON.stringify(ctx.state.user));
-  cleanUser.type = ctx.state.role;
-  ctx.body = cleanUser;
-};
-
 export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   if (!ctx.state.user) {
     throw new Error('User is required');

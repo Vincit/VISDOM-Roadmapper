@@ -140,17 +140,4 @@ describe('Test /roadmaps/ api', function () {
       expect(res.status).to.equal(403);
     });
   });
-
-  describe('GET /roadmaps/:roadmapId/users/whoami', function () {
-    it('Should respond with user info', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/whoami`,
-      );
-      expect(res2.status).to.equal(200);
-      expect(res2.body).to.have.property('id');
-      expect(res2.body).to.have.property('username');
-      expect(res2.body).to.have.property('type');
-    });
-  });
 });

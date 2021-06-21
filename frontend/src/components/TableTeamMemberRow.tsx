@@ -7,14 +7,16 @@ import { StoreDispatchType } from '../redux';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { BusinessValueFilled } from './RatingIcons';
-import { RoadmapUser } from '../redux/roadmaps/types';
+import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import css from './TableTeamMemberRow.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
+import { getType } from '../utils/UserUtils';
 
 const classes = classNames.bind(css);
 
@@ -27,6 +29,10 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
+    shallowEqual,
+  );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
 
@@ -74,30 +80,31 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
         )}
       </td>
       <td className="styledTd nowrap textAlignEnd">
-        {userInfo!.type === RoleType.Admin && id !== userInfo?.id && (
-          <div className={classes(css.editMember)}>
-            <EditButton
-              type="default"
-              onClick={editTeamMemberClicked}
-              href={`?openModal=${
-                ModalTypes.EDIT_TEAM_MEMBER_MODAL
-              }&modalProps=${encodeURIComponent(JSON.stringify(member))}`}
-            />
-            <DeleteButton
-              type="filled"
-              onClick={deleteUserClicked}
-              href={`?openModal=${
-                ModalTypes.REMOVE_PEOPLE_MODAL
-              }&modalProps=${encodeURIComponent(
-                JSON.stringify({
-                  userId: id,
-                  userName: username,
-                  type: 'team',
-                }),
-              )}`}
-            />
-          </div>
-        )}
+        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin &&
+          id !== userInfo?.id && (
+            <div className={classes(css.editMember)}>
+              <EditButton
+                type="default"
+                onClick={editTeamMemberClicked}
+                href={`?openModal=${
+                  ModalTypes.EDIT_TEAM_MEMBER_MODAL
+                }&modalProps=${encodeURIComponent(JSON.stringify(member))}`}
+              />
+              <DeleteButton
+                type="filled"
+                onClick={deleteUserClicked}
+                href={`?openModal=${
+                  ModalTypes.REMOVE_PEOPLE_MODAL
+                }&modalProps=${encodeURIComponent(
+                  JSON.stringify({
+                    userId: id,
+                    userName: username,
+                    type: 'team',
+                  }),
+                )}`}
+              />
+            </div>
+          )}
       </td>
     </tr>
   );

@@ -6,8 +6,14 @@ export interface UserInfo {
   username: string;
   email: string;
   id: number;
-  type?: RoleType;
+  roles: RoadmapRole[];
   representativeFor?: Customer[];
+}
+
+export interface RoadmapRole {
+  userId: number;
+  roadmapId: number;
+  type: RoleType;
 }
 
 export interface UserState {

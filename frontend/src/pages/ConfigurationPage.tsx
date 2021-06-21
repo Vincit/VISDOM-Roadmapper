@@ -13,6 +13,7 @@ import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { requireLogin } from '../utils/requirelogin';
 import { titleCase } from '../utils/string';
+import { getType } from '../utils/UserUtils';
 import { api } from '../api/api';
 import css from './ConfigurationPage.module.scss';
 
@@ -79,7 +80,7 @@ const RoadmapConfigurationPageComponent = () => {
   return (
     <div className={classes(css.configurationPage)}>
       This is the roadmap configuration page.
-      {userInfo?.type === RoleType.Admin && (
+      {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
         <>
           {Object.entries(integrations).flatMap(([name, fields]) => [
             <div key={`config-${name}`} className={classes(css.layoutRow)}>

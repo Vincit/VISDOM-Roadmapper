@@ -2,8 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { UserLoginRequest, UserInfo, UserRegisterRequest } from './types';
 import { api } from '../../api/api';
-import { chosenRoadmapIdSelector } from '../roadmaps/selectors';
-import { RootState } from '../types';
 
 export const getUserInfo = createAsyncThunk<
   UserInfo,
@@ -11,10 +9,7 @@ export const getUserInfo = createAsyncThunk<
   { rejectValue: AxiosError }
 >('user/getUserInfoStatus', async (_, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    );
-    return await api.getCurrentUserInfo(currentroadmapId);
+    return await api.getCurrentUserInfo();
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }

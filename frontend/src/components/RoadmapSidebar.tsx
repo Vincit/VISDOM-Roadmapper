@@ -11,10 +11,13 @@ import { paths } from '../routers/paths';
 import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
 import { ReactComponent as VisdomIcon } from '../icons/visdom_icon.svg';
 import css from './RoadmapSidebar.module.scss';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
+import { getType } from '../utils/UserUtils';
 
 const classes = classNames.bind(css);
 
@@ -23,6 +26,10 @@ export const RoadmapSidebar: React.FC = () => {
   const { pathname } = useLocation();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
+    shallowEqual,
+  );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
 
@@ -53,7 +60,7 @@ export const RoadmapSidebar: React.FC = () => {
           <ListIcon />
           <Trans i18nKey="Tasks" />
         </Link>
-        {userInfo?.type === RoleType.Admin && (
+        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <>
             <Link
               to={url + paths.roadmapRelative.users}
