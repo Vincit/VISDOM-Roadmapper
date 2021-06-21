@@ -22,6 +22,7 @@ import {
   roadmapUsersSelector,
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
+import { taskAwaitsRatings } from '../utils/TaskUtils';
 import { DeleteButton } from './forms/DeleteButton';
 import { EditButton } from './forms/EditButton';
 import { InfoButton } from './forms/InfoButton';
@@ -251,9 +252,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       </td>
       <td className="styledTd">{new Date(createdAt).toLocaleDateString()}</td>
       <td className="styledTd textAlignEnd nowrap" style={{ width: '202px' }}>
-        {!task.ratings.find(
-          (rating) => rating.createdByUser === userInfo?.id,
-        ) && (
+        {taskAwaitsRatings(task, userInfo) && (
           <a
             href={`?openModal=${
               ModalTypes.TASK_RATINGS_INFO_MODAL
