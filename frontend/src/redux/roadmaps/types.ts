@@ -14,7 +14,7 @@ export interface Customer {
   roadmapId: number;
   name: string;
   email: string;
-  value: number;
+  weight: number;
   color: string;
   representatives?: RoadmapUser[];
 }
@@ -23,7 +23,7 @@ export interface CustomerRequest {
   id?: number;
   name?: string;
   email?: string | null;
-  value?: number;
+  weight?: number;
   color?: string | null;
   representatives?: number[];
 }

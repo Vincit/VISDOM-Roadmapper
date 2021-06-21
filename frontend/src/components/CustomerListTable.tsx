@@ -5,8 +5,11 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TableCustomerRow } from './TableCustomerRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
-import { allCustomersSelector } from '../redux/roadmaps/selectors';
-import { Customer } from '../redux/roadmaps/types';
+import {
+  allCustomersSelector,
+  plannerCustomerWeightsSelector,
+} from '../redux/roadmaps/selectors';
+import { Customer, PlannerCustomerWeight } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import {
   SortingOrders,
@@ -24,6 +27,10 @@ export const CustomerList: React.FC<{
 }> = ({ search }) => {
   const [sortingType, setSortingType] = useState(CustomerSortingTypes.NO_SORT);
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
+  const plannedWeights = useSelector<RootState, PlannerCustomerWeight[]>(
+    plannerCustomerWeightsSelector,
+    shallowEqual,
+  );
   const customers = useSelector<RootState, Customer[] | undefined>(
     allCustomersSelector,
     shallowEqual,
@@ -39,7 +46,12 @@ export const CustomerList: React.FC<{
     const searched = customers?.filter(({ name }) =>
       name.toLowerCase().includes(search),
     );
-    return sortCustomers(searched || [], sortingType, sortingOrder);
+    return sortCustomers(
+      searched || [],
+      sortingType,
+      sortingOrder,
+      plannedWeights,
+    );
   };
 
   const toggleSortOrder = () => {

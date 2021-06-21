@@ -51,7 +51,6 @@ const createTestCustomers = async () => {
   const customer1 = await Customer.query().insert({
     roadmapId: roadmap.id,
     name: 'Customer 1',
-    value: 500000,
     color: '#AA75EE',
   });
   const customerPerson1 = await User.query().findOne(
@@ -63,7 +62,6 @@ const createTestCustomers = async () => {
   const customer2 = await Customer.query().insert({
     roadmapId: roadmap.id,
     name: 'Customer 2',
-    value: 1000000,
     color: '#FBD92A',
   });
 

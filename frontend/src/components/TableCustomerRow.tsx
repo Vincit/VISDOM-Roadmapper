@@ -7,9 +7,12 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../redux/modals/types';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
+import {
+  customerWeightSelector,
+  chosenRoadmapSelector,
+} from '../redux/roadmaps/selectors';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { getType } from '../utils/UserUtils';
@@ -22,7 +25,11 @@ interface TableRowProps {
 }
 
 export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
-  const { id, name, value, color } = customer;
+  const { id, name, color } = customer;
+  const weight = useSelector<RootState, number>(
+    customerWeightSelector(customer),
+    shallowEqual,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -70,7 +77,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
         />
       </td>
       <td className="styledTd">{name}</td>
-      <td className="styledTd">{value}</td>
+      <td className="styledTd">{weight}</td>
       <td className="styledTd nowrap textAlignEnd">
         {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <div className={classes(css.editCustomer)}>
