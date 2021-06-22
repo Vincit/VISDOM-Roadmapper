@@ -1,0 +1,88 @@
+import React, { useState, useRef, useEffect } from 'react';
+import classNames from 'classnames';
+import css from './FormField.module.scss';
+
+const classes = classNames.bind(css);
+
+interface FieldType extends HTMLElement {
+  readonly validationMessage: string;
+  setCustomValidity(message: string): void;
+  checkValidity(): boolean;
+}
+
+export interface FieldProps<T extends FieldType> extends React.HTMLProps<T> {
+  label?: string;
+  error?: {
+    message: string;
+    setMessage: (_: string) => void;
+  };
+}
+
+const FieldError = ({ msg }: { msg: string }) =>
+  !msg ? null : (
+    <p className={classes(css.fieldError)}>
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M9.7975 0.25H4.2025L0.25 4.2025V9.79375L4.2025 13.75H9.79375L13.75 9.7975V4.2025L9.7975 0.25ZM7 10.975C6.46375 10.975 6.025 10.54 6.025 10C6.025 9.46375 6.46375 9.025 7 9.025C7.53625 9.025 7.975 9.46 7.975 10C7.975 10.54 7.53625 10.975 7 10.975ZM7.75 7.75H6.25V3.25H7.75V7.75Z" />
+      </svg>
+      <span>{msg}</span>
+    </p>
+  );
+
+export const errorState = ([message, setMessage]: [
+  string,
+  (_: string) => void,
+]) => ({
+  message,
+  setMessage,
+});
+
+function field<T extends FieldType>(
+  Tag: React.ComponentType<React.HTMLProps<T>>,
+): React.FC<FieldProps<T>> {
+  return ({ error = errorState(useState('')), label, id, ...props }) => {
+    const ref = useRef<T>(null);
+    useEffect(() => {
+      if (ref.current) {
+        if (error.message) ref.current.classList.add('input-invalid');
+        ref.current.setCustomValidity(error.message);
+      }
+    }, [ref, error.message]);
+    return (
+      <div className={classes(css.fieldContainer)}>
+        {label && <label htmlFor={id}>{label}</label>}
+        <Tag
+          {...props}
+          ref={ref}
+          id={id}
+          onInvalid={(e) => {
+            e.preventDefault();
+            error.setMessage(e.currentTarget.validationMessage);
+            if (props.onInvalid) props.onInvalid(e);
+          }}
+          onBlur={(e) => {
+            e.currentTarget.checkValidity();
+          }}
+          onChange={(e) => {
+            e.currentTarget.setCustomValidity('');
+            if (props.onChange) props.onChange(e);
+            if (
+              e.currentTarget.classList.contains('input-invalid') &&
+              e.currentTarget.checkValidity()
+            )
+              error.setMessage('');
+          }}
+        />
+        <FieldError msg={error.message} />
+      </div>
+    );
+  };
+}
+
+export const Input = field<HTMLInputElement>('input' as any);
+export const TextArea = field<HTMLTextAreaElement>('textarea' as any);
