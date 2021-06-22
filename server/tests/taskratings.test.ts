@@ -6,7 +6,11 @@ import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
 import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType } from '../../shared/types/customTypes';
+import {
+  Permission,
+  RoleType,
+  TaskRatingDimension,
+} from '../../shared/types/customTypes';
 import TaskRating from '../src/api/taskratings/taskratings.model';
 
 describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {
@@ -50,7 +54,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .post(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`)
         .type('json')
         .send({
-          dimension: 1,
+          dimension: TaskRatingDimension.RequiredWork,
           value: 5,
         });
       expect(res.status).to.equal(200);
@@ -75,7 +79,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .post(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}/taskratings`)
         .type('json')
         .send({
-          dimension: 1,
+          dimension: TaskRatingDimension.RequiredWork,
           value: 5,
         });
       expect(res.status).to.equal(403);
@@ -141,7 +145,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
           value: 9,
         });
       expect(res.status).to.equal(200);
-      expect(res.body.dimension).to.equal(0);
+      expect(res.body.dimension).to.equal(TaskRatingDimension.RequiredWork);
       expect(res.body.value).to.equal(9);
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
@@ -163,7 +167,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
           value: 9,
         });
       expect(res.status).to.equal(403);
-      expect(res.body.dimension).not.to.equal(0);
+      expect(res.body.dimension).not.to.equal(TaskRatingDimension.RequiredWork);
       expect(res.body.value).not.to.equal(9);
     });
   });
