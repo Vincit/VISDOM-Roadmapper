@@ -10,20 +10,23 @@
   background-color: white;
   border-radius: 20px;
   padding: 50px 30px;
+  & form {
+    @extend .layout-column;
+    gap: 20px;
+  }
 }
 
 .about {
   @extend .typography-subtitle;
   color: $COLOR_BLACK60;
   line-height: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .termsLabel {
   @extend .typography-body;
   color: $COLOR_BLACK60;
   margin-left: 10px;
-  margin-top: 15px;
   line-height: 21px;
 }
 
