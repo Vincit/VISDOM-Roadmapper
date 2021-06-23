@@ -3,8 +3,6 @@ import { Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-// import { TaskTableUnrated } from '../components/TaskTableUnrated';
-// import { TaskTableRated } from '../components/TaskTableRated';
 import { TaskTableRated, TaskTableUnrated } from '../components/TaskTable';
 import { Checkbox } from '../components/forms/Checkbox';
 import { StoreDispatchType } from '../redux/index';

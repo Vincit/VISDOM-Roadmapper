@@ -8,11 +8,13 @@
 }
 
 .ratedTd {
+  @extend .styledTd;
   width: 148px;
 }
 
 // Bottom and top left radius for clean looking hover
 .ratedTitle {
+  @extend .styledTd;
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
   width: 350px;
@@ -20,6 +22,8 @@
 }
 
 .ratedButtons {
+  @extend .styledTd;
+  @extend .textAlignEnd;
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
   width: 360px;
@@ -56,9 +60,11 @@
 }
 
 .statusComplete {
+  @extend .typography-pre-title;
   color: $COLOR_FOREST
 }
 
 .statusUnordered {
+  @extend .typography-pre-title;
   color: $COLOR_BLACK100
 }

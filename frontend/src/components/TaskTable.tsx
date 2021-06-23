@@ -93,7 +93,7 @@ const TaskTable: React.FC<{
     );
   };
 
-  const renderUnratedTasks = () => {
+  const renderTasks = () => {
     return (
       <table className={classes(css.styledTable)}>
         <thead>
@@ -132,9 +132,7 @@ const TaskTable: React.FC<{
           <h2 className={classes(css.taskTableHeader)}>
             {label} ({getRenderTaskList().length})
           </h2>
-          <div>
-            <div>{getRenderTaskList().length && renderUnratedTasks()}</div>
-          </div>
+          <div>{renderTasks()}</div>
         </div>
       )}
     </>
@@ -165,7 +163,7 @@ export const TaskTableUnrated: React.FC<{
     if (type === RoleType.Admin) {
       if (userInfo && currentRoadmap && allUsers)
         setTaskList(
-          unratedProductOwnerTasks(tasks, allUsers, userInfo, currentRoadmap),
+          unratedProductOwnerTasks(tasks, allUsers, currentRoadmap.customers),
         );
     }
     if (type === RoleType.Developer || type === RoleType.Business) {
@@ -196,16 +194,14 @@ export const TaskTableUnrated: React.FC<{
   ];
 
   return (
-    <>
-      <TaskTable
-        tasks={taskList || []}
-        searchString={searchString}
-        searchFilter={searchFilter}
-        tableHeaders={tableHeaders}
-        label="Waiting for ratings"
-        TaskRow={TableUnratedTaskRow}
-      />
-    </>
+    <TaskTable
+      tasks={taskList || []}
+      searchString={searchString}
+      searchFilter={searchFilter}
+      tableHeaders={tableHeaders}
+      label="Waiting for ratings"
+      TaskRow={TableUnratedTaskRow}
+    />
   );
 };
 
@@ -232,21 +228,19 @@ export const TaskTableRated: React.FC<{
   useEffect(() => {
     const type = getType(userInfo?.roles, currentRoadmap?.id);
     if (type === RoleType.Admin) {
-      if (userInfo && currentRoadmap && allUsers)
-        setTaskList(
-          unratedProductOwnerTasks(tasks, allUsers, userInfo, currentRoadmap),
+      if (userInfo && currentRoadmap && allUsers) {
+        const unratedTasks = unratedProductOwnerTasks(
+          tasks,
+          allUsers,
+          currentRoadmap.customers,
         );
+        setTaskList(tasks.filter((task) => !unratedTasks?.includes(task)));
+      }
     }
     if (type === RoleType.Developer || type === RoleType.Business) {
-      setTaskList(tasks.filter((task) => taskAwaitsRatings(task, userInfo)));
+      setTaskList(tasks.filter((task) => !taskAwaitsRatings(task, userInfo)));
     }
   }, [allUsers, currentRoadmap, tasks, userInfo]);
-
-  const getRemainingTasks: (passedTasks: Task[]) => Task[] = (
-    passedTasks: Task[],
-  ) => {
-    return tasks.filter((task) => !passedTasks.includes(task));
-  };
 
   const tableHeaders: TableHeader[] = [
     {
@@ -267,15 +261,13 @@ export const TaskTableRated: React.FC<{
   ];
 
   return (
-    <>
-      <TaskTable
-        tasks={getRemainingTasks(taskList || [])}
-        searchString={searchString}
-        searchFilter={searchFilter}
-        tableHeaders={tableHeaders}
-        label="Rated tasks"
-        TaskRow={TableRatedTaskRow}
-      />
-    </>
+    <TaskTable
+      tasks={taskList || []}
+      searchString={searchString}
+      searchFilter={searchFilter}
+      tableHeaders={tableHeaders}
+      label="Rated tasks"
+      TaskRow={TableRatedTaskRow}
+    />
   );
 };
