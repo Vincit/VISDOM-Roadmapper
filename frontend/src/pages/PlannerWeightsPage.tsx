@@ -80,7 +80,7 @@ export const PlannerWeightsPage = () => {
     <div className={classes(css.plannerPagecontainer)}>
       <header className={classes(css.weightsHeader)}>
         <h2 className={classes(css.title)}>
-          <Trans i18nKey="Set different weighing for clients" />
+          <Trans i18nKey="Set different weighting for clients" />
         </h2>
         <button
           className="button-small-outlined"

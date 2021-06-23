@@ -82,7 +82,8 @@ export const english = {
     'Select a milestone': 'Select a milestone',
     'Unable to calculate work': 'Unable to calculate work',
     'Predicted milestone durations': 'Predicted milestone durations',
-    'Set different weighing for clients': 'Set different weighing for clients',
+    'Set different weighting for clients':
+      'Set different weighting for clients',
     'Client Weights': 'Client Weights',
     register: 'register',
     'New here?': 'New here?',
