@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import classNames from 'classnames';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { BusinessValueFilled } from '../RatingIcons';
-import { RadioButton } from '../forms/RadioButton';
-import { Checkbox } from '../forms/Checkbox';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
@@ -28,11 +23,11 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import '../../shared.scss';
-import { ColorPicker } from './modalparts/ColorPicker';
 import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
-import css from './EditCustomerModal.module.scss';
-
-const classes = classNames.bind(css);
+import {
+  SelectCustomerInfo,
+  SelectRepresentatives,
+} from './modalparts/CustomerModalParts';
 
 export interface EditCustomerModalProps extends ModalProps {
   customer: Customer;
@@ -107,25 +102,6 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
     closeModal();
   };
 
-  const onNameChange = (value: string) => {
-    setFormValues({ ...formValues, name: value });
-  };
-
-  const onEmailChange = (value: string) => {
-    setFormValues({ ...formValues, email: value });
-  };
-
-  const onColorChange = (value: string) => {
-    setFormValues({ ...formValues, color: value });
-  };
-
-  const onRepresentativeChange = (idx: number, checked: boolean) => {
-    const copy = [...(representatives ?? [])];
-    if (!copy) return;
-    copy[idx].checked = checked;
-    setRepresentatives(copy);
-  };
-
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -136,83 +112,31 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
-          <div className={classes(css.section)}>
-            <label htmlFor="name">
-              <Trans i18nKey="Client name" />
-            </label>
-            <input
-              required
-              name="name"
-              id="name"
-              value={formValues.name}
-              onChange={(e: any) => onNameChange(e.currentTarget.value)}
-            />
-          </div>
-          <div className={classes(css.section)}>
-            <label htmlFor="email">
-              <Trans i18nKey="Contact information" />
-            </label>
-            <input
-              required
-              name="email"
-              id="email"
-              type="email"
-              value={formValues.email}
-              onChange={(e: any) => onEmailChange(e.currentTarget.value)}
-            />
-          </div>
-          <div className={classes(css.section)}>
-            <label htmlFor="color">
-              <Trans i18nKey="Client color" />
-            </label>
-            <div id="color" className={classes(css.colorSection)}>
-              <div className={classes(css.colorType)}>
-                <RadioButton
-                  label="Generate"
-                  value="generate"
-                  checked={colorType === 'generate'}
-                  onChange={(value: string) => setColorType(value)}
-                />
-                <RadioButton
-                  label="Pick a color"
-                  value="pick"
-                  checked={colorType === 'pick'}
-                  onChange={(value: string) => setColorType(value)}
-                />
-              </div>
-              {colorType === 'pick' && (
-                <ColorPicker
-                  color={formValues.color}
-                  setColor={onColorChange}
-                />
-              )}
-            </div>
-          </div>
-          <div className={classes(css.section)}>
-            <label htmlFor="representatives">
-              <Trans i18nKey="Who's responsible for the client value ratings?" />
-            </label>
-            <div id="representatives" className={classes(css.representatives)}>
-              {representatives?.map((rep, idx) => (
-                <div className={classes(css.representative)}>
-                  <Checkbox
-                    label={rep.username}
-                    checked={rep.checked}
-                    onChange={(checked: boolean) =>
-                      onRepresentativeChange(idx, checked)
-                    }
-                    key={rep.id}
-                  />
-                  <div className={classes(css.icon, css[RoleType[rep.type]])}>
-                    {rep.type === RoleType.Admin && (
-                      <StarSharpIcon fontSize="small" />
-                    )}
-                    {rep.type === RoleType.Business && <BusinessValueFilled />}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <SelectCustomerInfo
+            name={formValues.name}
+            onNameChange={(value) =>
+              setFormValues({ ...formValues, name: value })
+            }
+            email={formValues.email}
+            onEmailChange={(value) =>
+              setFormValues({ ...formValues, email: value })
+            }
+            colorType={colorType}
+            onColorTypeChange={(value) => setColorType(value)}
+            color={formValues.color}
+            onColorChange={(value) =>
+              setFormValues({ ...formValues, color: value })
+            }
+          />
+          <SelectRepresentatives
+            representatives={representatives}
+            onRepresentativeChange={(idx, checked) => {
+              const copy = [...(representatives ?? [])];
+              if (!copy) return;
+              copy[idx].checked = checked;
+              setRepresentatives(copy);
+            }}
+          />
           <Alert
             show={errorMessage.length > 0}
             variant="danger"
