@@ -13,7 +13,6 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
-import css from './RemovePeopleModal.module.scss';
 
 export interface RemovePeopleModalProps extends ModalProps {
   userId: number;
@@ -75,7 +74,7 @@ export const RemovePeopleModal: React.FC<RemovePeopleModalProps> = ({
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
-          <div className={css.descriptionDiv}>
+          <div className="modalCancelContent">
             <AlertIcon />
             {type === 'customer' ? (
               <h6>

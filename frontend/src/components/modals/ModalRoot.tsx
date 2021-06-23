@@ -25,6 +25,7 @@ import {
 import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
 import { RemovePeopleModal, RemovePeopleModalProps } from './RemovePeopleModal';
 import { EditCustomerModal, EditCustomerModalProps } from './EditCustomerModal';
+import { AddCustomerModal } from './AddCustomerModal';
 import {
   EditTeamMemberModal,
   EditTeamMemberModalProps,
@@ -59,6 +60,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
   [ModalTypes.REMOVE_PEOPLE_MODAL]: RemovePeopleModal,
   [ModalTypes.EDIT_CUSTOMER_MODAL]: EditCustomerModal,
+  [ModalTypes.ADD_CUSTOMER_MODAL]: AddCustomerModal,
   [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: EditTeamMemberModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.DELETE_VERSION_MODAL]: DeleteVersionModal,

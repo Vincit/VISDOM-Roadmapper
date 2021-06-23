@@ -1,0 +1,22 @@
+@import '../shared.scss';
+
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: $COLOR_AZURE;
+  transition: 150ms ease-out;
+  &.done {
+    background-color: $COLOR_EMERALD;
+  }
+  &.disabled {
+    background-color: $COLOR_BLACK10;
+  }
+}
+
+.icon {
+  color: white;
+}

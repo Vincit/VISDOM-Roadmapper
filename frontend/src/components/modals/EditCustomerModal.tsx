@@ -81,17 +81,13 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
     event.stopPropagation();
     setIsLoading(true);
 
-    const checked = representatives
-      ?.filter((rep) => rep.checked === true)
-      .map(({ id }) => id);
-
     const res = await dispatch(
       roadmapsActions.patchCustomer({
         id: customer.id,
         name: formValues.name,
         email: formValues.email,
         color: colorType === 'pick' ? formValues.color : randomColor(customers),
-        representatives: checked,
+        representatives: getCheckedIds(representatives),
       }),
     );
     setIsLoading(false);

@@ -1,0 +1,13 @@
+@import '../../shared.scss';
+
+.steps {
+  display: flex;
+  margin-bottom: 40px;
+  border-bottom: 1px solid $COLOR_BLACK10;
+  height: 142px;
+}
+
+.leftText {
+  width: 458px;
+  margin-bottom: 32px;
+}

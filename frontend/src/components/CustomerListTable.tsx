@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
 import { TableCustomerRow } from './TableCustomerRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -11,11 +12,16 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Customer, PlannerCustomerWeight } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../redux/modals/types';
 import {
   SortingOrders,
   CustomerSortingTypes,
   sortCustomers,
 } from '../utils/CustomerUtils';
+import css from '../pages/PeopleListPage.module.scss';
+
+const classes = classNames.bind(css);
 
 interface CustomerTableHeader {
   label: string;
@@ -78,6 +84,17 @@ export const CustomerList: React.FC<{
       <ArrowDownCircle />
     );
 
+  const addUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.ADD_CUSTOMER_MODAL,
+        modalProps: {},
+      }),
+    );
+  };
+
   const customerTableHeaders: CustomerTableHeader[] = [
     { label: 'ID', sorting: CustomerSortingTypes.SORT_COLOR },
     { label: 'Name', sorting: CustomerSortingTypes.SORT_NAME },
@@ -85,17 +102,17 @@ export const CustomerList: React.FC<{
   ];
 
   const CustomersTable = () => (
-    <table className="styledTable">
+    <table className={classes(css.styledTable)}>
       <thead>
         <tr>
           {customerTableHeaders.map((header) => {
             return (
               <th
-                className="styledTh clickable"
+                className={classes(css.styledTh, css.clickable)}
                 key={header.label}
                 onClick={() => onSortingChange(header.sorting)}
               >
-                <span className="headerSpan">
+                <span className={classes(css.headerSpan)}>
                   <Trans i18nKey={header.label} />
                   {sortingType === header.sorting ? sortingArrow() : null}
                 </span>
@@ -114,7 +131,16 @@ export const CustomerList: React.FC<{
 
   return (
     <>
-      <h2>Clients</h2>
+      <div className={classes(css.header)}>
+        <h2>Clients</h2>
+        <button
+          className={classes(css['button-small-filled'])}
+          type="button"
+          onClick={addUserClicked}
+        >
+          + <Trans i18nKey="Add new client" />
+        </button>
+      </div>
       {getRenderCustomerList().length > 0 ? (
         <CustomersTable />
       ) : (

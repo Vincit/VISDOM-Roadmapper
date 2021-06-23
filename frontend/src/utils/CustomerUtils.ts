@@ -4,6 +4,7 @@ import {
   PlannerCustomerWeight,
   CheckableUser,
 } from '../redux/roadmaps/types';
+
 import {
   SortingOrders,
   SortComparison,

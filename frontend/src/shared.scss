@@ -397,3 +397,16 @@ textarea {
   width: 15px;
   border-radius: 50%;
 }
+
+.modalCancelContent,
+.modalDoneContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 48px;
+  svg {
+    margin-top: 28px;
+    margin-bottom: 55px;
+  }
+}
