@@ -315,3 +315,49 @@ export const unratedTasksAmount = (
   tasks: Task[],
   customers?: Customer[],
 ) => unratedTasks(user, tasks, customers).length;
+
+export const tasksThatRequireRating: (
+  tasks: Task[],
+  allUsers: RoadmapUser[],
+  userInfo?: UserInfo,
+  currentRoadmap?: Roadmap,
+) => Task[] | undefined = (tasks, allUsers, userInfo, currentRoadmap) => {
+  const type = getType(userInfo?.roles, currentRoadmap?.id);
+  const allCustomers = currentRoadmap?.customers;
+
+  if (type === RoleType.Admin) {
+    const developers = allUsers?.filter(
+      (user) => user.type === RoleType.Developer,
+    );
+    const unrated = tasks?.filter((task) => {
+      const ratingIds = task.ratings.map((rating) => rating.createdByUser);
+
+      const unratedCustomers = allCustomers?.filter((customer) => {
+        const representativeIds = customer?.representatives?.map(
+          (rep) => rep.id,
+        );
+        return !representativeIds?.every((rep) => ratingIds?.includes(rep));
+      });
+
+      const missingDevs = developers?.filter(
+        (developer) => !ratingIds.includes(developer.id),
+      );
+
+      if (
+        unratedCustomers &&
+        unratedCustomers?.length < 1 &&
+        missingDevs &&
+        missingDevs?.length < 1
+      )
+        return false;
+      return true;
+    });
+    return unrated;
+  }
+
+  if (type !== RoleType.Admin)
+    return tasks.filter(
+      (task) =>
+        !task.ratings.find((rating) => rating.createdByUser === userInfo?.id),
+    );
+};
