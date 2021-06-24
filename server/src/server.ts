@@ -54,14 +54,14 @@ const createServer = async () => {
   app.use(koaBodyParser());
 
   const rootRouter = new KoaRouter<IKoaState, Context>();
-  rootRouter.use(userRouter.routes());
-  rootRouter.use(userRouter.allowedMethods());
-  rootRouter.use(roadmapRouter.routes());
-  rootRouter.use(roadmapRouter.allowedMethods());
   rootRouter.get('/', (ctx) => {
     ctx.status = 200;
     ctx.body = '';
   });
+  rootRouter.use(userRouter.routes());
+  rootRouter.use(userRouter.allowedMethods());
+  rootRouter.use(roadmapRouter.routes());
+  rootRouter.use(roadmapRouter.allowedMethods());
   app.use(rootRouter.routes());
   app.use(rootRouter.allowedMethods());
 
