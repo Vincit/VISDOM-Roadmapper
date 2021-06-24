@@ -12,6 +12,7 @@
   "version": "0.1",
   "private": true,
   "main": "src/server.ts",
+  
   "scripts": {
     "migrate": "knex --knexfile=./knexfile.ts migrate:latest",
     "seed-db": "knex --knexfile=./knexfile.ts seed:run",
