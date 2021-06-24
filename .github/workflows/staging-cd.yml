@@ -20,8 +20,8 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-      - name: Generate deployment package
-        run: cd server && zip -r deploy.zip . -x '*.git*'
+      - name: Build & Generate deployment package
+        run: cd server && yarn && yarn build && zip -r deploy.zip . -x '*.git*' -x 'node_modules/*' -x '*.log*' .x '*.pem*'
 
       - name: Get timestamp
         uses: gerred/actions/current-time@master
@@ -41,8 +41,8 @@ jobs:
         with:
           aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
           aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          application_name: "Roadmapper-staging"
-          environment_name: "RoadmapperStaging-env"
+          application_name: "RoadmapperStaging"
+          environment_name: "Roadmapperstaging-env"
           region: "eu-central-1"
           version_label: "visdom-staging-${{ steps.format-time.outputs.replaced }}"
           deployment_package: server/deploy.zip
