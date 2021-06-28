@@ -1,8 +1,16 @@
 @import './../shared.scss';
 
-.buttonWrapper {
-  display: inline-block;
-  margin: 4px;
+.taskTitle {
+  @extend .styledTd;
+  border-bottom-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  width: 370px;
+  text-align: left;
+}
+
+.unratedTd {
+  @extend .styledTd;
+  width: 195px;
 }
 
 .missingContainer {
@@ -25,4 +33,11 @@
 
 .userIcon {
   color: $COLOR_BLACK60;
+}
+
+.buttonContainer {
+  @extend .styledTd;
+  @extend .textAlignEnd;
+  @extend .nowrap;
+  width: 702px;
 }
