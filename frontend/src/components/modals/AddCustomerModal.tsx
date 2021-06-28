@@ -213,7 +213,7 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
           </Alert>
         </ModalContent>
         <ModalFooter>
-          <ModalFooterButtonDiv>
+          <ModalFooterButtonDiv empty={step === 4}>
             {step < 4 && (
               <button
                 className="button-large cancel"
