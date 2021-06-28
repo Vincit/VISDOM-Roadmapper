@@ -14,6 +14,7 @@ import {
   DeleteVersionModal,
   DeleteVersionModalProps,
 } from './DeleteVersionModal';
+import { EditVersionModal, EditVersionModalProps } from './EditVersionModal';
 import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
 import { OauthModal } from './IntegrationOauthModal';
@@ -46,6 +47,7 @@ type ModalTypeToComponent = {
     | React.FC<EditCustomerModalProps>
     | React.FC<EditTeamMemberModalProps>
     | React.FC<DeleteVersionModalProps>
+    | React.FC<EditVersionModalProps>
     | React.FC<IntegrationConfigurationModalProps>;
 };
 
@@ -60,6 +62,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: EditTeamMemberModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.DELETE_VERSION_MODAL]: DeleteVersionModal,
+  [ModalTypes.EDIT_VERSION_MODAL]: EditVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
   [ModalTypes.SETUP_OAUTH_MODAL]: OauthModal,
   [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: IntegrationConfigurationModal,

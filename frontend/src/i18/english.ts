@@ -66,6 +66,7 @@ export const english = {
     'Delete milestone': 'Delete milestone',
     'Delete milestone confirmation':
       'Do you want to delete this milestone? Any task ordered to this milestone will be kept, but they will be set to unordered state.',
+    'Change milestone name': 'Change milestone name',
     Stakeholders: 'Stakeholders',
     'Average value': 'Average value',
     'Average work': 'Average work',

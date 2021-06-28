@@ -1,0 +1,12 @@
+@import '../../shared.scss';
+
+.settingsIcon {
+  path {
+    fill: $COLOR_BLACK40;
+    transition: 150ms ease-out;
+  }
+  &:hover path {
+    fill: $COLOR_BLACK60;
+  }
+  cursor: pointer;
+}

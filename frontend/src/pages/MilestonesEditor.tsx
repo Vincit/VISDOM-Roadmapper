@@ -10,6 +10,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { RoleType } from '../../../shared/types/customTypes';
 import { DeleteButton } from '../components/forms/DeleteButton';
+import { SettingsButton } from '../components/forms/SettingsButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
 import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
@@ -164,6 +165,21 @@ export const MilestonesEditor = () => {
       modalsActions.showModal({
         modalType: ModalTypes.DELETE_VERSION_MODAL,
         modalProps: { id, roadmapId: currentRoadmap.id },
+      }),
+    );
+  };
+
+  const editVersionClicked = (
+    e: React.MouseEvent<any, MouseEvent>,
+    id: number,
+    name: string,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.EDIT_VERSION_MODAL,
+        modalProps: { id, name },
       }),
     );
   };
@@ -395,6 +411,19 @@ export const MilestonesEditor = () => {
                                 JSON.stringify({
                                   id: version.id,
                                   roadmapId: currentRoadmap.id,
+                                }),
+                              )}`}
+                            />
+                            <SettingsButton
+                              onClick={(e) =>
+                                editVersionClicked(e, version.id, version.name)
+                              }
+                              href={`?openModal=${
+                                ModalTypes.EDIT_VERSION_MODAL
+                              }&modalProps=${encodeURIComponent(
+                                JSON.stringify({
+                                  id: version.id,
+                                  name: version.name,
                                 }),
                               )}`}
                             />
