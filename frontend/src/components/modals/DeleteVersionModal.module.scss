@@ -1,0 +1,17 @@
+@import '../../shared.scss';
+
+.headerDiv {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  svg {
+    color: $COLOR_RASPBERRY;
+    position: relative;
+    top: 3px;
+  }
+}
+
+.descriptionDiv {
+  width: 458px;
+  margin-bottom: 21px;
+}

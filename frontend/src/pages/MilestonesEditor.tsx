@@ -154,8 +154,18 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const deleteVersion = (id: number) => {
-    dispatch(versionsActions.deleteVersion({ id }));
+  const deleteVersionClicked = (
+    e: React.MouseEvent<any, MouseEvent>,
+    id: number,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.DELETE_VERSION_MODAL,
+        modalProps: { id, roadmapId: currentRoadmap.id },
+      }),
+    );
   };
 
   const onDragStart = () => {
@@ -376,7 +386,17 @@ export const MilestonesEditor = () => {
                           <div className={classes(css.milestoneFooter)}>
                             <DeleteButton
                               type="filled"
-                              onClick={() => deleteVersion(version.id)}
+                              onClick={(e) =>
+                                deleteVersionClicked(e, version.id)
+                              }
+                              href={`?openModal=${
+                                ModalTypes.DELETE_VERSION_MODAL
+                              }&modalProps=${encodeURIComponent(
+                                JSON.stringify({
+                                  id: version.id,
+                                  roadmapId: currentRoadmap.id,
+                                }),
+                              )}`}
                             />
                           </div>
                         </div>
