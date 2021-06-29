@@ -1,10 +1,33 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import { StepIcon } from '../../../icons/StepIcon';
+import CheckSharpIcon from '@material-ui/icons/CheckSharp';
+import CachedSharpIcon from '@material-ui/icons/CachedSharp';
+import ScheduleSharpIcon from '@material-ui/icons/ScheduleSharp';
 import css from './StepIndicator.module.scss';
 
 const classes = classNames.bind(css);
+
+export const StepIcon: React.FC<{
+  currentStepDifference: number;
+}> = ({ currentStepDifference }) => (
+  <div
+    className={classes(css.circle, {
+      [css.done]: currentStepDifference < 0,
+      [css.disabled]: currentStepDifference > 0,
+    })}
+  >
+    {currentStepDifference < 0 && (
+      <CheckSharpIcon className={classes(css.icon)} />
+    )}
+    {currentStepDifference === 0 && (
+      <CachedSharpIcon className={classes(css.icon)} />
+    )}
+    {currentStepDifference > 0 && (
+      <ScheduleSharpIcon className={classes(css.icon)} />
+    )}
+  </div>
+);
 
 interface StepIndicatorProps {
   step: number;
@@ -18,7 +41,12 @@ const StepIndicatorContent: React.FC<StepIndicatorProps> = ({
   currentStepDifference,
   description,
 }) => (
-  <>
+  <div
+    className={classes(css.stepIndicator, {
+      [css.done]: currentStepDifference < 0,
+      [css.disabled]: currentStepDifference > 0,
+    })}
+  >
     <div className={classes(css.topStepRow)}>
       <StepIcon currentStepDifference={currentStepDifference} />
       {step !== 3 && (
@@ -38,7 +66,7 @@ const StepIndicatorContent: React.FC<StepIndicatorProps> = ({
       <div className={classes(css.stepLabel)}>Step {step}</div>
       <Trans i18nKey={description} />
     </div>
-  </>
+  </div>
 );
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
