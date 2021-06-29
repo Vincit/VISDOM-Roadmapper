@@ -7,7 +7,39 @@
   height: 142px;
 }
 
-.leftText {
+.step3 {
   width: 458px;
-  margin-bottom: 32px;
+  margin-bottom: 25px;
+
+  .summary {
+    display: flex;
+    flex-direction: column;
+    margin: 30px 20px 0;
+    gap: 7px;
+
+    .customerData {
+      display: flex;
+      flex-direction: row;
+      gap: 13px;
+    }
+    .representatives {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .rep {
+      display: flex;
+      margin-left: 13px;
+      gap: 13px;
+      svg {
+        color: $COLOR_AZURE;
+        position: relative;
+        top: -3px;
+      }
+      .Business svg {
+        width: 13.5px;
+        height: 13.5px;
+      }
+    }
+  }
 }

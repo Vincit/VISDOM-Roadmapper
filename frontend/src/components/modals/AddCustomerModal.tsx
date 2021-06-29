@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
+import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { BusinessValueFilled } from '../RatingIcons';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
@@ -31,6 +33,7 @@ import { StepIndicator } from './modalparts/StepIndicator';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import { ReactComponent as CheckIcon } from '../../icons/check_icon.svg';
 import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
+import { Dot } from '../Dot';
 import css from './AddCustomerModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -194,12 +197,48 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
             />
           )}
           {step === 3 && (
-            <div className={classes(css.leftText)}>
-              <b>
-                <Trans i18nKey="All done" />
-              </b>{' '}
-              <Trans i18nKey="All done customer description" />
-            </div>
+            <>
+              <div className={classes(css.step3)}>
+                <b>
+                  <Trans i18nKey="All done" />
+                </b>{' '}
+                <Trans i18nKey="All done customer description" />
+                <div className={classes(css.summary)}>
+                  {Object.entries(formValues).map(([key, value]) => (
+                    <div className={classes(css.customerData)}>
+                      <b>
+                        <Trans
+                          i18nKey={key.charAt(0).toUpperCase() + key.slice(1)}
+                        />
+                        :
+                      </b>
+                      <div className={classes(css.value)}>
+                        {key === 'color' ? <Dot fill={value} /> : value}
+                      </div>
+                    </div>
+                  ))}
+                  <div className={classes(css.representatives)}>
+                    <b>
+                      <Trans i18nKey="Representatives" />:
+                    </b>
+                    {representatives
+                      .filter((rep) => rep.checked)
+                      .map((rep) => (
+                        <div className={classes(css.rep)}>
+                          {rep.username}
+                          <div className={classes(css[RoleType[rep.type]])}>
+                            {rep.type === RoleType.Admin ? (
+                              <StarSharpIcon fontSize="small" />
+                            ) : (
+                              <BusinessValueFilled />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            </>
           )}
           {step === 4 && (
             <div className={classes(css.modalDoneContent)}>

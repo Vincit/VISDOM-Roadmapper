@@ -109,6 +109,7 @@ export const english = {
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
     'Internal server error': 'Internal server error',
     email: 'email',
+    Email: 'Email',
     uniqueViolation: 'This {{field}} is already in use.',
     ValidationError: 'Invalid {{field}}.',
     'Add new client': 'Add new client',
@@ -134,6 +135,7 @@ export const english = {
     'Client name': 'Client name',
     'Contact information': 'Contact information',
     'Client color': 'Client color',
+    Color: 'Color',
     Generate: 'Generate',
     'Pick a color': 'Pick a color',
     "Who's responsible for the client value ratings?":
