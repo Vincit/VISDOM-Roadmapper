@@ -64,11 +64,12 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
 
   /*
     AdminUsers can see missing customer and developer ratings
+    BusinessUser can see their missing customer ratings
     DeveloperUser can see missing developer ratings
-    CustomerUser and BusinessUser can see their own missing ratings
+    CustomerUser can see their own missing ratings
   */
   useEffect(() => {
-    if (getType(userInfo?.roles, task.roadmapId) === RoleType.Admin) {
+    if (type === RoleType.Admin) {
       const ratingIds = task.ratings.map((rating) => rating.createdByUser);
       const unratedCustomers = allCustomers?.filter((customer) => {
         const representativeIds = customer?.representatives?.map(
@@ -90,7 +91,19 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       setMissingDevRatings(missingDevs);
     }
 
-    if (type === RoleType.Customer || type === RoleType.Business) {
+    if (type === RoleType.Business) {
+      const unratedCustomers = userInfo?.representativeFor?.filter(
+        (customer) =>
+          !task.ratings.some(
+            (rating) =>
+              customer.id === rating.forCustomer &&
+              rating.createdByUser === userInfo?.id,
+          ),
+      );
+      setMissingRatings(unratedCustomers);
+    }
+
+    if (type === RoleType.Customer) {
       // if task doesn't have ratings from the user that is logged in, display icon to them.
       setUserRatingMissing(
         !task.ratings.some((rating) => rating.createdByUser === userInfo?.id),
@@ -225,23 +238,22 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
                 ))}
               </div>
             )}
-            {userRatingMissing &&
-              (type === RoleType.Customer || type === RoleType.Business) && (
-                <div>
-                  <Tooltip
-                    classes={{
-                      arrow: classNames(css.tooltipArrow),
-                      tooltip: classNames(css.tooltip),
-                    }}
-                    key={userInfo?.username}
-                    title={userInfo?.username || ''}
-                    placement="top"
-                    arrow
-                  >
-                    <PermIdentityIcon className={classes(css.userIcon)} />
-                  </Tooltip>
-                </div>
-              )}
+            {userRatingMissing && type === RoleType.Customer && (
+              <div>
+                <Tooltip
+                  classes={{
+                    arrow: classNames(css.tooltipArrow),
+                    tooltip: classNames(css.tooltip),
+                  }}
+                  key={userInfo?.username}
+                  title={userInfo?.username || ''}
+                  placement="top"
+                  arrow
+                >
+                  <PermIdentityIcon className={classes(css.userIcon)} />
+                </Tooltip>
+              </div>
+            )}
           </StylesProvider>
         </div>
       </td>

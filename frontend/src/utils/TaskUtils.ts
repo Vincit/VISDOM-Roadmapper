@@ -260,10 +260,10 @@ export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
   const type = getType(userInfo?.roles, task.roadmapId);
   if (type === RoleType.Admin || type === RoleType.Business)
     return !!userInfo?.representativeFor?.find(
-      (rep) =>
+      (customer) =>
         !task.ratings.some(
           (rating) =>
-            rep.id === rating.forCustomer &&
+            customer.id === rating.forCustomer &&
             rating.createdByUser === userInfo?.id,
         ),
     );
