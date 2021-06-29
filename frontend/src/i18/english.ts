@@ -40,6 +40,7 @@ export const english = {
     'Roadmap View': 'Roadmap View',
     'task list': 'task list',
     Plan: 'Plan',
+    Previous: 'Previous',
     Cancel: 'Cancel',
     Confirm: 'Confirm',
     'Great!': 'Great!',

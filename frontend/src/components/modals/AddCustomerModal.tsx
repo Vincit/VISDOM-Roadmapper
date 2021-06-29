@@ -119,8 +119,12 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
       setStep(previousStep);
       return;
     }
-    setPreviousStep(step);
-    setStep(0);
+    if (step === 1) {
+      setPreviousStep(step);
+      setStep(0);
+      return;
+    }
+    setStep(step - 1);
   };
 
   const handleCloseButton = () => {
@@ -220,11 +224,9 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
                 onClick={handleCancel}
                 type="button"
               >
-                {step === 0 ? (
-                  <Trans i18nKey="No, go back" />
-                ) : (
-                  <Trans i18nKey="Cancel" />
-                )}
+                {step === 0 && <Trans i18nKey="No, go back" />}
+                {step === 1 && <Trans i18nKey="Cancel" />}
+                {step > 1 && <Trans i18nKey="Previous" />}
               </button>
             )}
           </ModalFooterButtonDiv>
@@ -241,7 +243,8 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
                 }
               >
                 {step === 0 && <Trans i18nKey="Yes, I want to cancel" />}
-                {step > 0 && step < 4 && <Trans i18nKey="Confirm" />}
+                {step > 0 && step < 3 && <Trans i18nKey="Next" />}
+                {step === 3 && <Trans i18nKey="Confirm" />}
                 {step === 4 && <Trans i18nKey="Great!" />}
               </button>
             )}
