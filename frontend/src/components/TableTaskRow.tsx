@@ -68,16 +68,14 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     CustomerUser and BusinessUser can see their own missing ratings
   */
   useEffect(() => {
-    if (type === RoleType.Admin) {
-      const givenRatings = task.ratings
-        .map((rating) => {
-          return rating.forCustomer;
-        })
-        .filter((value) => value !== null);
-
-      const unratedCustomers = allCustomers?.filter(
-        (customer) => !givenRatings.includes(customer.id),
-      );
+    if (getType(userInfo?.roles, task.roadmapId) === RoleType.Admin) {
+      const ratingIds = task.ratings.map((rating) => rating.createdByUser);
+      const unratedCustomers = allCustomers?.filter((customer) => {
+        const representativeIds = customer?.representatives?.map(
+          (rep) => rep.id,
+        );
+        return !representativeIds?.every((rep) => ratingIds?.includes(rep));
+      });
       setMissingRatings(unratedCustomers);
     }
 
@@ -98,7 +96,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         !task.ratings.some((rating) => rating.createdByUser === userInfo?.id),
       );
     }
-  }, [task.ratings, allCustomers, allUsers, userInfo, type]);
+  }, [task.ratings, allCustomers, allUsers, userInfo, type, task.roadmapId]);
 
   const deleteTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
