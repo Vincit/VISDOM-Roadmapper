@@ -55,6 +55,7 @@ const createTestCustomers = async () => {
     roadmapId: roadmap.id,
     name: 'Customer 1',
     color: '#AA75EE',
+    email: 'customer1@webuystuff.com',
   });
   const customerPerson1 = await User.query().findOne(
     'username',
@@ -66,6 +67,7 @@ const createTestCustomers = async () => {
     roadmapId: roadmap.id,
     name: 'Customer 2',
     color: '#FBD92A',
+    email: 'customer2@webuystuff.com',
   });
 
   const customerPerson2 = await User.query().findOne(

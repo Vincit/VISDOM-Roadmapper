@@ -5,7 +5,7 @@ export default class Customer extends Model {
   id!: number;
   roadmapId!: number;
   name!: string;
-  email!: string | null;
+  email!: string;
   weight!: number;
   color!: string;
 
@@ -15,7 +15,7 @@ export default class Customer extends Model {
 
   static jsonSchema = {
     type: 'object',
-    required: ['name', 'color'],
+    required: ['name', 'color', 'email'],
 
     properties: {
       id: { type: 'integer' },
