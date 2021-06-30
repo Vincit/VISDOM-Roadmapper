@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
@@ -13,6 +13,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { Input } from '../forms/FormField';
 import css from './EditVersionModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -27,6 +28,7 @@ export const EditVersionModal: React.FC<EditVersionModalProps> = ({
   id,
   name,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -61,15 +63,13 @@ export const EditVersionModal: React.FC<EditVersionModalProps> = ({
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.formDiv)}>
-            <label htmlFor="name">
-              <Trans i18nKey="Milestone name" />
-            </label>
-            <input
+            <Input
+              label={t('Milestone name')}
               required
               name="name"
               id="name"
               value={newName}
-              onChange={(e: any) => setNewName(e.currentTarget.value)}
+              onChange={(e) => setNewName(e.currentTarget.value)}
             />
           </div>
           <Alert

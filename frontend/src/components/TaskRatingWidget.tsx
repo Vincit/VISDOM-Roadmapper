@@ -15,6 +15,7 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { TaskRatingBar } from './RatingBars';
 import { getType } from '../utils/UserUtils';
+import { TextArea } from './forms/FormField';
 import css from './TaskRatingWidget.module.scss';
 
 const classes = classNames.bind(css);
@@ -90,7 +91,7 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
   const renderCommentBox = () => {
     return (
       <Form.Group className={classes(css.commentBoxWrapper)}>
-        <textarea
+        <TextArea
           required
           name="description"
           id="description"

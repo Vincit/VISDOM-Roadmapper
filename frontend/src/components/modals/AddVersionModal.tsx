@@ -11,6 +11,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
 export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
@@ -60,7 +61,8 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
           <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
-          <input
+          <Input
+            label={t('Milestone name')}
             autoComplete="off"
             required
             type="text"
@@ -68,7 +70,7 @@ export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
             id="name"
             value={versionName}
             placeholder={t('Milestone name')}
-            onChange={(e: any) => onNameChange(e.currentTarget.value)}
+            onChange={(e) => onNameChange(e.currentTarget.value)}
           />
           <Alert
             show={hasError}

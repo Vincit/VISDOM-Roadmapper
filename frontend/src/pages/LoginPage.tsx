@@ -15,6 +15,7 @@ import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 import css from './LoginPage.module.scss';
 import { Footer } from '../components/Footer';
+import { Input } from '../components/forms/FormField';
 
 const classes = classNames.bind(css);
 
@@ -79,25 +80,23 @@ export const LoginPage = () => {
         </ModalHeader>
         <ModalContent>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="name">Your email</label>
-            <input
+            <Input
+              label={t('Your email')}
               required
-              name="name"
               id="name"
               placeholder={t('Email')}
               value={formValues.username}
-              onChange={(e: any) => onUsernameChange(e.currentTarget.value)}
+              onChange={(e) => onUsernameChange(e.currentTarget.value)}
             />
 
-            <label htmlFor="description">Password</label>
-            <input
+            <Input
+              label={t('Password')}
               required
-              name="description"
-              id="description"
+              id="password"
               type="password"
               placeholder={t('Password')}
               value={formValues.password}
-              onChange={(e: any) => onPasswordChange(e.currentTarget.value)}
+              onChange={(e) => onPasswordChange(e.currentTarget.value)}
             />
             <Alert
               show={errorMessage.length > 0}
