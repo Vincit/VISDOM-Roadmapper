@@ -1,5 +1,11 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
-import { Customer, Roadmap, Task, Taskrating } from '../redux/roadmaps/types';
+import {
+  Customer,
+  Roadmap,
+  RoadmapUser,
+  Task,
+  Taskrating,
+} from '../redux/roadmaps/types';
 import { customerWeight } from './CustomerUtils';
 import { UserInfo } from '../redux/user/types';
 import {
@@ -256,6 +262,9 @@ export const calcWeightedTaskPriority = (
   return weightedValue / avgWorkRating;
 };
 
+const isCustomer = (user: RoadmapUser | Customer): user is Customer =>
+  'representatives' in user;
+
 export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
   const type = getType(userInfo?.roles, task.roadmapId);
   if (type === RoleType.Admin || type === RoleType.Business)
@@ -269,3 +278,58 @@ export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
     );
   return !task.ratings.find((rating) => rating.createdByUser === userInfo?.id);
 };
+
+export const isUnrated = (
+  user: RoadmapUser | Customer,
+  task: Task,
+  representatives?: RoadmapUser[],
+  represented?: Customer[],
+) => {
+  if (isCustomer(user))
+    return !!representatives?.find(
+      (rep) =>
+        !task.ratings.some(
+          (rating) =>
+            rating.forCustomer === user.id && rating.createdByUser === rep.id,
+        ),
+    );
+  if (user.type === RoleType.Admin || user.type === RoleType.Business)
+    return !!represented?.find(
+      (customer) =>
+        !task.ratings.some(
+          (rating) =>
+            rating.forCustomer === customer.id &&
+            rating.createdByUser === user.id,
+        ),
+    );
+  return !task.ratings.find((rating) => rating.createdByUser === user.id);
+};
+
+/* 
+  For Customers consider missing representative ratings
+  For Admin and Business -users consider missing represented ratings
+  For others consider their own missing ratings
+*/
+export const unratedTasks = (
+  user: RoadmapUser | Customer,
+  tasks: Task[],
+  customers?: Customer[],
+) => {
+  if (isCustomer(user))
+    return tasks.filter((task) => isUnrated(user, task, user.representatives));
+  if (user.type === RoleType.Admin || user.type === RoleType.Business) {
+    const represented = customers?.filter((customer) =>
+      customer.representatives?.find((rep) => rep.id === user.id),
+    );
+    return tasks.filter((task) =>
+      isUnrated(user, task, undefined, represented),
+    );
+  }
+  return tasks.filter((task) => isUnrated(user, task));
+};
+
+export const unratedTasksAmount = (
+  user: RoadmapUser | Customer,
+  tasks: Task[],
+  customers?: Customer[],
+) => unratedTasks(user, tasks, customers).length;

@@ -40,6 +40,7 @@ export interface CheckableUser extends RoadmapUser {
 export interface RoadmapUser {
   id: number;
   username: string;
+  email: string;
   type: RoleType;
 }
 

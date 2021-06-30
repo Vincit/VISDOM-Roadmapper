@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { DeleteButton, EditButton } from './forms/SvgButton';
@@ -15,7 +15,9 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { getType } from '../utils/UserUtils';
+import { unratedTasksAmount } from '../utils/TaskUtils';
 import css from './TableCustomerRow.module.scss';
+import { Dot } from './Dot';
 
 const classes = classNames.bind(css);
 
@@ -24,7 +26,7 @@ interface TableRowProps {
 }
 
 export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
-  const { id, name, color } = customer;
+  const { id, name, email, color } = customer;
   const weight = useSelector<RootState, number>(
     customerWeightSelector(customer),
     shallowEqual,
@@ -38,6 +40,18 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+  const [unratedAmount, setUnratedAmount] = useState(0);
+
+  useEffect(() => {
+    if (currentRoadmap?.tasks)
+      setUnratedAmount(
+        unratedTasksAmount(
+          customer,
+          currentRoadmap.tasks,
+          currentRoadmap.customers,
+        ),
+      );
+  }, [currentRoadmap, customer]);
 
   const deleteUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
@@ -68,15 +82,20 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
   };
 
   return (
-    <tr>
-      <td className="styledTd">
-        <div
-          className={classes(css.customerCircle)}
-          style={{ backgroundColor: color }}
-        />
+    <tr className={classes(css.styledTr)}>
+      <td className={classes(css.styledTd)}>
+        <Dot fill={color} />
       </td>
       <td className="styledTd">{name}</td>
+      <td className="styledTd">
+        <a className="green" href={`mailto:${email}`}>
+          {email}
+        </a>
+      </td>
       <td className="styledTd">{weight}</td>
+      <td className="styledTd">
+        <b>{unratedAmount || ' '}</b>
+      </td>
       <td className="styledTd nowrap textAlignEnd">
         {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <div className={classes(css.editCustomer)}>

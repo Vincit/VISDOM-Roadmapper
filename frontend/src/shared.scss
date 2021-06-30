@@ -406,12 +406,6 @@ textarea {
   }
 }
 
-.customerCircle {
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
-}
-
 .modalCancelContent,
 .modalDoneContent {
   display: flex;
@@ -422,5 +416,13 @@ textarea {
   svg {
     margin-top: 28px;
     margin-bottom: 55px;
+  }
+}
+
+a.green {
+  text-decoration: underline;
+  color: $COLOR_EMERALD;
+  &:hover {
+    color: $COLOR_FOREST;
   }
 }

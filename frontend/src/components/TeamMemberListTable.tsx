@@ -5,8 +5,12 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TableTeamMemberRow } from './TableTeamMemberRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
-import { roadmapUsersSelector } from '../redux/roadmaps/selectors';
-import { RoadmapUser } from '../redux/roadmaps/types';
+import {
+  roadmapUsersSelector,
+  chosenRoadmapSelector,
+  allTasksSelector,
+} from '../redux/roadmaps/selectors';
+import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { SortingOrders } from '../utils/CustomerUtils';
 import { UserSortingTypes, sortRoadmapUsers } from '../utils/RoadmapUserUtils';
@@ -15,27 +19,42 @@ import { RoleType } from '../../../shared/types/customTypes';
 interface TeamMemberTableHeader {
   label: string;
   sorting: UserSortingTypes;
+  width?: string;
 }
 
 export const TeamMemberList = () => {
   const [sortingType, setSortingType] = useState(UserSortingTypes.NO_SORT);
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
+  const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
   const teamMembers = useSelector<RootState, RoadmapUser[] | undefined>(
     roadmapUsersSelector,
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
+  const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
   useEffect(() => {
     if (!teamMembers) dispatch(roadmapsActions.getRoadmapUsers());
   }, [dispatch, teamMembers]);
 
-  const getRenderTeamMemberList: () => RoadmapUser[] | undefined = () => {
+  useEffect(() => {
     const members = teamMembers?.filter(
       (member) => member.type !== RoleType.Customer,
     );
-    return sortRoadmapUsers(members || [], sortingType, sortingOrder);
-  };
+    setSortedMembers(
+      sortRoadmapUsers(
+        members || [],
+        sortingType,
+        sortingOrder,
+        tasks,
+        currentRoadmap?.customers,
+      ),
+    );
+  }, [teamMembers, sortingType, sortingOrder, tasks, currentRoadmap]);
 
   const toggleSortOrder = () => {
     if (sortingOrder === SortingOrders.ASCENDING) {
@@ -62,8 +81,10 @@ export const TeamMemberList = () => {
     );
 
   const teamMemberTableHeaders: TeamMemberTableHeader[] = [
-    { label: 'Role', sorting: UserSortingTypes.SORT_ROLE },
+    { label: 'Role', sorting: UserSortingTypes.SORT_ROLE, width: '1em' },
     { label: 'Name', sorting: UserSortingTypes.SORT_NAME },
+    { label: 'Contact information', sorting: UserSortingTypes.SORT_EMAIL },
+    { label: 'Unrated tasks', sorting: UserSortingTypes.SORT_UNRATED },
   ];
 
   const TeamMemberTable = () => (
@@ -76,6 +97,7 @@ export const TeamMemberList = () => {
                 className="styledTh clickable"
                 key={header.label}
                 onClick={() => onSortingChange(header.sorting)}
+                style={{ width: header.width }}
               >
                 <span className="headerSpan">
                   <Trans i18nKey={header.label} />
@@ -87,7 +109,7 @@ export const TeamMemberList = () => {
         </tr>
       </thead>
       <tbody>
-        {getRenderTeamMemberList()?.map((teamMember) => (
+        {sortedMembers.map((teamMember) => (
           <TableTeamMemberRow key={teamMember.id} member={teamMember} />
         ))}
       </tbody>
@@ -97,7 +119,7 @@ export const TeamMemberList = () => {
   return (
     <>
       <h2>Team members</h2>
-      {getRenderTeamMemberList() ? (
+      {sortedMembers.length > 0 ? (
         <TeamMemberTable />
       ) : (
         <Trans i18nKey="No team members found" />

@@ -9,6 +9,7 @@ import { roadmapsActions } from '../redux/roadmaps';
 import {
   allCustomersSelector,
   plannerCustomerWeightsSelector,
+  allTasksSelector,
 } from '../redux/roadmaps/selectors';
 import { Customer, PlannerCustomerWeight } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -26,6 +27,7 @@ const classes = classNames.bind(css);
 interface CustomerTableHeader {
   label: string;
   sorting: CustomerSortingTypes;
+  width?: string;
 }
 
 export const CustomerList: React.FC<{
@@ -33,6 +35,7 @@ export const CustomerList: React.FC<{
 }> = ({ search }) => {
   const [sortingType, setSortingType] = useState(CustomerSortingTypes.NO_SORT);
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
+  const [sortedCustomers, setSortedCustomers] = useState<Customer[]>([]);
   const plannedWeights = useSelector<RootState, PlannerCustomerWeight[]>(
     plannerCustomerWeightsSelector,
     shallowEqual,
@@ -41,24 +44,28 @@ export const CustomerList: React.FC<{
     allCustomersSelector,
     shallowEqual,
   );
+  const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
   useEffect(() => {
     if (!customers) dispatch(roadmapsActions.getCustomers());
   }, [dispatch, customers]);
 
-  const getRenderCustomerList: () => Customer[] = () => {
+  useEffect(() => {
     // Filter, search, sort customers
     const searched = customers?.filter(({ name }) =>
       name.toLowerCase().includes(search),
     );
-    return sortCustomers(
-      searched || [],
-      sortingType,
-      sortingOrder,
-      plannedWeights,
+    setSortedCustomers(
+      sortCustomers(
+        searched || [],
+        sortingType,
+        sortingOrder,
+        tasks,
+        plannedWeights,
+      ),
     );
-  };
+  }, [customers, sortingType, sortingOrder, tasks, plannedWeights, search]);
 
   const toggleSortOrder = () => {
     if (sortingOrder === SortingOrders.ASCENDING) {
@@ -96,9 +103,11 @@ export const CustomerList: React.FC<{
   };
 
   const customerTableHeaders: CustomerTableHeader[] = [
-    { label: 'ID', sorting: CustomerSortingTypes.SORT_COLOR },
+    { label: 'Color', sorting: CustomerSortingTypes.SORT_COLOR, width: '1em' },
     { label: 'Name', sorting: CustomerSortingTypes.SORT_NAME },
+    { label: 'Contact information', sorting: CustomerSortingTypes.SORT_EMAIL },
     { label: 'Value', sorting: CustomerSortingTypes.SORT_VALUE },
+    { label: 'Unrated tasks', sorting: CustomerSortingTypes.SORT_UNRATED },
   ];
 
   const CustomersTable = () => (
@@ -111,6 +120,7 @@ export const CustomerList: React.FC<{
                 className={classes(css.styledTh, css.clickable)}
                 key={header.label}
                 onClick={() => onSortingChange(header.sorting)}
+                style={{ width: header.width }}
               >
                 <span className={classes(css.headerSpan)}>
                   <Trans i18nKey={header.label} />
@@ -122,7 +132,7 @@ export const CustomerList: React.FC<{
         </tr>
       </thead>
       <tbody>
-        {getRenderCustomerList().map((customer) => (
+        {sortedCustomers.map((customer) => (
           <TableCustomerRow key={customer.id} customer={customer} />
         ))}
       </tbody>
@@ -141,7 +151,7 @@ export const CustomerList: React.FC<{
           + <Trans i18nKey="Add new client" />
         </button>
       </div>
-      {getRenderCustomerList().length > 0 ? (
+      {sortedCustomers.length > 0 ? (
         <CustomersTable />
       ) : (
         <Trans i18nKey="No customers found" />

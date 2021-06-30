@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
@@ -16,6 +16,7 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from '../redux/modals/types';
 import { getType } from '../utils/UserUtils';
+import { unratedTasksAmount } from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -24,7 +25,7 @@ interface TableRowProps {
 }
 
 export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
-  const { id, username, type } = member;
+  const { id, username, email, type } = member;
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -34,6 +35,18 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+  const [unratedAmount, setUnratedAmount] = useState(0);
+
+  useEffect(() => {
+    if (currentRoadmap?.tasks)
+      setUnratedAmount(
+        unratedTasksAmount(
+          member,
+          currentRoadmap.tasks,
+          currentRoadmap.customers,
+        ),
+      );
+  }, [currentRoadmap, member]);
 
   const deleteUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
@@ -77,6 +90,14 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
         {id === userInfo?.id && (
           <span className={classes(css.userText)}> (You)</span>
         )}
+      </td>
+      <td className="styledTd">
+        <a className="green" href={`mailto:${email}`}>
+          {email}
+        </a>
+      </td>
+      <td className="styledTd">
+        <b>{unratedAmount || ' '}</b>
       </td>
       <td className="styledTd nowrap textAlignEnd">
         {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin &&
