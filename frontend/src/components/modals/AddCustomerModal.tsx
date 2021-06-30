@@ -33,6 +33,7 @@ import { StepIndicator } from './modalparts/StepIndicator';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import { ReactComponent as CheckIcon } from '../../icons/check_icon.svg';
 import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
+import { titleCase } from '../../utils/string';
 import { Dot } from '../Dot';
 import css from './AddCustomerModal.module.scss';
 
@@ -158,8 +159,9 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
             <div className={css.steps}>
               {steps.map((stepData) => (
                 <StepIndicator
-                  currentStepDifference={stepData.step - step}
+                  currentStep={step}
                   step={stepData.step}
+                  maxStep={steps.length}
                   key={stepData.step}
                   description={stepData.description}
                   onClick={() => setStep(stepData.step)}
@@ -197,48 +199,43 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
             />
           )}
           {step === 3 && (
-            <>
-              <div className={classes(css.step3)}>
-                <b>
-                  <Trans i18nKey="All done" />
-                </b>{' '}
-                <Trans i18nKey="All done customer description" />
-                <div className={classes(css.summary)}>
-                  {Object.entries(formValues).map(([key, value]) => (
-                    <div className={classes(css.customerData)}>
-                      <b>
-                        <Trans
-                          i18nKey={key.charAt(0).toUpperCase() + key.slice(1)}
-                        />
-                        :
-                      </b>
-                      <div className={classes(css.value)}>
-                        {key === 'color' ? <Dot fill={value} /> : value}
-                      </div>
-                    </div>
-                  ))}
-                  <div className={classes(css.representatives)}>
+            <div className={classes(css.step3)}>
+              <b>
+                <Trans i18nKey="All done" />
+              </b>{' '}
+              <Trans i18nKey="All done customer description" />
+              <div className={classes(css.summary)}>
+                {Object.entries(formValues).map(([key, value]) => (
+                  <div className={classes(css.customerData)}>
                     <b>
-                      <Trans i18nKey="Representatives" />:
+                      <Trans i18nKey={titleCase(key)} />:
                     </b>
-                    {representatives
-                      .filter((rep) => rep.checked)
-                      .map((rep) => (
-                        <div className={classes(css.rep)}>
-                          {rep.username}
-                          <div className={classes(css[RoleType[rep.type]])}>
-                            {rep.type === RoleType.Admin ? (
-                              <StarSharpIcon fontSize="small" />
-                            ) : (
-                              <BusinessValueFilled />
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                    <div className={classes(css.value)}>
+                      {key === 'color' ? <Dot fill={value} /> : value}
+                    </div>
                   </div>
+                ))}
+                <div className={classes(css.representatives)}>
+                  <b>
+                    <Trans i18nKey="Representatives" />:
+                  </b>
+                  {representatives
+                    .filter((rep) => rep.checked)
+                    .map((rep) => (
+                      <div className={classes(css.rep)}>
+                        {rep.username}
+                        <div className={classes(css[RoleType[rep.type]])}>
+                          {rep.type === RoleType.Admin ? (
+                            <StarSharpIcon fontSize="small" />
+                          ) : (
+                            <BusinessValueFilled />
+                          )}
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </div>
-            </>
+            </div>
           )}
           {step === 4 && (
             <div className={classes(css.modalDoneContent)}>

@@ -44,7 +44,7 @@ export const SelectCustomerInfo: React.FC<{
           id="name"
           value={name}
           placeholder={t('Give them a name')}
-          onChange={(e: any) => onNameChange(e.currentTarget.value)}
+          onChange={(e) => onNameChange(e.currentTarget.value)}
         />
       </div>
       <div className={classes(css.section)}>
@@ -58,7 +58,7 @@ export const SelectCustomerInfo: React.FC<{
           type="email"
           value={email}
           placeholder={t('customername@example.com')}
-          onChange={(e: any) => onEmailChange(e.currentTarget.value)}
+          onChange={(e) => onEmailChange(e.currentTarget.value)}
         />
       </div>
       <div className={classes(css.section)}>
@@ -99,7 +99,7 @@ export const SelectRepresentatives: React.FC<{
         <Trans i18nKey="Who's responsible for the client value ratings?" />
       </label>
       <div id="representatives" className={classes(css.representatives)}>
-        {representatives?.map((rep, idx) => (
+        {representatives.map((rep, idx) => (
           <div className={classes(css.representative)}>
             <Checkbox
               label={rep.username}

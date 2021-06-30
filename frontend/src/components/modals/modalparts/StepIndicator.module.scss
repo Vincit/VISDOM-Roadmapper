@@ -1,13 +1,28 @@
 @import './../../../shared.scss';
 
-.stepIndicator {
-  &.done:hover {
-    .done {
+.stepIndicator.past {
+  .line,
+  .circle {
+    background-color: $COLOR_EMERALD;
+  }
+  &:hover {
+    .line,
+    .circle {
       background-color: $COLOR_FOREST;
     }
     .stepLabel {
       color: $COLOR_BLACK60;
     }
+  }
+}
+
+.stepIndicator.upcoming {
+  .line,
+  .circle {
+    background-color: $COLOR_BLACK10;
+  }
+  .bottomStepRow {
+    color: $COLOR_BLACK40;
   }
 }
 
@@ -22,12 +37,6 @@
     margin: 0 10px;
     background-color: $COLOR_AZURE;
     transition: 150ms ease-out;
-    &.done {
-      background-color: $COLOR_EMERALD;
-    }
-    &.disabled {
-      background-color: $COLOR_BLACK10;
-    }
   }
 }
 
@@ -35,10 +44,6 @@
   @extend .typography-body-bold;
   width: 110px;
   transition: 150ms ease-out;
-
-  &.disabled {
-    color: $COLOR_BLACK40;
-  }
 
   .stepLabel {
     @extend .typography-pre-title;
@@ -58,12 +63,6 @@
   border-radius: 50%;
   background-color: $COLOR_AZURE;
   transition: 150ms ease-out;
-  &.done {
-    background-color: $COLOR_EMERALD;
-  }
-  &.disabled {
-    background-color: $COLOR_BLACK10;
-  }
 }
 
 .icon {
