@@ -8,6 +8,7 @@ import { Checkbox } from '../../forms/Checkbox';
 import { CheckableUser } from '../../../redux/roadmaps/types';
 import { RoleType } from '../../../../../shared/types/customTypes';
 import { ColorPicker } from './ColorPicker';
+import { Input } from '../../forms/FormField';
 import css from './CustomerModalParts.module.scss';
 
 const classes = classNames.bind(css);
@@ -35,10 +36,8 @@ export const SelectCustomerInfo: React.FC<{
   return (
     <>
       <div className={classes(css.section)}>
-        <label htmlFor="name">
-          <Trans i18nKey="Client name" />
-        </label>
-        <input
+        <Input
+          label={t('Client name')}
           required
           name="name"
           id="name"
@@ -48,10 +47,8 @@ export const SelectCustomerInfo: React.FC<{
         />
       </div>
       <div className={classes(css.section)}>
-        <label htmlFor="email">
-          <Trans i18nKey="Contact information" />
-        </label>
-        <input
+        <Input
+          label={t('Contact information')}
           required
           name="email"
           id="email"

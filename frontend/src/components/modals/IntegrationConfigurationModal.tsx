@@ -15,6 +15,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { titleCase } from '../../utils/string';
+import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
 export interface IntegrationConfigurationModalProps extends ModalProps {
@@ -91,7 +92,7 @@ export const IntegrationConfigurationModal: React.FC<IntegrationConfigurationMod
               <p>Instructions here</p>
               {fields.map(({ field, secret }) => (
                 <Form.Group key={field}>
-                  <input
+                  <Input
                     autoComplete="off"
                     required
                     type={secret ? 'password' : undefined}
@@ -99,9 +100,7 @@ export const IntegrationConfigurationModal: React.FC<IntegrationConfigurationMod
                     id={field}
                     placeholder={`${titleCase(name)} ${field}`}
                     value={(formValues as any)[field]!}
-                    onChange={(e: any) =>
-                      onChange(field, e.currentTarget.value)
-                    }
+                    onChange={(e) => onChange(field, e.currentTarget.value)}
                   />
                 </Form.Group>
               ))}

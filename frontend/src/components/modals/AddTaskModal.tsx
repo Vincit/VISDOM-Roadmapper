@@ -19,6 +19,7 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { Input, TextArea } from '../forms/FormField';
 import '../../shared.scss';
 
 export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
@@ -96,26 +97,28 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
         </ModalHeader>
         <ModalContent>
           <Form.Group>
-            <input
+            <Input
+              label={t('Task name')}
               autoComplete="off"
               required
               name="name"
               id="name"
               placeholder={t('Task name')}
               value={formValues.name}
-              onChange={(e: any) => onNameChange(e.currentTarget.value)}
+              onChange={(e) => onNameChange(e.currentTarget.value)}
             />
           </Form.Group>
 
           <Form.Group>
-            <textarea
+            <TextArea
+              label={t('Description')}
               autoComplete="off"
               required
               name="description"
               id="description"
               placeholder={t('Description')}
               value={formValues.description}
-              onChange={(e: any) => onDescriptionChange(e.currentTarget.value)}
+              onChange={(e) => onDescriptionChange(e.currentTarget.value)}
             />
           </Form.Group>
           <Alert

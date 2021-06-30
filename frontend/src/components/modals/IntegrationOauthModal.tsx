@@ -12,6 +12,7 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { chosenIntegrationSelector } from '../../redux/roadmaps/selectors';
 import { titleCase } from '../../utils/string';
+import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
 export interface OauthModalProps extends ModalProps {
@@ -133,14 +134,14 @@ export const OauthModal: React.FC<OauthModalProps> = ({
                 and input the code below:
               </p>
               <Form.Group>
-                <input
+                <Input
                   autoComplete="off"
                   required
                   name="oauthVerifierCode"
                   id="oauthVerifierCode"
                   placeholder={t('OAuth verifier code')}
                   value={formValues.oauthVerifierCode}
-                  onChange={(e: any) =>
+                  onChange={(e) =>
                     onOAuthVerifierCodeChange(e.currentTarget.value)
                   }
                 />
