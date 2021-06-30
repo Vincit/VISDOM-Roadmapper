@@ -57,11 +57,11 @@ const createTestCustomers = async () => {
     color: '#AA75EE',
     email: 'customer1@webuystuff.com',
   });
-  const customerPerson1 = await User.query().findOne(
+  const businessPerson1 = await User.query().findOne(
     'username',
-    'CustomerPerson1',
+    'BusinessPerson1',
   );
-  await customerPerson1.$relatedQuery('representativeFor').relate([customer1]);
+  await businessPerson1.$relatedQuery('representativeFor').relate([customer1]);
 
   const customer2 = await Customer.query().insert({
     roadmapId: roadmap.id,
@@ -70,11 +70,11 @@ const createTestCustomers = async () => {
     email: 'customer2@webuystuff.com',
   });
 
-  const customerPerson2 = await User.query().findOne(
+  const businessPerson2 = await User.query().findOne(
     'username',
-    'CustomerPerson2',
+    'BusinessPerson2',
   );
-  await customerPerson2.$relatedQuery('representativeFor').relate([customer2]);
+  await businessPerson2.$relatedQuery('representativeFor').relate([customer2]);
 
   const adminUser = await User.query().findOne('username', 'AdminPerson1');
   await adminUser
