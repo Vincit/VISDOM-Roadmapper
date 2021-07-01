@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import { StylesProvider } from '@material-ui/core/styles';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes, modalLink } from '../redux/modals/types';
 import { roadmapsActions } from '../redux/roadmaps/index';
 import { Task, Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -111,18 +111,18 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     }
   }, [task.ratings, allCustomers, allUsers, userInfo, type, task.roadmapId]);
 
-  const deleteTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const deleteTaskClicked = (e: React.MouseEvent<unknown, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(roadmapsActions.deleteTask({ id, roadmapId }));
   };
 
-  const editTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const openModal = (modalType: ModalTypes) => (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.EDIT_TASK_MODAL,
+        modalType,
         modalProps: {
           taskId: task.id,
         },
@@ -130,46 +130,14 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const rateTaskClicked = (e: React.MouseEvent<any, MouseEvent>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.RATE_TASK_MODAL,
-        modalProps: {
-          taskId: task.id,
-        },
-      }),
-    );
-  };
+  const editTaskClicked = openModal(ModalTypes.EDIT_TASK_MODAL);
+  const rateTaskClicked = openModal(ModalTypes.RATE_TASK_MODAL);
+  const taskRatingDetailsClicked = openModal(
+    ModalTypes.TASK_RATINGS_INFO_MODAL,
+  );
+  const taskDetailsClicked = openModal(ModalTypes.TASK_INFO_MODAL);
 
-  const taskRatingDetailsClicked = (e: React.MouseEvent<any, MouseEvent>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.TASK_RATINGS_INFO_MODAL,
-        modalProps: {
-          taskId: task.id,
-        },
-      }),
-    );
-  };
-
-  const taskDetailsClicked = (e: React.MouseEvent<any, MouseEvent>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.TASK_INFO_MODAL,
-        modalProps: {
-          taskId: task.id,
-        },
-      }),
-    );
-  };
-
-  const toggleCompletedClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const toggleCompletedClicked = (e: React.MouseEvent<unknown, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(roadmapsActions.patchTask({ id, completed: !completed }));
@@ -264,11 +232,9 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       <td className="styledTd textAlignEnd nowrap" style={{ width: '202px' }}>
         {taskAwaitsRatings(task, userInfo) && (
           <a
-            href={`?openModal=${
-              ModalTypes.TASK_RATINGS_INFO_MODAL
-            }&modalProps=${encodeURIComponent(
-              JSON.stringify({ taskId: task.id }),
-            )}`}
+            href={modalLink(ModalTypes.TASK_RATINGS_INFO_MODAL, {
+              taskId: task.id,
+            })}
           >
             <button
               className={classes(css['button-small-filled'])}
@@ -282,30 +248,22 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
         <div className={classes(css.buttonWrapper)}>
           <RatingsButton
             onClick={taskRatingDetailsClicked}
-            href={`?openModal=${
-              ModalTypes.TASK_RATINGS_INFO_MODAL
-            }&modalProps=${encodeURIComponent(
-              JSON.stringify({ taskId: task.id }),
-            )}`}
+            href={modalLink(ModalTypes.TASK_RATINGS_INFO_MODAL, {
+              taskId: task.id,
+            })}
           />
           <InfoButton
             onClick={taskDetailsClicked}
-            href={`?openModal=${
-              ModalTypes.TASK_INFO_MODAL
-            }&modalProps=${encodeURIComponent(
-              JSON.stringify({ taskId: task.id }),
-            )}`}
+            href={modalLink(ModalTypes.TASK_INFO_MODAL, { taskId: task.id })}
           />
           {type === RoleType.Admin && (
             <>
               <EditButton
                 type="default"
                 onClick={editTaskClicked}
-                href={`?openModal=${
-                  ModalTypes.EDIT_TASK_MODAL
-                }&modalProps=${encodeURIComponent(
-                  JSON.stringify({ taskId: task.id }),
-                )}`}
+                href={modalLink(ModalTypes.EDIT_TASK_MODAL, {
+                  taskId: task.id,
+                })}
               />
               <DeleteButton type="outlined" onClick={deleteTaskClicked} />
             </>

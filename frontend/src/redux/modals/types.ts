@@ -27,3 +27,8 @@ export interface ModalsState {
   currentModal: ModalTypes;
   modalProps: { [K in any]: any };
 }
+
+export const modalLink = (modalType: ModalTypes, payload: any) =>
+  `?openModal=${modalType}&modalProps=${encodeURIComponent(
+    JSON.stringify(payload),
+  )}`;
