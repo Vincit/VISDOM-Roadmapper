@@ -23,10 +23,12 @@ import {
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
 import { taskAwaitsRatings } from '../utils/TaskUtils';
-import { DeleteButton } from './forms/DeleteButton';
-import { EditButton } from './forms/EditButton';
-import { InfoButton } from './forms/InfoButton';
-import { RatingsButton } from './forms/RatingsButton';
+import {
+  DeleteButton,
+  EditButton,
+  InfoButton,
+  RatingsButton,
+} from './forms/SvgButton';
 import { TaskRatingsText } from './TaskRatingsText';
 import { Dot } from './Dot';
 import { getType } from '../utils/UserUtils';
@@ -259,7 +261,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
           {type === RoleType.Admin && (
             <>
               <EditButton
-                type="default"
+                fontSize="default"
                 onClick={editTaskClicked}
                 href={modalLink(ModalTypes.EDIT_TASK_MODAL, {
                   taskId: task.id,

@@ -4,8 +4,7 @@ import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
-import { DeleteButton } from './forms/DeleteButton';
-import { EditButton } from './forms/EditButton';
+import { DeleteButton, EditButton } from './forms/SvgButton';
 import { BusinessValueFilled } from './RatingIcons';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
@@ -84,7 +83,7 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
           id !== userInfo?.id && (
             <div className={classes(css.editMember)}>
               <EditButton
-                type="default"
+                fontSize="default"
                 onClick={editTeamMemberClicked}
                 href={modalLink(ModalTypes.EDIT_TEAM_MEMBER_MODAL, member)}
               />
