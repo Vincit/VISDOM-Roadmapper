@@ -6,7 +6,6 @@ import { Customer } from '../redux/roadmaps/types';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
-import { calcTaskValueSum } from '../utils/TaskUtils';
 import css from './TaskValueCreatedVisualization.module.scss';
 
 export interface TaskValueCreatedVisualizationProps {

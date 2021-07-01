@@ -51,9 +51,9 @@ export const TimeEstimationPage = () => {
   >(undefined);
 
   useEffect(() => {
-    if (!roadmapsVersions) dispatch(versionsActions.getVersions(roadmap!.id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, roadmapsVersions]);
+    if (roadmap && !roadmapsVersions)
+      dispatch(versionsActions.getVersions(roadmap.id));
+  }, [dispatch, roadmap, roadmapsVersions]);
 
   const handleMilestoneChange = (version: Version) => {
     if (timeEstimates.filter((e) => e.id === version.id).length === 0) {

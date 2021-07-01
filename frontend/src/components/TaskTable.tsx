@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
