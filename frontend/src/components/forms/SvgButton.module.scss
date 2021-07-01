@@ -1,12 +1,12 @@
 @import '../../shared.scss';
 
-.deleteIcon {
+.svgButtonIcon {
   path {
     fill: $COLOR_BLACK40;
     transition: 150ms ease-out;
   }
   &:hover path {
-    fill: $COLOR_RASPBERRY;
+    fill: var(--icon-hover-color, $COLOR_BLACK60);
   }
   cursor: pointer;
 }

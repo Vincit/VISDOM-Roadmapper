@@ -13,7 +13,7 @@ import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
-import { EditButton } from '../forms/EditButton';
+import { EditButton } from '../forms/SvgButton';
 import { TaskRatingBar } from '../RatingBars';
 import { ModalProps } from '../types';
 import { ModalCloseButton } from './modalparts/ModalCloseButton';
@@ -67,14 +67,14 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <div className={css.commentDiv}>
               <p className={css.labelText}>
                 <Trans i18nKey="Your comment" />{' '}
-                <EditButton type="small" onClick={() => rateTask()} />
+                <EditButton fontSize="small" onClick={() => rateTask()} />
               </p>
               {rating.comment || '-'}
             </div>
             <div className={css.ratingDiv}>
               <p className={css.labelText}>
                 <Trans i18nKey="Your rating" />{' '}
-                <EditButton type="small" onClick={() => rateTask()} />
+                <EditButton fontSize="small" onClick={() => rateTask()} />
               </p>
               <TaskRatingBar
                 dimension={rating.dimension}
@@ -89,7 +89,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <div className={css.commentDiv}>
               <p className={css.labelText}>
                 <Trans i18nKey="You have not rated this task" />{' '}
-                <EditButton type="small" onClick={() => rateTask()} />
+                <EditButton fontSize="small" onClick={() => rateTask()} />
               </p>
             </div>
           </div>

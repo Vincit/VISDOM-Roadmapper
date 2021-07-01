@@ -1,8 +1,7 @@
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { DeleteButton } from './forms/DeleteButton';
-import { EditButton } from './forms/EditButton';
+import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from '../redux/modals/types';
@@ -83,7 +82,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
           <div className={classes(css.editCustomer)}>
             <div>
               <EditButton
-                type="default"
+                fontSize="default"
                 onClick={editUserClicked}
                 href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, customer)}
               />
