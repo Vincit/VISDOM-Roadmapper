@@ -15,7 +15,7 @@ import css from './TableTeamMemberRow.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes, modalLink } from '../redux/modals/types';
 import { getType } from '../utils/UserUtils';
 
 const classes = classNames.bind(css);
@@ -86,22 +86,16 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
               <EditButton
                 type="default"
                 onClick={editTeamMemberClicked}
-                href={`?openModal=${
-                  ModalTypes.EDIT_TEAM_MEMBER_MODAL
-                }&modalProps=${encodeURIComponent(JSON.stringify(member))}`}
+                href={modalLink(ModalTypes.EDIT_TEAM_MEMBER_MODAL, member)}
               />
               <DeleteButton
                 type="filled"
                 onClick={deleteUserClicked}
-                href={`?openModal=${
-                  ModalTypes.REMOVE_PEOPLE_MODAL
-                }&modalProps=${encodeURIComponent(
-                  JSON.stringify({
-                    userId: id,
-                    userName: username,
-                    type: 'team',
-                  }),
-                )}`}
+                href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
+                  userId: id,
+                  userName: username,
+                  type: 'team',
+                })}
               />
             </div>
           )}

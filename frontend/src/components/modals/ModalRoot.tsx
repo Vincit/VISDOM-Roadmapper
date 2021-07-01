@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals/index';
 import { modalStateSelector } from '../../redux/modals/selectors';
-import { ModalsState, ModalTypes } from '../../redux/modals/types';
+import { ModalsState, ModalTypes, modalLink } from '../../redux/modals/types';
 import { RootState } from '../../redux/types';
 import { ModalProps } from '../types';
 import { AddTaskModal } from './AddTaskModal';
@@ -108,12 +108,10 @@ export const ModalRoot = () => {
   useEffect(() => {
     // Add query params to url on open
     if (!modalsState.showModal) return;
-    let queryString = `?openModal=${modalsState.currentModal}`;
-    if (modalsState.modalProps) {
-      queryString += `&modalProps=${encodeURIComponent(
-        JSON.stringify(modalsState.modalProps),
-      )}`;
-    }
+    const queryString = modalLink(
+      modalsState.currentModal,
+      modalsState.modalProps,
+    );
     if (!search.includes(queryString)) history.replace(pathname + queryString);
   }, [
     modalsState.showModal,

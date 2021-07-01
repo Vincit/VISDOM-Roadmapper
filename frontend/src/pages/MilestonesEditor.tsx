@@ -17,7 +17,7 @@ import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
 import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes, modalLink } from '../redux/modals/types';
 import {
   allTasksSelector,
   chosenRoadmapSelector,
@@ -405,27 +405,19 @@ export const MilestonesEditor = () => {
                               onClick={(e) =>
                                 deleteVersionClicked(e, version.id)
                               }
-                              href={`?openModal=${
-                                ModalTypes.DELETE_VERSION_MODAL
-                              }&modalProps=${encodeURIComponent(
-                                JSON.stringify({
-                                  id: version.id,
-                                  roadmapId: currentRoadmap.id,
-                                }),
-                              )}`}
+                              href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
+                                id: version.id,
+                                roadmapId: currentRoadmap.id,
+                              })}
                             />
                             <SettingsButton
                               onClick={(e) =>
                                 editVersionClicked(e, version.id, version.name)
                               }
-                              href={`?openModal=${
-                                ModalTypes.EDIT_VERSION_MODAL
-                              }&modalProps=${encodeURIComponent(
-                                JSON.stringify({
-                                  id: version.id,
-                                  name: version.name,
-                                }),
-                              )}`}
+                              href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
+                                id: version.id,
+                                name: version.name,
+                              })}
                             />
                           </div>
                         </div>
