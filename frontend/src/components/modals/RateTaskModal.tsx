@@ -160,15 +160,14 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
     );
     const results = await Promise.all(promises);
     setIsLoading(false);
-    /* eslint-disable no-restricted-syntax */
-    for (const res of results) {
+    const hadError = results.some((res) => {
       if (roadmapsActions.addOrPatchTaskrating.rejected.match(res)) {
         if (res.payload?.message) setErrorMessage(res.payload.message);
-        return;
+        return true;
       }
-    }
-
-    closeModal();
+      return false;
+    });
+    if (!hadError) closeModal();
   };
 
   const onBusinessRatingChange = (

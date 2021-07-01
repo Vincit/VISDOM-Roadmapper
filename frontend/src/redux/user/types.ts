@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { Customer } from '../roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 
