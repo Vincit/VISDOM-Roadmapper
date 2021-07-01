@@ -33,6 +33,10 @@ export interface teamMemberRequest {
   type?: RoleType | null;
 }
 
+export interface CheckableUser extends RoadmapUser {
+  checked: boolean;
+}
+
 export interface RoadmapUser {
   id: number;
   username: string;

@@ -1,6 +1,9 @@
 import convert from 'color-convert';
-import { Customer, PlannerCustomerWeight } from '../redux/roadmaps/types';
-
+import {
+  Customer,
+  PlannerCustomerWeight,
+  CheckableUser,
+} from '../redux/roadmaps/types';
 import {
   SortingOrders,
   SortComparison,
@@ -63,4 +66,8 @@ export const randomColor = (
   if (tries === 20) return `#${convert.hsl.hex([hue, 100, 65])}`;
   if (found) return randomColor(customers, tries + 1);
   return `#${convert.hsl.hex([hue, 100, 65])}`;
+};
+
+export const getCheckedIds = (reps: CheckableUser[]) => {
+  return reps.filter((rep) => rep.checked).map(({ id }) => id);
 };

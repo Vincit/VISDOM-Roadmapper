@@ -13,7 +13,11 @@ import {
   allCustomersSelector,
   roadmapUsersSelector,
 } from '../../redux/roadmaps/selectors';
-import { RoadmapUser, Customer } from '../../redux/roadmaps/types';
+import {
+  RoadmapUser,
+  Customer,
+  CheckableUser,
+} from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -25,12 +29,10 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import '../../shared.scss';
 import { ColorPicker } from './modalparts/ColorPicker';
-import { randomColor } from '../../utils/CustomerUtils';
+import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
 import css from './EditCustomerModal.module.scss';
 
 const classes = classNames.bind(css);
-
-type CheckableUser = RoadmapUser & { checked: boolean };
 
 export interface EditCustomerModalProps extends ModalProps {
   customer: Customer;
@@ -234,7 +236,15 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <button className="button-large" type="submit">
+              <button
+                className="button-large"
+                type="submit"
+                disabled={
+                  !formValues.name ||
+                  !formValues.email ||
+                  !getCheckedIds(representatives).length
+                }
+              >
                 <Trans i18nKey="Confirm" />
               </button>
             )}
