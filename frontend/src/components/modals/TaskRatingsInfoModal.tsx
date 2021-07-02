@@ -16,7 +16,6 @@ import { UserInfo } from '../../redux/user/types';
 import { EditButton } from '../forms/SvgButton';
 import { TaskRatingBar } from '../RatingBars';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalHeader } from './modalparts/ModalHeader';
 import css from './TaskRatingsInfoModal.module.scss';
@@ -140,14 +139,13 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
 
   return (
     <>
-      <ModalHeader>
+      <ModalHeader closeModal={closeModal}>
         <h3>
           <span>
             <Trans i18nKey="Ratings for" />
             <span className={css.taskNameText}>: {task.name}</span>
           </span>
         </h3>
-        <ModalCloseButton onClick={closeModal} />
       </ModalHeader>
 
       <ModalContent overflowAuto>

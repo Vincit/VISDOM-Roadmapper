@@ -20,7 +20,6 @@ import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -140,11 +139,10 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={handleCloseButton}>
           <h3>
             <Trans i18nKey="Add a client" />
           </h3>
-          <ModalCloseButton onClick={handleCloseButton} />
         </ModalHeader>
         <ModalContent>
           {step === 0 && (

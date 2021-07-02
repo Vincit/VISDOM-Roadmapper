@@ -14,7 +14,6 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -89,11 +88,10 @@ export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             <Trans i18nKey="Add new task" />
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <Form.Group>

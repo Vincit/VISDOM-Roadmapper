@@ -9,7 +9,6 @@ import {
   IntegrationConfigurationRequest,
 } from '../../redux/roadmaps/types';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -79,11 +78,10 @@ export const IntegrationConfigurationModal: React.FC<IntegrationConfigurationMod
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             {titleCase(name)} <Trans i18nKey="configuration" />
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           {roadmapName ? (

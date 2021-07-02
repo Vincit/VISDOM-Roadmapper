@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -44,11 +43,10 @@ export const UserAuthTokenModal: React.FC<ModalProps> = ({ closeModal }) => {
 
   return (
     <>
-      <ModalHeader>
+      <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Manage personal auth token" />
         </h3>
-        <ModalCloseButton onClick={closeModal} />
       </ModalHeader>
       <ModalContent>
         <div className="layoutRow" style={{ margin: '30px 0px', gap: '10px' }}>

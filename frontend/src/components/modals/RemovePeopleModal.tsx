@@ -6,7 +6,6 @@ import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -63,7 +62,7 @@ export const RemovePeopleModal: React.FC<RemovePeopleModalProps> = ({
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             {type === 'customer' ? (
               <Trans i18nKey="Remove client" />
@@ -71,7 +70,6 @@ export const RemovePeopleModal: React.FC<RemovePeopleModalProps> = ({
               <Trans i18nKey="Remove team member" />
             )}
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <div className="modalCancelContent">

@@ -8,7 +8,6 @@ import { StoreDispatchType } from '../../redux';
 import { versionsActions } from '../../redux/versions';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -52,14 +51,13 @@ export const EditVersionModal: React.FC<EditVersionModalProps> = ({
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <div className={classes(css.headerDiv)}>
             <h3>
               <Trans i18nKey="Change milestone name" />
             </h3>
             <SettingsSharpIcon />
           </div>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.formDiv)}>
