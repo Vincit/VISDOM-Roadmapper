@@ -186,5 +186,6 @@ export const english = {
     workValueTitle: 'Work / Value',
     customerStakesTitle: 'Customer stakes in milestone',
     unratedTaskMessage: 'Waiting for ratings',
+    'Optional message': 'Optional message',
   },
 };

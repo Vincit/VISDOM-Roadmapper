@@ -306,6 +306,18 @@ const patchIntegrationConfiguration = async (
   return response.data as IntegrationConfiguration;
 };
 
+const sendNotification = async (
+  users: number[],
+  task: Task,
+  message: string,
+) => {
+  const response = await axios.post(
+    `roadmaps/${task.roadmapId}/tasks/${task.id}/notify`,
+    { users, message },
+  );
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -342,4 +354,5 @@ export const api = {
   swapIntegrationOAuthToken,
   addIntegrationConfiguration,
   patchIntegrationConfiguration,
+  sendNotification,
 };

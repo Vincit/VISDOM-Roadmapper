@@ -1,0 +1,16 @@
+@import '../../shared.scss';
+
+.subtitle {
+  @extend .typography-pre-title;
+  color: $COLOR_AZURE;
+}
+
+.message {
+  @extend .subtitle;
+  margin-top: 20px;
+}
+
+hr {
+  color: $COLOR_BLACK5;
+  width: 458px;
+}
