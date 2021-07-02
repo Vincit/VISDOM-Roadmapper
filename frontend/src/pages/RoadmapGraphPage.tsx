@@ -101,9 +101,11 @@ export const RoadmapGraphPage = () => {
         <h2 className={classes(css.graphTitle, css.lowerGraphTitle)}>
           Customers stakes in milestone
         </h2>
-        {selectedVersion && (
-          <TaskValueCreatedVisualization version={selectedVersion} />
-        )}
+        <div className={classes(css.stakesContainer)}>
+          {roadmapsVersions?.map((ver) => (
+            <TaskValueCreatedVisualization version={ver} />
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,32 +1,36 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
+import classNames from 'classnames';
+import Tooltip from '@material-ui/core/Tooltip';
 import { allCustomersSelector } from '../redux/roadmaps/selectors';
 import { Customer } from '../redux/roadmaps/types';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
+import { Dot } from './Dot';
+import { totalValueAndWork } from '../utils/TaskUtils';
 import css from './TaskValueCreatedVisualization.module.scss';
 
-export interface TaskValueCreatedVisualizationProps {
-  version: Version;
-}
+const classes = classNames.bind(css);
 
 export interface DataPoint {
+  id: number;
   name: string;
   value: number;
   color: string;
 }
 
-export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizationProps> = ({
-  version,
-}) => {
+export const TaskValueCreatedVisualization: React.FC<{
+  version: Version;
+}> = ({ version }) => {
   const customers = useSelector<RootState, Customer[] | undefined>(
     allCustomersSelector,
     shallowEqual,
   );
   let totalValue = 0;
   const customerStakes = new Map<Customer, number>();
+  const { work } = totalValueAndWork(version.tasks);
+  const w = Math.max(100, 60 * (work / 5));
 
   // Calculate total sum of task values in the milestone
   // And map values of how much each user has rated in these tasks
@@ -45,13 +49,13 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
   });
 
   // Format for recharts
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   const data: DataPoint[] = Array.from(customerStakes)
     .sort((a, b) => b[1] - a[1])
-    .map(([key, value], index) => ({
+    .map(([key, value]) => ({
+      id: key.id,
       name: key.name,
       value,
-      color: key.color || COLORS[index % COLORS.length],
+      color: key.color,
     }));
 
   const valuePercent = (value: number) => {
@@ -62,44 +66,45 @@ export const TaskValueCreatedVisualization: React.FC<TaskValueCreatedVisualizati
     })}%`;
   };
 
-  const tooltip = ({
-    payload,
-    active,
-  }: {
-    payload: DataPoint[];
-    active: boolean;
-  }) =>
-    active ? (
-      <div className="tooltip-base">
-        {`${payload[0].name} : ${valuePercent(payload[0].value)}`}
-      </div>
-    ) : null;
+  const largestValue = (stakes: DataPoint[]) => {
+    if (!stakes.length) return 0;
+    return stakes[0].value / totalValue;
+  };
 
   return (
-    <div className={css.container}>
-      <h3 className={css.taskTitle}>{version.name}</h3>
-      <PieChart width={450} height={200}>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          fill="#8884d8"
-          dataKey="value"
-          isAnimationActive={false}
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
-          ))}
-        </Pie>
-        <Tooltip content={tooltip} allowEscapeViewBox={{ x: true, y: true }} />
-        <Legend
-          align="right"
-          verticalAlign="middle"
-          layout="vertical"
-          width={200}
-        />
-      </PieChart>
+    <div
+      className={classes(css.stakes)}
+      style={{
+        ['--version-width' as any]: `${w}px`,
+        ['--largest-dot-size' as any]: largestValue(data),
+        ['--max-diameter-multiplier' as any]: Math.min(
+          2,
+          Math.max(1, (data?.length || 0) * 0.3),
+        ),
+      }}
+    >
+      {data.map((entry) => (
+        <div key={entry.id}>
+          <Tooltip
+            classes={{
+              arrow: classes(css.tooltipArrow),
+              tooltip: classes(css.tooltip),
+            }}
+            title={`${entry.name} : ${valuePercent(entry.value)}`}
+            placement="right"
+            arrow
+          >
+            <div
+              className={classes(css.dotContainer)}
+              style={{
+                ['--dot-size' as any]: Math.max(0.2, entry.value / totalValue),
+              }}
+            >
+              <Dot fill={entry.color} />
+            </div>
+          </Tooltip>
+        </div>
+      ))}
     </div>
   );
 };

@@ -175,8 +175,8 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
                   <div key={customer.id}>
                     <Tooltip
                       classes={{
-                        arrow: classNames(css.tooltipArrow),
-                        tooltip: classNames(css.tooltip),
+                        arrow: classes(css.tooltipArrow),
+                        tooltip: classes(css.tooltip),
                       }}
                       title={customer.name}
                       placement="top"

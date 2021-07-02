@@ -313,6 +313,15 @@ form {
   margin: 0px 10px;
 }
 
+.tooltip {
+  @extend .tooltip-base;
+  margin: 0px 0px 10px 0px;
+}
+
+.tooltipArrow {
+  color: white;
+}
+
 @mixin landing-content-padding {
   padding-left: max(calc((100% - 1000px) / 2), 8vw);
   padding-right: max(calc((100% - 1000px) / 2), 8vw);
