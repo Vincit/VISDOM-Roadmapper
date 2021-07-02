@@ -6,6 +6,7 @@ import ForumIcon from '@material-ui/icons/ForumOutlined';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
+import CloseIcon from '@material-ui/icons/Close';
 
 import colors from '../../colors.module.scss';
 import css from './SvgButton.module.scss';
@@ -64,3 +65,6 @@ export const DeleteButton: SvgButton<{
   );
   return <Type {...props} />;
 };
+export const ModalCloseButton = svgButton(CloseIcon, {
+  className: classes(css.closeButton),
+});

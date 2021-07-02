@@ -13,7 +13,6 @@ import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -65,11 +64,10 @@ export const EditTeamMemberModal: React.FC<EditTeamMemberModalProps> = ({
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             <Trans i18nKey="Modify team members" />
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.section, css.memberSection)}>
