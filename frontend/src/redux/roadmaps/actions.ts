@@ -500,3 +500,16 @@ export const removeTaskFromVersion = createAsyncThunk<
     }
   },
 );
+
+export const notifyUsers = createAsyncThunk<
+  boolean,
+  { users: number[]; task: Task; message: string },
+  { rejectValue: AxiosError }
+>('notify', async (notificationRequest, thunkAPI) => {
+  const { users, task, message } = notificationRequest;
+  try {
+    return await api.sendNotification(users, task, message);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});

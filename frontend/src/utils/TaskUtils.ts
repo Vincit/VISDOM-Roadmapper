@@ -398,17 +398,12 @@ export const findMissingCustomers = (
   taskRatings: Taskrating[],
   customers: Customer[],
 ) => {
-  const ratings = taskRatings.map((rating) => ({
-    createdByUser: rating.createdByUser,
-    forCustomer: rating.forCustomer,
-  }));
   return customers?.filter((customer) => {
-    const representativeIds = customer?.representatives?.map((rep) => rep.id);
-    return !representativeIds?.every((rep) => {
-      return ratings.some((rating) => {
-        if (rating.createdByUser === rep && rating.forCustomer === customer.id)
-          return true;
-        return false;
+    return !customer.representatives?.every((rep) => {
+      return taskRatings.some((rating) => {
+        return (
+          rating.createdByUser === rep.id && rating.forCustomer === customer.id
+        );
       });
     });
   });

@@ -24,6 +24,7 @@ export enum ModalTypes {
   USER_AUTH_TOKEN_MODAL = 'USER_AUTH_TOKEN_MODAL',
   ADD_ROADMAP_MODAL = 'ADD_ROADMAP_MODAL',
   DELETE_ROADMAP_MODAL = 'DELETE_ROADMAP_MODAL',
+  NOTIFY_USERS_MODAL = 'NOTIFY_USERS_MODAL',
 }
 
 type OwnProps = {
@@ -66,6 +67,7 @@ type OwnProps = {
   [ModalTypes.DELETE_ROADMAP_MODAL]: {
     id: number;
   };
+  [ModalTypes.NOTIFY_USERS_MODAL]: { taskId: number };
 };
 
 type Props = {
