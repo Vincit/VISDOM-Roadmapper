@@ -4,7 +4,7 @@ import Integration from './integration.model';
 import Task from '../tasks/tasks.model';
 import Token from '../tokens/tokens.model';
 import Roadmap from '../roadmaps/roadmaps.model';
-import { getIntegration } from '../integration';
+import { getIntegration, InvalidTokenError } from '../integration';
 
 const integrationConfig = async (name: string, roadmapId: number) => {
   const config = await Integration.query().where({ name, roadmapId }).first();
@@ -24,7 +24,7 @@ const integrationTokens = async (config: Integration, userId: number) => {
     ({ type }) => type === 'access_token_secret',
   );
   if (!accessToken || !accessTokenSecret) {
-    throw 'Missing tokens.';
+    throw new InvalidTokenError('Missing tokens.');
   }
   return {
     accessToken: accessToken.value,
@@ -175,10 +175,9 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
     ctx.body = await provider.authorizationURL();
     ctx.status = 200;
   } catch (error) {
-    ctx.body = {
-      error: `Error in getting ${ctx.params.integrationName} OAuth authorization URL: ${error}`,
-    };
-    ctx.status = 500;
+    throw new Error(
+      `Error in getting ${ctx.params.integrationName} OAuth authorization URL: ${error}`,
+    );
   }
 };
 
@@ -199,7 +198,7 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
     });
 
     if (!newToken) {
-      throw 'Empty response on authorization token swap.';
+      throw new Error('Empty response on authorization token swap.');
     }
 
     const userId = ctx.state.user.id;
@@ -245,7 +244,6 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
     ctx.body = 'OAuth token swapped successfully.';
   } catch (error) {
     console.log('Controller error on OAuth URL creation:', error);
-    ctx.status = 500;
-    ctx.body = 'Exception is OAuth token swap.';
+    throw new Error('Error in OAuth token swap.');
   }
 };

@@ -7,6 +7,7 @@ import {
   NotNullViolationError,
 } from 'objection';
 import { ForbiddenError } from './checkPermissions';
+import { InvalidTokenError } from '../api/integration';
 
 // clean up column name e.g. "lower(username::text)" => "username"
 export const cleanColumnName = (column: string) =>
@@ -65,6 +66,12 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
     } else if (err instanceof ForbiddenError) {
       ctx.status = 403;
       ctx.body = err.message;
+    } else if (err instanceof InvalidTokenError) {
+      ctx.status = 401;
+      ctx.body = {
+        error: 'InvalidTokenError',
+        message: err.message,
+      };
     } else {
       console.log(err);
 
