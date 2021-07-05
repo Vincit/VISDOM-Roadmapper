@@ -32,6 +32,8 @@ export interface OAuthProvider {
   }): Promise<string>;
 }
 
+export class InvalidTokenError extends Error {}
+
 export interface IntegrationProvider {
   boards(): Promise<{ id: string; name: string }[]>;
   labels(boardId: string): Promise<string[]>;

@@ -8,6 +8,7 @@ import {
   IntegrationProvider,
   IntegrationEntry,
   IntegrationConfig,
+  InvalidTokenError,
 } from '../integration';
 
 const PRIVATE_KEY_EXPORT_FORMAT = 'pkcs1';
@@ -96,7 +97,7 @@ class JiraImporter implements IntegrationProvider {
   }
 
   async boards() {
-    const response = await this.api.getAllBoards();
+    const response = await this.api.getAllBoards().catch(this.errorHandler);
     return (response.values as any[]).map((board) => ({
       id: `${board.id}`,
       name: board.name as string,
@@ -104,7 +105,9 @@ class JiraImporter implements IntegrationProvider {
   }
 
   async labels(boardId: string) {
-    const response = await this.api.getIssuesForBoard(boardId);
+    const response = await this.api
+      .getIssuesForBoard(boardId)
+      .catch(this.errorHandler);
     const labels: string[] = response.issues.flatMap(
       (issue: any): string[] => issue.fields.labels,
     );
@@ -112,7 +115,9 @@ class JiraImporter implements IntegrationProvider {
   }
 
   async tasks(boardId: string, filters?: TaskFilters) {
-    const boardissues = await this.api.getIssuesForBoard(boardId);
+    const boardissues = await this.api
+      .getIssuesForBoard(boardId)
+      .catch(this.errorHandler);
     const tasks = (boardissues.issues as any[])
       .filter(this.importFilter(filters))
       .map(
@@ -133,5 +138,11 @@ class JiraImporter implements IntegrationProvider {
     if (include.size === 0) return (_: any) => true;
     return (issue: any) =>
       (issue.fields.labels || []).some((label: string) => include.has(label));
+  }
+
+  private errorHandler(err: any): never {
+    if (err.statusCode === 401 && /token/i.test(err.error))
+      throw new InvalidTokenError(err.error);
+    throw err;
   }
 }
