@@ -14,18 +14,6 @@ enum IndicatorState {
   upcomingStep = 1,
 }
 
-interface StepIndicatorProps {
-  step: number;
-  currentStep: number;
-  maxStep: number;
-  description: string;
-  onClick?: () => void;
-}
-
-interface StepIndicatorContentProps extends StepIndicatorProps {
-  state: IndicatorState;
-}
-
 const getIndicatorState = (step: number, currentStep: number) => {
   const difference = step - currentStep;
   if (difference <= IndicatorState.pastStep) return IndicatorState.pastStep;
@@ -50,58 +38,38 @@ const StepIcon: React.FC<{
   </div>
 );
 
-const StepIndicatorContent: React.FC<StepIndicatorContentProps> = ({
-  step,
-  state,
-  maxStep,
-  description,
-}) => (
-  <div
-    className={classes(css.stepIndicator, {
-      [css.past]: state === IndicatorState.pastStep,
-      [css.upcoming]: state === IndicatorState.upcomingStep,
-    })}
-  >
-    <div className={classes(css.topStepRow)}>
-      <StepIcon state={state} />
-      {step !== maxStep && <div className={classes(css.line)} />}
-    </div>
-    <div className={classes(css.bottomStepRow)}>
-      <div className={classes(css.stepLabel)}>Step {step}</div>
-      <Trans i18nKey={description} />
-    </div>
-  </div>
-);
-
-export const StepIndicator: React.FC<StepIndicatorProps> = ({
-  step,
-  currentStep,
-  maxStep,
-  description,
-  onClick,
-}) => {
+export const StepIndicator: React.FC<{
+  step: number;
+  currentStep: number;
+  maxStep: number;
+  description: string;
+  onClick?: () => void;
+}> = ({ step, currentStep, maxStep, description, onClick }) => {
   const state = getIndicatorState(step, currentStep);
+
+  const content = (
+    <div
+      className={classes(css.stepIndicator, {
+        [css.past]: state === IndicatorState.pastStep,
+        [css.upcoming]: state === IndicatorState.upcomingStep,
+      })}
+    >
+      <div className={classes(css.topStepRow)}>
+        <StepIcon state={state} />
+        {step !== maxStep && <div className={classes(css.line)} />}
+      </div>
+      <div className={classes(css.bottomStepRow)}>
+        <div className={classes(css.stepLabel)}>Step {step}</div>
+        <Trans i18nKey={description} />
+      </div>
+    </div>
+  );
+
   if (state === IndicatorState.pastStep)
     return (
       <div onClick={onClick} onKeyPress={onClick} role="button" tabIndex={0}>
-        <StepIndicatorContent
-          step={step}
-          currentStep={currentStep}
-          maxStep={maxStep}
-          state={state}
-          description={description}
-        />
+        {content}
       </div>
     );
-  return (
-    <div>
-      <StepIndicatorContent
-        step={step}
-        currentStep={currentStep}
-        maxStep={maxStep}
-        state={state}
-        description={description}
-      />
-    </div>
-  );
+  return <div>{content}</div>;
 };
