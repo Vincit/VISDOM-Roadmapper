@@ -21,7 +21,7 @@
   color: $COLOR_EMERALD;
 }
 
-.unratedTableContainer {
+.unratedTableContainer:not(:empty) {
   margin-bottom: 50px;
 }
 

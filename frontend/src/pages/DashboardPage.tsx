@@ -6,7 +6,7 @@ import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
 import { TaskHeatmap } from '../components/TaskHeatmap';
-import { TaskTableUnrated } from '../components/TaskTableUnrated';
+import { TaskTableUnrated } from '../components/TaskTable';
 import { StoreDispatchType } from '../redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';

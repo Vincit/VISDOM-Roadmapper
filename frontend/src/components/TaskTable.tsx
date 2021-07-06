@@ -17,7 +17,7 @@ import {
   sortTasks,
   tasksThatRequireRating,
 } from '../utils/TaskUtils';
-import css from './TaskTableUnrated.module.scss';
+import css from './TaskTable.module.scss';
 import { TableRatedTaskRow } from './TableRatedTaskRow';
 import {
   chosenRoadmapSelector,
@@ -248,6 +248,7 @@ export const TaskTableRated: React.FC<{
       sorting: SortingTypes.SORT_TOTAL_WORK,
       width: '1em',
     },
+    { label: 'Status', sorting: SortingTypes.SORT_STATUS },
   ];
 
   return (

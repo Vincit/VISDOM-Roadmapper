@@ -47,6 +47,17 @@ export const TableRatedTaskRow: React.FC<TableTaskRowRatedProps> = ({
       <td className={`styledTd ${classes(css.ratedTd)}`}>
         {Math.round(calcTaskWorkSum(task) * 10 || 0) / 10}
       </td>
+      <td className={`styledTd ${classes(css.ratedTd)}`}>
+        {task.completed ? (
+          <p className={`typography-pre-title ${classes(css.statusComplete)}`}>
+            Completed
+          </p>
+        ) : (
+          <p className={`typography-pre-title ${classes(css.statusUnordered)}`}>
+            Unordered
+          </p>
+        )}
+      </td>
       <td className={`styledTd textAlignEnd ${classes(css.ratedButtons)}`}>
         <div className={classes(css.buttonWrapper)}>
           {/* To do: Component for single task and path for it */}
