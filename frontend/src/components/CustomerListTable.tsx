@@ -19,7 +19,7 @@ import {
   SortingOrders,
   CustomerSortingTypes,
   sortCustomers,
-} from '../utils/CustomerUtils';
+} from '../utils/SortCustomerUtils';
 import css from '../pages/PeopleListPage.module.scss';
 
 const classes = classNames.bind(css);

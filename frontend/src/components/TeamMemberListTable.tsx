@@ -12,8 +12,11 @@ import {
 } from '../redux/roadmaps/selectors';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { SortingOrders } from '../utils/CustomerUtils';
-import { UserSortingTypes, sortRoadmapUsers } from '../utils/RoadmapUserUtils';
+import { SortingOrders } from '../utils/SortCustomerUtils';
+import {
+  UserSortingTypes,
+  sortRoadmapUsers,
+} from '../utils/SortRoadmapUserUtils';
 import { RoleType } from '../../../shared/types/customTypes';
 
 interface TeamMemberTableHeader {
