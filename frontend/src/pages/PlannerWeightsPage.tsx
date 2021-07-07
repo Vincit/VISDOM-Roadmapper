@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { Slider } from '../components/forms/Slider';
 import {
@@ -19,6 +19,7 @@ import { TooltipIcon } from '../components/forms/TooltipIcon';
 const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const customerWeights = useSelector<RootState, PlannerCustomerWeight[]>(
     plannerCustomerWeightsSelector(),
@@ -52,7 +53,7 @@ export const PlannerWeightsPage = () => {
         <h2 className={classes(css.title)}>
           <Trans i18nKey="Set different weighing for clients" />
         </h2>
-        <TooltipIcon title={'Test tooltip message'}>
+        <TooltipIcon title={t('tooltipMessage')}>
           <InfoIcon className={classes(css.tooltipInfoIcon, css.infoIcon)} />
         </TooltipIcon>
       </div>
