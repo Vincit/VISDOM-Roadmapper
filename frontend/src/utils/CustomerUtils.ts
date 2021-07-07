@@ -3,7 +3,13 @@ import {
   Customer,
   PlannerCustomerWeight,
   CheckableUser,
+  RoadmapUser,
 } from '../redux/roadmaps/types';
+import { UserInfo } from '../redux/user/types';
+
+export const isCustomer = (
+  user: Customer | RoadmapUser | UserInfo,
+): user is Customer => 'representatives' in user;
 
 export const customerWeight = (
   { id, weight }: Customer,

@@ -22,7 +22,7 @@ import {
   roadmapUsersSelector,
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
-import { taskAwaitsRatings } from '../utils/TaskUtils';
+import { isUnrated } from '../utils/TaskUtils';
 import {
   DeleteButton,
   EditButton,
@@ -232,7 +232,7 @@ export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       </td>
       <td className="styledTd">{new Date(createdAt).toLocaleDateString()}</td>
       <td className="styledTd textAlignEnd nowrap" style={{ width: '202px' }}>
-        {taskAwaitsRatings(task, userInfo) && (
+        {userInfo && isUnrated(userInfo)(task) && (
           <a
             href={modalLink(ModalTypes.TASK_RATINGS_INFO_MODAL, {
               taskId: task.id,

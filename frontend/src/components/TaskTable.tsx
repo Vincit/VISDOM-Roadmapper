@@ -20,7 +20,7 @@ import {
   SortingOrders,
   SortingTypes,
   sortTasks,
-  taskAwaitsRatings,
+  isUnrated,
 } from '../utils/TaskUtils';
 import { titleCase } from '../utils/string';
 import { getType } from '../utils/UserUtils';
@@ -116,9 +116,8 @@ export const TaskTable: React.FC<{
 
   // Return tasks that are not rated by logged in user
   const getUnratedTasks: () => Task[] = () => {
-    return getRenderTaskList().filter((task) =>
-      taskAwaitsRatings(task, userInfo),
-    );
+    if (!userInfo) return [];
+    return getRenderTaskList().filter(isUnrated(userInfo));
   };
 
   // Compare all tasks to given array of tasks and return the difference
