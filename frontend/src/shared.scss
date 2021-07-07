@@ -437,3 +437,14 @@ a.green {
   }
   cursor: help;
 }
+
+.tooltipInfoIcon {
+  path {
+    fill: $COLOR_EMERALD;
+    transition: 150ms ease-out;
+  }
+  &:hover path {
+    fill: $COLOR_FOREST;
+  }
+  cursor: help;
+}
