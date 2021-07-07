@@ -23,7 +23,6 @@ export enum CustomerSortingTypes {
 
 const customerCompare = (
   sortingType: CustomerSortingTypes,
-  tasks: Task[],
   plannedWeights?: PlannerCustomerWeight[],
 ): SortComparison<Customer> | undefined => {
   switch (sortingType) {
@@ -37,8 +36,6 @@ const customerCompare = (
       );
     case CustomerSortingTypes.SORT_COLOR:
       return sortKeyLocale(({ color }) => color || '');
-    case CustomerSortingTypes.SORT_UNRATED:
-      return sortKeyNumeric((customer) => unratedTasksAmount(customer, tasks));
     default:
       // SortingTypes.NO_SORT
       break;
@@ -51,4 +48,19 @@ export const sortCustomers = (
   order: SortingOrders,
   tasks: Task[],
   plannedWeights?: PlannerCustomerWeight[],
-) => sorted(customers, customerCompare(type, tasks, plannedWeights), order);
+) => {
+  if (type === CustomerSortingTypes.SORT_UNRATED) {
+    // use decorate-sort-undecorate pattern
+    const decorated = customers.map((customer) => ({
+      key: unratedTasksAmount(customer, tasks),
+      customer,
+    }));
+    const sortedUsers = sorted(
+      decorated,
+      sortKeyNumeric(({ key }) => key),
+      order,
+    );
+    return sortedUsers.map(({ customer }) => customer);
+  }
+  return sorted(customers, customerCompare(type, plannedWeights), order);
+};

@@ -21,8 +21,6 @@ export enum UserSortingTypes {
 
 const userCompare = (
   sortingType: UserSortingTypes,
-  tasks: Task[],
-  customers?: Customer[],
 ): SortComparison<RoadmapUser> | undefined => {
   switch (sortingType) {
     case UserSortingTypes.SORT_NAME:
@@ -31,10 +29,6 @@ const userCompare = (
       return sortKeyLocale(({ email }) => email);
     case UserSortingTypes.SORT_ROLE:
       return sortKeyLocale(({ type }) => RoleType[type]);
-    case UserSortingTypes.SORT_UNRATED:
-      return sortKeyNumeric((user) =>
-        unratedTasksAmount(user, tasks, customers),
-      );
     default:
       // SortingTypes.NO_SORT
       break;
@@ -47,4 +41,19 @@ export const sortRoadmapUsers = (
   order: SortingOrders,
   tasks: Task[],
   customers?: Customer[],
-) => sorted(users, userCompare(type, tasks, customers), order);
+) => {
+  if (type === UserSortingTypes.SORT_UNRATED) {
+    // use decorate-sort-undecorate pattern
+    const decorated = users.map((user) => ({
+      key: unratedTasksAmount(user, tasks, customers),
+      user,
+    }));
+    const sortedUsers = sorted(
+      decorated,
+      sortKeyNumeric(({ key }) => key),
+      order,
+    );
+    return sortedUsers.map(({ user }) => user);
+  }
+  return sorted(users, userCompare(type), order);
+};
