@@ -145,5 +145,8 @@ export const english = {
     Developer: 'Developer',
     Businessperson: 'Businessperson',
     Admin: 'Admin',
+    tooltipMessage: 'Tooltip message placeholder',
+    workValueTitle: 'Work / Value',
+    customerStakesTitle: 'Customer stakes in milestone'
   },
 };
