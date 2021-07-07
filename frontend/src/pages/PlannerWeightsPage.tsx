@@ -13,6 +13,8 @@ import { Dot } from '../components/Dot';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import css from './PlannerWeightsPage.module.scss';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { TooltipIcon } from '../components/forms/TooltipIcon';
 
 const classes = classNames.bind(css);
 
@@ -46,9 +48,14 @@ export const PlannerWeightsPage = () => {
 
   return (
     <div className={classes(css.plannerPagecontainer)}>
-      <h2 className={classes(css.title)}>
-        <Trans i18nKey="Set different weighing for clients" />
-      </h2>
+      <div className={classes(css.titleContainer)}>
+        <h2 className={classes(css.title)}>
+          <Trans i18nKey="Set different weighing for clients" />
+        </h2>
+        <TooltipIcon title={'Test tooltip message'}>
+          <InfoIcon className={classes(css.tooltipInfoIcon, css.infoIcon)} />
+        </TooltipIcon>
+      </div>
       {customers?.map(({ id, name, color }) => (
         <div className={classes(css.userRow)} key={id}>
           <div className={classes(css.customerDot)}>

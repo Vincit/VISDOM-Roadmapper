@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
@@ -18,6 +19,8 @@ import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import { getType } from '../utils/UserUtils';
+import { TooltipIcon } from '../components/forms/TooltipIcon';
+
 import css from './DashboardPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -28,6 +31,7 @@ interface VersionListsObject {
 const ROADMAP_LIST_ID = '-1';
 
 export const DashboardPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -121,9 +125,15 @@ export const DashboardPage = () => {
         </div>
       )}
       <div className={classes(css.taskTableWrapper)}>
-        <p className={classes(css.header)}>
-          <Trans i18nKey="Unrated tasks" />
-        </p>
+        <div className={classes(css.titleContainer)}>
+          <h2 className={classes(css.title)}>
+            <Trans i18nKey="Unrated tasks" />
+          </h2>
+          <TooltipIcon title={t('tooltipMessage')}>
+            <InfoIcon className={classes(css.tooltipInfoIcon, css.infoIcon)} />
+          </TooltipIcon>
+        </div>
+
         <TaskTable tasks={getUnratedTasks()} nofilter />
       </div>
     </>

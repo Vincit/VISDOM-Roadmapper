@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import ListIcon from '@material-ui/icons/List';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import { totalValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
+import { TooltipIcon } from '../components/forms/TooltipIcon';
 import css from './RoadmapGraphPage.module.scss';
 import {
   BusinessValueFilled,
@@ -16,6 +19,7 @@ import {
 const classes = classNames.bind(css);
 
 export const RoadmapGraphPage = () => {
+  const { t } = useTranslation();
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
     roadmapsVersionsSelector,
     shallowEqual,
@@ -36,7 +40,14 @@ export const RoadmapGraphPage = () => {
   return (
     <div className={classes(css.plannerPagecontainer)}>
       <div className={classes(css.graphOuter)}>
-        <h2 className={classes(css.graphTitle)}>Work / Value</h2>
+        <div className={classes(css.titleContainer)}>
+          <h2 className={classes(css.graphTitle)}>{t('workValueTitle')}</h2>
+          <TooltipIcon title={t('tooltipMessage')}>
+            <InfoIcon
+              className={classes(css.tooltipInfoIcon, css.graphInfoIcon)}
+            />
+          </TooltipIcon>
+        </div>
         <div className={classes(css.graphInner)}>
           <div className={classes(css.graphItems)}>
             {roadmapsVersions?.map((ver) => {
@@ -98,9 +109,19 @@ export const RoadmapGraphPage = () => {
       <p className={classes(css.graphLabel, css.vertical)}>Total value</p>
 
       <div className={classes(css.footer)}>
-        <h2 className={classes(css.graphTitle, css.lowerGraphTitle)}>
-          Customers stakes in milestone
-        </h2>
+        <div
+          className={classes(css.titleContainer, css.lowerGraphTitleContainer)}
+        >
+          <h2 className={classes(css.graphTitle)}>
+            {t('customerStakesTitle')}
+          </h2>
+          <TooltipIcon title={t('tooltipMessage')}>
+            <InfoIcon
+              className={classes(css.tooltipInfoIcon, css.graphInfoIcon)}
+            />
+          </TooltipIcon>
+        </div>
+
         {selectedVersion && (
           <TaskValueCreatedVisualization version={selectedVersion} />
         )}
