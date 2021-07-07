@@ -323,9 +323,9 @@ export const tasksThatRequireRating: (
   currentRoadmap?: Roadmap,
 ) => Task[] | undefined = (tasks, allUsers, userInfo, currentRoadmap) => {
   const type = getType(userInfo?.roles, currentRoadmap?.id);
-  const allCustomers = currentRoadmap?.customers;
 
   if (type === RoleType.Admin) {
+    const allCustomers = currentRoadmap?.customers;
     const developers = allUsers?.filter(
       (user) => user.type === RoleType.Developer,
     );
@@ -354,10 +354,4 @@ export const tasksThatRequireRating: (
     });
     return unrated;
   }
-
-  if (type !== RoleType.Admin)
-    return tasks.filter(
-      (task) =>
-        !task.ratings.find((rating) => rating.createdByUser === userInfo?.id),
-    );
 };

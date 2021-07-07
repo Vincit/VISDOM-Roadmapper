@@ -15,8 +15,11 @@ import {
   SortingOrders,
   SortingTypes,
   sortTasks,
-  tasksThatRequireRating,
+  taskAwaitsRatings,
+  unratedProductOwnerTasks,
 } from '../utils/TaskUtils';
+import { RoleType } from '../../../shared/types/customTypes';
+import { getType } from '../utils/UserUtils';
 import css from './TaskTable.module.scss';
 import { TableRatedTaskRow } from './TableRatedTaskRow';
 import {
@@ -158,10 +161,16 @@ export const TaskTableUnrated: React.FC<{
   const [taskList, setTaskList] = useState<Task[] | undefined>([]);
 
   useEffect(() => {
-    if (userInfo && currentRoadmap && allUsers)
-      setTaskList(
-        tasksThatRequireRating(tasks, allUsers, userInfo, currentRoadmap),
-      );
+    const type = getType(userInfo?.roles, currentRoadmap?.id);
+    if (type === RoleType.Admin) {
+      if (userInfo && currentRoadmap && allUsers)
+        setTaskList(
+          unratedProductOwnerTasks(tasks, allUsers, userInfo, currentRoadmap),
+        );
+    }
+    if (type === RoleType.Developer || type === RoleType.Business) {
+      setTaskList(tasks.filter((task) => taskAwaitsRatings(task, userInfo)));
+    }
   }, [allUsers, currentRoadmap, tasks, userInfo]);
 
   const tableHeaders: TableHeader[] = [
@@ -221,10 +230,16 @@ export const TaskTableRated: React.FC<{
   const [taskList, setTaskList] = useState<Task[] | undefined>([]);
 
   useEffect(() => {
-    if (userInfo && currentRoadmap && allUsers)
-      setTaskList(
-        tasksThatRequireRating(tasks, allUsers, userInfo, currentRoadmap),
-      );
+    const type = getType(userInfo?.roles, currentRoadmap?.id);
+    if (type === RoleType.Admin) {
+      if (userInfo && currentRoadmap && allUsers)
+        setTaskList(
+          unratedProductOwnerTasks(tasks, allUsers, userInfo, currentRoadmap),
+        );
+    }
+    if (type === RoleType.Developer || type === RoleType.Business) {
+      setTaskList(tasks.filter((task) => taskAwaitsRatings(task, userInfo)));
+    }
   }, [allUsers, currentRoadmap, tasks, userInfo]);
 
   const getRemainingTasks: (passedTasks: Task[]) => Task[] = (
