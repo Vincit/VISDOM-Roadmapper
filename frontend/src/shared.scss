@@ -406,6 +406,12 @@ textarea {
   }
 }
 
+.customerCircle {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+}
+
 .modalCancelContent,
 .modalDoneContent {
   display: flex;
@@ -425,17 +431,6 @@ a.green {
   &:hover {
     color: $COLOR_FOREST;
   }
-}
-
-.tooltipInfoIcon {
-  path {
-    fill: $COLOR_EMERALD;
-    transition: 150ms ease-out;
-  }
-  &:hover path {
-    fill: $COLOR_FOREST;
-  }
-  cursor: help;
 }
 
 .tooltipInfoIcon {
