@@ -105,6 +105,8 @@ export const english = {
       'Please read and accept the terms of use and privacy policy.',
     'Password type error': 'Password should contain at least 8 characters.',
     'Password confirmation error': 'Passwords do not match.',
+    'Invalid Oauth token error':
+      'Invalid or missing Oauth token, please configure Oauth first.',
     'Terms of use':
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
     'Internal server error': 'Internal server error',
