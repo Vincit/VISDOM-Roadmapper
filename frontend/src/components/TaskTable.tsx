@@ -14,6 +14,8 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
+import { TooltipIcon } from '../components/forms/TooltipIcon';
+
 import {
   filterTasks,
   FilterTypes,
@@ -360,10 +362,20 @@ export const TaskTable: React.FC<{
         <div>
           {getWaitingLength() > 0 && (
             <div className={classes(css.tableContainer)}>
-              <h2 className={classes(css.tableHeader)}>
-                Waiting for ratings ({getWaitingLength()})
-                <InfoIcon className={classes(css.infoIcon)} />
-              </h2>
+              <div className={classes(css.titleContainer)}>
+                <h2 className={classes(css.tableHeader)}>
+                  <Trans
+                    i18nKey="unratedTaskMessage"
+                    count={getWaitingLength()}
+                  />
+                  <TooltipIcon title={t('tooltipMessage')}>
+                    <InfoIcon
+                      className={classes(css.tooltipInfoIcon, css.infoIcon)}
+                    />
+                  </TooltipIcon>
+                </h2>
+              </div>
+
               {renderUnratedTasks()}
             </div>
           )}

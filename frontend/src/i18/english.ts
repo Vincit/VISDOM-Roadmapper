@@ -147,6 +147,7 @@ export const english = {
     Admin: 'Admin',
     tooltipMessage: 'Tooltip message placeholder',
     workValueTitle: 'Work / Value',
-    customerStakesTitle: 'Customer stakes in milestone'
+    customerStakesTitle: 'Customer stakes in milestone',
+    unratedTaskMessage: 'Waiting for ratings ({{count}})'
   },
 };
