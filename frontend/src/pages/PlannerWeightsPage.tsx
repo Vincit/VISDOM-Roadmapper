@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { Slider } from '../components/forms/Slider';
 import {
@@ -21,6 +21,7 @@ import { TooltipIcon } from '../components/forms/TooltipIcon';
 const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const customerWeights = useSelector<RootState, PlannerCustomerWeight[]>(
     plannerCustomerWeightsSelector,
