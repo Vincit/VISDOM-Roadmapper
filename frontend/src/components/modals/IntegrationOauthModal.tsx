@@ -24,7 +24,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentConfiguration = useSelector(chosenIntegrationSelector(name))!;
+  const currentConfiguration = useSelector(chosenIntegrationSelector(name));
 
   const [formValues, setFormValues] = useState({
     token: '',
@@ -33,23 +33,20 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   });
 
   useEffect(() => {
+    if (!currentConfiguration) {
+      setErrorMessage(
+        `No ${titleCase(
+          name,
+        )} configuration found. Please configure ${titleCase(name)} first.`,
+      );
+      return;
+    }
     const getOAuthURL = async () => {
-      const id = currentConfiguration?.id;
-      if (id === undefined) {
-        setErrorMessage(
-          `No ${titleCase(
-            name,
-          )} configuration found. Please configure ${titleCase(name)} first.`,
-        );
-        return;
-      }
       try {
         const response = await api.getIntegrationOauthURL(name, roadmapId);
-        const { token, tokenSecret } = response;
-        setFormValues((prev) => {
-          return { ...prev, token, tokenSecret };
-        });
-        setOAuthURL(response.url);
+        const { url, token, tokenSecret } = response;
+        setFormValues((prev) => ({ ...prev, token, tokenSecret }));
+        setOAuthURL(url);
       } catch (error) {
         setErrorMessage(
           `Unable to query ${titleCase(
@@ -67,31 +64,34 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     event.preventDefault();
     event.stopPropagation();
 
-    if (form.checkValidity()) {
+    if (form.checkValidity() && currentConfiguration) {
       setIsLoading(true);
 
       const swapToken = async () => {
-        const success = await api.swapIntegrationOAuthToken(
-          name,
-          {
-            id: currentConfiguration.id,
-            verifierToken: formValues.oauthVerifierCode,
-            token: formValues.token,
-            tokenSecret: formValues.tokenSecret,
-          },
-          roadmapId,
-        );
-        setIsLoading(false);
-
-        if (success) {
-          closeModal();
-        } else {
+        try {
+          const success = await api.swapIntegrationOAuthToken(
+            name,
+            {
+              id: currentConfiguration.id,
+              verifierToken: formValues.oauthVerifierCode,
+              token: formValues.token,
+              tokenSecret: formValues.tokenSecret,
+            },
+            roadmapId,
+          );
+          if (success) {
+            closeModal(true);
+            return;
+          }
           setErrorMessage(
             `Unable to swap ${titleCase(
               name,
             )} OAuth token. Please contact an administrator if the problem persists.`,
           );
+        } catch (err) {
+          setErrorMessage(t('Internal server error'));
         }
+        setIsLoading(false);
       };
       swapToken();
     }
@@ -99,6 +99,38 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
 
   const onOAuthVerifierCodeChange = (oauthVerifierCode: string) => {
     setFormValues({ ...formValues, oauthVerifierCode });
+  };
+
+  const modalBody = () => {
+    if (isLoading || !oauthURL) return <LoadingSpinner />;
+    if (errorMessage) return null;
+    return (
+      <>
+        <label htmlFor="board">OAuth URL:</label>
+        <p>
+          Please visit{' '}
+          <a
+            href={oauthURL.toString()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            this URL
+          </a>{' '}
+          and input the code below:
+        </p>
+        <Form.Group>
+          <Input
+            autoComplete="off"
+            required
+            name="oauthVerifierCode"
+            id="oauthVerifierCode"
+            placeholder={t('OAuth verifier code')}
+            value={formValues.oauthVerifierCode}
+            onChange={(e) => onOAuthVerifierCodeChange(e.currentTarget.value)}
+          />
+        </Form.Group>
+      </>
+    );
   };
 
   return (
@@ -110,44 +142,8 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
           </h3>
         </ModalHeader>
         <ModalContent>
-          {isLoading || !oauthURL ? (
-            <LoadingSpinner />
-          ) : (
-            <>
-              <label htmlFor="board">OAuth URL:</label>
-              <p>
-                Please visit{' '}
-                <a
-                  href={oauthURL.toString()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  this URL
-                </a>{' '}
-                and input the code below:
-              </p>
-              <Form.Group>
-                <Input
-                  autoComplete="off"
-                  required
-                  name="oauthVerifierCode"
-                  id="oauthVerifierCode"
-                  placeholder={t('OAuth verifier code')}
-                  value={formValues.oauthVerifierCode}
-                  onChange={(e) =>
-                    onOAuthVerifierCodeChange(e.currentTarget.value)
-                  }
-                />
-              </Form.Group>
-            </>
-          )}
-
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
+          {modalBody()}
+          <Alert show={errorMessage.length > 0} variant="danger">
             {errorMessage}
           </Alert>
         </ModalContent>
@@ -155,14 +151,14 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
           <ModalFooterButtonDiv>
             <button
               className="button-large cancel"
-              onClick={closeModal}
+              onClick={() => closeModal()}
               type="button"
             >
               <Trans i18nKey="Cancel" />
             </button>
           </ModalFooterButtonDiv>
           <ModalFooterButtonDiv>
-            {formValues.oauthVerifierCode && !isLoading ? (
+            {!errorMessage && formValues.oauthVerifierCode && !isLoading ? (
               <button className="button-large" type="submit">
                 <Trans i18nKey="Save" />
               </button>
