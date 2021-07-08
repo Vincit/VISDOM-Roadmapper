@@ -1,4 +1,4 @@
-@import '../../shared.scss';
+@import '../../../shared.scss';
 
 .section {
   margin-bottom: 20px;
@@ -32,5 +32,8 @@
   .Business svg {
     width: 13.5px;
     height: 13.5px;
+  }
+  .disabled svg {
+    fill: $COLOR_BLACK40;
   }
 }

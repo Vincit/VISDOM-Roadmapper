@@ -25,7 +25,6 @@ import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TaskRatingWidget } from '../TaskRatingWidget';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -160,15 +159,14 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
     );
     const results = await Promise.all(promises);
     setIsLoading(false);
-    /* eslint-disable no-restricted-syntax */
-    for (const res of results) {
+    const hadError = results.some((res) => {
       if (roadmapsActions.addOrPatchTaskrating.rejected.match(res)) {
         if (res.payload?.message) setErrorMessage(res.payload.message);
-        return;
+        return true;
       }
-    }
-
-    closeModal();
+      return false;
+    });
+    if (!hadError) closeModal();
   };
 
   const onBusinessRatingChange = (
@@ -185,11 +183,10 @@ export const RateTaskModal: React.FC<RateTaskModalProps> = ({
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             <Trans i18nKey="Rate task" />
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.taskHeader)}>

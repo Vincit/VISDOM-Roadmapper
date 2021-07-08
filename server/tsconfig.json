@@ -12,12 +12,16 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "target": "esnext",
-    "rootDir": "./",
+    "rootDir": "../",
     "outDir": "./build",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "objection-password": ["./src/types/objection-password"]
+      "objection-password": ["./src/types/objection-password"],
     }
   },
-  "references": [{ "path": "../shared" }]
+  "references": [{ "path": "../shared"}],
+  "include": [
+    "../shared/**/*",
+    "./**/*"
+  ]
 }

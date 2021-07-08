@@ -1,0 +1,70 @@
+@import './../../../shared.scss';
+
+.stepIndicator.past {
+  .line,
+  .circle {
+    background-color: $COLOR_EMERALD;
+  }
+  &:hover {
+    .line,
+    .circle {
+      background-color: $COLOR_FOREST;
+    }
+    .stepLabel {
+      color: $COLOR_BLACK60;
+    }
+  }
+}
+
+.stepIndicator.upcoming {
+  .line,
+  .circle {
+    background-color: $COLOR_BLACK10;
+  }
+  .bottomStepRow {
+    color: $COLOR_BLACK40;
+  }
+}
+
+.topStepRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .line {
+    width: 80px;
+    height: 2px;
+    margin: 0 10px;
+    background-color: $COLOR_AZURE;
+    transition: 150ms ease-out;
+  }
+}
+
+.bottomStepRow {
+  @extend .typography-body-bold;
+  width: 110px;
+  transition: 150ms ease-out;
+
+  .stepLabel {
+    @extend .typography-pre-title;
+    transition: 150ms ease-out;
+    color: $COLOR_BLACK40;
+    margin-top: 15px;
+    margin-bottom: 3px;
+  }
+}
+
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: $COLOR_AZURE;
+  transition: 150ms ease-out;
+}
+
+.icon {
+  color: white;
+}

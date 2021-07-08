@@ -1,0 +1,17 @@
+@import '../../shared.scss';
+
+.fieldContainer {
+  @extend .layout-column;
+  gap: 0.8rem;
+}
+
+.fieldError {
+  @extend .typography-body-small;
+  @extend .layout-row;
+  margin: 0px 1rem;
+  gap: 0.5rem;
+  color: $COLOR_RASPBERRY;
+  path {
+    fill: $COLOR_RASPBERRY;
+  }
+}

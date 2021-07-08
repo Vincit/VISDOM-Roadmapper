@@ -1,5 +1,8 @@
-import { Model } from 'objection';
-import { TaskRatingDimension } from '../../../../shared/types/customTypes';
+import { Model, QueryBuilder } from 'objection';
+import {
+  TaskRatingDimension,
+  RoleType,
+} from '../../../../shared/types/customTypes';
 import User from '../users/users.model';
 import Task from '../tasks/tasks.model';
 import Customer from '../customer/customer.model';
@@ -25,7 +28,13 @@ export default class TaskRating extends Model {
     required: ['dimension', 'value'],
     properties: {
       id: { type: 'integer' },
-      dimension: { type: 'integer', enum: [0, 1] },
+      dimension: {
+        type: 'integer',
+        enum: [
+          TaskRatingDimension.RequiredWork,
+          TaskRatingDimension.BusinessValue,
+        ],
+      },
       value: { type: 'number', minimum: 0, maximum: 10 },
       comment: { type: 'string' },
     },
@@ -58,5 +67,34 @@ export default class TaskRating extends Model {
         },
       },
     };
+  }
+  static get modifiers() {
+    return {
+      keepVisible: (
+        builder: QueryBuilder<TaskRating, TaskRating[]>,
+        user: User,
+        role: RoleType,
+      ) => {
+        if (role === RoleType.Customer || role === RoleType.Business) {
+          builder
+            .where('createdByUser', user.id)
+            .orWhere('dimension', TaskRatingDimension.RequiredWork)
+            .orWhereIn(
+              'forCustomer',
+              user.representativeFor.map(({ id }) => id),
+            );
+        }
+      },
+    };
+  }
+  visibleFor(user: User, role: RoleType): boolean {
+    if (role !== RoleType.Customer && role !== RoleType.Business) {
+      return true;
+    }
+    return (
+      this.createdByUser === user.id ||
+      this.dimension === TaskRatingDimension.RequiredWork ||
+      user.representativeFor.some(({ id }) => id === this.forCustomer)
+    );
   }
 }

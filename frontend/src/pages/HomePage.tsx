@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
-import { NavLayout } from '../components/NavLayout';
 import { roadmapsSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';

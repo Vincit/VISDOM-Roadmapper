@@ -9,14 +9,14 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { RoleType } from '../../../shared/types/customTypes';
-import { DeleteButton } from '../components/forms/DeleteButton';
+import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
 import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
 import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes, modalLink } from '../redux/modals/types';
 import {
   allTasksSelector,
   chosenRoadmapSelector,
@@ -93,15 +93,14 @@ export const MilestonesEditor = () => {
       );
       uncheckedTasks.forEach((task) => {
         const allRatings = task.ratings.map((rating) => rating.createdByUser);
-        const customerRatings = task.ratings
-          .map((rating) => {
-            return rating.forCustomer;
-          })
-          .filter((value) => value !== null);
 
-        const unratedByCustomer = customers?.some(
-          (customer) => !customerRatings.includes(customer.id),
-        );
+        const unratedByCustomer = customers?.some((customer) => {
+          const representativeIds = customer?.representatives?.map(
+            (rep) => rep.id,
+          );
+          return !representativeIds?.every((rep) => allRatings?.includes(rep));
+        });
+
         const unratedByDeveloper = developers?.some(
           (developer) => !allRatings.includes(developer.id),
         );
@@ -155,8 +154,33 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const deleteVersion = (id: number) => {
-    dispatch(versionsActions.deleteVersion({ id }));
+  const deleteVersionClicked = (
+    e: React.MouseEvent<any, MouseEvent>,
+    id: number,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.DELETE_VERSION_MODAL,
+        modalProps: { id, roadmapId: currentRoadmap.id },
+      }),
+    );
+  };
+
+  const editVersionClicked = (
+    e: React.MouseEvent<any, MouseEvent>,
+    id: number,
+    name: string,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.EDIT_VERSION_MODAL,
+        modalProps: { id, name },
+      }),
+    );
   };
 
   const onDragStart = () => {
@@ -377,7 +401,22 @@ export const MilestonesEditor = () => {
                           <div className={classes(css.milestoneFooter)}>
                             <DeleteButton
                               type="filled"
-                              onClick={() => deleteVersion(version.id)}
+                              onClick={(e) =>
+                                deleteVersionClicked(e, version.id)
+                              }
+                              href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
+                                id: version.id,
+                                roadmapId: currentRoadmap.id,
+                              })}
+                            />
+                            <SettingsButton
+                              onClick={(e) =>
+                                editVersionClicked(e, version.id, version.name)
+                              }
+                              href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
+                                id: version.id,
+                                name: version.name,
+                              })}
                             />
                           </div>
                         </div>

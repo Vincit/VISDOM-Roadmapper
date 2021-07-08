@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import classNames from 'classnames';
 import React from 'react';
 import Chart from 'react-apexcharts';

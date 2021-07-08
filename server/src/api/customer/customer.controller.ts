@@ -50,7 +50,7 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
     id,
     name,
     email,
-    value,
+    weight,
     color,
     representatives,
     ...others
@@ -65,9 +65,7 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
       .withGraphFetched('representatives');
     if (!customer) return false;
 
-    const ok = await customer
-      .$query(trx)
-      .patch({ name: name, email: email, value: value, color: color });
+    const ok = await customer.$query(trx).patch({ name, email, weight, color });
     if (!representatives) return ok && customer;
 
     const { added, removed } = difference(

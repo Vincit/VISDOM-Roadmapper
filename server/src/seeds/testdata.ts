@@ -4,7 +4,10 @@ import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
 import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
-import { RoleType } from '../../../shared/types/customTypes';
+import {
+  RoleType,
+  TaskRatingDimension,
+} from '../../../shared/types/customTypes';
 import Customer from '../api/customer/customer.model';
 
 export async function seed(knex: Knex): Promise<any> {
@@ -51,27 +54,27 @@ const createTestCustomers = async () => {
   const customer1 = await Customer.query().insert({
     roadmapId: roadmap.id,
     name: 'Customer 1',
-    value: 500000,
     color: '#AA75EE',
+    email: 'customer1@webuystuff.com',
   });
-  const customerPerson1 = await User.query().findOne(
+  const businessPerson1 = await User.query().findOne(
     'username',
-    'CustomerPerson1',
+    'BusinessPerson1',
   );
-  await customerPerson1.$relatedQuery('representativeFor').relate([customer1]);
+  await businessPerson1.$relatedQuery('representativeFor').relate([customer1]);
 
   const customer2 = await Customer.query().insert({
     roadmapId: roadmap.id,
     name: 'Customer 2',
-    value: 1000000,
     color: '#FBD92A',
+    email: 'customer2@webuystuff.com',
   });
 
-  const customerPerson2 = await User.query().findOne(
+  const businessPerson2 = await User.query().findOne(
     'username',
-    'CustomerPerson2',
+    'BusinessPerson2',
   );
-  await customerPerson2.$relatedQuery('representativeFor').relate([customer2]);
+  await businessPerson2.$relatedQuery('representativeFor').relate([customer2]);
 
   const adminUser = await User.query().findOne('username', 'AdminPerson1');
   await adminUser
@@ -80,7 +83,9 @@ const createTestCustomers = async () => {
 };
 
 const createTestRoadmap = async () => {
-  const firstUserId = (await User.query().first()).id;
+  const developerUserId = (
+    await User.query().findOne('username', 'DeveloperPerson1')
+  ).id;
 
   const testRoadMap = {
     name: 'Test roadmap',
@@ -91,14 +96,14 @@ const createTestRoadmap = async () => {
         name: 'Test task 1',
         description: 'Test desc 1',
         createdBy: {
-          id: firstUserId,
+          id: developerUserId,
         },
         ratings: [
           {
             createdBy: {
-              id: firstUserId,
+              id: developerUserId,
             },
-            dimension: 0,
+            dimension: TaskRatingDimension.RequiredWork,
             value: 5,
           },
         ],
@@ -107,7 +112,7 @@ const createTestRoadmap = async () => {
         name: 'Test task 2',
         description: 'Test desc 2',
         createdBy: {
-          id: firstUserId,
+          id: developerUserId,
         },
       },
     ],

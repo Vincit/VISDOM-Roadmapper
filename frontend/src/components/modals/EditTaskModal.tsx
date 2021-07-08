@@ -12,11 +12,11 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { Input, TextArea } from '../forms/FormField';
 import '../../shared.scss';
 
 export interface EditTaskModalProps extends ModalProps {
@@ -83,34 +83,35 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             <Trans i18nKey="Edit task" />
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
 
         <ModalContent>
           <Form.Group>
-            <input
+            <Input
+              label={t('Task name')}
               autoComplete="off"
               required
               name="name"
               id="name"
               placeholder={t('Task name')}
               value={formValues.name}
-              onChange={(e: any) => onNameChange(e.currentTarget.value)}
+              onChange={(e) => onNameChange(e.currentTarget.value)}
             />
           </Form.Group>
 
           <Form.Group>
-            <textarea
+            <TextArea
+              label={t('Description')}
               required
               name="description"
               id="description"
               placeholder={t('Description')}
               value={formValues.description}
-              onChange={(e: any) => onDescriptionChange(e.currentTarget.value)}
+              onChange={(e) => onDescriptionChange(e.currentTarget.value)}
             />
           </Form.Group>
           <Alert

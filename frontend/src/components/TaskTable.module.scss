@@ -12,3 +12,21 @@
     margin-right: 20px;
   }
 }
+
+.infoIcon {
+  margin-top: 8px;
+  margin-left: 12px;
+  height: 16 !important;
+  width: 16 !important;
+  color: $COLOR_EMERALD;
+}
+
+.tableContainer {
+  margin-bottom: 50px;
+}
+
+.tableHeader {
+  display: flex;
+  margin-top: 25px;
+  margin-bottom: 27px;
+}

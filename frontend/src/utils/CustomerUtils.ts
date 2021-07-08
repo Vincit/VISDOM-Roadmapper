@@ -1,5 +1,9 @@
 import convert from 'color-convert';
-import { Customer } from '../redux/roadmaps/types';
+import {
+  Customer,
+  PlannerCustomerWeight,
+  CheckableUser,
+} from '../redux/roadmaps/types';
 
 import {
   SortingOrders,
@@ -18,14 +22,22 @@ export enum CustomerSortingTypes {
   SORT_COLOR,
 }
 
+export const customerWeight = (
+  { id, weight }: Customer,
+  planned?: PlannerCustomerWeight[],
+) => planned?.find((plan) => plan.customerId === id)?.weight ?? weight;
+
 const customerCompare = (
   sortingType: CustomerSortingTypes,
+  plannedWeights?: PlannerCustomerWeight[],
 ): SortComparison<Customer> | undefined => {
   switch (sortingType) {
     case CustomerSortingTypes.SORT_NAME:
       return sortKeyLocale(({ name }) => name);
     case CustomerSortingTypes.SORT_VALUE:
-      return sortKeyNumeric(({ value }) => value);
+      return sortKeyNumeric((customer) =>
+        customerWeight(customer, plannedWeights),
+      );
     case CustomerSortingTypes.SORT_COLOR:
       return sortKeyLocale(({ color }) => color || '');
     default:
@@ -38,7 +50,8 @@ export const sortCustomers = (
   customers: Customer[],
   type: CustomerSortingTypes,
   order: SortingOrders,
-) => sorted(customers, customerCompare(type), order);
+  plannedWeights?: PlannerCustomerWeight[],
+) => sorted(customers, customerCompare(type, plannedWeights), order);
 
 const difference = (first: number, second: number) =>
   180 - Math.abs(Math.abs(first - second) - 180);
@@ -54,4 +67,8 @@ export const randomColor = (
   if (tries === 20) return `#${convert.hsl.hex([hue, 100, 65])}`;
   if (found) return randomColor(customers, tries + 1);
   return `#${convert.hsl.hex([hue, 100, 65])}`;
+};
+
+export const getCheckedIds = (reps: CheckableUser[]) => {
+  return reps.filter((rep) => rep.checked).map(({ id }) => id);
 };

@@ -1,15 +1,17 @@
 import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { DeleteButton } from './forms/DeleteButton';
-import { EditButton } from './forms/EditButton';
+import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes, modalLink } from '../redux/modals/types';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
+import {
+  customerWeightSelector,
+  chosenRoadmapSelector,
+} from '../redux/roadmaps/selectors';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { getType } from '../utils/UserUtils';
@@ -22,7 +24,11 @@ interface TableRowProps {
 }
 
 export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
-  const { id, name, value, color } = customer;
+  const { id, name, color } = customer;
+  const weight = useSelector<RootState, number>(
+    customerWeightSelector(customer),
+    shallowEqual,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -32,17 +38,6 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-
-  const rateCustomer = () => {
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.RATE_CUSTOMER_MODAL,
-        modalProps: {
-          customerId: id,
-        },
-      }),
-    );
-  };
 
   const deleteUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
     e.preventDefault();
@@ -81,37 +76,24 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
         />
       </td>
       <td className="styledTd">{name}</td>
-      <td className="styledTd">{value}</td>
+      <td className="styledTd">{weight}</td>
       <td className="styledTd nowrap textAlignEnd">
         {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <div className={classes(css.editCustomer)}>
-            <button
-              className="button-small-filled"
-              type="button"
-              onClick={rateCustomer}
-            >
-              Rate
-            </button>
             <div>
               <EditButton
-                type="default"
+                fontSize="default"
                 onClick={editUserClicked}
-                href={`?openModal=${
-                  ModalTypes.EDIT_CUSTOMER_MODAL
-                }&modalProps=${encodeURIComponent(JSON.stringify(customer))}`}
+                href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, customer)}
               />
               <DeleteButton
                 type="filled"
                 onClick={deleteUserClicked}
-                href={`?openModal=${
-                  ModalTypes.REMOVE_PEOPLE_MODAL
-                }&modalProps=${encodeURIComponent(
-                  JSON.stringify({
-                    userId: id,
-                    userName: name,
-                    type: 'customer',
-                  }),
-                )}`}
+                href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
+                  userId: id,
+                  userName: name,
+                  type: 'customer',
+                })}
               />
             </div>
           </div>

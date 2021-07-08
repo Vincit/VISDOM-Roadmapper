@@ -15,6 +15,7 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
+import { taskAwaitsRatings } from '../utils/TaskUtils';
 import { versionsActions } from '../redux/versions';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
@@ -55,9 +56,8 @@ export const DashboardPage = () => {
 
   const getUnratedTasks = () => {
     if (!currentRoadmap) return [];
-    return currentRoadmap.tasks.filter(
-      (task) =>
-        !task.ratings.find((rating) => rating.createdByUser === userInfo!.id),
+    return currentRoadmap.tasks.filter((task) =>
+      taskAwaitsRatings(task, userInfo),
     );
   };
 

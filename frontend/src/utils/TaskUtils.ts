@@ -1,6 +1,11 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
 import { Customer, Roadmap, Task, Taskrating } from '../redux/roadmaps/types';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
+import { customerWeight } from './CustomerUtils';
+import { UserInfo } from '../redux/user/types';
+import {
+  RoleType,
+  TaskRatingDimension,
+} from '../../../shared/types/customTypes';
 import {
   SortingOrders,
   sorted,
@@ -8,6 +13,7 @@ import {
   sortKeyLocale,
   SortComparison,
 } from './SortUtils';
+import { getType } from './UserUtils';
 
 export { SortingOrders } from './SortUtils';
 
@@ -199,7 +205,7 @@ export const calcTaskWeightedValueSum = (
   roadmap: Roadmap,
 ) => {
   const customerValuesSum = allCustomers.reduce(
-    (total, { value }) => total + value,
+    (total, customer) => total + customerWeight(customer),
     0,
   );
 
@@ -208,7 +214,9 @@ export const calcTaskWeightedValueSum = (
       ({ id }) => id === rating.forCustomer,
     );
 
-    const ratingCreatorValue = ratingCreator?.value || 0;
+    const ratingCreatorValue = ratingCreator
+      ? customerWeight(ratingCreator, roadmap.plannerCustomerWeights)
+      : 0;
 
     let creatorPlannerWeight = roadmap.plannerCustomerWeights?.find(
       ({ customerId }) => customerId === rating.forCustomer,
@@ -246,4 +254,18 @@ export const calcWeightedTaskPriority = (
   if (!avgWorkRating) return -1;
 
   return weightedValue / avgWorkRating;
+};
+
+export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
+  const type = getType(userInfo?.roles, task.roadmapId);
+  if (type === RoleType.Admin || type === RoleType.Business)
+    return !!userInfo?.representativeFor?.find(
+      (customer) =>
+        !task.ratings.some(
+          (rating) =>
+            customer.id === rating.forCustomer &&
+            rating.createdByUser === userInfo?.id,
+        ),
+    );
+  return !task.ratings.find((rating) => rating.createdByUser === userInfo?.id);
 };

@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import css from './InfoButton.module.scss';
 
 const classes = classNames.bind(css);
-
 export const InfoButton: React.FC<{
   onClick?: (event: React.MouseEvent<SVGElement, MouseEvent>) => void;
   href?: string;

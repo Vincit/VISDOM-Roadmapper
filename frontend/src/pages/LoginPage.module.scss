@@ -10,7 +10,10 @@
   border-radius: 20px;
   padding: 50px 30px;
 
-  font-size: 30px; // for spacing form elements
+  & form {
+    @extend .layout-column;
+    gap: 20px;
+  }
 }
 
 .loginFooter {

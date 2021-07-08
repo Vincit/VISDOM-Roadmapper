@@ -1,0 +1,16 @@
+@import '../../shared.scss';
+
+.headerDiv {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  svg {
+    color: $COLOR_BLACK40;
+    position: relative;
+    top: 3px;
+  }
+}
+
+.formDiv {
+  margin-bottom: 16px;
+}

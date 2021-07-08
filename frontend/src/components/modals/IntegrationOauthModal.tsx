@@ -5,13 +5,13 @@ import { useSelector } from 'react-redux';
 import { api } from '../../api/api';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { chosenIntegrationSelector } from '../../redux/roadmaps/selectors';
 import { titleCase } from '../../utils/string';
+import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
 export interface OauthModalProps extends ModalProps {
@@ -109,11 +109,10 @@ export const OauthModal: React.FC<OauthModalProps> = ({
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <ModalHeader>
+        <ModalHeader closeModal={closeModal}>
           <h3>
             <Trans i18nKey="Setup OAuth for" /> {titleCase(name)}
           </h3>
-          <ModalCloseButton onClick={closeModal} />
         </ModalHeader>
         <ModalContent>
           {isLoading || !oauthURL ? (
@@ -133,14 +132,14 @@ export const OauthModal: React.FC<OauthModalProps> = ({
                 and input the code below:
               </p>
               <Form.Group>
-                <input
+                <Input
                   autoComplete="off"
                   required
                   name="oauthVerifierCode"
                   id="oauthVerifierCode"
                   placeholder={t('OAuth verifier code')}
                   value={formValues.oauthVerifierCode}
-                  onChange={(e: any) =>
+                  onChange={(e) =>
                     onOAuthVerifierCodeChange(e.currentTarget.value)
                   }
                 />

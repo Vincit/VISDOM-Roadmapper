@@ -13,10 +13,9 @@ import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
-import { EditButton } from '../forms/EditButton';
+import { EditButton } from '../forms/SvgButton';
 import { TaskRatingBar } from '../RatingBars';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalHeader } from './modalparts/ModalHeader';
 import css from './TaskRatingsInfoModal.module.scss';
@@ -67,14 +66,14 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <div className={css.commentDiv}>
               <p className={css.labelText}>
                 <Trans i18nKey="Your comment" />{' '}
-                <EditButton type="small" onClick={() => rateTask()} />
+                <EditButton fontSize="small" onClick={() => rateTask()} />
               </p>
               {rating.comment || '-'}
             </div>
             <div className={css.ratingDiv}>
               <p className={css.labelText}>
                 <Trans i18nKey="Your rating" />{' '}
-                <EditButton type="small" onClick={() => rateTask()} />
+                <EditButton fontSize="small" onClick={() => rateTask()} />
               </p>
               <TaskRatingBar
                 dimension={rating.dimension}
@@ -89,7 +88,7 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
             <div className={css.commentDiv}>
               <p className={css.labelText}>
                 <Trans i18nKey="You have not rated this task" />{' '}
-                <EditButton type="small" onClick={() => rateTask()} />
+                <EditButton fontSize="small" onClick={() => rateTask()} />
               </p>
             </div>
           </div>
@@ -140,14 +139,13 @@ export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
 
   return (
     <>
-      <ModalHeader>
+      <ModalHeader closeModal={closeModal}>
         <h3>
           <span>
             <Trans i18nKey="Ratings for" />
             <span className={css.taskNameText}>: {task.name}</span>
           </span>
         </h3>
-        <ModalCloseButton onClick={closeModal} />
       </ModalHeader>
 
       <ModalContent overflowAuto>

@@ -5,19 +5,30 @@ import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
-  if (!ctx.state.user) {
+  const { user } = ctx.state;
+  if (!user) {
     throw new Error('User is required');
   }
 
-  const query = User.relatedQuery('roadmaps').for(ctx.state.user.id);
+  const query = User.relatedQuery('roadmaps').for(user.id);
   if (ctx.query.eager) {
-    const eagerResult = await query.withGraphFetched(
+    const result = await query.withGraphFetched(
       '[tasks.ratings, integrations]',
     );
-    ctx.body = eagerResult;
+    (result as Roadmap[] | undefined)?.forEach((roadmap) => {
+      const role = user.roles.find((role) => role.roadmapId === roadmap.id);
+      if (!role) {
+        throw new Error('Should only get roadmaps where the user has a role');
+      }
+      roadmap.tasks?.forEach((task) => {
+        task.ratings = task.ratings?.filter((rating) =>
+          rating.visibleFor(user, role.type),
+        );
+      });
+    });
+    ctx.body = result;
   } else {
-    const eagerResult = await query.withGraphFetched('[tasks(selectTaskId)]');
-    ctx.body = eagerResult;
+    ctx.body = await query.withGraphFetched('[tasks(selectTaskId)]');
   }
 };
 

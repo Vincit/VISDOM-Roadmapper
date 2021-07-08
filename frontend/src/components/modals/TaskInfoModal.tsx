@@ -11,7 +11,6 @@ import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { TaskRatingsText } from '../TaskRatingsText';
 import { ModalProps } from '../types';
-import { ModalCloseButton } from './modalparts/ModalCloseButton';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalHeader } from './modalparts/ModalHeader';
@@ -38,14 +37,13 @@ export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
 
   return (
     <>
-      <ModalHeader>
+      <ModalHeader closeModal={closeModal}>
         <h3>
           <span>
             <Trans i18nKey="Overview for" />
             <span className={css.taskNameText}>: {task.name}</span>
           </span>
         </h3>
-        <ModalCloseButton onClick={closeModal} />
       </ModalHeader>
       <ModalContent>
         <div className={css.descriptionRatingsDiv}>

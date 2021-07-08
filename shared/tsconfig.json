@@ -12,7 +12,7 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "target": "esnext",
-    "rootDir": "./",
+    "rootDir": "../",
     "outDir": "./build",
     "baseUrl": ".",
     "composite": true

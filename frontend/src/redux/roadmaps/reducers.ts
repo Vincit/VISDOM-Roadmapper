@@ -241,6 +241,17 @@ export const SET_PLANNER_CUSTOMER_WEIGHT: CaseReducer<
   selectedRoadmap.plannerCustomerWeights = weights;
 };
 
+export const CLEAR_PLANNER_CUSTOMER_WEIGHTS: CaseReducer<
+  RoadmapsState,
+  PayloadAction<void>
+> = (state) => {
+  const selectedRoadmap = state.roadmaps?.find(
+    (roadmap) => roadmap.id === state.selectedRoadmapId,
+  );
+  if (!selectedRoadmap) throw new Error('No roadmap has been selected');
+  selectedRoadmap.plannerCustomerWeights = [];
+};
+
 export const ADD_INTEGRATION_CONFIGURATION_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<IntegrationConfiguration>,
