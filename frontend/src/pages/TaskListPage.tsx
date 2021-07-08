@@ -48,7 +48,7 @@ export const TaskListPage = () => {
 
   const toggleCheckedClicked = () => {
     setChecked(!checked);
-    if (checked) setSearchFilter(FilterTypes.NOT_RATED_BY_ME);
+    if (checked) setSearchFilter(FilterTypes.NOT_COMPLETED);
     else setSearchFilter(FilterTypes.SHOW_ALL);
   };
 
