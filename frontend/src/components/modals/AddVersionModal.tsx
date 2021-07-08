@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { versionsActions } from '../../redux/versions';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -13,7 +13,9 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
-export const AddVersionModal: React.FC<ModalProps> = ({ closeModal }) => {
+export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
+  closeModal,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [hasError, setHasError] = useState(false);

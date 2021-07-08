@@ -1,58 +1,31 @@
 import React, { useCallback, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import Modal from 'react-modal';
+import ReactModal from 'react-modal';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals/index';
 import { modalStateSelector } from '../../redux/modals/selectors';
-import { ModalsState, ModalTypes, modalLink } from '../../redux/modals/types';
+import { ModalsState, ModalTypes, modalLink, Modal } from './types';
 import { RootState } from '../../redux/types';
-import { ModalProps } from '../types';
+
 import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
-import {
-  DeleteVersionModal,
-  DeleteVersionModalProps,
-} from './DeleteVersionModal';
-import { EditVersionModal, EditVersionModalProps } from './EditVersionModal';
-import { EditTaskModal, EditTaskModalProps } from './EditTaskModal';
+import { DeleteVersionModal } from './DeleteVersionModal';
+import { EditVersionModal } from './EditVersionModal';
+import { EditTaskModal } from './EditTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
 import { OauthModal } from './IntegrationOauthModal';
-import {
-  IntegrationConfigurationModal,
-  IntegrationConfigurationModalProps,
-} from './IntegrationConfigurationModal';
-import { RateTaskModal, RateTaskModalProps } from './RateTaskModal';
-import { RemovePeopleModal, RemovePeopleModalProps } from './RemovePeopleModal';
-import { EditCustomerModal, EditCustomerModalProps } from './EditCustomerModal';
+import { IntegrationConfigurationModal } from './IntegrationConfigurationModal';
+import { RateTaskModal } from './RateTaskModal';
+import { RemovePeopleModal } from './RemovePeopleModal';
+import { EditCustomerModal } from './EditCustomerModal';
 import { AddCustomerModal } from './AddCustomerModal';
-import {
-  EditTeamMemberModal,
-  EditTeamMemberModalProps,
-} from './EditTeamMemberModal';
-import { TaskInfoModal, TaskInfoModalProps } from './TaskInfoModal';
-import {
-  TaskRatingsInfoModal,
-  TaskRatingsInfoModalProps,
-} from './TaskRatingsInfoModal';
+import { EditTeamMemberModal } from './EditTeamMemberModal';
+import { TaskInfoModal } from './TaskInfoModal';
+import { TaskRatingsInfoModal } from './TaskRatingsInfoModal';
 import { UserAuthTokenModal } from './UserAuthTokenModal';
 
-type ModalTypeToComponent = {
-  [K in ModalTypes]:
-    | React.FC<ModalProps>
-    | React.FC<RateTaskModalProps>
-    | React.FC<EditTaskModalProps>
-    | React.FC<TaskInfoModalProps>
-    | React.FC<TaskRatingsInfoModalProps>
-    | React.FC<RemovePeopleModalProps>
-    | React.FC<EditCustomerModalProps>
-    | React.FC<EditTeamMemberModalProps>
-    | React.FC<DeleteVersionModalProps>
-    | React.FC<EditVersionModalProps>
-    | React.FC<IntegrationConfigurationModalProps>;
-};
-
-const Modals: ModalTypeToComponent = {
+const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
   [ModalTypes.RATE_TASK_MODAL]: RateTaskModal,
   [ModalTypes.EDIT_TASK_MODAL]: EditTaskModal,
@@ -69,7 +42,7 @@ const Modals: ModalTypeToComponent = {
   [ModalTypes.SETUP_OAUTH_MODAL]: OauthModal,
   [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: IntegrationConfigurationModal,
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: UserAuthTokenModal,
-};
+} as const;
 
 // TODO: move this to css file
 const modalCustomStyles = {
@@ -88,7 +61,7 @@ const modalCustomStyles = {
   },
 };
 
-Modal.setAppElement('#root');
+ReactModal.setAppElement('#root');
 export const ModalRoot = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const modalsState = useSelector<RootState, ModalsState>(
@@ -97,7 +70,7 @@ export const ModalRoot = () => {
   );
   const history = useHistory();
   const { pathname, search } = useLocation();
-  const ChosenModal = Modals[modalsState.currentModal] as React.FC<ModalProps>;
+  const ChosenModal = Modals[modalsState.modalType] as Modal<unknown>;
 
   const onRequestClose = useCallback(() => {
     dispatch(modalsActions.hideModal());
@@ -109,14 +82,14 @@ export const ModalRoot = () => {
     // Add query params to url on open
     if (!modalsState.showModal) return;
     const queryString = modalLink(
-      modalsState.currentModal,
+      modalsState.modalType,
       modalsState.modalProps,
     );
     if (!search.includes(queryString)) history.replace(pathname + queryString);
   }, [
     modalsState.showModal,
     modalsState.modalProps,
-    modalsState.currentModal,
+    modalsState.modalType,
     history,
     pathname,
     search,
@@ -124,13 +97,13 @@ export const ModalRoot = () => {
 
   if (!modalsState.showModal) return null;
   return (
-    <Modal
+    <ReactModal
       isOpen
       shouldCloseOnOverlayClick={false}
       onRequestClose={onRequestClose}
       style={modalCustomStyles}
     >
       <ChosenModal closeModal={onRequestClose} {...modalsState.modalProps} />
-    </Modal>
+    </ReactModal>
   );
 };

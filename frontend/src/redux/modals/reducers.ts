@@ -1,12 +1,12 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { ModalsState, ShowModalPayload } from './types';
+import { ModalsState, ShowModalPayload } from '../../components/modals/types';
 
 export const SHOW_MODAL: CaseReducer<
   ModalsState,
   PayloadAction<ShowModalPayload>
 > = (state, action) => {
   state.showModal = true;
-  state.currentModal = action.payload.modalType;
+  state.modalType = action.payload.modalType;
   state.modalProps = action.payload.modalProps;
 };
 

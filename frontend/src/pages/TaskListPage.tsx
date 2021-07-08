@@ -7,7 +7,7 @@ import { TaskTableRated, TaskTableUnrated } from '../components/TaskTable';
 import { Checkbox } from '../components/forms/Checkbox';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes } from '../components/modals/types';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';

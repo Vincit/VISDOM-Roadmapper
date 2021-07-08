@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes, modalLink } from '../redux/modals/types';
+import { ModalTypes, modalLink } from './modals/types';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
 import {
   customerWeightSelector,
@@ -103,7 +103,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
               <EditButton
                 fontSize="default"
                 onClick={editUserClicked}
-                href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, customer)}
+                href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, { customer })}
               />
               <DeleteButton
                 type="filled"

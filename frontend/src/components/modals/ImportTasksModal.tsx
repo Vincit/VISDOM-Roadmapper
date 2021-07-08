@@ -12,7 +12,7 @@ import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { ModalTypes, Modal } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -20,7 +20,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { titleCase } from '../../utils/string';
 import '../../shared.scss';
 
-export const ImportTasksModal: React.FC<ModalProps & { name: string }> = ({
+export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
   name,
   closeModal,
 }) => {

@@ -15,7 +15,7 @@ import { TaskListPage } from '../pages/TaskListPage';
 import { PeopleListPage } from '../pages/PeopleListPage';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes } from '../components/modals/types';
 import { roadmapsActions } from '../redux/roadmaps';
 import {
   chosenRoadmapSelector,

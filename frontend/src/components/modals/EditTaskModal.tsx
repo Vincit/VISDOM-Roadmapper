@@ -11,7 +11,7 @@ import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -19,11 +19,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Input, TextArea } from '../forms/FormField';
 import '../../shared.scss';
 
-export interface EditTaskModalProps extends ModalProps {
-  taskId: number;
-}
-
-export const EditTaskModal: React.FC<EditTaskModalProps> = ({
+export const EditTaskModal: Modal<ModalTypes.EDIT_TASK_MODAL> = ({
   closeModal,
   taskId,
 }) => {

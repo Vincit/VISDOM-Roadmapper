@@ -9,10 +9,9 @@ import { BusinessValueFilled } from '../RatingIcons';
 import { RadioButton } from '../forms/RadioButton';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
-import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -21,11 +20,7 @@ import css from './EditTeamMemberModal.module.scss';
 
 const classes = classNames.bind(css);
 
-export interface EditTeamMemberModalProps extends ModalProps {
-  member: RoadmapUser;
-}
-
-export const EditTeamMemberModal: React.FC<EditTeamMemberModalProps> = ({
+export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   closeModal,
   member,
 }) => {

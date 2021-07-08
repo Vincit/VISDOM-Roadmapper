@@ -24,7 +24,7 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { TaskRatingWidget } from '../TaskRatingWidget';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -69,11 +69,7 @@ const CustomerHeader: React.FC<{
   );
 };
 
-export interface RateTaskModalProps extends ModalProps {
-  taskId: number;
-}
-
-export const RateTaskModal: React.FC<RateTaskModalProps> = ({
+export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   closeModal,
   taskId,
 }) => {

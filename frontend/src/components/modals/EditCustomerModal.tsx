@@ -17,7 +17,7 @@ import {
 import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -29,11 +29,7 @@ import {
   SelectRepresentatives,
 } from './modalparts/CustomerModalParts';
 
-export interface EditCustomerModalProps extends ModalProps {
-  customer: Customer;
-}
-
-export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
+export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   closeModal,
   customer,
 }) => {

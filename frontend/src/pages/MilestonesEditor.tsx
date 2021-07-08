@@ -16,7 +16,7 @@ import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
 import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes, modalLink } from '../redux/modals/types';
+import { ModalTypes, modalLink } from '../components/modals/types';
 import {
   allTasksSelector,
   chosenRoadmapSelector,

@@ -7,7 +7,7 @@ import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import { StoreDispatchType } from '../../redux';
 import { versionsActions } from '../../redux/versions';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -16,12 +16,7 @@ import css from './DeleteVersionModal.module.scss';
 
 const classes = classNames.bind(css);
 
-export interface DeleteVersionModalProps extends ModalProps {
-  id: number;
-  roadmapId: number;
-}
-
-export const DeleteVersionModal: React.FC<DeleteVersionModalProps> = ({
+export const DeleteVersionModal: Modal<ModalTypes.DELETE_VERSION_MODAL> = ({
   closeModal,
   id,
   roadmapId,

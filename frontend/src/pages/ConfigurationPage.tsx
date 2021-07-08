@@ -4,7 +4,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes } from '../components/modals/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState, Integrations } from '../redux/types';

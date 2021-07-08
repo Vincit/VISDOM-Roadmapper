@@ -10,17 +10,13 @@ import {
 import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { TaskRatingsText } from '../TaskRatingsText';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalHeader } from './modalparts/ModalHeader';
 import css from './TaskInfoModal.module.scss';
 
-export interface TaskInfoModalProps extends ModalProps {
-  taskId: number;
-}
-
-export const TaskInfoModal: React.FC<TaskInfoModalProps> = ({
+export const TaskInfoModal: Modal<ModalTypes.TASK_INFO_MODAL> = ({
   closeModal,
   taskId,
 }) => {

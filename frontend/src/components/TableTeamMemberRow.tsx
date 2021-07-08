@@ -14,7 +14,7 @@ import css from './TableTeamMemberRow.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes, modalLink } from '../redux/modals/types';
+import { ModalTypes, modalLink } from './modals/types';
 import { getType } from '../utils/UserUtils';
 import { unratedTasksAmount } from '../utils/TaskUtils';
 
@@ -106,7 +106,7 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
               <EditButton
                 fontSize="default"
                 onClick={editTeamMemberClicked}
-                href={modalLink(ModalTypes.EDIT_TEAM_MEMBER_MODAL, member)}
+                href={modalLink(ModalTypes.EDIT_TEAM_MEMBER_MODAL, { member })}
               />
               <DeleteButton
                 type="filled"

@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ModalsState, ModalTypes } from './types';
+import { ModalsState, ModalTypes } from '../../components/modals/types';
 import { SHOW_MODAL, HIDE_MODAL } from './reducers';
 
-const initialState: ModalsState = {
+const initialState: ModalsState<any> = {
   showModal: false,
-  currentModal: ModalTypes.ADD_TASK_MODAL,
+  modalType: ModalTypes.ADD_TASK_MODAL,
   modalProps: {},
 };
 

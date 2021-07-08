@@ -1,4 +1,4 @@
-import { ModalsState } from './modals/types';
+import { ModalsState } from '../components/modals/types';
 import { RoadmapsState } from './roadmaps/types';
 import { UserState } from './user/types';
 import { VersionsState } from './versions/types';

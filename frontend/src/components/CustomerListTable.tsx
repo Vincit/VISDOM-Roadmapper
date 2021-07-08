@@ -14,7 +14,7 @@ import {
 import { Customer, PlannerCustomerWeight } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes } from './modals/types';
 import {
   SortingOrders,
   CustomerSortingTypes,
