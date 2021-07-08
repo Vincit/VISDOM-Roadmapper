@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import { StylesProvider } from '@material-ui/core/styles';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../redux/modals/types';
+import { ModalTypes } from './modals/types';
 import { Task, Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -128,7 +128,13 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     }
   }, [task.ratings, allCustomers, allUsers, userInfo, type, task.roadmapId]);
 
-  const openModal = (modalType: ModalTypes) => (e: React.SyntheticEvent) => {
+  const openModal = (
+    modalType:
+      | ModalTypes.EDIT_TASK_MODAL
+      | ModalTypes.RATE_TASK_MODAL
+      | ModalTypes.TASK_RATINGS_INFO_MODAL
+      | ModalTypes.TASK_INFO_MODAL,
+  ) => (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(

@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals';
-import { ModalTypes } from '../../redux/modals/types';
+import { ModalTypes, Modal } from './types';
 import { roadmapsActions } from '../../redux/roadmaps';
 import {
   roadmapUsersSelector,
@@ -15,16 +15,11 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { EditButton } from '../forms/SvgButton';
 import { TaskRatingBar } from '../RatingBars';
-import { ModalProps } from '../types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalHeader } from './modalparts/ModalHeader';
 import css from './TaskRatingsInfoModal.module.scss';
 
-export interface TaskRatingsInfoModalProps extends ModalProps {
-  taskId: number;
-}
-
-export const TaskRatingsInfoModal: React.FC<TaskRatingsInfoModalProps> = ({
+export const TaskRatingsInfoModal: Modal<ModalTypes.TASK_RATINGS_INFO_MODAL> = ({
   closeModal,
   taskId,
 }) => {

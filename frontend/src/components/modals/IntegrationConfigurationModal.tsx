@@ -4,11 +4,8 @@ import { Trans } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps/index';
-import {
-  IntegrationConfiguration,
-  IntegrationConfigurationRequest,
-} from '../../redux/roadmaps/types';
-import { ModalProps } from '../types';
+import { IntegrationConfigurationRequest } from '../../redux/roadmaps/types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -17,15 +14,7 @@ import { titleCase } from '../../utils/string';
 import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
-export interface IntegrationConfigurationModalProps extends ModalProps {
-  name: string;
-  roadmapId: number;
-  roadmapName?: string;
-  configuration?: IntegrationConfiguration;
-  fields: { field: string; secret?: boolean }[];
-}
-
-export const IntegrationConfigurationModal: React.FC<IntegrationConfigurationModalProps> = ({
+export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGURATION_MODAL> = ({
   closeModal,
   roadmapId,
   roadmapName,

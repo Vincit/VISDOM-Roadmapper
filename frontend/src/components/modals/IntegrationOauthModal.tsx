@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { api } from '../../api/api';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -14,12 +14,7 @@ import { titleCase } from '../../utils/string';
 import { Input } from '../forms/FormField';
 import '../../shared.scss';
 
-export interface OauthModalProps extends ModalProps {
-  name: string;
-  roadmapId: number;
-}
-
-export const OauthModal: React.FC<OauthModalProps> = ({
+export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   closeModal,
   roadmapId,
   name,

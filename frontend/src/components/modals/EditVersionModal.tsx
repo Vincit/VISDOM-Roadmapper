@@ -7,7 +7,7 @@ import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import { StoreDispatchType } from '../../redux';
 import { versionsActions } from '../../redux/versions';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -17,12 +17,7 @@ import css from './EditVersionModal.module.scss';
 
 const classes = classNames.bind(css);
 
-export interface EditVersionModalProps extends ModalProps {
-  id: number;
-  name: string;
-}
-
-export const EditVersionModal: React.FC<EditVersionModalProps> = ({
+export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
   closeModal,
   id,
   name,

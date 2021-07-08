@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals';
-import { ModalTypes } from '../../redux/modals/types';
+import { ModalTypes, Modal } from './types';
 import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { TaskRequest } from '../../redux/roadmaps/types';
@@ -13,7 +13,6 @@ import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -21,7 +20,9 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Input, TextArea } from '../forms/FormField';
 import '../../shared.scss';
 
-export const AddTaskModal: React.FC<ModalProps> = ({ closeModal }) => {
+export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
+  closeModal,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [formValues, setFormValues] = useState({

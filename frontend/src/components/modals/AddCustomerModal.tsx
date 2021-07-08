@@ -20,7 +20,7 @@ import {
 import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -45,7 +45,9 @@ const steps = [
   { step: 3, description: 'Finish' },
 ];
 
-export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
+export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
+  closeModal,
+}) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
   const customers = useSelector<RootState, Customer[] | undefined>(

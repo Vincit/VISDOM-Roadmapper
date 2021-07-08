@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -9,7 +9,9 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { api } from '../../api/api';
 import '../../shared.scss';
 
-export const UserAuthTokenModal: React.FC<ModalProps> = ({ closeModal }) => {
+export const UserAuthTokenModal: Modal<ModalTypes.USER_AUTH_TOKEN_MODAL> = ({
+  closeModal,
+}) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState('');

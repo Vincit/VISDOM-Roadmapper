@@ -6,7 +6,7 @@ import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { userActions } from '../../redux/user';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { ModalProps } from '../types';
+import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
@@ -14,13 +14,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
 
-export interface RemovePeopleModalProps extends ModalProps {
-  userId: number;
-  userName: string;
-  type: 'customer' | 'team';
-}
-
-export const RemovePeopleModal: React.FC<RemovePeopleModalProps> = ({
+export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   closeModal,
   userId,
   userName,
