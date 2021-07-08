@@ -36,7 +36,7 @@ export const PeopleListPage = () => {
         <CustomerList search={searchString} />
       </div>
       <div className={classes(css.listContainer)}>
-        <TeamMemberList />
+        <TeamMemberList search={searchString} />
       </div>
     </>
   );

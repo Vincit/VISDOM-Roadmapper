@@ -25,7 +25,9 @@ interface TeamMemberTableHeader {
   width?: string;
 }
 
-export const TeamMemberList = () => {
+export const TeamMemberList: React.FC<{
+  search: string;
+}> = ({ search }) => {
   const [sortingType, setSortingType] = useState(UserSortingTypes.NO_SORT);
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
   const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
@@ -45,8 +47,10 @@ export const TeamMemberList = () => {
   }, [dispatch, teamMembers]);
 
   useEffect(() => {
+    // Filter, search, sort team members
     const members = teamMembers?.filter(
-      (member) => member.type !== RoleType.Customer,
+      ({ type, username }) =>
+        type !== RoleType.Customer && username.toLowerCase().includes(search),
     );
     setSortedMembers(
       sortRoadmapUsers(
@@ -57,7 +61,7 @@ export const TeamMemberList = () => {
         currentRoadmap?.customers,
       ),
     );
-  }, [teamMembers, sortingType, sortingOrder, tasks, currentRoadmap]);
+  }, [teamMembers, sortingType, sortingOrder, tasks, currentRoadmap, search]);
 
   const toggleSortOrder = () => {
     if (sortingOrder === SortingOrders.ASCENDING) {
