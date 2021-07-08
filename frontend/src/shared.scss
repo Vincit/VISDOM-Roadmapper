@@ -412,17 +412,6 @@ textarea {
   border-radius: 50%;
 }
 
-.tooltipInfoIcon {
-  path {
-    fill: $COLOR_EMERALD;
-    transition: 150ms ease-out;
-  }
-  &:hover path {
-    fill: $COLOR_FOREST;
-  }
-  cursor: help;
-}
-
 .modalCancelContent,
 .modalDoneContent {
   display: flex;
@@ -433,6 +422,14 @@ textarea {
   svg {
     margin-top: 28px;
     margin-bottom: 55px;
+  }
+}
+
+a.green {
+  text-decoration: underline;
+  color: $COLOR_EMERALD;
+  &:hover {
+    color: $COLOR_FOREST;
   }
 }
 
