@@ -4,6 +4,7 @@ import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
+import { userActions } from '../../redux/user';
 import {
   allCustomersSelector,
   roadmapUsersSelector,
@@ -95,6 +96,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
       return;
     }
     closeModal();
+    await dispatch(userActions.getUserInfo());
   };
 
   return (

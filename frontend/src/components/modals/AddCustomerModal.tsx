@@ -7,6 +7,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BusinessValueFilled } from '../RatingIcons';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
+import { userActions } from '../../redux/user';
 import {
   allCustomersSelector,
   roadmapUsersSelector,
@@ -98,8 +99,7 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
           roadmapsActions.addCustomer({
             name: formValues.name,
             email: formValues.email,
-            color:
-              colorType === 'pick' ? formValues.color : randomColor(customers),
+            color: formValues.color,
             representatives: getCheckedIds(representatives),
           }),
         );
@@ -110,6 +110,7 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
           return;
         }
         setStep(step + 1);
+        await dispatch(userActions.getUserInfo());
         break;
       }
       default:
@@ -134,6 +135,12 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
     if (step === 0 || step === 4) closeModal();
     setPreviousStep(step);
     setStep(0);
+  };
+
+  const handleColorTypeChange = (value: string) => {
+    setColorType(value);
+    if (value === 'generate')
+      setFormValues({ ...formValues, color: randomColor(customers) });
   };
 
   return (
@@ -178,7 +185,7 @@ export const AddCustomerModal: React.FC<ModalProps> = ({ closeModal }) => {
                 setFormValues({ ...formValues, email: value })
               }
               colorType={colorType}
-              onColorTypeChange={(value) => setColorType(value)}
+              onColorTypeChange={handleColorTypeChange}
               color={formValues.color}
               onColorChange={(value) =>
                 setFormValues({ ...formValues, color: value })

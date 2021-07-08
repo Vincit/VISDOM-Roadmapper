@@ -4,6 +4,7 @@ import { Trans } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
+import { userActions } from '../../redux/user';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalProps } from '../types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -37,6 +38,7 @@ export const RemovePeopleModal: React.FC<RemovePeopleModalProps> = ({
       return;
     }
     closeModal();
+    await dispatch(userActions.getUserInfo());
   };
 
   const deleteTeamMember = async () => {
