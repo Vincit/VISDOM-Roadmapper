@@ -4,6 +4,7 @@ import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { ModalCloseButton } from './forms/SvgButton';
 import {
   TaskRatingDimension,
   RoleType,
@@ -100,13 +101,12 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
           value={rating.comment}
           onChange={(e) => commentChanged(e.currentTarget.value)}
         />
-        <span
-          className={classes(css.closeCommentButton)}
-          onClick={() => setCommentBoxOpen(false)}
-          aria-hidden="true"
-        >
-          &times;
-        </span>
+        <div className={classes(css.closeCommentButton)}>
+          <ModalCloseButton
+            onClick={() => setCommentBoxOpen(false)}
+            aria-hidden="true"
+          />
+        </div>
       </Form.Group>
     );
   };

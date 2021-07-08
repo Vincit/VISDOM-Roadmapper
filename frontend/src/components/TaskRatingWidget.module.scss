@@ -1,3 +1,5 @@
+@import '../shared.scss';
+
 .commentButton {
   position: relative;
   top: 0.15em;
@@ -8,11 +10,10 @@
 
 .closeCommentButton {
   position: absolute;
-  top: -0.5em;
-  right: 0;
+  top: 0.5em;
+  right: 0.5em;
   cursor: pointer;
   user-select: none;
-  font-size: 50px;
   margin: 0px;
 }
 

@@ -13,6 +13,10 @@
   padding-bottom: 16px;
 }
 
+.label {
+  @extend .typography-pre-title;
+}
+
 .lockIcon {
   display: flex;
   align-items: center;

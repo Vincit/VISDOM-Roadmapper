@@ -24,8 +24,8 @@
 }
 
 .warning {
+  @extend .typography-body;
   width: 422px;
   margin-top: 20px;
-  font-family: Work Sans;
   color: $COLOR_RASPBERRY;
 }

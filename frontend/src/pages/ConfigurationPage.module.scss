@@ -6,11 +6,9 @@
 }
 
 .columnHeader {
+  @extend .typography-h3;
   text-align: left;
-  border-bottom: 1px solid $COLOR_BLACK100;
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: bold;
+  border-bottom: 1px solid $COLOR_BLACK40;
   padding-top: 16px;
   padding-bottom: 24px;
 }

@@ -6,13 +6,13 @@
 
 .dropButton {
   @extend .layout-row;
+  @extend .typography-body-small;
   align-items: center;
   border-radius: 16px;
   border: 2px solid $COLOR_EMERALD;
   box-sizing: border-box;
   height: 32px;
-  background-color: white;
-  font-size: 12px;
+  background-color: transparent;
   justify-content: space-between;
   padding: 0px 16px;
 }
@@ -48,11 +48,11 @@
 }
 
 .dropItem {
+  @extend .typography-body-small;
   background-color: white;
   border: none;
   display: block;
   width: 100%;
-  font-size: 12px !important;
   text-decoration: none;
   color: $COLOR_BLACK100;
   padding: 3px;

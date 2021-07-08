@@ -1,76 +1,73 @@
-@import "../../shared.scss";
+@import '../../shared.scss';
 
 .taskNameText {
-    color: $COLOR_BLACK40;
+  color: $COLOR_BLACK40;
 }
 
 .descriptionRatingsDiv {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    > div {
-        margin-right: 8px;
-    }
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  > div {
+    margin-right: 8px;
+  }
 
-    > div:last-of-type {
-        margin-right: 0px;
-    }
+  > div:last-of-type {
+    margin-right: 0px;
+  }
 }
 
 .userRatingDiv {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 50em;
-    margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 50em;
+  margin-bottom: 4px;
 }
 
 .commentDiv {
-    text-align: start;
-    min-width: 14em;
-    max-height: 40em;
-    font-size: 14px;
+  text-align: start;
+  min-width: 14em;
+  max-height: 40em;
 }
 
 .ratingDiv {
-    text-align: start;
-    white-space: nowrap;
-    max-height: 40em;
-    font-size: 14px;
+  text-align: start;
+  white-space: nowrap;
+  max-height: 40em;
 }
 
 .teamRatingDiv {
-    margin: 8px;
-    max-width: 50em;
+  margin: 8px;
+  max-width: 50em;
 }
 
 .columnFlexbox {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    text-align: left;
-    overflow-y: auto;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+  overflow-y: auto;
 }
 
 .teamRatingsBox {
-    display: flex;
-    font-size: 14px;
-    margin-top: 8px;
-    background-color: #f3f3f3;
-    width: 100%;
-    overflow-y: auto;
-    max-height: 40em;
+  display: flex;
+  margin-top: 8px;
+  background-color: #f3f3f3;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 40em;
 }
 
 .labelText {
-    @extend .typography-pre-title;
-    margin-bottom: 8px;
+  @extend .typography-pre-title;
+  margin-bottom: 8px;
 }
 
 .teamRatingUsername {
-    display: inline-block;
-    font-weight: bold;
-    margin-right: 16px;
-    width: 14em;
+  display: inline-block;
+  font-weight: bold;
+  margin-right: 16px;
+  width: 14em;
 }

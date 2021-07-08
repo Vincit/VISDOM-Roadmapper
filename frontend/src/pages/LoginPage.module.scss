@@ -23,8 +23,8 @@
   margin-top: 50px;
   line-height: 21px;
   a {
+    @extend .typography-body-bold;
     color: $COLOR_EMERALD;
-    font-weight: bold;
     margin-left: 10;
   }
 }

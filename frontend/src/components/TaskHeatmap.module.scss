@@ -28,25 +28,23 @@
   text-align: start;
 
   .xaxismin {
-    font-family: IBM Plex Mono;
     position: relative;
     left: 2px;
     display: inline-block;
     width: 0;
   }
   .xaxismax {
-    font-family: IBM Plex Mono;
     position: relative;
     display: inline-block;
     width: 0;
     left: 310px;
   }
   .xaxislabel {
+    @extend .typography-pre-title;
     position: relative;
     left: 145px;
     display: inline-block;
     width: 0;
-    font-weight: 600;
   }
 }
 
@@ -58,22 +56,20 @@
 .graphicsFlexbox {
   display: flex;
   .yaxislabel {
+    @extend .typography-pre-title;
     position: relative;
     top: 7px;
     right: 7px;
     align-self: center;
     transform: rotate(-90deg);
-    font-weight: 600;
   }
   .yaxismax {
-    font-family: IBM Plex Mono;
     position: relative;
     left: 5px;
     width: 0;
     height: 0;
   }
   .yaxismin {
-    font-family: IBM Plex Mono;
     align-self: flex-end;
     position: relative;
     left: 5px;

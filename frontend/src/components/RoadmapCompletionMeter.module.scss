@@ -15,19 +15,15 @@
 }
 
 .completedtasks {
-  font-size: 12px;
+  @extend .typography-body-small;
   position: absolute;
   left: 63px;
   top: 142px;
-  font-weight: 600;
-  color: #777777;
 }
 
 .notcompletedtasks {
-  font-size: 12px;
+  @extend .typography-body-small;
   position: absolute;
   left: 182px;
   top: 142px;
-  font-weight: 600;
-  color: #777777;
 }

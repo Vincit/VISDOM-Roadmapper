@@ -1,19 +1,17 @@
 @import '../../shared.scss';
 
 .checkBoxDiv {
+  @extend .typography-body;
   display: flex;
   align-items: center;
-  cursor: pointer;
-  user-select: none;
-
-  font-family: Work Sans;
-  font-size: 14px;
-  color: $COLOR_BLACK60;
-
   gap: 12px;
 
+  cursor: pointer;
+  user-select: none;
+  color: $COLOR_BLACK60;
+
   &.checked {
-    font-weight: 600;
+    @extend .typography-body-bold;
     color: $COLOR_BLACK100;
   }
 }

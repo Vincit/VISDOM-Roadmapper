@@ -196,7 +196,14 @@ export const PlannerChart: React.FC<{
             dataKey="workSum"
             domain={[0, workDomainMax]}
           >
-            <Label position="insideLeft">Work</Label>
+            <Label
+              position="insideLeft"
+              dx={-4}
+              dy={20}
+              className={classes(css.label)}
+            >
+              Work
+            </Label>
           </XAxis>
           <CartesianGrid vertical={false} />
 
@@ -205,7 +212,15 @@ export const PlannerChart: React.FC<{
             tickCount={valueAxisTicks}
             domain={[0, valueDomainMax]}
           >
-            <Label position="insideBottom">Value</Label>
+            <Label
+              position="insideBottom"
+              angle={90}
+              dx={-10}
+              dy={-14}
+              className={classes(css.label)}
+            >
+              Value
+            </Label>
           </YAxis>
           <Legend verticalAlign="bottom" />
         </LineChart>

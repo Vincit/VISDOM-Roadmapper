@@ -1,7 +1,8 @@
+@import '../shared.scss';
+
 .textDiv {
+  @extend .typography-h3;
   padding: 8px;
   margin: auto;
   margin-top: 32px;
-  font-weight: bold;
-  font-size: 26px;
 }

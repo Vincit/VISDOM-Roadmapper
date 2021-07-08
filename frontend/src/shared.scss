@@ -181,9 +181,7 @@ form {
 }
 
 .styledTh {
-  font-style: normal;
-  font-size: 16px;
-  line-height: 19px;
+  @extend .typography-body-bold;
   padding: 16px;
   vertical-align: middle;
   width: auto;
@@ -389,7 +387,7 @@ input {
     outline: none;
   }
   &::placeholder {
-    font-weight: normal;
+    @extend .typography-body;
     color: $COLOR_BLACK60;
   }
   &.number {
