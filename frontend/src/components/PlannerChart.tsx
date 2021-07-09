@@ -21,8 +21,8 @@ import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import {
   calcTaskAverageRating,
-  calcTaskValueSum,
   calcWeightedTaskPriority,
+  totalRatingsByDimension,
 } from '../utils/TaskUtils';
 import css from './PlannerChart.module.scss';
 
@@ -82,7 +82,10 @@ export const PlannerChart: React.FC<{
         ...tasks.map((task) => {
           const work =
             calcTaskAverageRating(TaskRatingDimension.RequiredWork, task) || 0;
-          const value = calcTaskValueSum(task);
+          const valueRatings = totalRatingsByDimension(task).get(
+            TaskRatingDimension.BusinessValue,
+          ) ?? { sum: 0, count: 1 };
+          const value = valueRatings.sum ?? 0;
           workSum += work;
           valueSum += value;
 

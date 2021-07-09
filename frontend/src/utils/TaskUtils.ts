@@ -38,15 +38,25 @@ export enum SortingTypes {
   SORT_DESC,
   SORT_CREATEDAT,
   SORT_RATINGS,
+  SORT_AVG_VALUE,
+  SORT_AVG_WORK,
+  SORT_TOTAL_VALUE,
+  SORT_TOTAL_WORK,
 }
+
+export const totalRatingsByDimension = (
+  task: Task,
+): Map<TaskRatingDimension, { sum: number; count: number }> => {
+  return task.ratings.reduce((result, { value, dimension }) => {
+    const { sum, count } = result.get(dimension) || { sum: 0, count: 0 };
+    return result.set(dimension, { sum: sum + value, count: count + 1 });
+  }, new Map());
+};
 
 const averageRatingsByDimension = (
   task: Task,
 ): Map<TaskRatingDimension, number> => {
-  const ratings = task.ratings.reduce((result, { value, dimension }) => {
-    const { sum, count } = result.get(dimension) || { sum: 0, count: 0 };
-    return result.set(dimension, { sum: sum + value, count: count + 1 });
-  }, new Map());
+  const ratings = totalRatingsByDimension(task);
   return new Map(
     Array.from(ratings).map(([key, { sum, count }]) => [key, sum / count]),
   );
@@ -96,6 +106,32 @@ export const calcTaskPriority = (task: Task) => {
   if (!avgBusinessRating) return -2;
   if (!avgWorkRating) return -1;
   return avgBusinessRating / avgWorkRating;
+};
+
+const sortTaskValueSum = (task: Task) => {
+  return (
+    totalRatingsByDimension(task).get(TaskRatingDimension.BusinessValue)?.sum ??
+    0
+  );
+};
+
+const sortTaskWorkSum = (task: Task) => {
+  return (
+    totalRatingsByDimension(task).get(TaskRatingDimension.RequiredWork)?.sum ??
+    0
+  );
+};
+
+const sortAverageTaskWork = (task: Task) => {
+  return (
+    averageRatingsByDimension(task).get(TaskRatingDimension.RequiredWork) ?? 0
+  );
+};
+
+const sortAverageTaskValue = (task: Task) => {
+  return (
+    averageRatingsByDimension(task).get(TaskRatingDimension.BusinessValue) ?? 0
+  );
 };
 
 export const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
@@ -152,6 +188,14 @@ const taskCompare = (
       return sortKeyNumeric((t) => +t.completed);
     case SortingTypes.SORT_RATINGS:
       return sortKeyNumeric(calcTaskPriority);
+    case SortingTypes.SORT_AVG_VALUE:
+      return sortKeyNumeric(sortAverageTaskValue);
+    case SortingTypes.SORT_AVG_WORK:
+      return sortKeyNumeric(sortAverageTaskWork);
+    case SortingTypes.SORT_TOTAL_VALUE:
+      return sortKeyNumeric(sortTaskValueSum);
+    case SortingTypes.SORT_TOTAL_WORK:
+      return sortKeyNumeric(sortTaskWorkSum);
     default:
       // SortingTypes.NO_SORT
       break;
@@ -194,15 +238,6 @@ export const dragDropBetweenLists = (
     [droppableSource.droppableId]: sourceClone,
     [droppableDestination.droppableId]: destClone,
   };
-};
-export const calcTaskValueSum = (task: Task) => {
-  let ratingValuesSum = 0;
-  task.ratings.forEach((rating) => {
-    if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
-    ratingValuesSum += rating.value;
-  });
-
-  return ratingValuesSum;
 };
 
 export const calcTaskWeightedValueSum = (
@@ -315,3 +350,44 @@ export const unratedTasksAmount = (
   tasks: Task[],
   customers?: Customer[],
 ) => unratedTasks(user, tasks, customers).length;
+
+export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
+  const type = getType(userInfo?.roles, task.roadmapId);
+  if (type === RoleType.Admin || type === RoleType.Business)
+    return !!userInfo?.representativeFor?.find(
+      (customer) =>
+        !task.ratings.some(
+          (rating) =>
+            customer.id === rating.forCustomer &&
+            rating.createdByUser === userInfo?.id,
+        ),
+    );
+  return !task.ratings.find((rating) => rating.createdByUser === userInfo?.id);
+};
+
+export const unratedProductOwnerTasks: (
+  tasks: Task[],
+  allUsers: RoadmapUser[],
+  allCustomers: Customer[],
+) => Task[] = (tasks, allUsers, allCustomers) => {
+  const developers = allUsers.filter(
+    (user) => user.type === RoleType.Developer,
+  );
+  const unrated = tasks.filter((task) => {
+    const ratingIds = task.ratings.map((rating) => rating.createdByUser);
+
+    const customersMissing = allCustomers.some((customer) => {
+      return !customer.representatives?.every((rep) =>
+        ratingIds.includes(rep.id),
+      );
+    });
+
+    const devsMissing = developers.some(
+      (developer) => !ratingIds.includes(developer.id),
+    );
+
+    if (!customersMissing && !devsMissing) return false;
+    return true;
+  });
+  return unrated;
+};

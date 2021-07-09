@@ -32,7 +32,7 @@ import {
 import { TaskRatingsText } from './TaskRatingsText';
 import { Dot } from './Dot';
 import { getType } from '../utils/UserUtils';
-import css from './TableTaskRow.module.scss';
+import css from './TableUnratedTaskRow.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -40,7 +40,7 @@ interface TableTaskRowProps {
   task: Task;
 }
 
-export const TableTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
+export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { id, name, completed, roadmapId, description, createdAt } = task;
   const userInfo = useSelector<RootState, UserInfo | undefined>(
