@@ -78,7 +78,7 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
           <ModalFooterButtonDiv>
             <button
               className="button-large cancel"
-              onClick={closeModal}
+              onClick={() => closeModal()}
               type="button"
             >
               <Trans i18nKey="Cancel" />

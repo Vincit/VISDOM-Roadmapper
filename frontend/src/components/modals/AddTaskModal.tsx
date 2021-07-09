@@ -133,7 +133,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
           <ModalFooterButtonDiv>
             <button
               className="button-large cancel"
-              onClick={closeModal}
+              onClick={() => closeModal()}
               type="button"
             >
               <Trans i18nKey="Cancel" />

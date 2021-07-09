@@ -230,7 +230,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
           <ModalFooterButtonDiv>
             <button
               className="button-large cancel"
-              onClick={closeModal}
+              onClick={() => closeModal()}
               type="button"
             >
               <Trans i18nKey="Cancel" />

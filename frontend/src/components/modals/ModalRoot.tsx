@@ -72,11 +72,18 @@ export const ModalRoot = () => {
   const { pathname, search } = useLocation();
   const ChosenModal = Modals[modalsState.modalType] as Modal<unknown>;
 
-  const onRequestClose = useCallback(() => {
-    dispatch(modalsActions.hideModal());
-    // Remove query params from url when modal is closed
-    history.replace(pathname);
-  }, [dispatch, pathname, history]);
+  const onRequestClose = useCallback(
+    (success?: boolean) => {
+      const next = modalsState.modalProps.onSuccess;
+      dispatch(modalsActions.hideModal());
+      // Remove query params from url when modal is closed
+      history.replace(pathname);
+      if (success && next) {
+        dispatch(modalsActions.showModal(next));
+      }
+    },
+    [dispatch, pathname, history, modalsState.modalProps],
+  );
 
   useEffect(() => {
     // Add query params to url on open
@@ -100,7 +107,7 @@ export const ModalRoot = () => {
     <ReactModal
       isOpen
       shouldCloseOnOverlayClick={false}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => onRequestClose(false)}
       style={modalCustomStyles}
     >
       <ChosenModal closeModal={onRequestClose} {...modalsState.modalProps} />

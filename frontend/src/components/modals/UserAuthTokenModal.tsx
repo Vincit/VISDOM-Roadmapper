@@ -93,7 +93,7 @@ export const UserAuthTokenModal: Modal<ModalTypes.USER_AUTH_TOKEN_MODAL> = ({
         <ModalFooterButtonDiv>
           <button
             className="button-large cancel"
-            onClick={closeModal}
+            onClick={() => closeModal()}
             type="button"
           >
             <Trans i18nKey="Cancel" />

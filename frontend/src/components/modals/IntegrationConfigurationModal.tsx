@@ -110,7 +110,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
             <button
               className="button-large cancel"
               type="button"
-              onClick={closeModal}
+              onClick={() => closeModal()}
             >
               <Trans i18nKey="Cancel" />
             </button>
