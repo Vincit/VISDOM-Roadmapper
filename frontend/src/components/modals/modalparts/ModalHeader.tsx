@@ -8,6 +8,6 @@ export const ModalHeader: React.FC<{ closeModal?: () => void }> = ({
 }) => (
   <div className={css.container}>
     {children}
-    {closeModal && <ModalCloseButton onClick={closeModal} />}
+    {closeModal && <ModalCloseButton onClick={() => closeModal()} />}
   </div>
 );

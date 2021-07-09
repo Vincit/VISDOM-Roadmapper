@@ -24,7 +24,7 @@ export enum ModalTypes {
   USER_AUTH_TOKEN_MODAL = 'USER_AUTH_TOKEN_MODAL',
 }
 
-type Props = {
+type OwnProps = {
   [ModalTypes.ADD_TASK_MODAL]: {};
   [ModalTypes.RATE_TASK_MODAL]: { taskId: number };
   [ModalTypes.EDIT_TASK_MODAL]: { taskId: number };
@@ -62,9 +62,13 @@ type Props = {
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: {};
 };
 
-export interface ModalProps {
-  closeModal: (success?: true | unknown) => void;
-}
+type Props = {
+  [T in ModalTypes]: OwnProps[T] & { onSuccess?: ShowModalPayload };
+};
+
+export type ModalProps = {
+  closeModal: (success?: boolean) => void;
+};
 
 export type Modal<T> = T extends ModalTypes
   ? FC<ModalProps & Props[T]>

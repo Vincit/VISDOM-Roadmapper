@@ -100,7 +100,7 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
           <ModalFooterButtonDiv>
             <button
               className="button-large cancel"
-              onClick={closeModal}
+              onClick={() => closeModal()}
               type="button"
             >
               <Trans i18nKey="No, go back" />

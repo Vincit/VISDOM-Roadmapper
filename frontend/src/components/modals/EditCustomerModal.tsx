@@ -142,7 +142,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
           <ModalFooterButtonDiv>
             <button
               className="button-large cancel"
-              onClick={closeModal}
+              onClick={() => closeModal()}
               type="button"
             >
               <Trans i18nKey="Cancel" />
