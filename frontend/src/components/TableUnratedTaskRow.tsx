@@ -72,12 +72,26 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   */
   useEffect(() => {
     if (type === RoleType.Admin) {
-      const ratingIds = task.ratings.map((rating) => rating.createdByUser);
+      const ratings = task.ratings.map((rating) => ({
+        createdByUser: rating.createdByUser,
+        forCustomer: rating.forCustomer,
+      }));
+
       const unratedCustomers = allCustomers?.filter((customer) => {
         const representativeIds = customer?.representatives?.map(
           (rep) => rep.id,
         );
-        return !representativeIds?.every((rep) => ratingIds?.includes(rep));
+
+        return !representativeIds?.every((rep) => {
+          return ratings.some((rating) => {
+            if (
+              rating.createdByUser === rep &&
+              rating.forCustomer === customer.id
+            )
+              return true;
+            return false;
+          });
+        });
       });
       setMissingRatings(unratedCustomers);
     }
