@@ -25,8 +25,6 @@
     "@types/react-select": "^4.0.13",
     "@types/recharts": "^1.8.19",
     "@types/redux": "^3.6.0",
-    "@types/styled-components": "^5.1.0",
-    "@types/styled-react-modal": "^1.2.0",
     "apexcharts": "^3.20.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
@@ -54,9 +52,7 @@
     "recharts": "^1.8.5",
     "redux": "^4.0.5",
     "sass": "^1.32.8",
-    "styled-components": "^5.1.1",
     "typeface-anonymous-pro": "^0.0.72",
-    "typeface-ibm-plex-mono": "^0.0.61",
     "typeface-roboto": "^0.0.75",
     "typeface-work-sans": "^0.0.72",
     "typescript": "^3.7.5"
