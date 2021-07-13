@@ -7,7 +7,6 @@ import * as serviceWorker from './serviceWorker';
 import './global.scss';
 import './shared.scss';
 import 'typeface-anonymous-pro';
-import 'typeface-ibm-plex-mono';
 import 'typeface-work-sans';
 
 ReactDOM.render(

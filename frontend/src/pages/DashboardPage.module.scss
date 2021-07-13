@@ -4,16 +4,6 @@
   width: 100%;
   text-align: start;
   padding: 0 27px;
-
-  & > .taskmessage {
-    font-family: Ibm Plex Mono;
-    font-size: 15px;
-  }
-
-  & > .welcomemessage {
-    font-size: 24px;
-    line-height: 32px;
-  }
 }
 
 .chartWrapper {
@@ -33,16 +23,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   padding: 0 27px;
-}
-
-.usernameSpan {
-  font-weight: 600;
-}
-
-.taskCountSpan {
-  font-weight: 600;
-  color: $COLOR_EMERALD;
-  text-decoration: underline;
 }
 
 .taskTableWrapper {

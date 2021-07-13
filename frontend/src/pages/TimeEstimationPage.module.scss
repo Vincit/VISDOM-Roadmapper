@@ -84,7 +84,6 @@
 }
 
 .versionData {
-  font-family: IBM Plex Mono;
   padding: 0;
   margin: 0;
   font-size: 12px;
@@ -100,9 +99,7 @@
   }
 
   &.versionTitle {
-    font-weight: bold;
-    font-size: 14px;
-    font-family: unset;
+    @extend .typography-body-bold;
   }
 }
 

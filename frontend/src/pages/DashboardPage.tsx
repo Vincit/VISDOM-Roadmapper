@@ -90,19 +90,10 @@ export const DashboardPage = () => {
   return (
     <>
       <div className={classes(css.overviewHeader)}>
-        <p className={classes(css.welcomemessage)}>
-          Welcome{' '}
-          <span className={classes(css.usernameSpan)}>
-            @{userInfo!.username}
-          </span>
-        </p>
-        <p className={classes(css.taskmessage)}>
-          You have{' '}
-          <span className={classes(css.taskCountSpan)}>
-            {getUnratedTasks().length}
-          </span>{' '}
-          new tasks to rate →
-        </p>
+        <h2>
+          <span style={{ fontWeight: 'normal' }}>Welcome, </span>
+          {userInfo!.username}
+        </h2>
         <RoadmapOverview />
       </div>
       {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
