@@ -174,16 +174,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
           {errorMessage}
         </Alert>
       </ModalContent>
-      <ModalFooter>
-        <ModalFooterButtonDiv>
-          <button
-            className="button-large cancel"
-            onClick={() => closeModal()}
-            type="button"
-          >
-            <Trans i18nKey="Cancel" />
-          </button>
-        </ModalFooterButtonDiv>
+      <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>{submitOrRetryButton()}</ModalFooterButtonDiv>
       </ModalFooter>
     </Form>

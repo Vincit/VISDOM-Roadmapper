@@ -138,16 +138,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
             {errorMessage}
           </Alert>
         </ModalContent>
-        <ModalFooter>
-          <ModalFooterButtonDiv>
-            <button
-              className="button-large cancel"
-              onClick={() => closeModal()}
-              type="button"
-            >
-              <Trans i18nKey="Cancel" />
-            </button>
-          </ModalFooterButtonDiv>
+        <ModalFooter closeModal={closeModal}>
           <ModalFooterButtonDiv>
             {isLoading ? (
               <LoadingSpinner />
