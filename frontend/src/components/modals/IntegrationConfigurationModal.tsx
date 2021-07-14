@@ -105,16 +105,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
             {errorMessage}
           </Alert>
         </ModalContent>
-        <ModalFooter>
-          <ModalFooterButtonDiv>
-            <button
-              className="button-large cancel"
-              type="button"
-              onClick={() => closeModal()}
-            >
-              <Trans i18nKey="Cancel" />
-            </button>
-          </ModalFooterButtonDiv>
+        <ModalFooter closeModal={closeModal}>
           <ModalFooterButtonDiv>
             <button
               className="button-large"
