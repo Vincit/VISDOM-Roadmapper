@@ -23,6 +23,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [retry, setRetry] = useState(0);
 
   const currentConfiguration = useSelector(chosenIntegrationSelector(name));
 
@@ -45,8 +46,13 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
       try {
         const response = await api.getIntegrationOauthURL(name, roadmapId);
         const { url, token, tokenSecret } = response;
-        setFormValues((prev) => ({ ...prev, token, tokenSecret }));
+        setFormValues({
+          oauthVerifierCode: '',
+          token,
+          tokenSecret,
+        });
         setOAuthURL(url);
+        setErrorMessage('');
       } catch (error) {
         setErrorMessage(
           `Unable to query ${titleCase(
@@ -57,7 +63,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     };
 
     getOAuthURL();
-  }, [currentConfiguration, roadmapId, name]);
+  }, [currentConfiguration, roadmapId, name, retry]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -89,7 +95,9 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
             )} OAuth token. Please contact an administrator if the problem persists.`,
           );
         } catch (err) {
-          setErrorMessage(t('Internal server error'));
+          setErrorMessage(
+            err.response?.data?.errors ?? t('Internal server error'),
+          );
         }
         setIsLoading(false);
       };
@@ -133,39 +141,51 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     );
   };
 
+  const submitOrRetryButton = () => {
+    if (!formValues.oauthVerifierCode || isLoading) return null;
+    if (errorMessage) {
+      return (
+        <button
+          className="button-large cancel"
+          type="button"
+          onClick={() => setRetry(retry + 1)}
+        >
+          <Trans i18nKey="Retry" />
+        </button>
+      );
+    }
+    return (
+      <button className="button-large" type="submit">
+        <Trans i18nKey="Save" />
+      </button>
+    );
+  };
+
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            <Trans i18nKey="Setup OAuth for" /> {titleCase(name)}
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          {modalBody()}
-          <Alert show={errorMessage.length > 0} variant="danger">
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter>
-          <ModalFooterButtonDiv>
-            <button
-              className="button-large cancel"
-              onClick={() => closeModal()}
-              type="button"
-            >
-              <Trans i18nKey="Cancel" />
-            </button>
-          </ModalFooterButtonDiv>
-          <ModalFooterButtonDiv>
-            {!errorMessage && formValues.oauthVerifierCode && !isLoading ? (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Save" />
-              </button>
-            ) : null}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          <Trans i18nKey="Setup OAuth for" /> {titleCase(name)}
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        {modalBody()}
+        <Alert show={errorMessage.length > 0} variant="danger">
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter>
+        <ModalFooterButtonDiv>
+          <button
+            className="button-large cancel"
+            onClick={() => closeModal()}
+            type="button"
+          >
+            <Trans i18nKey="Cancel" />
+          </button>
+        </ModalFooterButtonDiv>
+        <ModalFooterButtonDiv>{submitOrRetryButton()}</ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };
