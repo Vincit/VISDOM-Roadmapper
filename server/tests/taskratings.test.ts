@@ -16,12 +16,9 @@ import TaskRating from '../src/api/taskratings/taskratings.model';
 describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {
   describe('GET /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
     it('Should get all taskratings', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const taskId = (
-        await Task.query().where('roadmapId', firstRoadmapId).first()
-      ).id;
+      const { taskId, roadmapId } = await getTestRatingData();
       const res = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
@@ -29,6 +26,9 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(res.body[0]).to.have.property('value');
       expect(res.body[0]).to.have.property('createdByUser');
       expect(res.body[0]).to.have.property('parentTask');
+      res.body.forEach((rating: any) => {
+        expect(rating.parentTask, 'incorrect parent task').to.equal(taskId);
+      });
     });
     it('Should not get taskratings with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
