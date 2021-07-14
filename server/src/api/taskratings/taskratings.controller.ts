@@ -15,7 +15,7 @@ export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
   }
 
   const query = Taskrating.query()
-    .for(Number(ctx.params.taskId))
+    .where({ parentTask: Number(ctx.params.taskId) })
     .modify('keepVisible', user, role);
   if (ctx.query.eager) {
     query.withGraphFetched('[createdBy, createdFor]');
