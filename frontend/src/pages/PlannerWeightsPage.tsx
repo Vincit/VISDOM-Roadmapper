@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { Slider } from '../components/forms/Slider';
 import {
   plannerCustomerWeightsSelector,
@@ -20,11 +21,13 @@ import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { customerWeight } from '../utils/CustomerUtils';
 import { percent } from '../utils/string';
+import { TooltipIcon } from '../components/TooltipIcon';
 import css from './PlannerWeightsPage.module.scss';
 
 const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const customerWeights = useSelector<RootState, PlannerCustomerWeight[]>(
     plannerCustomerWeightsSelector,
@@ -105,7 +108,10 @@ export const PlannerWeightsPage = () => {
     <div className={classes(css.plannerPagecontainer)}>
       <header className={classes(css.weightsHeader)}>
         <h2 className={classes(css.title)}>
-          <Trans i18nKey="Set different weighting for clients" />
+          <Trans i18nKey="Set different weighing for clients" />
+          <TooltipIcon title={t('tooltipMessage')}>
+            <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+          </TooltipIcon>
         </h2>
         <button
           className="button-small-outlined"
