@@ -65,8 +65,12 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
       .withGraphFetched('representatives');
     if (!customer) return false;
 
-    const ok = await customer.$query(trx).patch({ name, email, weight, color });
-    if (!representatives) return ok && customer;
+    if (!representatives) 
+      return await customer
+        .$query(trx)
+        .patchAndFetch({ name, email, weight, color })
+        .withGraphFetched('representatives')
+        ?? false;
 
     const { added, removed } = difference(
       customer.representatives?.map(({ id }) => id) || [],
@@ -87,7 +91,13 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
       await customer.$relatedQuery('representatives', trx).relate(users);
     }
 
-    return await customer.$query(trx).withGraphFetched('representatives');
+    if (!name && !email && !weight && !color)
+      return await customer.$query(trx)
+        .withGraphFetched('representatives');
+
+    return await customer.$query(trx)
+      .patchAndFetch({ name, email, weight, color })
+      .withGraphFetched('representatives')
   });
   if (!updated) {
     return void (ctx.status = 404);
