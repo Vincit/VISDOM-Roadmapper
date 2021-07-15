@@ -220,43 +220,39 @@ export const dragDropBetweenLists = (
   };
 };
 
-export const calcTaskWeightedValueSum = (
+const ratingValue = (allCustomers: Customer[], roadmap: Roadmap) => (
+  rating: Taskrating,
+) => {
+  const ratingCreator = allCustomers.find(
+    ({ id }) => id === rating.forCustomer,
+  );
+  const creatorWeight = ratingCreator
+    ? customerWeight(ratingCreator, roadmap.plannerCustomerWeights)
+    : 0;
+
+  return rating.value * creatorWeight;
+};
+
+const taskWeightedValueSummary = (
   task: Task,
   allCustomers: Customer[],
   roadmap: Roadmap,
-) => {
-  const customerValuesSum = allCustomers.reduce(
-    (total, customer) => total + customerWeight(customer),
-    0,
-  );
-
-  const ratingValue = (rating: Taskrating) => {
-    const ratingCreator = allCustomers.find(
-      ({ id }) => id === rating.forCustomer,
-    );
-
-    const ratingCreatorValue = ratingCreator
-      ? customerWeight(ratingCreator, roadmap.plannerCustomerWeights)
-      : 0;
-
-    let creatorPlannerWeight = roadmap.plannerCustomerWeights?.find(
-      ({ customerId }) => customerId === rating.forCustomer,
-    )?.weight;
-    if (creatorPlannerWeight === undefined) creatorPlannerWeight = 1;
-
-    let creatorValueWeight = 0;
-    if (ratingCreator === undefined) creatorValueWeight = 1;
-
-    if (ratingCreatorValue > 0 && customerValuesSum > 0) {
-      creatorValueWeight = ratingCreatorValue / customerValuesSum;
-    }
-    return rating.value * creatorValueWeight * creatorPlannerWeight;
-  };
-
-  return task.ratings
+) =>
+  task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValue)
+    .map(ratingValue(allCustomers, roadmap))
+    .reduce((acc, num) => acc.add(num), new RatingsSummary());
+
+export const totalWeightedValueAndWork = (
+  tasks: Task[],
+  allCustomers: Customer[],
+  roadmap: Roadmap,
+) => {
+  const { work } = totalValueAndWork(tasks);
+  const totalValue = tasks
+    .map((task) => taskWeightedValueSummary(task, allCustomers, roadmap).avg)
     .reduce((sum, value) => sum + value, 0);
+  return { value: totalValue, work };
 };
 
 export const calcWeightedTaskPriority = (
@@ -264,7 +260,8 @@ export const calcWeightedTaskPriority = (
   allCustomers: Customer[],
   roadmap: Roadmap,
 ) => {
-  const weightedValue = calcTaskWeightedValueSum(task, allCustomers, roadmap);
+  const weightedValue = taskWeightedValueSummary(task, allCustomers, roadmap)
+    .avg;
   if (!weightedValue) return -2;
 
   const avgWorkRating = valueAndWorkSummary(task).work.avg;
