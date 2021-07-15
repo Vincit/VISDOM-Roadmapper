@@ -36,9 +36,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   useEffect(() => {
     if (!currentConfiguration) {
       setErrorMessage(
-        `No ${titleCase(
-          name,
-        )} configuration found. Please configure ${titleCase(name)} first.`,
+        t('Missing configuration error', { name: titleCase(name) }),
       );
       return;
     }
@@ -54,16 +52,12 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
         setOAuthURL(url);
         setErrorMessage('');
       } catch (error) {
-        setErrorMessage(
-          `Unable to query ${titleCase(
-            name,
-          )} OAuth URL. Please contact an administrator if the problem persists.`,
-        );
+        setErrorMessage(t('Oauth url query error', { name: titleCase(name) }));
       }
     };
 
     getOAuthURL();
-  }, [currentConfiguration, roadmapId, name, retry]);
+  }, [currentConfiguration, roadmapId, name, retry, t]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -90,9 +84,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
             return;
           }
           setErrorMessage(
-            `Unable to swap ${titleCase(
-              name,
-            )} OAuth token. Please contact an administrator if the problem persists.`,
+            t('Oauth token swap error', { name: titleCase(name) }),
           );
         } catch (err) {
           setErrorMessage(
@@ -114,17 +106,19 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     if (errorMessage) return null;
     return (
       <>
-        <label htmlFor="board">OAuth URL:</label>
+        <label htmlFor="board">{t('OAuth URL')}</label>
         <p>
-          Please visit{' '}
-          <a
-            href={oauthURL.toString()}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            this URL
-          </a>{' '}
-          and input the code below:
+          <Trans i18nKey="Oauth authorization link">
+            Please visit{' '}
+            <a
+              href={oauthURL.toString()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              this URL
+            </a>{' '}
+            and input the code below:
+          </Trans>
         </p>
         <Form.Group>
           <Input
@@ -164,9 +158,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   return (
     <Form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
-        <h3>
-          <Trans i18nKey="Setup OAuth for" /> {titleCase(name)}
-        </h3>
+        <h3>{t('Setup OAuth for', { name: titleCase(name) })}</h3>
       </ModalHeader>
       <ModalContent>
         {modalBody()}
