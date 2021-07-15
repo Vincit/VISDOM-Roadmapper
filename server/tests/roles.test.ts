@@ -79,7 +79,10 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       expect(res.status).to.equal(200);
       const res2 = await loggedInAgent.get('/users/roles');
       expect(res2.status).to.equal(200);
-      expect(res2.body[0].type).to.equal(RoleType.Developer);
+      const role = res2.body.find(
+        (role: Role) => role.roadmapId === firstRoadmapId,
+      );
+      expect(role.type).to.equal(RoleType.Developer);
     });
     it('Should not patch user roles with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
@@ -95,7 +98,10 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       expect(res.status).to.equal(403);
       const after = await loggedInAgent.get('/users/roles');
       expect(after.status).to.equal(200);
-      expect(after.body[0].type).not.to.equal(RoleType.Developer);
+      const role = after.body.find(
+        (role: Role) => role.roadmapId === firstRoadmapId,
+      );
+      expect(role.type).not.to.equal(RoleType.Developer);
     });
   });
   describe('DELETE /roadmaps/:roadmapId/users/:userId/roles', function () {
@@ -110,7 +116,10 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       expect(res.status).to.equal(200);
       const res2 = await loggedInAgent.get('/users/roles');
       expect(res2.status).to.equal(200);
-      expect(res2.body[0]).not.to.exist;
+      const role = res2.body.find(
+        (role: Role) => role.roadmapId === firstRoadmapId,
+      );
+      expect(role).not.to.exist;
     });
     it('Should not delete user roles with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;

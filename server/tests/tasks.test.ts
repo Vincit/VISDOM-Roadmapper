@@ -101,12 +101,14 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
   describe('DELETE /roadmaps/:roadmapId/tasks/:taskId', function () {
     it('Should delete task', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstTaskId = (await Task.query().first()).id;
+      const taskId = (
+        await Task.query().where('roadmapId', firstRoadmapId).first()
+      ).id;
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
       );
       const res = await loggedInAgent.delete(
-        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}`,
+        `/roadmaps/${firstRoadmapId}/tasks/${taskId}`,
       );
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
@@ -116,7 +118,9 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
     });
     it('Should not delete task with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstTaskId = (await Task.query().first()).id;
+      const taskId = (
+        await Task.query().where('roadmapId', firstRoadmapId).first()
+      ).id;
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
       );
@@ -127,7 +131,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
         type: RoleType.Admin & ~Permission.TaskEdit,
       });
       const res = await loggedInAgent.delete(
-        `/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}`,
+        `/roadmaps/${firstRoadmapId}/tasks/${taskId}`,
       );
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
@@ -140,9 +144,11 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
   describe('PATCH /roadmaps/:roadmapId/tasks/:taskId', function () {
     it('Should patch task', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstTaskId = (await Task.query().first()).id;
+      const taskId = (
+        await Task.query().where('roadmapId', firstRoadmapId).first()
+      ).id;
       const res = await loggedInAgent
-        .patch(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}`)
+        .patch(`/roadmaps/${firstRoadmapId}/tasks/${taskId}`)
         .type('json')
         .send({
           name: 'patched',
@@ -158,7 +164,9 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
     });
     it('Should not patch task with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const firstTaskId = (await Task.query().first()).id;
+      const taskId = (
+        await Task.query().where('roadmapId', firstRoadmapId).first()
+      ).id;
       const userId = (
         await User.query().where({ username: 'AdminPerson1' }).first()
       ).id;
@@ -166,7 +174,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
         type: RoleType.Admin & ~Permission.TaskEdit,
       });
       const res = await loggedInAgent
-        .patch(`/roadmaps/${firstRoadmapId}/tasks/${firstTaskId}`)
+        .patch(`/roadmaps/${firstRoadmapId}/tasks/${taskId}`)
         .type('json')
         .send({
           name: 'patched',
