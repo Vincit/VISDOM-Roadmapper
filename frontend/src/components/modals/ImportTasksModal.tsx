@@ -191,7 +191,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           }))}
         />
         <label htmlFor="labels" style={{ marginTop: '1em' }}>
-          Select labels to import:
+          {t('Select labels to import')}
         </label>
         <Select
           id="labels"
@@ -227,12 +227,12 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
   return (
     <Form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
-        <h3>
-          <Trans i18nKey="Import tasks from" /> {titleCase(name)}
-        </h3>
+        <h3>{t('Import tasks from', { name: titleCase(name) })}</h3>
       </ModalHeader>
       <ModalContent>
-        <label htmlFor="board">Select {titleCase(name)} board:</label>
+        <label htmlFor="board">
+          {t('Select integration board', { name: titleCase(name) })}
+        </label>
         {modalBody()}
         <Alert
           show={errorMessage.length > 0}

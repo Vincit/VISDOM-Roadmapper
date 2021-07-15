@@ -77,7 +77,7 @@ export const english = {
     'Your unrated tasks': 'Your unrated tasks',
     'Roadmap completion': 'Roadmap completion',
     Import: 'Import',
-    'Import tasks from JIRA': 'Import tasks from JIRA',
+    'Import tasks from': 'Import tasks from {{name}}',
     'Import Jira tasks': 'Import Jira tasks',
     'Unassigned tasks': 'Unassigned tasks',
     'Time Estimation': 'Time Estimation',
@@ -109,6 +109,18 @@ export const english = {
       'Invalid or missing Oauth token, please configure Oauth first.',
     'Terms of use':
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
+    'Setup OAuth for': 'Setup OAuth for {{name}}',
+    'OAuth URL': 'OAuth URL:',
+    'Oauth authorization link':
+      'Please visit <2>this URL</2> and input the code below:',
+    'Oauth token swap error':
+      'Unable to swap {{name}} OAuth token. Please contact an administrator if the problem persists.',
+    'Oauth url query error':
+      'Unable to query {{name}} OAuth URL. Please contact an administrator if the problem persists.',
+    'Select labels to import': 'Select labels to import:',
+    'Select integration board': 'Select {{name}} board:',
+    'Missing configuration error':
+      'No {{name}} configuration found. Please configure {{name}} first.',
     'Internal server error': 'Internal server error',
     email: 'email',
     Email: 'Email',
