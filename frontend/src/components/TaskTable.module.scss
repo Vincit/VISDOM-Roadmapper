@@ -4,13 +4,19 @@
   margin-bottom: 50px;
 }
 
-.taskTableHeader {
-  display: flex;
-  margin-top: 25px;
-  margin-bottom: 27px;
+.infoContainer {
   margin-left: 24px;
 }
 
-.infoContainer {
-  margin-left: 24px;
+.titleContainer {
+  display: flex;
+  line-height: 150%;
+  margin: 16px 0 26px 26px;
+  align-items: center;
+  .title {
+    text-align: start;
+  }
+  .infoIcon {
+    margin-left: 12px;
+  }
 }

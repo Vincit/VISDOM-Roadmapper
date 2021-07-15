@@ -146,5 +146,9 @@ export const english = {
     Businessperson: 'Businessperson',
     Admin: 'Admin',
     Unordered: 'Unordered',
+    tooltipMessage: 'Tooltip message placeholder',
+    workValueTitle: 'Work / Value',
+    customerStakesTitle: 'Customer stakes in milestone',
+    unratedTaskMessage: 'Watinting for ratings'
   },
 };
