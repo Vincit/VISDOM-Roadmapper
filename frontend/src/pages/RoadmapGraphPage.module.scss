@@ -12,12 +12,19 @@ $GRAPH_ITEM_MARGIN: 11px;
   overflow-x: auto;
 }
 
-.graphTitle {
-  text-align: start;
+.titleContainer {
+  display: flex;
   line-height: 150%;
-  margin-left: 6px;
   margin-bottom: 39px;
-  &.lowerGraphTitle {
+  align-items: center;
+  .graphTitle {
+    text-align: start;
+    margin-left: 6px;
+  }
+  .infoIcon {
+    margin-left: 12px;
+  }
+  &.lowerGraphTitleContainer {
     margin-bottom: 29px;
   }
 }

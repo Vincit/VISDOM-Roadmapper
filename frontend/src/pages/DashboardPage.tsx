@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
@@ -10,6 +11,7 @@ import { TaskTableUnrated } from '../components/TaskTable';
 import { StoreDispatchType } from '../redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
+import { TooltipIcon } from '../components/TooltipIcon';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -29,6 +31,7 @@ interface VersionListsObject {
 const ROADMAP_LIST_ID = '-1';
 
 export const DashboardPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -112,9 +115,14 @@ export const DashboardPage = () => {
       )}
       {getUnratedTasks().length > 0 && (
         <div className={classes(css.taskTableWrapper)}>
-          <p className={classes(css.header)}>
-            <Trans i18nKey="Unrated tasks" />
-          </p>
+          <div className={classes(css.titleContainer)}>
+            <h2 className={classes(css.title)}>
+              <Trans i18nKey="Unrated tasks" />
+            </h2>
+            <TooltipIcon title={t('tooltipMessage')}>
+              <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+            </TooltipIcon>
+          </div>
           <TaskTableUnrated tasks={getUnratedTasks()} />
         </div>
       )}

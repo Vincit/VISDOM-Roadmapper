@@ -1,14 +1,16 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { FC, useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { TableUnratedTaskRow } from './TableUnratedTaskRow';
 import { Roadmap, RoadmapUser, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
+import { TooltipIcon } from '../components/TooltipIcon';
 import {
   filterTasks,
   FilterTypes,
@@ -44,6 +46,7 @@ const TaskTable: FC<{
   label: string;
   TaskRow: any;
 }> = ({ tasks, searchString, searchFilter, tableHeaders, label, TaskRow }) => {
+  const { t } = useTranslation();
   const [sortingType, setSortingType] = useState(SortingTypes.NO_SORT);
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -129,9 +132,14 @@ const TaskTable: FC<{
     <>
       {getRenderTaskList().length > 0 && (
         <div>
-          <h2 className={classes(css.taskTableHeader)}>
-            {label} ({getRenderTaskList().length})
-          </h2>
+          <div className={classes(css.titleContainer)}>
+            <h2 className={classes(css.title)}>
+              {label} ({getRenderTaskList().length})
+            </h2>
+            <TooltipIcon title={t('tooltipMessage')}>
+              <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+            </TooltipIcon>
+          </div>
           <div>{renderTasks()}</div>
         </div>
       )}
@@ -144,6 +152,8 @@ export const TaskTableUnrated: FC<{
   searchString?: string;
   searchFilter?: FilterTypes;
 }> = ({ tasks, searchString, searchFilter }) => {
+  const { t } = useTranslation();
+
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -189,7 +199,7 @@ export const TaskTableUnrated: FC<{
       searchString={searchString}
       searchFilter={searchFilter}
       tableHeaders={tableHeaders}
-      label="Waiting for ratings"
+      label={t('unratedTaskMessage')}
       TaskRow={TableUnratedTaskRow}
     />
   );
