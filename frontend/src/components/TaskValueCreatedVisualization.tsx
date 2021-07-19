@@ -9,6 +9,7 @@ import { RootState } from '../redux/types';
 import { Version } from '../redux/versions/types';
 import { Dot } from './Dot';
 import { totalValueAndWork } from '../utils/TaskUtils';
+import { percent } from '../utils/string';
 import css from './TaskValueCreatedVisualization.module.scss';
 
 const classes = classNames.bind(css);
@@ -58,14 +59,6 @@ export const TaskValueCreatedVisualization: React.FC<{
       color: key.color,
     }));
 
-  const valuePercent = (value: number) => {
-    const percent = (100 * value) / totalValue;
-    return `${percent.toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1,
-    })}%`;
-  };
-
   const largestValue = (stakes: DataPoint[]) => {
     if (!stakes.length) return 0;
     return stakes[0].value / totalValue;
@@ -90,7 +83,9 @@ export const TaskValueCreatedVisualization: React.FC<{
               arrow: classes(css.tooltipArrow),
               tooltip: classes(css.tooltip),
             }}
-            title={`${entry.name} : ${valuePercent(entry.value)}`}
+            title={`${entry.name} : ${percent(1).format(
+              entry.value / totalValue,
+            )}`}
             placement="right"
             arrow
           >

@@ -14,6 +14,7 @@ import { Dot } from '../components/Dot';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { customerWeight } from '../utils/CustomerUtils';
+import { percent } from '../utils/string';
 import css from './PlannerWeightsPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -44,10 +45,10 @@ export const PlannerWeightsPage = () => {
 
   useEffect(() => {
     setNoChanges(
-      !customerWeights.filter(({ customerId, weight }) => {
+      !customerWeights.some(({ customerId, weight }) => {
         const saved = customers?.find(({ id }) => id === customerId)?.weight;
         return weight !== saved;
-      }).length,
+      }),
     );
   }, [customerWeights, customers]);
 
@@ -141,7 +142,7 @@ export const PlannerWeightsPage = () => {
             defaultValue={customerWeight(customer, customerWeights)}
             step={0.25}
             valueLabelDisplay="auto"
-            valueLabelFormat={(value) => `${value * 100}%`}
+            valueLabelFormat={(value) => percent().format(value)}
             marks
             onChange={(e, value) =>
               handleSliderChange(customer.id, Number(value))
