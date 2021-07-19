@@ -5,7 +5,9 @@
   .circle {
     background-color: $COLOR_EMERALD;
   }
-  &:hover {
+  &:hover,
+  &:focus {
+    outline: none;
     .line,
     .circle {
       background-color: $COLOR_FOREST;

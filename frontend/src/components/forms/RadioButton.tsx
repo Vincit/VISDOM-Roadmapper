@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Radio as MaterialRadio } from '@material-ui/core';
 import classNames from 'classnames';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import css from './RadioButton.module.scss';
 import colors from '../../colors.module.scss';
 
@@ -21,22 +22,25 @@ export const RadioButton: React.FC<{
       },
     },
     checked: {},
-  })((props) => <MaterialRadio color="default" checked={checked} {...props} />);
-
-  return (
-    <div
+  })((props) => (
+    <MaterialRadio
+      color="default"
+      checked={checked}
+      {...props}
       onClick={() => onChange(value)}
       onKeyPress={() => onChange(value)}
-      tabIndex={0}
-      role="radio"
-      aria-checked={checked}
-      aria-label={label}
+    />
+  ));
+
+  return (
+    <FormControlLabel
       className={classes(css.radioButton, {
         [css.checked]: checked,
       })}
-    >
-      <EmeraldRadio />
-      {label}
-    </div>
+      label={label}
+      checked={checked}
+      labelPlacement="end"
+      control={<EmeraldRadio />}
+    />
   );
 };

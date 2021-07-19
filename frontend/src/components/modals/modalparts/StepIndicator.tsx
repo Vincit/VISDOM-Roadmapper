@@ -48,12 +48,7 @@ export const StepIndicator: React.FC<{
   const state = getIndicatorState(step, currentStep);
 
   const content = (
-    <div
-      className={classes(css.stepIndicator, {
-        [css.past]: state === IndicatorState.pastStep,
-        [css.upcoming]: state === IndicatorState.upcomingStep,
-      })}
-    >
+    <>
       <div className={classes(css.topStepRow)}>
         <StepIcon state={state} />
         {step !== maxStep && <div className={classes(css.line)} />}
@@ -62,14 +57,28 @@ export const StepIndicator: React.FC<{
         <div className={classes(css.stepLabel)}>Step {step}</div>
         <Trans i18nKey={description} />
       </div>
-    </div>
+    </>
   );
 
   if (state === IndicatorState.pastStep)
     return (
-      <div onClick={onClick} onKeyPress={onClick} role="button" tabIndex={0}>
+      <div
+        onClick={onClick}
+        onKeyPress={onClick}
+        className={classes(css.stepIndicator, css.past)}
+        role="button"
+        tabIndex={0}
+      >
         {content}
       </div>
     );
-  return <div>{content}</div>;
+  return (
+    <div
+      className={classes(css.stepIndicator, {
+        [css.upcoming]: state === IndicatorState.upcomingStep,
+      })}
+    >
+      {content}
+    </div>
+  );
 };

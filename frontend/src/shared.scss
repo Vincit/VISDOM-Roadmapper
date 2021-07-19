@@ -49,6 +49,10 @@ form {
   }
 }
 
+.transform-transition {
+  transition: 150ms ease-out;
+}
+
 .layout-column {
   display: flex;
   flex-direction: column;
@@ -248,48 +252,64 @@ form {
 }
 
 .button-small-filled {
+  @extend .transform-transition;
+  @extend .typography-body-small;
   background: $COLOR_EMERALD;
-
-  &:disabled {
-    background: $COLOR_BLACK40;
-  }
-
-  &:hover:not(:disabled) {
-    background: $COLOR_FOREST;
-  }
+  color: white;
 
   align-items: center;
   padding: 10px 16px;
   border-radius: 25px;
   border: 0;
 
-  @extend .typography-body-small;
-
-  color: white;
-  &:hover {
+  &:hover:not(.cancel, :disabled),
+  &:focus:not(.cancel, :disabled) {
+    outline: none;
+    background: $COLOR_FOREST;
     color: white;
+  }
+  &.cancel {
+    background-color: transparent;
+    color: $COLOR_BLACK100;
+    &:hover,
+    &:focus {
+      outline: none;
+      background: $COLOR_BLACK5;
+    }
+  }
+  &:disabled {
+    background: $COLOR_BLACK40;
   }
 }
 
+.button-large {
+  @extend .button-small-filled;
+  @extend .typography-button;
+  border-radius: 30px;
+  width: 100%;
+  height: 50px;
+}
+
 .button-small-outlined {
-  border: 2px solid;
-  border-color: $COLOR_EMERALD;
-
-  &:disabled {
-    border-color: $COLOR_BLACK40;
-  }
-
-  &:hover:not(:disabled) {
-    border-color: $COLOR_FOREST;
-  }
-
+  @extend .transform-transition;
+  @extend .typography-body-small;
   align-items: center;
   padding: 10px 16px;
 
   box-sizing: border-box;
   border-radius: 25px;
+  border: 2px solid;
+  border-color: $COLOR_EMERALD;
+  background-color: transparent;
 
-  @extend .typography-body-small;
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    outline: none;
+    background: white;
+  }
+  &:disabled {
+    border-color: $COLOR_BLACK40;
+  }
 }
 
 .tooltip-base {
@@ -322,36 +342,6 @@ form {
 @mixin landing-content-padding {
   padding-left: max(calc((100% - 1000px) / 2), 8vw);
   padding-right: max(calc((100% - 1000px) / 2), 8vw);
-}
-
-.button-large {
-  background: $COLOR_EMERALD;
-
-  &:hover:not(.cancel, :disabled) {
-    background: $COLOR_FOREST;
-  }
-
-  align-items: center;
-  padding: 10px 16px;
-  border-radius: 30px;
-  border: 0;
-  width: 100%;
-  height: 50px;
-
-  &:focus {
-    outline: none;
-  }
-
-  @extend .typography-button;
-
-  color: white;
-  &.cancel {
-    background-color: transparent;
-    color: $COLOR_BLACK100;
-  }
-  &:disabled {
-    background-color: $COLOR_BLACK40;
-  }
 }
 
 .react-select input {

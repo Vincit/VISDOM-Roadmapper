@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Checkbox as MaterialCheckbox } from '@material-ui/core';
 import classNames from 'classnames';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import css from './Checkbox.module.scss';
 import colors from '../../colors.module.scss';
 
@@ -21,23 +22,24 @@ export const Checkbox: React.FC<{
     },
     checked: {},
   })((props) => (
-    <MaterialCheckbox color="default" checked={checked} {...props} />
+    <MaterialCheckbox
+      color="default"
+      checked={checked}
+      {...props}
+      onClick={() => onChange(!checked)}
+      onKeyPress={() => onChange(!checked)}
+    />
   ));
 
   return (
-    <div
-      onClick={() => onChange(!checked)}
-      onKeyPress={() => onChange(!checked)}
-      tabIndex={0}
-      role="checkbox"
-      aria-checked={checked}
-      aria-label={label}
+    <FormControlLabel
       className={classes(css.checkBoxDiv, {
         [css.checked]: checked,
       })}
-    >
-      <EmeraldCheckBox />
-      {label}
-    </div>
+      label={label}
+      checked={checked}
+      labelPlacement="end"
+      control={<EmeraldCheckBox />}
+    />
   );
 };

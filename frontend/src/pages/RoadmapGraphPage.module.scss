@@ -68,8 +68,13 @@ $GRAPH_ITEM_MARGIN: 11px;
   padding: 8px;
   background-color: white;
   cursor: pointer;
-  &:hover {
-    background-color: $COLOR_BLACK5;
+  border: 1px solid transparent;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    border: 1px solid $COLOR_SKY;
+    transform: scale(0.99, 0.99);
   }
   &:active {
     transform: scale(0.97, 0.97);
