@@ -14,6 +14,7 @@ import { Dot } from '../components/Dot';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { customerWeight } from '../utils/CustomerUtils';
+import { percent } from '../utils/string';
 import css from './PlannerWeightsPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -32,6 +33,7 @@ export const PlannerWeightsPage = () => {
 
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [noChanges, setNoChanges] = useState(true);
 
   useEffect(() => {
     if (!customers) dispatch(roadmapsActions.getCustomers());
@@ -40,6 +42,15 @@ export const PlannerWeightsPage = () => {
   const resetWeights = () => {
     dispatch(roadmapsActions.clearPlannerCustomerWeights());
   };
+
+  useEffect(() => {
+    setNoChanges(
+      !customerWeights.some(({ customerId, weight }) => {
+        const saved = customers?.find(({ id }) => id === customerId)?.weight;
+        return weight !== saved;
+      }),
+    );
+  }, [customerWeights, customers]);
 
   const saveWeights = () => {
     if (saving) return;
@@ -86,7 +97,7 @@ export const PlannerWeightsPage = () => {
           className="button-small-outlined"
           type="button"
           onClick={resetWeights}
-          disabled={saving}
+          disabled={saving || noChanges}
         >
           Reset
         </button>
@@ -94,7 +105,7 @@ export const PlannerWeightsPage = () => {
           className="button-small-filled"
           type="submit"
           onClick={saveWeights}
-          disabled={saving}
+          disabled={saving || noChanges}
         >
           Save
         </button>
@@ -107,6 +118,14 @@ export const PlannerWeightsPage = () => {
       >
         {errorMessage}
       </Alert>
+      <div className={classes(css.description)}>
+        <p>
+          <Trans i18nKey="Weighting description" />
+        </p>
+        <p>
+          <Trans i18nKey="Weighting instructions" />
+        </p>
+      </div>
       {customers?.map((customer) => (
         <div className={classes(css.userRow)} key={customer.id}>
           <div className={classes(css.customerDot)}>
@@ -118,11 +137,12 @@ export const PlannerWeightsPage = () => {
             name="weight"
             className={classes(css.slider)}
             min={0}
-            max={5}
+            max={2}
             value={customerWeight(customer, customerWeights)}
             defaultValue={customerWeight(customer, customerWeights)}
-            step={1}
+            step={0.25}
             valueLabelDisplay="auto"
+            valueLabelFormat={(value) => percent().format(value)}
             marks
             onChange={(e, value) =>
               handleSliderChange(customer.id, Number(value))
