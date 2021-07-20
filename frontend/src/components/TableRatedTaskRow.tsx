@@ -21,13 +21,10 @@ export const TableRatedTaskRow: React.FC<TableTaskRowRatedProps> = ({
   const [hovered, setHovered] = useState(false);
   const { value, work } = valueAndWorkSummary(task);
 
-  const numFormat = (num: number) => {
-    if (Number.isNaN(num)) return 0;
-    return num.toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1,
-    });
-  };
+  const numFormat = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  });
 
   return (
     <tr
@@ -40,10 +37,10 @@ export const TableRatedTaskRow: React.FC<TableTaskRowRatedProps> = ({
         {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
         {task.name}
       </td>
-      <td className={classes(css.ratedTd)}>{numFormat(value.avg)}</td>
-      <td className={classes(css.ratedTd)}>{numFormat(work.avg)}</td>
-      <td className={classes(css.ratedTd)}>{numFormat(value.total)}</td>
-      <td className={classes(css.ratedTd)}>{numFormat(work.total)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat.format(value.avg)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat.format(work.avg)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat.format(value.total)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat.format(work.total)}</td>
       <td className={classes(css.ratedTd)}>
         {task.completed ? (
           <p className={classes(css.statusComplete)}>

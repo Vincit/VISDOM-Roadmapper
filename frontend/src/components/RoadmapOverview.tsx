@@ -32,6 +32,10 @@ export const RoadmapOverview = () => {
   };
 
   const { value, work } = averageValueAndWork(roadmap?.tasks ?? []);
+  const numFormat = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
 
   return (
     <div className={classes(css.dataFlexbox)}>
@@ -51,10 +55,7 @@ export const RoadmapOverview = () => {
         <Trans i18nKey="Avg Value" />
         <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
-          {value.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-          })}
+          {numFormat.format(value)}
           <MonetizationOnIcon />
         </p>
       </div>
@@ -62,10 +63,7 @@ export const RoadmapOverview = () => {
         <Trans i18nKey="Avg Work" />
         <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
-          {work.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-          })}
+          {numFormat.format(work)}
           <WorkIcon />
         </p>
       </div>

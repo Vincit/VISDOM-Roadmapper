@@ -139,13 +139,10 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const numFormat = (num: number) => {
-    if (Number.isNaN(num)) return 0;
-    return num.toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1,
-    });
-  };
+  const numFormat = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  });
 
   return (
     <tr
@@ -153,8 +150,8 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       onClick={openModal(ModalTypes.TASK_INFO_MODAL)}
     >
       <td className={classes(css.taskTitle)}>{name}</td>
-      <td className={classes(css.unratedTd)}>{numFormat(value)}</td>
-      <td className={classes(css.unratedTd)}>{numFormat(work)}</td>
+      <td className={classes(css.unratedTd)}>{numFormat.format(value)}</td>
+      <td className={classes(css.unratedTd)}>{numFormat.format(work)}</td>
       <td className={classes(css.unratedTd)}>
         <div className={classes(css.missingContainer)}>
           <StylesProvider injectFirst>

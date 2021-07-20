@@ -10,6 +10,10 @@ const classes = classNames.bind(css);
 
 export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
   const { work, value } = averageValueAndWork([task]);
+  const numFormat = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
   return (
     <div className={classes(css.taskRatingRow)}>
       {value && (
@@ -17,10 +21,7 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
           <div>
             <BusinessValueFilled />
           </div>
-          {value.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-          })}
+          {numFormat.format(value)}
         </div>
       )}
       {work && (
@@ -28,10 +29,7 @@ export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
           <div>
             <RequiredWorkFilled />
           </div>
-          {work.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-          })}
+          {numFormat.format(work)}
         </div>
       )}
       {!work && !value && <span>-</span>}
