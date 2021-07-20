@@ -46,13 +46,17 @@ export enum SortingTypes {
 
 class RatingsSummary {
   private sum: number = 0;
+
   private count: number = 0;
+
   get total() {
     return this.sum;
   }
+
   get avg() {
     return this.count ? this.sum / this.count : 0;
   }
+
   add(rating: number) {
     this.sum += rating;
     this.count += 1;
@@ -65,9 +69,9 @@ const ratingsSummaryByDimensionInto = (
   result: Map<TaskRatingDimension, RatingsSummary>,
   task: Task,
 ) =>
-  task.ratings.reduce((result, { value, dimension }) => {
-    const previous = result.get(dimension) ?? new RatingsSummary();
-    return result.set(dimension, previous.add(value));
+  task.ratings.reduce((acc, { value, dimension }) => {
+    const previous = acc.get(dimension) ?? new RatingsSummary();
+    return acc.set(dimension, previous.add(value));
   }, result);
 
 export const ratingsSummaryByDimension = (task: Task) =>
