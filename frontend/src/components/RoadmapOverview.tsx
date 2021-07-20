@@ -61,7 +61,7 @@ export const RoadmapOverview = () => {
         </p>
       </div>
       <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Avg. Value" />
+        <Trans i18nKey="Avg Value" />
         <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
           {roadmapAverageRating(
@@ -74,7 +74,7 @@ export const RoadmapOverview = () => {
         </p>
       </div>
       <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Avg. Work" />
+        <Trans i18nKey="Avg Work" />
         <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
           {roadmapAverageRating(

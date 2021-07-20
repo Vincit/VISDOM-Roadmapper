@@ -97,7 +97,7 @@ export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
           name="description"
           id="description"
           draggable="false"
-          placeholder={t('Comment your rating...')}
+          placeholder={t('Comment your rating')}
           value={rating.comment}
           onChange={(e) => commentChanged(e.currentTarget.value)}
         />

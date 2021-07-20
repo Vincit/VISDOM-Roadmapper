@@ -54,7 +54,7 @@ export const SelectCustomerInfo: React.FC<{
           id="email"
           type="email"
           value={email}
-          placeholder={t('customername@example.com')}
+          placeholder={t('Example email', { localPart: 'customername' })}
           onChange={(e) => onEmailChange(e.currentTarget.value)}
         />
       </div>

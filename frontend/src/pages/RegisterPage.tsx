@@ -42,7 +42,7 @@ export const RegisterPage = () => {
     },
     email: {
       label: t('Your email'),
-      placeholder: t('Example email'),
+      placeholder: t('Example email', { localPart: 'email' }),
       maxLength: 255,
       autoComplete: 'off',
       type: 'email',
@@ -158,7 +158,7 @@ export const RegisterPage = () => {
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.about)}>
-            <Trans i18nKey="Please fill out some info about you." />
+            <Trans i18nKey="Please fill out some info about you" />
           </div>
           <form onSubmit={handleSubmit}>
             {Object.entries(fields).map(([name, props]) => {
