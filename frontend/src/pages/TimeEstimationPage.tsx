@@ -6,14 +6,13 @@ import classNames from 'classnames';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import {
   roadmapsVersionsSelector,
   plannerTimeEstimatesSelector,
 } from '../redux/versions/selectors';
 import { Version, TimeEstimate } from '../redux/versions/types';
-import { calcTaskAverageRating, totalValueAndWork } from '../utils/TaskUtils';
+import { totalValueAndWork } from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
 import css from './TimeEstimationPage.module.scss';
@@ -106,13 +105,7 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    const work = selectedMilestone.tasks.reduce(
-      (total, task) =>
-        total +
-        (calcTaskAverageRating(TaskRatingDimension.RequiredWork, task) || 0),
-      0,
-    );
-
+    const { work } = totalValueAndWork(selectedMilestone.tasks);
     if (work <= 0) {
       setCalculatedDaysPerWork(undefined);
       return;

@@ -4,7 +4,6 @@ import { Trans } from 'react-i18next';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
-import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { api } from '../../api/api';
 import '../../shared.scss';

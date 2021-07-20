@@ -2,47 +2,39 @@ import React from 'react';
 import classNames from 'classnames';
 import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
 import { Task } from '../redux/roadmaps/types';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { averageValueAndWork } from '../utils/TaskUtils';
 
 import css from './TaskRatingsText.module.scss';
 
 const classes = classNames.bind(css);
 
 export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
-  const averageBusinessVal = calcTaskAverageRating(
-    TaskRatingDimension.BusinessValue,
-    task,
-  );
-  const averageWorkVal = calcTaskAverageRating(
-    TaskRatingDimension.RequiredWork,
-    task,
-  );
+  const { work, value } = averageValueAndWork([task]);
   return (
     <div className={classes(css.taskRatingRow)}>
-      {averageBusinessVal && (
+      {value && (
         <div className={classes(css.taskRating)}>
           <div>
             <BusinessValueFilled />
           </div>
-          {averageBusinessVal.toLocaleString(undefined, {
+          {value.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
         </div>
       )}
-      {averageWorkVal && (
+      {work && (
         <div className={classes(css.taskRating)}>
           <div>
             <RequiredWorkFilled />
           </div>
-          {averageWorkVal.toLocaleString(undefined, {
+          {work.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
         </div>
       )}
-      {!averageWorkVal && !averageBusinessVal && <span>-</span>}
+      {!work && !value && <span>-</span>}
     </div>
   );
 };

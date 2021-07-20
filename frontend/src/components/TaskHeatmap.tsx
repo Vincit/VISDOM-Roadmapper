@@ -6,7 +6,7 @@ import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
-import { calcTaskAverageRating } from '../utils/TaskUtils';
+import { ratingsSummaryByDimension } from '../utils/TaskUtils';
 import css from './TaskHeatmap.module.scss';
 
 const classes = classNames.bind(css);
@@ -49,26 +49,15 @@ export const TaskHeatmap = () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
-    currentRoadmap!.tasks
-      .filter(
-        // Filter only tasks that have ratings
-        (task) =>
-          task.ratings.find(
-            (rating) => rating.dimension === TaskRatingDimension.BusinessValue,
-          ) &&
-          task.ratings.find(
-            (rating) => rating.dimension === TaskRatingDimension.RequiredWork,
-          ),
-      )
-      .forEach((task) => {
-        const avgValue = Math.round(
-          calcTaskAverageRating(TaskRatingDimension.BusinessValue, task)!,
-        );
-        const avgWork = Math.round(
-          calcTaskAverageRating(TaskRatingDimension.RequiredWork, task)!,
-        );
+    currentRoadmap!.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
+      const value = ratings.get(TaskRatingDimension.BusinessValue);
+      const work = ratings.get(TaskRatingDimension.RequiredWork);
+      if (value && work) {
+        const avgValue = Math.round(value.avg);
+        const avgWork = Math.round(work.avg);
         frequencies[10 - avgValue][avgWork] += 1;
-      });
+      }
+    });
     return frequencies;
   };
   const frequencies = tasksToDatapoints();

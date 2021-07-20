@@ -44,94 +44,74 @@ export enum SortingTypes {
   SORT_TOTAL_WORK,
 }
 
-export const totalRatingsByDimension = (
-  task: Task,
-): Map<TaskRatingDimension, { sum: number; count: number }> => {
-  return task.ratings.reduce((result, { value, dimension }) => {
-    const { sum, count } = result.get(dimension) || { sum: 0, count: 0 };
-    return result.set(dimension, { sum: sum + value, count: count + 1 });
-  }, new Map());
-};
+class RatingsSummary {
+  private sum: number = 0;
 
-const averageRatingsByDimension = (
+  private count: number = 0;
+
+  get total() {
+    return this.sum;
+  }
+
+  get avg() {
+    return this.count ? this.sum / this.count : 0;
+  }
+
+  add(rating: number) {
+    this.sum += rating;
+    this.count += 1;
+    return this;
+  }
+}
+
+// Accumulates results into provided map
+const ratingsSummaryByDimensionInto = (
+  result: Map<TaskRatingDimension, RatingsSummary>,
   task: Task,
-): Map<TaskRatingDimension, number> => {
-  const ratings = totalRatingsByDimension(task);
-  return new Map(
-    Array.from(ratings).map(([key, { sum, count }]) => [key, sum / count]),
-  );
+) =>
+  task.ratings.reduce((acc, { value, dimension }) => {
+    const previous = acc.get(dimension) ?? new RatingsSummary();
+    return acc.set(dimension, previous.add(value));
+  }, result);
+
+export const ratingsSummaryByDimension = (task: Task) =>
+  ratingsSummaryByDimensionInto(new Map(), task);
+
+export const valueAndWorkSummary = (task: Task) => {
+  const ratings = ratingsSummaryByDimension(task);
+  return {
+    value:
+      ratings.get(TaskRatingDimension.BusinessValue) ?? new RatingsSummary(),
+    work: ratings.get(TaskRatingDimension.RequiredWork) ?? new RatingsSummary(),
+  };
 };
 
 export const totalValueAndWork = (tasks: Task[]) =>
   tasks
-    .map((task) => averageRatingsByDimension(task))
+    .map((task) => valueAndWorkSummary(task))
     .reduce(
       ({ value, work }, ratings) => ({
-        value: value + (ratings.get(TaskRatingDimension.BusinessValue) || 0),
-        work: work + (ratings.get(TaskRatingDimension.RequiredWork) || 0),
+        value: value + ratings.value.avg,
+        work: work + ratings.work.avg,
       }),
       { value: 0, work: 0 },
     );
 
 export const averageValueAndWork = (tasks: Task[]) => {
-  const totals = totalValueAndWork(tasks);
+  const ratings = tasks.reduce(ratingsSummaryByDimensionInto, new Map());
   return {
-    value: totals.value / tasks.length,
-    work: totals.work / tasks.length,
+    value: ratings.get(TaskRatingDimension.BusinessValue)?.avg ?? 0,
+    work: ratings.get(TaskRatingDimension.RequiredWork)?.avg ?? 0,
   };
 };
 
-export const calcTaskAverageRating = (
-  dimension: TaskRatingDimension,
-  task: Task,
-) => {
-  let sum = 0;
-  let count = 0;
-  task.ratings.forEach((rating) => {
-    if (rating.dimension !== dimension) return;
-    count += 1;
-    sum += rating.value;
-  });
-
-  if (count > 0) {
-    return sum / count;
-  }
-  return undefined;
-};
-
 export const calcTaskPriority = (task: Task) => {
-  const ratings = averageRatingsByDimension(task);
-  const avgBusinessRating = ratings.get(TaskRatingDimension.BusinessValue);
-  const avgWorkRating = ratings.get(TaskRatingDimension.RequiredWork);
-  if (!avgBusinessRating) return -2;
-  if (!avgWorkRating) return -1;
-  return avgBusinessRating / avgWorkRating;
-};
-
-const sortTaskValueSum = (task: Task) => {
-  return (
-    totalRatingsByDimension(task).get(TaskRatingDimension.BusinessValue)?.sum ??
-    0
-  );
-};
-
-const sortTaskWorkSum = (task: Task) => {
-  return (
-    totalRatingsByDimension(task).get(TaskRatingDimension.RequiredWork)?.sum ??
-    0
-  );
-};
-
-const sortAverageTaskWork = (task: Task) => {
-  return (
-    averageRatingsByDimension(task).get(TaskRatingDimension.RequiredWork) ?? 0
-  );
-};
-
-const sortAverageTaskValue = (task: Task) => {
-  return (
-    averageRatingsByDimension(task).get(TaskRatingDimension.BusinessValue) ?? 0
-  );
+  const ratings = ratingsSummaryByDimension(task);
+  const value = ratings.get(TaskRatingDimension.BusinessValue);
+  const work = ratings.get(TaskRatingDimension.RequiredWork);
+  if (!value) return -2;
+  if (!work) return -1;
+  return value.avg / work.avg;
 };
 
 export const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
@@ -189,13 +169,13 @@ const taskCompare = (
     case SortingTypes.SORT_RATINGS:
       return sortKeyNumeric(calcTaskPriority);
     case SortingTypes.SORT_AVG_VALUE:
-      return sortKeyNumeric(sortAverageTaskValue);
+      return sortKeyNumeric((t) => valueAndWorkSummary(t).value.avg);
     case SortingTypes.SORT_AVG_WORK:
-      return sortKeyNumeric(sortAverageTaskWork);
+      return sortKeyNumeric((t) => valueAndWorkSummary(t).work.avg);
     case SortingTypes.SORT_TOTAL_VALUE:
-      return sortKeyNumeric(sortTaskValueSum);
+      return sortKeyNumeric((t) => valueAndWorkSummary(t).value.total);
     case SortingTypes.SORT_TOTAL_WORK:
-      return sortKeyNumeric(sortTaskWorkSum);
+      return sortKeyNumeric((t) => valueAndWorkSummary(t).work.total);
     default:
       // SortingTypes.NO_SORT
       break;
@@ -287,10 +267,7 @@ export const calcWeightedTaskPriority = (
   const weightedValue = calcTaskWeightedValueSum(task, allCustomers, roadmap);
   if (!weightedValue) return -2;
 
-  const avgWorkRating = calcTaskAverageRating(
-    TaskRatingDimension.RequiredWork,
-    task,
-  );
+  const avgWorkRating = valueAndWorkSummary(task).work.avg;
 
   if (!avgWorkRating) return -1;
 
@@ -388,8 +365,7 @@ export const unratedProductOwnerTasks: (
       (developer) => !ratingIds.includes(developer.id),
     );
 
-    if (!customersMissing && !devsMissing) return false;
-    return true;
+    return customersMissing || devsMissing;
   });
   return unrated;
 };
