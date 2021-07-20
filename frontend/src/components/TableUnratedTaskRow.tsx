@@ -15,10 +15,7 @@ import { Task, Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import {
-  RoleType,
-  TaskRatingDimension,
-} from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import {
   roadmapUsersSelector,
   allCustomersSelector,
@@ -26,7 +23,7 @@ import {
 import { Dot } from './Dot';
 import { getType } from '../utils/UserUtils';
 import css from './TableUnratedTaskRow.module.scss';
-import { taskAwaitsRatings, totalRatingsByDimension } from '../utils/TaskUtils';
+import { taskAwaitsRatings, averageValueAndWork } from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -58,12 +55,7 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   >([]);
   const [userRatingMissing, setUserRatingMissing] = useState<boolean>(true);
 
-  const totalRatings = totalRatingsByDimension(task);
-  const noRatings = { sum: 0, count: 1 };
-  const valueRatings =
-    totalRatings.get(TaskRatingDimension.BusinessValue) ?? noRatings;
-  const workRatings =
-    totalRatings.get(TaskRatingDimension.RequiredWork) ?? noRatings;
+  const { value, work } = averageValueAndWork([task]);
 
   /*
     AdminUsers can see missing customer and developer ratings
@@ -161,12 +153,8 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       onClick={openModal(ModalTypes.TASK_INFO_MODAL)}
     >
       <td className={classes(css.taskTitle)}>{name}</td>
-      <td className={classes(css.unratedTd)}>
-        {numFormat(valueRatings.sum / valueRatings.count)}
-      </td>
-      <td className={classes(css.unratedTd)}>
-        {numFormat(workRatings.sum / workRatings.count)}
-      </td>
+      <td className={classes(css.unratedTd)}>{numFormat(value)}</td>
+      <td className={classes(css.unratedTd)}>{numFormat(work)}</td>
       <td className={classes(css.unratedTd)}>
         <div className={classes(css.missingContainer)}>
           <StylesProvider injectFirst>

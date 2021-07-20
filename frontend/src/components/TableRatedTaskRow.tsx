@@ -7,8 +7,7 @@ import { Trans } from 'react-i18next';
 import { Task } from '../redux/roadmaps/types';
 import css from './TableRatedTaskRow.module.scss';
 import { paths } from '../routers/paths';
-import { totalRatingsByDimension } from '../utils/TaskUtils';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
+import { valueAndWorkSummary } from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -20,12 +19,7 @@ export const TableRatedTaskRow: React.FC<TableTaskRowRatedProps> = ({
   task,
 }) => {
   const [hovered, setHovered] = useState(false);
-  const totalRatings = totalRatingsByDimension(task);
-  const noRatings = { sum: 0, count: 1 };
-  const valueRatings =
-    totalRatings.get(TaskRatingDimension.BusinessValue) ?? noRatings;
-  const workRatings =
-    totalRatings.get(TaskRatingDimension.RequiredWork) ?? noRatings;
+  const { value, work } = valueAndWorkSummary(task);
 
   const numFormat = (num: number) => {
     if (Number.isNaN(num)) return 0;
@@ -46,14 +40,10 @@ export const TableRatedTaskRow: React.FC<TableTaskRowRatedProps> = ({
         {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
         {task.name}
       </td>
-      <td className={classes(css.ratedTd)}>
-        {numFormat(valueRatings.sum / valueRatings.count)}
-      </td>
-      <td className={classes(css.ratedTd)}>
-        {numFormat(workRatings.sum / workRatings.count)}
-      </td>
-      <td className={classes(css.ratedTd)}>{numFormat(valueRatings.sum)}</td>
-      <td className={classes(css.ratedTd)}>{numFormat(workRatings.sum)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat(value.avg)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat(work.avg)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat(value.total)}</td>
+      <td className={classes(css.ratedTd)}>{numFormat(work.total)}</td>
       <td className={classes(css.ratedTd)}>
         {task.completed ? (
           <p className={classes(css.statusComplete)}>

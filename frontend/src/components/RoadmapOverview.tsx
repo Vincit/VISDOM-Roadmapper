@@ -5,12 +5,12 @@ import classNames from 'classnames';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import css from './RoadmapOverview.module.scss';
 import { ReactComponent as WorkIcon } from '../icons/rate_work.svg';
+import { averageValueAndWork } from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -31,20 +31,7 @@ export const RoadmapOverview = () => {
     return roadmapsVersions?.length || 0;
   };
 
-  const roadmapAverageRating = (dimension: TaskRatingDimension) => {
-    let sum = 0;
-    let count = 0;
-    roadmap!.tasks.forEach((task) => {
-      task.ratings.forEach((rating) => {
-        if (rating.dimension === dimension) {
-          sum += rating.value;
-          count += 1;
-        }
-      });
-    });
-
-    return count > 0 ? sum / count : 0;
-  };
+  const { value, work } = averageValueAndWork(roadmap?.tasks ?? []);
 
   return (
     <div className={classes(css.dataFlexbox)}>
@@ -64,9 +51,7 @@ export const RoadmapOverview = () => {
         <Trans i18nKey="Avg Value" />
         <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
-          {roadmapAverageRating(
-            TaskRatingDimension.BusinessValue,
-          ).toLocaleString(undefined, {
+          {value.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}
@@ -77,9 +62,7 @@ export const RoadmapOverview = () => {
         <Trans i18nKey="Avg Work" />
         <div className={classes(css.dash)} />
         <p className={classes(css.dataNumberWrapper)}>
-          {roadmapAverageRating(
-            TaskRatingDimension.RequiredWork,
-          ).toLocaleString(undefined, {
+          {work.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           })}

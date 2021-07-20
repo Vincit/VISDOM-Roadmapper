@@ -17,12 +17,10 @@ import {
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap, Task } from '../redux/roadmaps/types';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { RootState } from '../redux/types';
 import {
-  calcTaskAverageRating,
   calcWeightedTaskPriority,
-  totalRatingsByDimension,
+  valueAndWorkSummary,
 } from '../utils/TaskUtils';
 import css from './PlannerChart.module.scss';
 
@@ -80,14 +78,9 @@ export const PlannerChart: React.FC<{
         ...dataPoints,
         Object.assign(previousLineEnd, { [name]: previousLineEnd.valueSum }),
         ...tasks.map((task) => {
-          const work =
-            calcTaskAverageRating(TaskRatingDimension.RequiredWork, task) || 0;
-          const valueRatings = totalRatingsByDimension(task).get(
-            TaskRatingDimension.BusinessValue,
-          ) ?? { sum: 0, count: 1 };
-          const value = valueRatings.sum ?? 0;
-          workSum += work;
-          valueSum += value;
+          const { value, work } = valueAndWorkSummary(task);
+          workSum += work.avg;
+          valueSum += value.total;
 
           return {
             [name]: valueSum,
