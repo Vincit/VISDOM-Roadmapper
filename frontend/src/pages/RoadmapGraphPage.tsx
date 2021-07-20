@@ -33,6 +33,11 @@ export const RoadmapGraphPage = () => {
     }
   }, [roadmapsVersions, selectedVersion]);
 
+  const numFormat = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  });
+
   return (
     <div className={classes(css.plannerPagecontainer)}>
       <div className={classes(css.graphOuter)}>
@@ -59,21 +64,11 @@ export const RoadmapGraphPage = () => {
                   <div className={classes(css.versionData)}>
                     <div className={classes(css.ratingDiv)}>
                       <BusinessValueFilled />
-                      <p>
-                        {value.toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 1,
-                        })}
-                      </p>
+                      <p>{numFormat.format(value)}</p>
                     </div>
                     <div className={classes(css.ratingDiv)}>
                       <RequiredWorkFilled />
-                      <p>
-                        {work.toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 1,
-                        })}
-                      </p>
+                      <p>{numFormat.format(work)}</p>
                     </div>
                     <div className={classes(css.dash)} />
                     <div className={classes(css.ratingDiv)}>
