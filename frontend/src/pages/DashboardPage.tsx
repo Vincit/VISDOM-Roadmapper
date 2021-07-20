@@ -91,8 +91,10 @@ export const DashboardPage = () => {
     <>
       <div className={classes(css.overviewHeader)}>
         <h2>
-          <span style={{ fontWeight: 'normal' }}>Welcome, </span>
-          {userInfo!.username}
+          <Trans i18nKey="Welcome user">
+            <span style={{ fontWeight: 'normal' }}>Welcome, </span>
+            {{ name: userInfo!.username }}
+          </Trans>
         </h2>
         <RoadmapOverview />
       </div>
