@@ -1,5 +1,4 @@
 import React from 'react';
-import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -11,6 +10,7 @@ import { Version } from '../redux/versions/types';
 import css from './RoadmapOverview.module.scss';
 import { ReactComponent as WorkIcon } from '../icons/rate_work.svg';
 import { averageValueAndWork } from '../utils/TaskUtils';
+import { MetricsSummary } from './MetricsSummary';
 
 const classes = classNames.bind(css);
 
@@ -38,35 +38,15 @@ export const RoadmapOverview = () => {
   });
 
   return (
-    <div className={classes(css.dataFlexbox)}>
-      <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Tasks" />
-        <div className={classes(css.dash)} />
-        <p className={classes(css.dataNumberWrapper)}>{roadmapTasksCount()}</p>
-      </div>
-      <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="milestones" />
-        <div className={classes(css.dash)} />
-        <p className={classes(css.dataNumberWrapper)}>
-          {roadmapMilestonesCount()}
-        </p>
-      </div>
-      <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Avg Value" />
-        <div className={classes(css.dash)} />
-        <p className={classes(css.dataNumberWrapper)}>
-          {numFormat.format(value)}
-          <MonetizationOnIcon />
-        </p>
-      </div>
-      <div className={classes(css.dataEntryWrapper)}>
-        <Trans i18nKey="Avg Work" />
-        <div className={classes(css.dash)} />
-        <p className={classes(css.dataNumberWrapper)}>
-          {numFormat.format(work)}
-          <WorkIcon />
-        </p>
-      </div>
+    <div className={classes(css.data)}>
+      <MetricsSummary label="Tasks" value={roadmapTasksCount()} />
+      <MetricsSummary label="Milestones" value={roadmapMilestonesCount()} />
+      <MetricsSummary label="Avg Value" value={numFormat.format(value)}>
+        <MonetizationOnIcon />
+      </MetricsSummary>
+      <MetricsSummary label="Avg Work" value={numFormat.format(work)}>
+        <WorkIcon />
+      </MetricsSummary>
     </div>
   );
 };

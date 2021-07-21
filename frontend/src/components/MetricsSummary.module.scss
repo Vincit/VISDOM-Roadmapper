@@ -1,0 +1,45 @@
+@import '../shared.scss';
+
+.dataEntryWrapper {
+  @extend .typography-pre-title;
+  line-height: unset;
+
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  height: 116px;
+  padding: 16px;
+  margin-right: 20px;
+  border: 1px solid $COLOR_SKY;
+  border-radius: 10px;
+  background-color: transparent;
+
+  .dash {
+    border: 0.5px solid $COLOR_BLACK40;
+    width: 8px;
+    position: relative;
+    top: 5px;
+  }
+}
+
+.dataNumberWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+
+  @extend .typography-big-number;
+  line-height: unset;
+  color: $COLOR_AZURE;
+  gap: 8px;
+
+  & > * {
+    @extend .typography-body-small;
+    text-transform: none;
+    color: $COLOR_BLACK100;
+  }
+  svg {
+    position: relative;
+    top: -5px;
+  }
+}
