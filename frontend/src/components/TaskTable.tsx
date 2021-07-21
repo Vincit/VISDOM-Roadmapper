@@ -161,10 +161,15 @@ export const TaskTableUnrated: React.FC<{
   useEffect(() => {
     const type = getType(userInfo?.roles, currentRoadmap?.id);
     if (type === RoleType.Admin) {
-      if (userInfo && currentRoadmap && allUsers)
+      if (userInfo && currentRoadmap && allUsers) {
         setTaskList(
-          unratedProductOwnerTasks(tasks, allUsers, currentRoadmap.customers),
+          unratedProductOwnerTasks(
+            tasks,
+            allUsers,
+            currentRoadmap.customers ?? [], // FIXME: incorrect type, customers may be undefined
+          ),
         );
+      }
     }
     if (type === RoleType.Developer || type === RoleType.Business) {
       setTaskList(tasks.filter((task) => taskAwaitsRatings(task, userInfo)));
@@ -217,7 +222,7 @@ export const TaskTableRated: React.FC<{
         const unratedTasks = unratedProductOwnerTasks(
           tasks,
           allUsers,
-          currentRoadmap.customers,
+          currentRoadmap.customers ?? [], // FIXME: incorrect type, customers may be undefined
         );
         setTaskList(tasks.filter((task) => !unratedTasks?.includes(task)));
       }
