@@ -59,8 +59,8 @@ export const PlannerChart: React.FC<{
       name: DataKeys.OptimalRoadmap,
       tasks: [...currentRoadmap.tasks].sort(
         (a, b) =>
-          calcWeightedTaskPriority(b, customers!, currentRoadmap) -
-          calcWeightedTaskPriority(a, customers!, currentRoadmap),
+          calcWeightedTaskPriority(b, customers ?? [], currentRoadmap) -
+          calcWeightedTaskPriority(a, customers ?? [], currentRoadmap),
       ),
     });
   }
