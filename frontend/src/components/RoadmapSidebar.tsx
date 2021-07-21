@@ -9,7 +9,7 @@ import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { paths } from '../routers/paths';
 import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
-import { ReactComponent as VisdomIcon } from '../icons/visdom_icon.svg';
+import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import css from './RoadmapSidebar.module.scss';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
@@ -63,10 +63,10 @@ export const RoadmapSidebar: React.FC = () => {
         {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
           <>
             <Link
-              to={url + paths.roadmapRelative.users}
+              to={url + paths.roadmapRelative.people}
               className={classes(css.navButton, {
                 [css.selected]: pathname.startsWith(
-                  url + paths.roadmapRelative.users,
+                  url + paths.roadmapRelative.people,
                 ),
               })}
             >
@@ -108,7 +108,12 @@ export const RoadmapSidebar: React.FC = () => {
   return (
     <div className={classes('layout-column')}>
       <div className={classes(css.navButton, css.logo)}>
-        <VisdomIcon />
+        <Link
+          to={url + paths.roadmapRelative.overview}
+          className={classes(css.visdomLogo)}
+        >
+          <VisdomLogo />
+        </Link>
       </div>
       {renderButtons()}
     </div>

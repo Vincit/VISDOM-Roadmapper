@@ -56,7 +56,7 @@ export const RoadmapSelectorWidget = () => {
         <Link
           key={roadmap.id}
           className={classes(css.dropItem)}
-          to={`${paths.roadmapHome}/${roadmap.id}/dashboard`}
+          to={`${paths.roadmapHome}/${roadmap.id}${paths.roadmapRelative.dashboard}`}
         >
           {roadmap.name}
         </Link>

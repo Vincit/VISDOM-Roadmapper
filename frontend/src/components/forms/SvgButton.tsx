@@ -7,6 +7,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import CloseIcon from '@material-ui/icons/Close';
+import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
 
 import colors from '../../colors.module.scss';
 import css from './SvgButton.module.scss';
@@ -18,6 +19,7 @@ type ButtonProps = {
 };
 
 type ExtraProps = {
+  iconColor?: string;
   hoverColor?: string;
   className?: string;
 };
@@ -27,6 +29,7 @@ type SvgButton<T = {}> = React.FC<T & ButtonProps & { href?: string }>;
 function svgButton<E = {}>(
   Icon: React.FC<ButtonProps>,
   {
+    iconColor,
     hoverColor,
     className,
     ...defaults
@@ -36,7 +39,7 @@ function svgButton<E = {}>(
     const icon = (
       <Icon
         className={classes(css.svgButtonIcon, className)}
-        style={{ '--icon-hover-color': hoverColor }}
+        style={{ '--icon--color': iconColor, '--icon-hover-color': hoverColor }}
         {...defaults}
         {...props}
       />
@@ -52,6 +55,10 @@ export const EditButton = svgButton<{ fontSize: 'small' | 'default' }>(
   },
 );
 export const SettingsButton = svgButton(SettingsSharpIcon, {});
+export const MoreButton = svgButton(MoreVertSharpIcon, {
+  iconColor: colors.black60,
+  hoverColor: colors.black100,
+});
 export const RatingsButton = svgButton(ForumIcon, { hoverColor: colors.azure });
 export const InfoButton = svgButton(InfoIcon, { hoverColor: colors.azure });
 export const DeleteButton: SvgButton<{

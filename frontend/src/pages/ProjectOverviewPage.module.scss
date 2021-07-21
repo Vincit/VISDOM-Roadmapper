@@ -1,0 +1,58 @@
+@import '../shared.scss';
+
+.projectOverview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: auto;
+  margin-left: 15px;
+
+  h2 {
+    margin-left: 10px;
+    margin-bottom: 60px;
+  }
+}
+
+.roadmapsContainer {
+  display: flex;
+  align-items: flex-start;
+}
+
+.addRoadmap {
+  @extend .typography-button;
+  @extend .transform-transition;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 29px 28px;
+  margin: 10px;
+  height: 116px;
+  width: 360px;
+
+  border: 1px solid $COLOR_BLACK10;
+  border-radius: 10px;
+
+  gap: 12px;
+  color: $COLOR_BLACK40;
+
+  svg {
+    fill: $COLOR_BLACK40;
+  }
+
+  &:hover,
+  &:focus {
+    outline: none;
+    color: $COLOR_EMERALD;
+    border-color: $COLOR_EMERALD;
+    transform: scale(0.99, 0.99);
+
+    svg {
+      fill: $COLOR_EMERALD;
+    }
+  }
+
+  &:active {
+    transform: scale(0.97, 0.97);
+  }
+}

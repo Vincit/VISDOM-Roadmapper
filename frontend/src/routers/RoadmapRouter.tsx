@@ -9,6 +9,7 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { ProjectOverviewPage } from '../pages/ProjectOverviewPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
@@ -31,11 +32,15 @@ import '../shared.scss';
 
 const routes = [
   {
+    path: paths.roadmapRelative.overview,
+    component: ProjectOverviewPage,
+  },
+  {
     path: paths.roadmapRelative.dashboard,
     component: DashboardPage,
   },
   {
-    path: paths.roadmapRelative.users,
+    path: paths.roadmapRelative.people,
     component: PeopleListPage,
   },
   {

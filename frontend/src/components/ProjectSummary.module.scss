@@ -1,0 +1,63 @@
+@import '../shared.scss';
+
+.roadmapSummary {
+  @extend .shadow-roadmapblock;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 30px;
+
+  min-width: 360px;
+  min-height: 200px;
+  padding: 30px;
+  border-radius: 10px;
+  margin: 10px;
+  background: white;
+}
+
+.header {
+  @extend .typography-subtitle;
+  display: flex;
+  align-items: center;
+  gap: 11.5px;
+
+  .defaultProject path {
+    fill: $COLOR_FOREST;
+  }
+
+  .moreButton {
+    margin-left: auto;
+  }
+}
+
+.metrics {
+  display: flex;
+}
+
+.peopleHeader {
+  @extend .typography-body-bold;
+}
+
+.people {
+  @extend .typography-body-small;
+  color: $COLOR_BLACK60;
+  width: 300px;
+}
+
+.openButton {
+  @extend .button-large;
+  display: flex;
+  justify-content: center;
+}
+
+.projectMenu {
+  @extend .menu;
+  margin-top: 10px;
+  margin-left: 15px;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

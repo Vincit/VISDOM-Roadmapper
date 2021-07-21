@@ -8,13 +8,6 @@
   line-height: 16px;
 }
 
-.visdomLogo {
-  cursor: pointer;
-  &:hover {
-    filter: brightness(0.8);
-  }
-}
-
 .loginNavBar {
   &.landingNavBar {
     @include landing-content-padding;

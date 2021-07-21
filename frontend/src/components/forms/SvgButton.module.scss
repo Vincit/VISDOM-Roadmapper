@@ -2,7 +2,7 @@
 
 .svgButtonIcon {
   path {
-    fill: $COLOR_BLACK40;
+    fill: var(--icon--color, $COLOR_BLACK40);
     transition: 150ms ease-out;
   }
   &:hover path {

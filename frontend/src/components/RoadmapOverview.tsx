@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
@@ -15,6 +16,7 @@ import { MetricsSummary } from './MetricsSummary';
 const classes = classNames.bind(css);
 
 export const RoadmapOverview = () => {
+  const { t } = useTranslation();
   const roadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
@@ -37,16 +39,34 @@ export const RoadmapOverview = () => {
     maximumFractionDigits: 2,
   });
 
+  const metrics = [
+    {
+      label: 'Tasks',
+      metricsValue: roadmapTasksCount(),
+    },
+    {
+      label: 'Milestones',
+      metricsValue: roadmapMilestonesCount(),
+    },
+    {
+      label: 'Avg Value',
+      metricsValue: numFormat.format(value),
+      children: <MonetizationOnIcon />,
+    },
+    {
+      label: 'Avg Work',
+      metricsValue: numFormat.format(work),
+      children: <WorkIcon />,
+    },
+  ];
+
   return (
     <div className={classes(css.data)}>
-      <MetricsSummary label="Tasks" value={roadmapTasksCount()} />
-      <MetricsSummary label="Milestones" value={roadmapMilestonesCount()} />
-      <MetricsSummary label="Avg Value" value={numFormat.format(value)}>
-        <MonetizationOnIcon />
-      </MetricsSummary>
-      <MetricsSummary label="Avg Work" value={numFormat.format(work)}>
-        <WorkIcon />
-      </MetricsSummary>
+      {metrics.map(({ label, metricsValue, children }) => (
+        <MetricsSummary key={label} label={t(label)} value={metricsValue}>
+          {children}
+        </MetricsSummary>
+      ))}
     </div>
   );
 };
