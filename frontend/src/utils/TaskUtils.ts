@@ -354,14 +354,16 @@ export const unratedTasksAmount = (
 export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
   const type = getType(userInfo?.roles, task.roadmapId);
   if (type === RoleType.Admin || type === RoleType.Business)
-    return !!userInfo?.representativeFor?.find(
-      (customer) =>
-        !task.ratings.some(
-          (rating) =>
-            customer.id === rating.forCustomer &&
-            rating.createdByUser === userInfo?.id,
-        ),
-    );
+    return !!userInfo?.representativeFor
+      ?.filter((customer) => customer.roadmapId === task.roadmapId)
+      ?.find(
+        (customer) =>
+          !task.ratings.some(
+            (rating) =>
+              customer.id === rating.forCustomer &&
+              rating.createdByUser === userInfo?.id,
+          ),
+      );
   return !task.ratings.find((rating) => rating.createdByUser === userInfo?.id);
 };
 
