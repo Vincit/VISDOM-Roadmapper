@@ -6,6 +6,7 @@ import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
 import { Permission, RoleType } from '../../shared/types/customTypes';
+import { removePermission } from './testUtils';
 
 const registerNewUser = async (user: object) =>
   (
@@ -40,13 +41,8 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       expect(before.body.length + 1).to.equal(after.body.length);
     });
     it('Should not invite user to roadmap with incorrect permissions', async function () {
+      await removePermission(Permission.RoadmapEditRoles);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.RoadmapEditRoles,
-      });
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/users/`,
       );
@@ -85,13 +81,11 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       expect(role.type).to.equal(RoleType.Developer);
     });
     it('Should not patch user roles with incorrect permissions', async function () {
+      await removePermission(Permission.RoadmapEditRoles);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
         await User.query().where({ username: 'AdminPerson1' }).first()
       ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.RoadmapEditRoles,
-      });
       const res = await loggedInAgent.patch(
         `/roadmaps/${firstRoadmapId}/users/${userId}/roles`,
       );
@@ -122,13 +116,11 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
       expect(role).not.to.exist;
     });
     it('Should not delete user roles with incorrect permissions', async function () {
+      await removePermission(Permission.RoadmapEditRoles);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
         await User.query().where({ username: 'AdminPerson1' }).first()
       ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.RoadmapEditRoles,
-      });
       const res = await loggedInAgent.delete(
         `/roadmaps/${firstRoadmapId}/users/${userId}/roles`,
       );

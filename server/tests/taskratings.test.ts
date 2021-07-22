@@ -3,15 +3,12 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 import { loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
-import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
-import { Role } from '../src/api/roles/roles.model';
 import {
   Permission,
-  RoleType,
   TaskRatingDimension,
 } from '../../shared/types/customTypes';
-import TaskRating from '../src/api/taskratings/taskratings.model';
+import { removePermission, getTestRatingData } from './testUtils';
 
 describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {
   describe('GET /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
@@ -31,16 +28,11 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       });
     });
     it('Should not get taskratings with incorrect permissions', async function () {
+      await removePermission(Permission.TaskRatingRead);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
         await Task.query().where('roadmapId', firstRoadmapId).first()
       ).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.TaskRatingRead,
-      });
       const res = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
@@ -70,16 +62,11 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(before.body.length + 1).to.equal(after.body.length);
     });
     it('Should not add new taskrating with incorrect permissions', async function () {
+      await removePermission(Permission.TaskRate);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
         await Task.query().where('roadmapId', firstRoadmapId).first()
       ).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.TaskRate,
-      });
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
@@ -98,16 +85,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
     });
   });
 
-  const getTestRatingData = async () => {
-    const rating = await TaskRating.query()
-      .first()
-      .withGraphFetched('[belongsToTask.[belongsToRoadmap]]');
-    const ratingId = rating.id;
-    const taskId = rating.belongsToTask?.id;
-    const roadmapId = rating.belongsToTask?.belongsToRoadmap.id;
-    return { ratingId, taskId, roadmapId };
-  };
-
   describe('DELETE /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should delete taskrating', async function () {
       const { ratingId, taskId, roadmapId } = await getTestRatingData();
@@ -124,14 +101,9 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(before.body.length - 1).to.equal(after.body.length);
     });
     it('Should not delete taskrating with incorrect permissions', async function () {
+      await removePermission(Permission.TaskRatingEdit);
       const { ratingId, taskId, roadmapId } = await getTestRatingData();
       if (!roadmapId) assert.fail('Roadmap should exist');
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, roadmapId], {
-        type: RoleType.Admin & ~Permission.TaskRatingEdit,
-      });
       const before = await loggedInAgent.get(
         `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
@@ -160,14 +132,9 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(res.body.value).to.equal(9);
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
+      await removePermission(Permission.TaskRatingEdit);
       const { ratingId, taskId, roadmapId } = await getTestRatingData();
       if (!roadmapId) assert.fail('Roadmap should exist');
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, roadmapId], {
-        type: RoleType.Admin & ~Permission.TaskRatingEdit,
-      });
       const res = await loggedInAgent
         .patch(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`)
         .type('json')

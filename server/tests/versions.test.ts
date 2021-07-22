@@ -6,6 +6,7 @@ import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
 import { Permission, RoleType } from '../../shared/types/customTypes';
 import { loggedInAgent } from './setuptests';
+import { removePermission } from './testUtils';
 chai.use(chaiHttp);
 
 describe('Test /roadmaps/:roadmapId/versions/ api', function () {
@@ -26,13 +27,8 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       assert.property(res.body[0], 'name');
     });
     it('Should not return versions with incorrect permissions', async function () {
+      await removePermission(Permission.VersionRead);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.VersionRead,
-      });
       const testVersion = {
         name: 'Test version',
         roadmapId: firstRoadmapId,
@@ -74,14 +70,9 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(insertedVersion).to.exist;
     });
     it('Should not add new version with incorrect permissions', async function () {
+      await removePermission(Permission.VersionCreate);
+      await removePermission(Permission.RoadmapEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type:
-          RoleType.Admin & ~Permission.VersionCreate & ~Permission.RoadmapEdit,
-      });
       const testVersion = {
         name: 'Test version',
         roadmapId: firstRoadmapId,
@@ -136,14 +127,9 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       assert(lenAfter === lenBefore - 1, 'Length must decrease');
     });
     it('Should not delete version with incorrect permissions', async function () {
+      await removePermission(Permission.VersionDelete);
+      await removePermission(Permission.RoadmapEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type:
-          RoleType.Admin & ~Permission.VersionDelete & ~Permission.RoadmapEdit,
-      });
       const testVersion = {
         name: 'Test version',
         roadmapId: firstRoadmapId,
@@ -197,13 +183,8 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(patchedVersion).to.exist;
     });
     it('Should not patch version with incorrect permissions', async function () {
+      await removePermission(Permission.VersionEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.VersionEdit,
-      });
       const testVersion = {
         name: 'Test version',
         roadmapId: firstRoadmapId,
