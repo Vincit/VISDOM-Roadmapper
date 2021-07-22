@@ -16,18 +16,18 @@ import {
   RequiredWorkFilled,
 } from '../components/RatingIcons';
 import {
-  allCustomersSelector,
   chosenRoadmapSelector,
   roadmapsVersionsSelector,
 } from '../redux/roadmaps/selectors';
-import { Customer, Roadmap, Version } from '../redux/roadmaps/types';
+import { Roadmap, Version } from '../redux/roadmaps/types';
 import { roadmapsActions } from '../redux/roadmaps';
 
 const classes = classNames.bind(css);
 
-interface VersionWorkAndValue extends Version {
+interface VersionWorkAndValues extends Version {
   work: number;
   value: number;
+  totalValue: number;
 }
 
 export const RoadmapGraphPage = () => {
@@ -40,22 +40,13 @@ export const RoadmapGraphPage = () => {
   const [selectedVersion, setSelectedVersion] = useState<undefined | Version>(
     undefined,
   );
-  const [versions, setVersions] = useState<undefined | VersionWorkAndValue[]>(
+  const [versions, setVersions] = useState<undefined | VersionWorkAndValues[]>(
     undefined,
-  );
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
-    shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
   );
-
-  useEffect(() => {
-    if (!customers && currentRoadmap)
-      dispatch(roadmapsActions.getCustomers(currentRoadmap.id));
-  }, [dispatch, customers, currentRoadmap]);
 
   useEffect(() => {
     if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
@@ -66,14 +57,10 @@ export const RoadmapGraphPage = () => {
       setVersions(
         roadmapsVersions?.map((version) => ({
           ...version,
-          ...totalWeightedValueAndWork(
-            version.tasks,
-            customers ?? [],
-            currentRoadmap,
-          ),
+          ...totalWeightedValueAndWork(version.tasks, currentRoadmap),
         })),
       );
-  }, [currentRoadmap, customers, roadmapsVersions]);
+  }, [currentRoadmap, roadmapsVersions]);
 
   useEffect(() => {
     if (
@@ -161,7 +148,7 @@ export const RoadmapGraphPage = () => {
           </InfoTooltip>
         </div>
         <div className={classes(css.stakesContainer)}>
-          {roadmapsVersions?.map((ver) => (
+          {versions?.map((ver) => (
             <TaskValueCreatedVisualization version={ver} key={ver.id} />
           ))}
         </div>

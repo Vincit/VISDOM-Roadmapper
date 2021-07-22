@@ -134,8 +134,8 @@ export const MilestonesEditor = () => {
 
     newVersionLists[ROADMAP_LIST_ID].sort(
       (a, b) =>
-        calcWeightedTaskPriority(b, customers!, currentRoadmap) -
-        calcWeightedTaskPriority(a, customers!, currentRoadmap),
+        calcWeightedTaskPriority(b, currentRoadmap) -
+        calcWeightedTaskPriority(a, currentRoadmap),
     );
 
     setVersionLists(newVersionLists);

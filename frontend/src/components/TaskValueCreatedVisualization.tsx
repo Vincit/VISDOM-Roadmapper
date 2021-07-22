@@ -1,13 +1,14 @@
-import { FC } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { FC, useEffect, useState } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
-import { allCustomersSelector } from '../redux/roadmaps/selectors';
-import { Customer, Version } from '../redux/roadmaps/types';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
+import { StoreDispatchType } from '../redux/index';
+import { roadmapsActions } from '../redux/roadmaps';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { Roadmap, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { Dot } from './Dot';
-import { totalValueAndWork } from '../utils/TaskUtils';
+import { totalCustomerStakes } from '../utils/TaskUtils';
 import { percent } from '../utils/string';
 import css from './TaskValueCreatedVisualization.module.scss';
 
@@ -20,47 +21,45 @@ export interface DataPoint {
   color: string;
 }
 
+interface VersionWorkAndTotalValue extends Version {
+  work: number;
+  totalValue: number;
+}
+
 export const TaskValueCreatedVisualization: FC<{
-  version: Version;
+  version: VersionWorkAndTotalValue;
 }> = ({ version }) => {
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+  const dispatch = useDispatch<StoreDispatchType>();
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
-  let totalValue = 0;
-  const customerStakes = new Map<Customer, number>();
-  const { work } = totalValueAndWork(version.tasks);
-  const w = Math.max(100, 60 * (work / 5));
+  const [data, setData] = useState<DataPoint[]>([]);
+  const w = Math.max(100, 60 * (version.work / 5));
 
-  // Calculate total sum of task values in the milestone
-  // And map values of how much each user has rated in these tasks
-  version.tasks.forEach((task) => {
-    if (task == null) return;
+  useEffect(() => {
+    if (!currentRoadmap) {
+      dispatch(roadmapsActions.getRoadmaps());
+      return;
+    }
 
-    task.ratings.forEach((rating) => {
-      if (rating.dimension !== TaskRatingDimension.BusinessValue) return;
-      const customer = customers?.find(({ id }) => id === rating.forCustomer);
-      if (customer) {
-        totalValue += rating.value;
-        const previousVal = customerStakes.get(customer) || 0;
-        customerStakes.set(customer, previousVal + rating.value);
-      }
-    });
-  });
-
-  // Format for recharts
-  const data: DataPoint[] = Array.from(customerStakes)
-    .sort((a, b) => b[1] - a[1])
-    .map(([key, value]) => ({
-      id: key.id,
-      name: key.name,
-      value,
-      color: key.color,
-    }));
+    const customerStakes = totalCustomerStakes(version.tasks, currentRoadmap);
+    setData(
+      Array.from(customerStakes)
+        .filter((a) => a[1] > 0)
+        .sort((a, b) => b[1] - a[1])
+        .map(([{ id, name, color }, value]) => ({
+          id,
+          name,
+          value,
+          color,
+        })),
+    );
+  }, [dispatch, currentRoadmap, version.tasks]);
 
   const largestValue = (stakes: DataPoint[]) => {
     if (!stakes.length) return 0;
-    return stakes[0].value / totalValue;
+    return stakes[0].value / version.totalValue;
   };
 
   return (
@@ -83,7 +82,7 @@ export const TaskValueCreatedVisualization: FC<{
               tooltip: classes(css.tooltip),
             }}
             title={`${entry.name} : ${percent(1).format(
-              entry.value / totalValue,
+              entry.value / version.totalValue,
             )}`}
             placement="right"
             arrow
@@ -91,7 +90,10 @@ export const TaskValueCreatedVisualization: FC<{
             <div
               className={classes(css.dotContainer)}
               style={{
-                ['--dot-size' as any]: Math.max(0.2, entry.value / totalValue),
+                ['--dot-size' as any]: Math.max(
+                  0.2,
+                  entry.value / version.totalValue,
+                ),
               }}
             >
               <Dot fill={entry.color} />

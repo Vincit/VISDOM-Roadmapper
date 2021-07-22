@@ -220,48 +220,65 @@ export const dragDropBetweenLists = (
   };
 };
 
-const ratingValue = (allCustomers: Customer[], roadmap: Roadmap) => (
+const ratingValueAndCreator = (roadmap: Roadmap, notWeighted?: boolean) => (
   rating: Taskrating,
 ) => {
-  const ratingCreator = allCustomers.find(
+  const ratingCreator = roadmap.customers?.find(
     ({ id }) => id === rating.forCustomer,
   );
   const creatorWeight = ratingCreator
     ? customerWeight(ratingCreator, roadmap.plannerCustomerWeights)
     : 0;
 
-  return rating.value * creatorWeight;
+  return {
+    value: notWeighted ? rating.value : rating.value * creatorWeight,
+    customer: ratingCreator,
+  };
 };
 
-const taskWeightedValueSummary = (
+const taskRatingsCustomerStakes = (roadmap: Roadmap, notWeighted?: boolean) => (
+  result: Map<Customer, number>,
   task: Task,
-  allCustomers: Customer[],
-  roadmap: Roadmap,
 ) =>
   task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValue(allCustomers, roadmap))
-    .reduce((acc, num) => acc.add(num), new RatingsSummary());
+    .map(ratingValueAndCreator(roadmap, notWeighted))
+    .reduce((acc, rating) => {
+      if (!rating.customer) return acc;
+      const previousVal = acc.get(rating.customer) || 0;
+      return acc.set(rating.customer, previousVal + rating.value);
+    }, result);
 
-export const totalWeightedValueAndWork = (
+// Calculate total sum of task values in the milestone
+// And map values of how much each user has rated in these tasks
+export const totalCustomerStakes = (
   tasks: Task[],
-  allCustomers: Customer[],
   roadmap: Roadmap,
-) => {
+  notWeighted?: boolean,
+) => tasks.reduce(taskRatingsCustomerStakes(roadmap, notWeighted), new Map());
+
+const taskWeightedValueSummary = (task: Task, roadmap: Roadmap) =>
+  task.ratings
+    .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
+    .map(ratingValueAndCreator(roadmap))
+    .reduce((acc, rating) => acc.add(rating.value), new RatingsSummary());
+
+export const totalWeightedValueAndWork = (tasks: Task[], roadmap: Roadmap) => {
   const { work } = totalValueAndWork(tasks);
-  const totalValue = tasks
-    .map((task) => taskWeightedValueSummary(task, allCustomers, roadmap).avg)
-    .reduce((sum, value) => sum + value, 0);
-  return { value: totalValue, work };
+  const totalValues = tasks
+    .map((task) => taskWeightedValueSummary(task, roadmap))
+    .reduce(
+      (acc, summary) => ({
+        sum: acc.sum + summary.avg,
+        total: acc.total + summary.total,
+      }),
+      { sum: 0, total: 0 },
+    );
+  return { value: totalValues.sum, totalValue: totalValues.total, work };
 };
 
-export const calcWeightedTaskPriority = (
-  task: Task,
-  allCustomers: Customer[],
-  roadmap: Roadmap,
-) => {
-  const weightedValue = taskWeightedValueSummary(task, allCustomers, roadmap)
-    .avg;
+export const calcWeightedTaskPriority = (task: Task, roadmap: Roadmap) => {
+  const weightedValue = taskWeightedValueSummary(task, roadmap).avg;
   if (!weightedValue) return -2;
 
   const avgWorkRating = valueAndWorkSummary(task).work.avg;

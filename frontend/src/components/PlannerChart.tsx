@@ -12,11 +12,8 @@ import {
   YAxis,
 } from 'recharts';
 import classNames from 'classnames';
-import {
-  chosenRoadmapSelector,
-  allCustomersSelector,
-} from '../redux/roadmaps/selectors';
-import { Customer, Roadmap, Task } from '../redux/roadmaps/types';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import {
   calcWeightedTaskPriority,
@@ -43,11 +40,6 @@ export const PlannerChart: FC<{
   )!;
   const [savedData, setSavedData] = useState<any[] | undefined>(undefined);
 
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
-    shallowEqual,
-  );
-
   const graphTaskLists = [...versions];
   const versionKeyNames = graphTaskLists.map((ver) => ver.name);
   if (!savedData) {
@@ -57,8 +49,8 @@ export const PlannerChart: FC<{
       name: DataKeys.OptimalRoadmap,
       tasks: [...currentRoadmap.tasks].sort(
         (a, b) =>
-          calcWeightedTaskPriority(b, customers ?? [], currentRoadmap) -
-          calcWeightedTaskPriority(a, customers ?? [], currentRoadmap),
+          calcWeightedTaskPriority(b, currentRoadmap) -
+          calcWeightedTaskPriority(a, currentRoadmap),
       ),
     });
   }
