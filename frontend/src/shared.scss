@@ -33,7 +33,8 @@
 
 .visdomLogo {
   cursor: pointer;
-  &:hover {
+  &:hover,
+  &.selected {
     filter: brightness(0.8);
   }
 }

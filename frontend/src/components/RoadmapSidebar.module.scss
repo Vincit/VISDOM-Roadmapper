@@ -8,14 +8,14 @@
   text-align: center;
   min-width: 104px;
   min-height: 104px;
+  gap: 5px;
 
   @extend .typography-pre-title;
 
   color: $COLOR_BLACK100;
   border-left: 5px solid white;
   border-right: 5px solid white;
-  padding-left: -5px;
-  padding-right: -5px;
+  padding: 0 -5px;
 
   &:hover {
     color: $COLOR_BLACK100;
@@ -24,7 +24,6 @@
   svg {
     width: 30px;
     height: 30px;
-    margin-bottom: 5px;
   }
 
   &.selected:not(.settings) {
@@ -37,10 +36,11 @@
     margin-top: auto;
     border-top: 1px solid $COLOR_BLACK10;
     font-weight: normal;
-  }
 
-  &.settings.selected > svg {
-    color: $COLOR_AZURE;
+    &:hover > svg,
+    &.selected > svg {
+      color: $COLOR_AZURE;
+    }
   }
 }
 
