@@ -1,10 +1,9 @@
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
-import User from '../src/api/users/users.model';
-import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType } from '../../shared/types/customTypes';
+import { Permission } from '../../shared/types/customTypes';
 import { loggedInAgent } from './setuptests';
+import { removePermission } from './testUtils';
 chai.use(chaiHttp);
 
 describe('Test /roadmaps/ api', function () {
@@ -71,13 +70,8 @@ describe('Test /roadmaps/ api', function () {
       expect(patchedRoadmap.description).to.equal('patcheddesc');
     });
     it('Should not patch roadmap with incorrect permissions', async function () {
+      await removePermission(Permission.RoadmapEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.RoadmapEdit,
-      });
       const res = await loggedInAgent
         .patch('/roadmaps/' + firstRoadmapId)
         .type('json')
@@ -101,14 +95,9 @@ describe('Test /roadmaps/ api', function () {
       expect(before.body.length - 1).to.equal(after.body.length);
     });
     it('Should not delete roadmap with incorrect permissions', async function () {
+      await removePermission(Permission.RoadmapDelete);
       const before = await loggedInAgent.get('/roadmaps/');
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.RoadmapDelete,
-      });
       const res = await loggedInAgent.delete('/roadmaps/' + firstRoadmapId);
       const after = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(403);
@@ -130,13 +119,8 @@ describe('Test /roadmaps/ api', function () {
       assert(res.body[0].username.length > 0);
     });
     it("Should not return roadmaps's users with incorrect permissions", async function () {
+      await removePermission(Permission.RoadmapReadUsers);
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin & ~Permission.RoadmapReadUsers,
-      });
       const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/users/`);
       expect(res.status).to.equal(403);
     });

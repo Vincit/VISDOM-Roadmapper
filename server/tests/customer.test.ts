@@ -10,7 +10,7 @@ import {
   postCustomer,
   removePermission,
   updateCustomer,
-} from '../src/utils/testUtils';
+} from './testUtils';
 chai.use(chaiHttp);
 
 describe('Test /customers/ api', function () {
