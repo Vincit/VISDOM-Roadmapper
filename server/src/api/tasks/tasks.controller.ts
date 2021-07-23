@@ -4,7 +4,7 @@ import { Permission } from '../../../../shared/types/customTypes';
 import Task from './tasks.model';
 import Objection from 'objection';
 
-export const getTasks: RouteHandlerFnc = async (ctx, _) => {
+export const getTasks: RouteHandlerFnc = async (ctx) => {
   const { user, role } = ctx.state;
   if (!user || !role) {
     throw new Error('User and role are required');
@@ -34,7 +34,7 @@ export const getTasks: RouteHandlerFnc = async (ctx, _) => {
     );
 };
 
-export const postTasks: RouteHandlerFnc = async (ctx, _) => {
+export const postTasks: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -48,7 +48,7 @@ export const postTasks: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = task;
 };
 
-export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
+export const deleteTasks: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -65,7 +65,7 @@ export const deleteTasks: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
 
-export const patchTasks: RouteHandlerFnc = async (ctx, _) => {
+export const patchTasks: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }

@@ -1,5 +1,4 @@
-import * as Knex from "knex";
-
+import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<any> {
   return knex.schema
@@ -36,13 +35,11 @@ export async function up(knex: Knex): Promise<any> {
         .index();
 
       table.unique(['user', 'type', 'provider', 'instance']);
-    })
+    });
 }
-
 
 export async function down(knex: Knex): Promise<any> {
   return knex.schema
     .dropTableIfExists('jiraconfigurations')
     .dropTableIfExists('tokens');
 }
-

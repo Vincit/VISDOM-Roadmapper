@@ -4,7 +4,7 @@ import Roadmap from './roadmaps.model';
 import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
 
-export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
   const { user } = ctx.state;
   if (!user) {
     throw new Error('User is required');
@@ -32,12 +32,12 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
-export const getRoadmapsUsers: RouteHandlerFnc = async (ctx, _) => {
+export const getRoadmapsUsers: RouteHandlerFnc = async (ctx) => {
   const users = await Roadmap.relatedQuery('users').for(ctx.params.roadmapId);
   ctx.body = users;
 };
 
-export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -53,7 +53,7 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   });
 };
 
-export const patchRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+export const patchRoadmaps: RouteHandlerFnc = async (ctx) => {
   const { id, name, description, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
@@ -69,7 +69,7 @@ export const patchRoadmaps: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
-export const deleteRoadmaps: RouteHandlerFnc = async (ctx, _) => {
+export const deleteRoadmaps: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await Roadmap.query()
     .findById(ctx.params.roadmapId)
     .delete();

@@ -47,7 +47,7 @@ const oAuthProvider = async (ctx: Context) => {
   return getOAuthProvider(config);
 };
 
-export const postConfigurations: RouteHandlerFnc = async (ctx, _) => {
+export const postConfigurations: RouteHandlerFnc = async (ctx) => {
   const { defaultConfig } = getIntegration(ctx.params.integrationName);
   const { host, consumerkey, privatekey } = {
     ...defaultConfig,
@@ -63,7 +63,7 @@ export const postConfigurations: RouteHandlerFnc = async (ctx, _) => {
   });
 };
 
-export const patchConfigurations: RouteHandlerFnc = async (ctx, _) => {
+export const patchConfigurations: RouteHandlerFnc = async (ctx) => {
   const {
     id,
     name,
@@ -92,7 +92,7 @@ export const patchConfigurations: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
-export const deleteConfigurations: RouteHandlerFnc = async (ctx, _) => {
+export const deleteConfigurations: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await Integration.query()
     .findById(Number(ctx.params.integrationId))
     .where({
@@ -104,7 +104,7 @@ export const deleteConfigurations: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
 
-export const getBoards: RouteHandlerFnc = async (ctx, _) => {
+export const getBoards: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -112,7 +112,7 @@ export const getBoards: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await provider.boards();
 };
 
-export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
+export const getBoardLabels: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -121,7 +121,7 @@ export const getBoardLabels: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = 200;
 };
 
-export const importBoard: RouteHandlerFnc = async (ctx, _) => {
+export const importBoard: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -166,7 +166,7 @@ export const importBoard: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = 200;
 };
 
-export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
+export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -181,7 +181,7 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
-export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx, _) => {
+export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
