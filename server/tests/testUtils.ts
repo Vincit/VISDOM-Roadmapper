@@ -4,28 +4,27 @@ import Customer from '../src/api/customer/customer.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
 import TaskRating from '../src/api/taskratings/taskratings.model';
-import { Permission, RoleType } from '../../shared/types/customTypes';
+import { Permission } from '../../shared/types/customTypes';
 
-export const removePermission = async (permission: Permission) => {
-  const firstRoadmapId = (await Roadmap.query().first()).id;
+export const withoutPermission = async <T>(
+  roadmapId: number,
+  permission: Permission,
+  work: () => Promise<T>,
+) => {
   const userId = (
     await User.query().where({ username: 'AdminPerson1' }).first()
   ).id;
 
-  await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-    type: RoleType.Admin & ~permission,
-  });
-};
-
-export const removePermission2 = async (restrictedRole: RoleType) => {
-  const firstRoadmapId = (await Roadmap.query().first()).id;
-  const userId = (
-    await User.query().where({ username: 'AdminPerson1' }).first()
-  ).id;
-
-  await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-    type: restrictedRole,
-  });
+  const role = await Role.query().findById([userId, roadmapId]);
+  const original = role.type;
+  await role.$query().patch({ type: original & ~permission });
+  try {
+    return await work();
+  } finally {
+    await Role.query().patchAndFetchById([userId, roadmapId], {
+      type: original,
+    });
+  }
 };
 
 export const updateCustomer = async (customer: Customer, newData: any) => {
@@ -38,17 +37,15 @@ export const updateCustomer = async (customer: Customer, newData: any) => {
     .send(newData);
 };
 
-export const postCustomer = async (newCustomer: any) => {
-  const firstRoadmapId = (await Roadmap.query().first()).id;
+export const postCustomer = async (roadmapId: number, newCustomer: any) => {
   return await loggedInAgent
-    .post(`/roadmaps/${firstRoadmapId}/customers`)
+    .post(`/roadmaps/${roadmapId}/customers`)
     .type('json')
     .send(newCustomer);
 };
 
-export const getCustomers = async () => {
-  const firstRoadmapId = (await Roadmap.query().first()).id;
-  return await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/customers`);
+export const getCustomers = async (roadmapId: number) => {
+  return await loggedInAgent.get(`/roadmaps/${roadmapId}/customers`);
 };
 
 export const deleteCustomer = async (customer: Customer) => {

@@ -8,7 +8,7 @@ import {
   Permission,
   TaskRatingDimension,
 } from '../../shared/types/customTypes';
-import { removePermission, getTestRatingData } from './testUtils';
+import { withoutPermission, getTestRatingData } from './testUtils';
 
 describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {
   describe('GET /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
@@ -28,13 +28,17 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       });
     });
     it('Should not get taskratings with incorrect permissions', async function () {
-      await removePermission(Permission.TaskRatingRead);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
         await Task.query().where('roadmapId', firstRoadmapId).first()
       ).id;
-      const res = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.TaskRatingRead,
+        () =>
+          loggedInAgent.get(
+            `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+          ),
       );
       expect(res.status).to.equal(403);
     });
@@ -62,7 +66,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(before.body.length + 1).to.equal(after.body.length);
     });
     it('Should not add new taskrating with incorrect permissions', async function () {
-      await removePermission(Permission.TaskRate);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
         await Task.query().where('roadmapId', firstRoadmapId).first()
@@ -70,13 +73,18 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
-      const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
-        .type('json')
-        .send({
-          dimension: TaskRatingDimension.RequiredWork,
-          value: 5,
-        });
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.TaskRate,
+        () =>
+          loggedInAgent
+            .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+            .type('json')
+            .send({
+              dimension: TaskRatingDimension.RequiredWork,
+              value: 5,
+            }),
+      );
       expect(res.status).to.equal(403);
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
@@ -101,14 +109,18 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(before.body.length - 1).to.equal(after.body.length);
     });
     it('Should not delete taskrating with incorrect permissions', async function () {
-      await removePermission(Permission.TaskRatingEdit);
       const { ratingId, taskId, roadmapId } = await getTestRatingData();
       if (!roadmapId) assert.fail('Roadmap should exist');
       const before = await loggedInAgent.get(
         `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
-      const res = await loggedInAgent.delete(
-        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`,
+      const res = await withoutPermission(
+        roadmapId,
+        Permission.TaskRatingEdit,
+        () =>
+          loggedInAgent.delete(
+            `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`,
+          ),
       );
       expect(res.status).to.equal(403);
       const after = await loggedInAgent.get(
@@ -132,15 +144,21 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(res.body.value).to.equal(9);
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
-      await removePermission(Permission.TaskRatingEdit);
       const { ratingId, taskId, roadmapId } = await getTestRatingData();
       if (!roadmapId) assert.fail('Roadmap should exist');
-      const res = await loggedInAgent
-        .patch(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`)
-        .type('json')
-        .send({
-          value: 9,
-        });
+      const res = await withoutPermission(
+        roadmapId,
+        Permission.TaskRatingEdit,
+        () =>
+          loggedInAgent
+            .patch(
+              `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`,
+            )
+            .type('json')
+            .send({
+              value: 9,
+            }),
+      );
       expect(res.status).to.equal(403);
       expect(res.body.dimension).not.to.equal(TaskRatingDimension.RequiredWork);
       expect(res.body.value).not.to.equal(9);

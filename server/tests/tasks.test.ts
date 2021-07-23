@@ -5,9 +5,8 @@ import { loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
-import { Role } from '../src/api/roles/roles.model';
-import { Permission, RoleType } from '../../shared/types/customTypes';
-import { removePermission, removePermission2 } from './testUtils';
+import { Permission } from '../../shared/types/customTypes';
+import { withoutPermission } from './testUtils';
 
 describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
   describe('GET /roadmaps/:roadmapId/tasks/', function () {
@@ -25,13 +24,12 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(res.body[0]).to.have.property('createdByUser');
     });
     it('Should not get tasks with incorrect permissions', async function () {
-      // await removePermission(Permission.RoadmapReadUsers);
-      // await removePermission(Permission.TaskRead);
-      await removePermission2(
-        RoleType.Admin & ~Permission.RoadmapReadUsers & ~Permission.TaskRead,
-      );
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/tasks/`);
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.RoadmapReadUsers | Permission.TaskRead,
+        () => loggedInAgent.get(`/roadmaps/${firstRoadmapId}/tasks/`),
+      );
       expect(res.status).to.equal(403);
     });
   });
@@ -64,26 +62,22 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(added.createdByUser).to.equal(userId);
     });
     it('Should not add new task with incorrect permissions', async function () {
-      await removePermission(Permission.RoadmapReadUsers);
-      await removePermission(Permission.TaskCreate);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
       );
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
-
-      const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/`)
-        .type('json')
-        .send({
-          name: 'testtask',
-          description: 'testdesc',
-        });
-      await Role.query().patchAndFetchById([userId, firstRoadmapId], {
-        type: RoleType.Admin,
-      });
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.RoadmapReadUsers | Permission.TaskCreate,
+        () =>
+          loggedInAgent
+            .post(`/roadmaps/${firstRoadmapId}/tasks/`)
+            .type('json')
+            .send({
+              name: 'testtask',
+              description: 'testdesc',
+            }),
+      );
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
       );
@@ -113,7 +107,6 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(before.body.length - 1).to.equal(after.body.length);
     });
     it('Should not delete task with incorrect permissions', async function () {
-      await removePermission(Permission.TaskEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
         await Task.query().where('roadmapId', firstRoadmapId).first()
@@ -121,8 +114,11 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
       );
-      const res = await loggedInAgent.delete(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}`,
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.TaskEdit,
+        () =>
+          loggedInAgent.delete(`/roadmaps/${firstRoadmapId}/tasks/${taskId}`),
       );
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
@@ -154,18 +150,22 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(patched.description).to.equal('patched');
     });
     it('Should not patch task with incorrect permissions', async function () {
-      await removePermission(Permission.TaskEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
         await Task.query().where('roadmapId', firstRoadmapId).first()
       ).id;
-      const res = await loggedInAgent
-        .patch(`/roadmaps/${firstRoadmapId}/tasks/${taskId}`)
-        .type('json')
-        .send({
-          name: 'patched',
-          description: 'patched',
-        });
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.TaskEdit,
+        () =>
+          loggedInAgent
+            .patch(`/roadmaps/${firstRoadmapId}/tasks/${taskId}`)
+            .type('json')
+            .send({
+              name: 'patched',
+              description: 'patched',
+            }),
+      );
       expect(res.status).to.equal(403);
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/`,
