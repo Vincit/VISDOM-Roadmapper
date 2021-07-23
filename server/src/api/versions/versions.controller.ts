@@ -1,7 +1,7 @@
 import { RouteHandlerFnc } from 'src/types/customTypes';
 import Version from './versions.model';
 
-export const getVersions: RouteHandlerFnc = async (ctx, _) => {
+export const getVersions: RouteHandlerFnc = async (ctx) => {
   const query = Version.query()
     .where({ roadmapId: Number(ctx.params.roadmapId) })
     .orderBy('sortingRank', 'asc');
@@ -17,7 +17,7 @@ export const getVersions: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await query;
 };
 
-export const postVersions: RouteHandlerFnc = async (ctx, _) => {
+export const postVersions: RouteHandlerFnc = async (ctx) => {
   const inserted = await Version.transaction(async (trx) => {
     const maxVersion = (await Version.query(trx)
       .where({ roadmapId: Number(ctx.params.roadmapId) })
@@ -48,7 +48,7 @@ export const postVersions: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = inserted;
 };
 
-export const deleteVersions: RouteHandlerFnc = async (ctx, _) => {
+export const deleteVersions: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await Version.transaction(async (trx) => {
     const delVersion = await Version.query(trx)
       .findById(Number(ctx.params.versionId))
@@ -67,7 +67,7 @@ export const deleteVersions: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
 
-export const patchVersions: RouteHandlerFnc = async (ctx, _) => {
+export const patchVersions: RouteHandlerFnc = async (ctx) => {
   let { sortingRank } = ctx.request.body;
   delete ctx.request.body.sortingRank;
   const { id, name, tasks, ...others } = ctx.request.body;

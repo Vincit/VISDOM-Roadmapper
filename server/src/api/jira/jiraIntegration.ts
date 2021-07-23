@@ -135,7 +135,7 @@ class JiraImporter implements IntegrationProvider {
 
   private importFilter(filters?: TaskFilters) {
     const include = new Set(filters?.labels || []);
-    if (include.size === 0) return (_: any) => true;
+    if (include.size === 0) return () => true;
     return (issue: any) =>
       (issue.fields.labels || []).some((label: string) => include.has(label));
   }

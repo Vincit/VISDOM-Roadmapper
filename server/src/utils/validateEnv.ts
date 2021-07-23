@@ -15,7 +15,7 @@ export const validateEnv = () => {
   let isValid = true;
   for (const v of requiredEnvVars) {
     if (!process.env[v]) {
-      console.error(`Missing required environment variable: ${v}`);
+      console.error(`Missing required environment variable: ${v}`);
       isValid = false;
     }
   }

@@ -121,7 +121,7 @@ class TrelloImporter implements IntegrationProvider {
 
   private importFilter(filters?: TaskFilters) {
     const include = new Set(filters?.labels || []);
-    if (include.size === 0) return (_: any) => true;
+    if (include.size === 0) return () => true;
     return (card: any) =>
       (card.labels || []).some(({ name }: { name: string }) =>
         include.has(name),

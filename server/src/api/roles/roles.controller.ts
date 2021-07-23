@@ -1,7 +1,7 @@
 import { RouteHandlerFnc } from 'src/types/customTypes';
 import { Role } from './roles.model';
 
-export const inviteRoadmapUser: RouteHandlerFnc = async (ctx, _) => {
+export const inviteRoadmapUser: RouteHandlerFnc = async (ctx) => {
   const created = await Role.query().insertAndFetch({
     type: ctx.request.body.type,
     userId: ctx.request.body.userId,
@@ -10,7 +10,7 @@ export const inviteRoadmapUser: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = created;
 };
 
-export const patchRoadmapUserRoles: RouteHandlerFnc = async (ctx, _) => {
+export const patchRoadmapUserRoles: RouteHandlerFnc = async (ctx) => {
   const { id, type, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
@@ -26,7 +26,7 @@ export const patchRoadmapUserRoles: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
-export const deleteRoadmapUserRoles: RouteHandlerFnc = async (ctx, _) => {
+export const deleteRoadmapUserRoles: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await Role.query()
     .where({
       roadmapId: Number(ctx.params.roadmapId),

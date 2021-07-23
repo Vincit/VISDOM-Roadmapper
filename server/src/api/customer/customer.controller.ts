@@ -4,7 +4,7 @@ import Customer from './customer.model';
 import { Permission } from '../../../../shared/types/customTypes';
 import User from '../users/users.model';
 
-export const getCustomers: RouteHandlerFnc = async (ctx, _) => {
+export const getCustomers: RouteHandlerFnc = async (ctx) => {
   let query = Customer.query()
     .where('roadmapId', Number(ctx.params.roadmapId))
     .withGraphFetched('[representatives]');
@@ -15,7 +15,7 @@ export const getCustomers: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await query;
 };
 
-export const postCustomer: RouteHandlerFnc = async (ctx, _) => {
+export const postCustomer: RouteHandlerFnc = async (ctx) => {
   const roadmapId = Number(ctx.params.roadmapId);
   const { id, representatives, ...body } = ctx.request.body;
   const inserted = await Customer.transaction(async (trx) => {
@@ -45,7 +45,7 @@ const difference = <T>(old: T[], updated: T[]) => {
   return { removed, added };
 };
 
-export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
+export const patchCustomer: RouteHandlerFnc = async (ctx) => {
   const {
     id,
     name,
@@ -65,12 +65,13 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
       .withGraphFetched('representatives');
     if (!customer) return false;
 
-    if (!representatives) 
-      return await customer
-        .$query(trx)
-        .patchAndFetch({ name, email, weight, color })
-        .withGraphFetched('representatives')
-        ?? false;
+    if (!representatives)
+      return (
+        (await customer
+          .$query(trx)
+          .patchAndFetch({ name, email, weight, color })
+          .withGraphFetched('representatives')) ?? false
+      );
 
     const { added, removed } = difference(
       customer.representatives?.map(({ id }) => id) || [],
@@ -92,12 +93,12 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
     }
 
     if (!name && !email && !weight && !color)
-      return await customer.$query(trx)
-        .withGraphFetched('representatives');
+      return await customer.$query(trx).withGraphFetched('representatives');
 
-    return await customer.$query(trx)
+    return await customer
+      .$query(trx)
       .patchAndFetch({ name, email, weight, color })
-      .withGraphFetched('representatives')
+      .withGraphFetched('representatives');
   });
   if (!updated) {
     return void (ctx.status = 404);
@@ -106,7 +107,7 @@ export const patchCustomer: RouteHandlerFnc = async (ctx, _) => {
   }
 };
 
-export const deleteCustomer: RouteHandlerFnc = async (ctx, _) => {
+export const deleteCustomer: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await Customer.query()
     .findById(Number(ctx.params.customerId))
     .where('roadmapId', Number(ctx.params.roadmapId))

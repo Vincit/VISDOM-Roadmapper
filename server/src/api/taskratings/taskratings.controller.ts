@@ -8,7 +8,7 @@ import Taskrating from './taskratings.model';
 import Task from '../tasks/tasks.model';
 import Customer from '../customer/customer.model';
 
-export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
+export const getTaskratings: RouteHandlerFnc = async (ctx) => {
   const { user, role } = ctx.state;
   if (!user || !role) {
     throw new Error('User and role are required');
@@ -23,7 +23,7 @@ export const getTaskratings: RouteHandlerFnc = async (ctx, _) => {
   ctx.body = await query;
 };
 
-export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
+export const postTasksRatings: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -65,7 +65,7 @@ export const postTasksRatings: RouteHandlerFnc = async (ctx, _) => {
   return;
 };
 
-export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
+export const deleteTaskratings: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
@@ -82,7 +82,7 @@ export const deleteTaskratings: RouteHandlerFnc = async (ctx, _) => {
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
 
-export const patchTaskratings: RouteHandlerFnc = async (ctx, _) => {
+export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
