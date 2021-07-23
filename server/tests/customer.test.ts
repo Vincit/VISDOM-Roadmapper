@@ -8,7 +8,7 @@ import {
   deleteCustomer,
   getCustomers,
   postCustomer,
-  removePermission,
+  withoutPermission,
   updateCustomer,
 } from './testUtils';
 chai.use(chaiHttp);
@@ -21,7 +21,7 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await getCustomers();
+      const res = await getCustomers(firstRoadmapId);
 
       expect(res.status).to.equal(200);
       expect(res.body.length).to.equal(customers.length);
@@ -37,8 +37,12 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not get customers with incorrect permissions', async function () {
-      await removePermission(Permission.RoadmapReadUsers);
-      const res = await getCustomers();
+      const roadmapId = (await Roadmap.query().first()).id;
+      const res = await withoutPermission(
+        roadmapId,
+        Permission.RoadmapReadUsers,
+        () => getCustomers(roadmapId),
+      );
       expect(res.status).to.equal(403);
     });
   });
@@ -59,7 +63,7 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await postCustomer(validCustomer);
+      const res = await postCustomer(firstRoadmapId, validCustomer);
       const customersAfter = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -85,7 +89,7 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await postCustomer(validCustomer);
+      const res = await postCustomer(firstRoadmapId, validCustomer);
       const customersAfter = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -99,7 +103,6 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not create a new customer with incorrect permissions', async function () {
-      await removePermission(Permission.RoadmapEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const business1Id = (await getUser('BusinessPerson1')).id;
 
@@ -114,7 +117,11 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await postCustomer(validCustomer);
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.RoadmapEdit,
+        () => postCustomer(firstRoadmapId, validCustomer),
+      );
       const customersAfter = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -135,7 +142,7 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await postCustomer(invalidCustomer);
+      const res = await postCustomer(firstRoadmapId, invalidCustomer);
       const customersAfter = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -157,7 +164,7 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await postCustomer(invalidCustomer);
+      const res = await postCustomer(firstRoadmapId, invalidCustomer);
       const customersAfter = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -189,7 +196,7 @@ describe('Test /customers/ api', function () {
             'roadmapId',
             firstRoadmapId,
           );
-          const res = await postCustomer(data);
+          const res = await postCustomer(firstRoadmapId, data);
           const customersAfter = await Customer.query().where(
             'roadmapId',
             firstRoadmapId,
@@ -226,7 +233,7 @@ describe('Test /customers/ api', function () {
             'roadmapId',
             firstRoadmapId,
           );
-          const res = await postCustomer(data);
+          const res = await postCustomer(firstRoadmapId, data);
           const customersAfter = await Customer.query().where(
             'roadmapId',
             firstRoadmapId,
@@ -266,7 +273,7 @@ describe('Test /customers/ api', function () {
             'roadmapId',
             firstRoadmapId,
           );
-          const res = await postCustomer(data);
+          const res = await postCustomer(firstRoadmapId, data);
           const customersAfter = await Customer.query().where(
             'roadmapId',
             firstRoadmapId,
@@ -306,7 +313,7 @@ describe('Test /customers/ api', function () {
             'roadmapId',
             firstRoadmapId,
           );
-          const res = await postCustomer(data);
+          const res = await postCustomer(firstRoadmapId, data);
           const customersAfter = await Customer.query().where(
             'roadmapId',
             firstRoadmapId,
@@ -371,13 +378,16 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not update customers with incorrect permissions', async function () {
-      await removePermission(Permission.RoadmapEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
 
       const customer = await Customer.query()
         .where('roadmapId', firstRoadmapId)
         .first();
-      const res = await updateCustomer(customer, { name: 'Test-customer' });
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.RoadmapEdit,
+        () => updateCustomer(customer, { name: 'Test-customer' }),
+      );
       const updatedCustomer = await Customer.query().findById(customer.id);
 
       expect(res.status).to.equal(403);
@@ -481,7 +491,6 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not delete customer with incorrect permissions', async function () {
-      await removePermission(Permission.RoadmapEdit);
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const customerToDelete = await Customer.query()
         .where('roadmapId', firstRoadmapId)
@@ -491,7 +500,11 @@ describe('Test /customers/ api', function () {
         'roadmapId',
         firstRoadmapId,
       );
-      const res = await deleteCustomer(customerToDelete);
+      const res = await withoutPermission(
+        firstRoadmapId,
+        Permission.RoadmapEdit,
+        () => deleteCustomer(customerToDelete),
+      );
       const customersAfter = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -527,7 +540,7 @@ describe('Test /customers/ api', function () {
     it('Get - Post - Patch - Delete - Get', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
 
-      const getResStart = await getCustomers();
+      const getResStart = await getCustomers(firstRoadmapId);
       expect(getResStart.status).to.equal(200);
 
       const validCustomer = {
@@ -535,7 +548,7 @@ describe('Test /customers/ api', function () {
         email: 'email@test.com',
         color: '#A1FF4D',
       };
-      const postRes = await postCustomer(validCustomer);
+      const postRes = await postCustomer(firstRoadmapId, validCustomer);
       const customersAfterPost = await Customer.query().where(
         'roadmapId',
         firstRoadmapId,
@@ -579,7 +592,7 @@ describe('Test /customers/ api', function () {
         customersAfterDelete[customersAfterDelete.length - 1].name,
       ).to.not.equal('Modified-customer');
 
-      const getResFinal = await getCustomers();
+      const getResFinal = await getCustomers(firstRoadmapId);
 
       expect(getResFinal.status).to.equal(200);
       expect(getResFinal.body).to.eql(getResStart.body);
