@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import React from 'react';
 import classNames from 'classnames';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -11,23 +10,12 @@ import css from './TaskHeatmap.module.scss';
 
 const classes = classNames.bind(css);
 
-function lerpColor(a: string, b: string, amount: number): string {
-  const ah = parseInt(a.replace(/#/g, ''), 16);
-  const ar = ah >> 16;
-  const ag = (ah >> 8) & 0xff;
-  const ab = ah & 0xff;
-  const bh = parseInt(b.replace(/#/g, ''), 16);
-  const br = bh >> 16;
-  const bg = (bh >> 8) & 0xff;
-  const bb = bh & 0xff;
-  const rr = ar + amount * (br - ar);
-  const rg = ag + amount * (bg - ag);
-  const rb = ab + amount * (bb - ab);
+const lerp = (a: number, b: number, amount: number) => a + amount * (b - a);
 
-  return `#${(((1 << 24) + (rr << 16) + (rg << 8) + rb) | 0)
-    .toString(16)
-    .slice(1)}`;
-}
+const matrix2d = ({ rows, cols }: { rows: number; cols: number }): number[][] =>
+  Array(rows)
+    .fill(0)
+    .map(() => Array(cols).fill(0));
 
 export const TaskHeatmap = () => {
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
@@ -35,21 +23,9 @@ export const TaskHeatmap = () => {
     shallowEqual,
   );
 
-  const tasksToDatapoints = () => {
-    const frequencies = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    currentRoadmap!.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
+  const frequencies = matrix2d({ rows: 11, cols: 11 });
+  if (currentRoadmap) {
+    currentRoadmap.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
       const value = ratings.get(TaskRatingDimension.BusinessValue);
       const work = ratings.get(TaskRatingDimension.RequiredWork);
       if (value && work) {
@@ -58,9 +34,35 @@ export const TaskHeatmap = () => {
         frequencies[10 - avgValue][avgWork] += 1;
       }
     });
-    return frequencies;
+  }
+
+  const [minFreq, median, maxFreq] = (() => {
+    const nonZero = frequencies
+      .flatMap((row) => row.filter((n) => n > 0))
+      .sort((a, b) => a - b);
+    if (nonZero.length === 0) return [0, 0, 0];
+    return [
+      nonZero[0],
+      nonZero[Math.floor(nonZero.length / 2)],
+      nonZero[nonZero.length - 1],
+    ];
+  })();
+
+  const relativeToMedian = (value: number) => {
+    if (value <= median) {
+      return 0.5 * ((value - minFreq) / median);
+    }
+    return 0.5 * (1 + (value - median) / (maxFreq - median));
   };
-  const frequencies = tasksToDatapoints();
+
+  const color = (value: number) => {
+    if (value === 0) return 'white';
+    const p = relativeToMedian(value);
+    const h = lerp(60, 0, p).toFixed();
+    const s = lerp(95, 85, p).toFixed();
+    const l = lerp(50, 60, p).toFixed();
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  };
 
   return (
     <div className={classes(css.outerContainer)}>
@@ -72,11 +74,7 @@ export const TaskHeatmap = () => {
               {row.map((value, ii) => (
                 <div
                   className={classes(css.tile)}
-                  style={{
-                    backgroundColor: value
-                      ? lerpColor('#edf723', '#ff5555', Math.min(value / 15, 1))
-                      : '#fffffb',
-                  }}
+                  style={{ backgroundColor: color(value) }}
                   key={ii}
                 />
               ))}
