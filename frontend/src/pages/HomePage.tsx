@@ -5,10 +5,7 @@ import { RootState } from '../redux/types';
 import { roadmapsSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
-
-const PlaceholderComponent = () => {
-  return <div> No Projects yet. </div>;
-};
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export const HomePage = () => {
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
@@ -29,9 +26,11 @@ export const HomePage = () => {
     }
   }
 
-  return roadmaps && roadmaps.length > 0 ? (
+  if (!roadmaps) return <LoadingSpinner />;
+
+  return roadmaps.length > 0 ? (
     <Redirect to={`${paths.roadmapHome}/${roadmaps[0].id}/dashboard`} />
   ) : (
-    <PlaceholderComponent />
+    <Redirect to="/getstarted" />
   );
 };

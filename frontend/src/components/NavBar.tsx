@@ -23,34 +23,33 @@ export const NavBar = () => {
   );
   const { pathname } = useLocation();
 
+  if (!userInfo) {
+    return pathname.startsWith(paths.loginPage) ? (
+      <LoginNavBar type="login" />
+    ) : (
+      <LoginNavBar type="register" />
+    );
+  }
+
+  if (pathname.startsWith(paths.getStarted))
+    return <LoginNavBar type="getStarted" />;
+
   return (
-    <>
-      {!userInfo &&
-        (pathname.startsWith(paths.loginPage) ? (
-          <LoginNavBar type="login" />
-        ) : (
-          <LoginNavBar type="register" />
-        ))}
-      {userInfo && (
-        <div className={classes(css.navBarDiv)}>
-          <CornerPiece />
-          <div className={classes(css.navBarRightSide)}>
-            <>
-              <div className={classes(css.navBarText)}>
-                <Trans i18nKey="Project" />
-              </div>
-              <RoadmapSelectorWidget />
-              <div className={classes(css.navBarDivider)} />
-              <Link className={classes(css.navBarLink)} to={paths.userInfo}>
-                <PermIdentityIcon className={classes(css.icon)} />
-              </Link>
-              <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
-                <PowerSettingsNewIcon className={classes(css.icon)} />
-              </Link>
-            </>
-          </div>
+    <div className={classes(css.navBarDiv)}>
+      <CornerPiece />
+      <div className={classes(css.navBarRightSide)}>
+        <div className={classes(css.navBarText)}>
+          <Trans i18nKey="Project" />
         </div>
-      )}
-    </>
+        <RoadmapSelectorWidget />
+        <div className={classes(css.navBarDivider)} />
+        <Link className={classes(css.navBarLink)} to={paths.userInfo}>
+          <PermIdentityIcon className={classes(css.icon)} />
+        </Link>
+        <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
+          <PowerSettingsNewIcon className={classes(css.icon)} />
+        </Link>
+      </div>
+    </div>
   );
 };

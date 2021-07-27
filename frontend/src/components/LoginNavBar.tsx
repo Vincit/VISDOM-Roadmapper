@@ -10,14 +10,14 @@ import css from './LoginNavBar.module.scss';
 const classes = classNames.bind(css);
 
 export const LoginNavBar: React.FC<{
-  type: 'landing' | 'login' | 'register';
+  type: 'landing' | 'login' | 'register' | 'getStarted';
 }> = ({ type }) => (
   <div
     className={classes(css.loginNavBar, {
       [css.landingNavBar]: type === 'landing',
     })}
   >
-    {type === 'landing' ? (
+    {type === 'landing' || type === 'getStarted' ? (
       <VisdomLogo />
     ) : (
       <Link to={paths.home} className={classes(css.visdomLogo)}>
@@ -25,11 +25,17 @@ export const LoginNavBar: React.FC<{
       </Link>
     )}
     <span />
-    {type === 'login' ? (
+    {type === 'getStarted' && (
+      <Link className={classes(css.loginButton)} to={paths.logoutPage}>
+        <Trans i18nKey="Logout" />
+      </Link>
+    )}
+    {type === 'login' && (
       <Link className={classes(css.loginButton)} to={paths.registerPage}>
         <Trans i18nKey="Register" />
       </Link>
-    ) : (
+    )}
+    {(type === 'register' || type === 'landing') && (
       <Link className={classes(css.loginButton)} to={paths.loginPage}>
         <Trans i18nKey="Login" />
       </Link>
