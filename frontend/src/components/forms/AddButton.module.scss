@@ -1,0 +1,48 @@
+@import '../../shared.scss';
+
+.addButton {
+  @extend .typography-button;
+  @extend .transform-transition;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 3rem;
+
+  border: 1px solid $COLOR_EMERALD;
+  border-radius: 10px;
+
+  gap: 12px;
+  color: $COLOR_EMERALD;
+  background-color: transparent;
+
+  svg {
+    fill: $COLOR_EMERALD;
+  }
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    outline: none;
+    color: $COLOR_FOREST;
+    border-color: $COLOR_FOREST;
+    transform: scale(0.99, 0.99);
+
+    &:active {
+      transform: scale(0.97, 0.97);
+    }
+
+    svg {
+      fill: $COLOR_FOREST;
+    }
+  }
+
+  &:disabled {
+    color: $COLOR_BLACK40;
+    border-color: $COLOR_BLACK40;
+
+    svg {
+      fill: $COLOR_BLACK40;
+    }
+  }
+}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import ControlPointSharpIcon from '@material-ui/icons/ControlPointSharp';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
@@ -12,6 +11,7 @@ import {
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { ProjectSummary } from '../components/ProjectSummary';
+import { AddButton } from '../components/forms/AddButton';
 import css from './ProjectOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -60,15 +60,10 @@ export const ProjectOverviewPage = () => {
             key={roadmap.id}
           />
         ))}
-        <div
-          className={classes(css.addRoadmap)}
-          role="button"
-          onClick={addRoadmapClicked}
-          onKeyPress={addRoadmapClicked}
-          tabIndex={0}
-        >
-          <ControlPointSharpIcon />
-          <Trans i18nKey="Add project" />
+        <div className={classes(css.addButtonContainer)}>
+          <AddButton onClick={addRoadmapClicked}>
+            <Trans i18nKey="Add project" />
+          </AddButton>
         </div>
       </div>
     </div>
