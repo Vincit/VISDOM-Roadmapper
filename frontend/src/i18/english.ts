@@ -173,5 +173,14 @@ export const english = {
     'Are you sure to continue': 'Are you sure you want to continue?',
     'Project deletion warning':
       'This action can’t be reverted, and all of the project information will be lost.',
+    'Contact us': 'Contact us',
+    'Problems in joining a project?': 'Problems in joining a project?',
+    'Create a new project': 'Create a new project',
+    'Greet user': 'Hey, {{username}}',
+    'No projects yet': 'It seems you don’t have any projects yet...',
+    'First project info 1/2':
+      'No problem. You can always start by making a new project. With a new project, you can start filling in tasks, milestones, and related people to your project to succeed in your product development goals.',
+    'First project info 2/2':
+      'Another way to start using VISDOM is to get an invitation to another existing project. Contact your project’s product owner to invite you in.',
   },
 };

@@ -14,6 +14,7 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { UserInfoPage } from '../pages/UserInfoPage';
 import { paths } from './paths';
 import { RoadmapRouter } from './RoadmapRouter';
+import { CreateProjectPage } from '../pages/CreateProjectPage';
 
 const Home = () => {
   const loggedInUser = useSelector<RootState, UserInfo | undefined>(
@@ -37,6 +38,11 @@ const routes = [
   {
     path: paths.registerPage,
     component: () => <NavLayout Content={RegisterPage} />,
+    exact: false,
+  },
+  {
+    path: paths.getStarted,
+    component: () => <NavLayout Content={CreateProjectPage} />,
     exact: false,
   },
   {
