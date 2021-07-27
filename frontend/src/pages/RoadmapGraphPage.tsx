@@ -40,7 +40,7 @@ export const RoadmapGraphPage = () => {
     undefined,
   );
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
@@ -49,8 +49,9 @@ export const RoadmapGraphPage = () => {
   );
 
   useEffect(() => {
-    if (!customers) dispatch(roadmapsActions.getCustomers());
-  }, [dispatch, customers]);
+    if (!customers && currentRoadmap)
+      dispatch(roadmapsActions.getCustomers(currentRoadmap.id));
+  }, [dispatch, customers, currentRoadmap]);
 
   useEffect(() => {
     if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());

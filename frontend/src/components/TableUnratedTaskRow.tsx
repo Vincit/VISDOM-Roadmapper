@@ -43,7 +43,7 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
     shallowEqual,
   );
   const allCustomers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
     shallowEqual,
   );
   const [missingRatings, setMissingRatings] = useState<Customer[] | undefined>(

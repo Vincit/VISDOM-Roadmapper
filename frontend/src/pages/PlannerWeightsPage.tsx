@@ -7,8 +7,13 @@ import { Slider } from '../components/forms/Slider';
 import {
   plannerCustomerWeightsSelector,
   allCustomersSelector,
+  chosenRoadmapSelector,
 } from '../redux/roadmaps/selectors';
-import { PlannerCustomerWeight, Customer } from '../redux/roadmaps/types';
+import {
+  PlannerCustomerWeight,
+  Customer,
+  Roadmap,
+} from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { Dot } from '../components/Dot';
 import { StoreDispatchType } from '../redux';
@@ -27,7 +32,11 @@ export const PlannerWeightsPage = () => {
   );
 
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
+    shallowEqual,
+  );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
 
@@ -36,8 +45,13 @@ export const PlannerWeightsPage = () => {
   const [noChanges, setNoChanges] = useState(true);
 
   useEffect(() => {
-    if (!customers) dispatch(roadmapsActions.getCustomers());
-  }, [dispatch, customers]);
+    if (!customers && currentRoadmap)
+      dispatch(roadmapsActions.getCustomers(currentRoadmap.id));
+  }, [dispatch, customers, currentRoadmap]);
+
+  useEffect(() => {
+    if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
+  }, [dispatch, currentRoadmap]);
 
   const resetWeights = () => {
     dispatch(roadmapsActions.clearPlannerCustomerWeights());

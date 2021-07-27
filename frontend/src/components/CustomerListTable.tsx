@@ -10,8 +10,13 @@ import {
   allCustomersSelector,
   plannerCustomerWeightsSelector,
   allTasksSelector,
+  chosenRoadmapSelector,
 } from '../redux/roadmaps/selectors';
-import { Customer, PlannerCustomerWeight } from '../redux/roadmaps/types';
+import {
+  Customer,
+  PlannerCustomerWeight,
+  Roadmap,
+} from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
@@ -41,15 +46,24 @@ export const CustomerList: React.FC<{
     shallowEqual,
   );
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
+    shallowEqual,
+  );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
     shallowEqual,
   );
   const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
   useEffect(() => {
-    if (!customers) dispatch(roadmapsActions.getCustomers());
-  }, [dispatch, customers]);
+    if (!customers && currentRoadmap)
+      dispatch(roadmapsActions.getCustomers(currentRoadmap.id));
+  }, [dispatch, customers, currentRoadmap]);
+
+  useEffect(() => {
+    if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
+  }, [dispatch, currentRoadmap]);
 
   useEffect(() => {
     // Filter, search, sort customers

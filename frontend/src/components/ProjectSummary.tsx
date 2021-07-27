@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Popover from '@material-ui/core/Popover';
 import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { StoreDispatchType } from '../redux';
+import { roadmapsActions } from '../redux/roadmaps';
 import { Customer, Roadmap, RoadmapUser } from '../redux/roadmaps/types';
 import { MetricsSummary } from './MetricsSummary';
 import { MoreButton } from './forms/SvgButton';
@@ -81,6 +84,11 @@ export const ProjectSummary: React.FC<{
   const [anchorEl, setAnchorEl] = useState<
     (EventTarget & HTMLDivElement) | null
   >(null);
+  const dispatch = useDispatch<StoreDispatchType>();
+
+  useEffect(() => {
+    if (!roadmap.customers) dispatch(roadmapsActions.getCustomers(roadmap.id));
+  }, [dispatch, roadmap]);
 
   return (
     <div className={classes(css.roadmapSummary)}>

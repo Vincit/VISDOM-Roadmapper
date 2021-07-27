@@ -66,7 +66,7 @@ export const MilestonesEditor = () => {
     undefined | Version[]
   >(undefined);
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
     shallowEqual,
   );
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(

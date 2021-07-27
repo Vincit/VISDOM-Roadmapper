@@ -25,7 +25,7 @@ export const TaskValueCreatedVisualization: React.FC<{
   version: Version;
 }> = ({ version }) => {
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
     shallowEqual,
   );
   let totalValue = 0;

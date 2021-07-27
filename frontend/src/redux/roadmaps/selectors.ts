@@ -18,6 +18,16 @@ export const chosenRoadmapSelector = createSelector(
   (roadmap) => roadmap,
 );
 
+export const idRoadmapSelector = (roadmapId: number) =>
+  createSelector(
+    (state: RootState) => {
+      return state.roadmaps.roadmaps?.find(
+        (roadmap) => roadmap.id === roadmapId,
+      );
+    },
+    (roadmap) => roadmap,
+  );
+
 export const taskSelector = (id: number) => {
   return createSelector(chosenRoadmapSelector, (roadmap) =>
     roadmap?.tasks.find((task) => task.id === id),
@@ -30,13 +40,16 @@ export const allTasksSelector = () => {
   );
 };
 
-export const allCustomersSelector = createSelector(
-  chosenRoadmapSelector,
-  (roadmap) => roadmap?.customers,
-);
+export const allCustomersSelector = (roadmapId?: number) =>
+  roadmapId
+    ? createSelector(
+        idRoadmapSelector(roadmapId),
+        (roadmap) => roadmap?.customers,
+      )
+    : createSelector(chosenRoadmapSelector, (roadmap) => roadmap?.customers);
 
 export const customerSelector = (id: number) =>
-  createSelector(allCustomersSelector, (customers) =>
+  createSelector(allCustomersSelector(), (customers) =>
     customers?.find((customer) => customer.id === id),
   );
 

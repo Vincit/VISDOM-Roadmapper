@@ -80,7 +80,7 @@ const RoadmapRouterComponent = () => {
   );
   const [isLoadingCustomers, setIsLoadingCustomers] = useState(false);
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
     shallowEqual,
   );
 
@@ -130,9 +130,9 @@ const RoadmapRouterComponent = () => {
         setIsLoadingUsers(false);
       });
     }
-    if (!customers) {
+    if (!customers && currentRoadmap) {
       setIsLoadingCustomers(true);
-      dispatch(roadmapsActions.getCustomers()).then(() => {
+      dispatch(roadmapsActions.getCustomers(currentRoadmap.id)).then(() => {
         setIsLoadingCustomers(false);
       });
     }

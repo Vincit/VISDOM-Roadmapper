@@ -44,7 +44,7 @@ export const PlannerChart: React.FC<{
   const [savedData, setSavedData] = useState<any[] | undefined>(undefined);
 
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
+    allCustomersSelector(),
     shallowEqual,
   );
 
