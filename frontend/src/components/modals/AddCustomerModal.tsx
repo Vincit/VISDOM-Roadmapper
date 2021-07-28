@@ -11,11 +11,13 @@ import { userActions } from '../../redux/user';
 import {
   allCustomersSelector,
   roadmapUsersSelector,
+  chosenRoadmapSelector,
 } from '../../redux/roadmaps/selectors';
 import {
   RoadmapUser,
   Customer,
   CheckableUser,
+  Roadmap,
 } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../../redux/types';
@@ -58,6 +60,10 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     roadmapUsersSelector(),
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [colorType, setColorType] = useState('generate');
@@ -83,8 +89,9 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
   }, [roadmapUsers]);
 
   useEffect(() => {
-    if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
-  }, [dispatch, roadmapUsers]);
+    if (!roadmapUsers && currentRoadmap)
+      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
+  }, [currentRoadmap, dispatch, roadmapUsers]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

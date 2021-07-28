@@ -88,16 +88,16 @@ export const deleteCustomer = createAsyncThunk<
 
 export const getRoadmapUsers = createAsyncThunk<
   { roadmapId: number; response: RoadmapUser[] },
-  void,
+  number,
   { rejectValue: AxiosError }
->('roadmaps/getRoadmapUsers', async (_, thunkAPI) => {
+>('roadmaps/getRoadmapUsers', async (roadmapId, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
     return {
-      roadmapId: currentroadmapId,
-      response: await api.getRoadmapUsers(currentroadmapId),
+      roadmapId: roadmapId || currentroadmapId,
+      response: await api.getRoadmapUsers(roadmapId || currentroadmapId),
     };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);

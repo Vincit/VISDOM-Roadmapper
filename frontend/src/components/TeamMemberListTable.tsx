@@ -43,8 +43,9 @@ export const TeamMemberList: React.FC<{
   const dispatch = useDispatch<StoreDispatchType>();
 
   useEffect(() => {
-    if (!teamMembers) dispatch(roadmapsActions.getRoadmapUsers());
-  }, [dispatch, teamMembers]);
+    if (!teamMembers && currentRoadmap)
+      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
+  }, [currentRoadmap, dispatch, teamMembers]);
 
   useEffect(() => {
     // Filter, search, sort team members

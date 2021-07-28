@@ -124,9 +124,9 @@ const RoadmapRouterComponent = () => {
         setIsLoadingRoadmap(false);
       });
     }
-    if (!roadmapUsers) {
+    if (!roadmapUsers && currentRoadmap) {
       setIsLoadingUsers(true);
-      dispatch(roadmapsActions.getRoadmapUsers()).then(() => {
+      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id)).then(() => {
         setIsLoadingUsers(false);
       });
     }

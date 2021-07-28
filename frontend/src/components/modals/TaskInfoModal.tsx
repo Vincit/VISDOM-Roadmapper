@@ -6,8 +6,9 @@ import { roadmapsActions } from '../../redux/roadmaps';
 import {
   roadmapUsersSelector,
   taskSelector,
+  chosenRoadmapSelector,
 } from '../../redux/roadmaps/selectors';
-import { RoadmapUser } from '../../redux/roadmaps/types';
+import { RoadmapUser, Roadmap } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { TaskRatingsText } from '../TaskRatingsText';
 import { Modal, ModalTypes } from './types';
@@ -26,10 +27,15 @@ export const TaskInfoModal: Modal<ModalTypes.TASK_INFO_MODAL> = ({
     roadmapUsersSelector(),
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
 
   useEffect(() => {
-    if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
-  }, [dispatch, roadmapUsers]);
+    if (!roadmapUsers && currentRoadmap)
+      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
+  }, [currentRoadmap, dispatch, roadmapUsers]);
 
   return (
     <>

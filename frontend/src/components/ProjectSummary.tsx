@@ -88,6 +88,7 @@ export const ProjectSummary: React.FC<{
 
   useEffect(() => {
     if (!roadmap.customers) dispatch(roadmapsActions.getCustomers(roadmap.id));
+    if (!roadmap.users) dispatch(roadmapsActions.getRoadmapUsers(roadmap.id));
   }, [dispatch, roadmap]);
 
   return (
@@ -121,6 +122,9 @@ export const ProjectSummary: React.FC<{
       </div>
       {!!roadmap.customers?.length && (
         <PeopleList label="Clients" people={roadmap.customers} />
+      )}
+      {!!roadmap.users?.length && (
+        <PeopleList label="Team members" people={roadmap.users} />
       )}
       {selected ? (
         <button className="button-large" type="button" disabled>

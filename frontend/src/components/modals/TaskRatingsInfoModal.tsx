@@ -8,8 +8,9 @@ import { roadmapsActions } from '../../redux/roadmaps';
 import {
   roadmapUsersSelector,
   taskSelector,
+  chosenRoadmapSelector,
 } from '../../redux/roadmaps/selectors';
-import { RoadmapUser } from '../../redux/roadmaps/types';
+import { RoadmapUser, Roadmap } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
@@ -29,6 +30,10 @@ export const TaskRatingsInfoModal: Modal<ModalTypes.TASK_RATINGS_INFO_MODAL> = (
     roadmapUsersSelector(),
     shallowEqual,
   );
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -46,8 +51,9 @@ export const TaskRatingsInfoModal: Modal<ModalTypes.TASK_RATINGS_INFO_MODAL> = (
   };
 
   useEffect(() => {
-    if (!roadmapUsers) dispatch(roadmapsActions.getRoadmapUsers());
-  }, [dispatch, roadmapUsers]);
+    if (!roadmapUsers && currentRoadmap)
+      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
+  }, [currentRoadmap, dispatch, roadmapUsers]);
 
   const renderOwnRatings = () => {
     const userRatings = task.ratings.filter(
