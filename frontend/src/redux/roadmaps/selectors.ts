@@ -54,8 +54,8 @@ export const customerSelector = (id: number) =>
   );
 
 export const roadmapUsersSelector = createSelector(
-  (state: RootState) => state.roadmaps.allUsers,
-  (users) => users,
+  chosenRoadmapSelector,
+  (roadmap) => roadmap?.users,
 );
 
 export const userSelector = (id: number) => {

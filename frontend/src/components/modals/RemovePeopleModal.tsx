@@ -37,10 +37,10 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
 
   const deleteTeamMember = async () => {
     const res = await dispatch(
-      roadmapsActions.deleteTeamMember({ id: userId }),
+      roadmapsActions.deleteRoadmapUser({ id: userId }),
     );
     setIsLoading(false);
-    if (roadmapsActions.deleteTeamMember.rejected.match(res)) {
+    if (roadmapsActions.deleteRoadmapUser.rejected.match(res)) {
       if (res.payload?.message) setErrorMessage(res.payload.message);
       return;
     }

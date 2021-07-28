@@ -6,7 +6,6 @@ import {
 export interface RoadmapsState {
   roadmaps: Roadmap[] | undefined;
   selectedRoadmapId?: number;
-  allUsers: RoadmapUser[] | undefined;
 }
 
 export interface Customer {
@@ -28,11 +27,6 @@ export interface CustomerRequest {
   representatives?: number[];
 }
 
-export interface teamMemberRequest {
-  id?: number;
-  type?: RoleType | null;
-}
-
 export interface CheckableUser extends RoadmapUser {
   checked: boolean;
 }
@@ -44,11 +38,17 @@ export interface RoadmapUser {
   type: RoleType;
 }
 
+export interface RoadmapUserRequest {
+  id?: number;
+  type?: RoleType | null;
+}
+
 export interface Roadmap {
   id: number;
   name: string;
   description: string;
   tasks: Task[];
+  users: RoadmapUser[];
   customers: Customer[];
   plannerCustomerWeights: PlannerCustomerWeight[] | undefined;
   integrations: IntegrationConfiguration[];

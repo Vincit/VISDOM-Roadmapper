@@ -4,7 +4,7 @@ import {
   IntegrationConfiguration,
   Customer,
   CustomerRequest,
-  teamMemberRequest,
+  RoadmapUserRequest,
   RoadmapUser,
   RoadmapRoleResponse,
   Roadmap,
@@ -21,6 +21,24 @@ export const GET_ROADMAPS_FULFILLED = (
   action: PayloadAction<Roadmap[]>,
 ) => {
   state.roadmaps = action.payload;
+};
+
+export const ADD_ROADMAP_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Roadmap>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  state.roadmaps.push(action.payload);
+};
+
+export const DELETE_ROADMAP_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<RoadmapRequest>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  state.roadmaps = state.roadmaps.filter(
+    (roadmap) => roadmap.id !== action.payload.id,
+  );
 };
 
 export const GET_CUSTOMERS_FULFILLED = (
@@ -58,18 +76,6 @@ export const PATCH_CUSTOMER_FULFILLED = (
   Object.assign(patched, action.payload);
 };
 
-export const PATCH_TEAM_MEMBER_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<RoadmapRoleResponse>,
-) => {
-  if (!state.allUsers) throw new Error('Users havent been fetched yet');
-  const patched = state.allUsers?.find(
-    ({ id }) => id === action.payload.userId,
-  );
-
-  Object.assign(patched, { ...patched, type: action.payload.type });
-};
-
 export const DELETE_CUSTOMER_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<{ roadmapId: number; response: CustomerRequest }>,
@@ -83,38 +89,39 @@ export const DELETE_CUSTOMER_FULFILLED = (
   );
 };
 
-export const DELETE_TEAM_MEMBER_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<{ roadmapId: number; response: teamMemberRequest }>,
-) => {
-  if (!state.allUsers) throw new Error('Users havent been fetched yet');
-  state.allUsers = state.allUsers?.filter(
-    ({ id }) => id !== action.payload.response.id,
-  );
-};
-
 export const GET_ROADMAP_USERS_FULFILLED = (
   state: RoadmapsState,
-  action: PayloadAction<RoadmapUser[]>,
-) => {
-  state.allUsers = action.payload;
-};
-
-export const ADD_ROADMAP_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<Roadmap>,
+  action: PayloadAction<{ roadmapId: number; response: RoadmapUser[] }>,
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  state.roadmaps.push(action.payload);
+  const roadmap = state.roadmaps?.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.users = action.payload.response;
 };
 
-export const DELETE_ROADMAP_FULFILLED = (
+export const PATCH_ROADMAP_USER_FULFILLED = (
   state: RoadmapsState,
-  action: PayloadAction<RoadmapRequest>,
+  action: PayloadAction<RoadmapRoleResponse>,
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  state.roadmaps = state.roadmaps.filter(
-    (roadmap) => roadmap.id !== action.payload.id,
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  const patched = roadmap.users.find(({ id }) => id === action.payload.userId);
+  Object.assign(patched, { ...patched, type: action.payload.type });
+};
+
+export const DELETE_ROADMAP_USER_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; response: RoadmapUserRequest }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.users = roadmap.users.filter(
+    ({ id }) => id !== action.payload.response.id,
   );
 };
 

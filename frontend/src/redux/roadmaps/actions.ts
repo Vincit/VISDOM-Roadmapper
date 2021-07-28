@@ -7,7 +7,7 @@ import {
   ImportBoardRequest,
   Customer,
   CustomerRequest,
-  teamMemberRequest,
+  RoadmapUserRequest,
   RoadmapUser,
   RoadmapRoleResponse,
   Roadmap,
@@ -53,6 +53,21 @@ export const addCustomer = createAsyncThunk<
   }
 });
 
+export const patchCustomer = createAsyncThunk<
+  Customer,
+  CustomerRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchCustomer', async (customer, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.patchCustomer(customer, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
 export const deleteCustomer = createAsyncThunk<
   { roadmapId: number; response: CustomerRequest },
   CustomerRequest,
@@ -71,56 +86,8 @@ export const deleteCustomer = createAsyncThunk<
   }
 });
 
-export const deleteTeamMember = createAsyncThunk<
-  { roadmapId: number; response: teamMemberRequest },
-  teamMemberRequest,
-  { rejectValue: AxiosError }
->('roadmaps/deleteTeamMember', async (member, thunkAPI) => {
-  try {
-    const roadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return {
-      roadmapId,
-      response: await api.deleteTeamMember(member, roadmapId),
-    };
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err);
-  }
-});
-
-export const patchCustomer = createAsyncThunk<
-  Customer,
-  CustomerRequest,
-  { rejectValue: AxiosError }
->('roadmaps/patchCustomer', async (customer, thunkAPI) => {
-  try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return await api.patchCustomer(customer, currentroadmapId);
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err as AxiosError<any>);
-  }
-});
-
-export const patchTeamMember = createAsyncThunk<
-  RoadmapRoleResponse,
-  teamMemberRequest,
-  { rejectValue: AxiosError }
->('roadmaps/patchTeamMember', async (member, thunkAPI) => {
-  try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return await api.patchTeamMember(member, currentroadmapId);
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err);
-  }
-});
-
 export const getRoadmapUsers = createAsyncThunk<
-  RoadmapUser[],
+  { roadmapId: number; response: RoadmapUser[] },
   void,
   { rejectValue: AxiosError }
 >('roadmaps/getRoadmapUsers', async (_, thunkAPI) => {
@@ -128,9 +95,45 @@ export const getRoadmapUsers = createAsyncThunk<
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
-    return await api.getRoadmapUsers(currentroadmapId);
+    return {
+      roadmapId: currentroadmapId,
+      response: await api.getRoadmapUsers(currentroadmapId),
+    };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
+export const patchRoadmapUser = createAsyncThunk<
+  RoadmapRoleResponse,
+  RoadmapUserRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchRoadmapUser', async (member, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.patchRoadmapUser(member, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const deleteRoadmapUser = createAsyncThunk<
+  { roadmapId: number; response: RoadmapUserRequest },
+  RoadmapUserRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/deleteRoadmapUser', async (member, thunkAPI) => {
+  try {
+    const roadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId,
+      response: await api.deleteRoadmapUser(member, roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
   }
 });
 

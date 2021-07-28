@@ -42,14 +42,14 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
     if (selectedRole === 'Developer') type = RoleType.Developer;
     if (selectedRole === 'Business') type = RoleType.Business;
     const res = await dispatch(
-      roadmapsActions.patchTeamMember({
+      roadmapsActions.patchRoadmapUser({
         id: member.id,
         type,
       }),
     );
 
     setIsLoading(false);
-    if (roadmapsActions.patchTeamMember.rejected.match(res)) {
+    if (roadmapsActions.patchRoadmapUser.rejected.match(res)) {
       if (res.payload?.message) setErrorMessage(res.payload.message);
       return;
     }

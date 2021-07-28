@@ -8,7 +8,7 @@ import {
   IntegrationConfiguration,
   Customer,
   CustomerRequest,
-  teamMemberRequest,
+  RoadmapUserRequest,
   RoadmapUser,
   RoadmapRoleResponse,
   Roadmap,
@@ -128,31 +128,12 @@ const deleteCustomer = async (customer: CustomerRequest, roadmapId: number) => {
   return customer;
 };
 
-const deleteTeamMember = async (
-  member: teamMemberRequest,
-  roadmapId: number,
-) => {
-  await axios.delete(`roadmaps/${roadmapId}/users/${member.id}/roles`);
-  return member;
-};
-
 const patchCustomer = async (customer: CustomerRequest, roadmapId: number) => {
   const response = await axios.patch(
     `roadmaps/${roadmapId}/customers/${customer.id}`,
     customer,
   );
   return response.data as Customer;
-};
-
-const patchTeamMember = async (
-  member: teamMemberRequest,
-  roadmapId: number,
-) => {
-  const response = await axios.patch(
-    `roadmaps/${roadmapId}/users/${member.id}/roles`,
-    member,
-  );
-  return response.data as RoadmapRoleResponse;
 };
 
 const login = async (loginRequest: UserLoginRequest) => {
@@ -193,6 +174,25 @@ const register = async (newUser: UserRegisterRequest) => {
 const getRoadmapUsers = async (roadmapId: number) => {
   const response = await axios.get(`roadmaps/${roadmapId}/users`);
   return response.data as RoadmapUser[];
+};
+
+const patchRoadmapUser = async (
+  user: RoadmapUserRequest,
+  roadmapId: number,
+) => {
+  const response = await axios.patch(
+    `roadmaps/${roadmapId}/users/${user.id}/roles`,
+    user,
+  );
+  return response.data as RoadmapRoleResponse;
+};
+
+const deleteRoadmapUser = async (
+  user: RoadmapUserRequest,
+  roadmapId: number,
+) => {
+  await axios.delete(`roadmaps/${roadmapId}/users/${user.id}/roles`);
+  return user;
 };
 
 const getVersions = async (roadmapId: number) => {
@@ -324,9 +324,9 @@ export const api = {
   getCustomers,
   addCustomer,
   deleteCustomer,
-  deleteTeamMember,
+  deleteRoadmapUser,
   patchCustomer,
-  patchTeamMember,
+  patchRoadmapUser,
   getRoadmapUsers,
   patchTaskrating,
   getVersions,
