@@ -39,7 +39,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
     shallowEqual,
   );
   const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const [isLoading, setIsLoading] = useState(false);

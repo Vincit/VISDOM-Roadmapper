@@ -75,7 +75,7 @@ const RoadmapRouterComponent = () => {
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [useEffectFinished, setUseEffectFinished] = useState(false);
   const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const [isLoadingCustomers, setIsLoadingCustomers] = useState(false);

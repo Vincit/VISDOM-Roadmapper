@@ -53,13 +53,13 @@ export const customerSelector = (id: number) =>
     customers?.find((customer) => customer.id === id),
   );
 
-export const roadmapUsersSelector = createSelector(
-  chosenRoadmapSelector,
-  (roadmap) => roadmap?.users,
-);
+export const roadmapUsersSelector = (roadmapId?: number) =>
+  roadmapId
+    ? createSelector(idRoadmapSelector(roadmapId), (roadmap) => roadmap?.users)
+    : createSelector(chosenRoadmapSelector, (roadmap) => roadmap?.users);
 
 export const userSelector = (id: number) => {
-  return createSelector(roadmapUsersSelector, (users) =>
+  return createSelector(roadmapUsersSelector(), (users) =>
     users?.find((user) => user.id === id),
   );
 };

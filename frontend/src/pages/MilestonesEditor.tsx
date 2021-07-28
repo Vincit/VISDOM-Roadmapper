@@ -70,7 +70,7 @@ export const MilestonesEditor = () => {
     shallowEqual,
   );
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();

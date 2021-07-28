@@ -39,7 +39,7 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
   );
   const type = getType(userInfo?.roles, roadmapId);
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const allCustomers = useSelector<RootState, Customer[] | undefined>(

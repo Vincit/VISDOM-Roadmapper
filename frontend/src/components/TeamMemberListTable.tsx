@@ -32,7 +32,7 @@ export const TeamMemberList: React.FC<{
   const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
   const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
   const teamMembers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(

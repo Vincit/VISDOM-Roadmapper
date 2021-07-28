@@ -149,7 +149,7 @@ export const TaskTableUnrated: React.FC<{
     shallowEqual,
   );
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
@@ -205,7 +205,7 @@ export const TaskTableRated: React.FC<{
     shallowEqual,
   );
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
+    roadmapUsersSelector(),
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
