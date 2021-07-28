@@ -7,7 +7,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { StylesProvider } from '@material-ui/core/styles';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
@@ -154,63 +153,61 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       <td className={classes(css.unratedTd)}>{numFormat.format(work)}</td>
       <td className={classes(css.unratedTd)}>
         <div className={classes(css.missingContainer)}>
-          <StylesProvider injectFirst>
-            {missingRatings && (
-              <div className={classes(css.missingContainer)}>
-                {missingRatings.map((customer) => (
-                  <div key={customer.id}>
-                    <Tooltip
-                      classes={{
-                        arrow: classes(css.tooltipArrow),
-                        tooltip: classes(css.tooltip),
-                      }}
-                      title={customer.name}
-                      placement="top"
-                      arrow
-                    >
-                      <div className={classes(css.dotContainer)}>
-                        <Dot fill={customer.color || 'red'} />
-                      </div>
-                    </Tooltip>
-                  </div>
-                ))}
-              </div>
-            )}
-            {missingDevRatings && (
-              <div>
-                {missingDevRatings.map((dev) => (
+          {missingRatings && (
+            <div className={classes(css.missingContainer)}>
+              {missingRatings.map((customer) => (
+                <div key={customer.id}>
                   <Tooltip
                     classes={{
-                      arrow: classNames(css.tooltipArrow),
-                      tooltip: classNames(css.tooltip),
+                      arrow: classes(css.tooltipArrow),
+                      tooltip: classes(css.tooltip),
                     }}
-                    key={dev.username}
-                    title={dev.username}
+                    title={customer.name}
                     placement="top"
                     arrow
                   >
-                    <BuildIcon className={classes(css.developerIcon)} />
+                    <div className={classes(css.dotContainer)}>
+                      <Dot fill={customer.color || 'red'} />
+                    </div>
                   </Tooltip>
-                ))}
-              </div>
-            )}
-            {userRatingMissing && type === RoleType.Customer && (
-              <div>
+                </div>
+              ))}
+            </div>
+          )}
+          {missingDevRatings && (
+            <div>
+              {missingDevRatings.map((dev) => (
                 <Tooltip
                   classes={{
                     arrow: classNames(css.tooltipArrow),
                     tooltip: classNames(css.tooltip),
                   }}
-                  key={userInfo?.username}
-                  title={userInfo?.username || ''}
+                  key={dev.username}
+                  title={dev.username}
                   placement="top"
                   arrow
                 >
-                  <PermIdentityIcon className={classes(css.userIcon)} />
+                  <BuildIcon className={classes(css.developerIcon)} />
                 </Tooltip>
-              </div>
-            )}
-          </StylesProvider>
+              ))}
+            </div>
+          )}
+          {userRatingMissing && type === RoleType.Customer && (
+            <div>
+              <Tooltip
+                classes={{
+                  arrow: classNames(css.tooltipArrow),
+                  tooltip: classNames(css.tooltip),
+                }}
+                key={userInfo?.username}
+                title={userInfo?.username || ''}
+                placement="top"
+                arrow
+              >
+                <PermIdentityIcon className={classes(css.userIcon)} />
+              </Tooltip>
+            </div>
+          )}
         </div>
       </td>
       <td className={classes(css.buttonContainer)}>

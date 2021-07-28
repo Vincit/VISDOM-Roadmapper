@@ -64,7 +64,6 @@
 }
 
 .icon {
+  @extend .transform-transition;
   color: $COLOR_BLACK40;
-  width: 250px;
-  height: 250px;
 }

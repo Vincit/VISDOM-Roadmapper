@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { StylesProvider } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,41 +19,39 @@ const ProjectMenu: React.FC<{
   open: boolean;
   onClose: () => void;
 }> = ({ roadmapId, anchorEl, open, onClose }) => (
-  <StylesProvider injectFirst>
-    <Popover
-      classes={{
-        paper: classes(css.projectMenu),
-      }}
-      id={open ? 'project-menu' : undefined}
-      anchorEl={anchorEl}
-      open={open}
-      onClose={onClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-    >
-      <div className={classes(css.content)}>
-        {/* TODO: set as default project */}
-        <button
-          className={classes(css.linkButton, css.green)}
-          tabIndex={0}
-          type="button"
-        >
-          <Trans i18nKey="Set as default project" />
-        </button>
-        {/* TODO: href to roadmap deletion modal */}
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-        <a className={classes(css.green)}>
-          <Trans i18nKey="Delete project" />
-        </a>
-      </div>
-    </Popover>
-  </StylesProvider>
+  <Popover
+    classes={{
+      paper: classes(css.projectMenu),
+    }}
+    id={open ? 'project-menu' : undefined}
+    anchorEl={anchorEl}
+    open={open}
+    onClose={onClose}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+  >
+    <div className={classes(css.content)}>
+      {/* TODO: set as default project */}
+      <button
+        className={classes(css.linkButton, css.green)}
+        tabIndex={0}
+        type="button"
+      >
+        <Trans i18nKey="Set as default project" />
+      </button>
+      {/* TODO: href to roadmap deletion modal */}
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+      <a className={classes(css.green)}>
+        <Trans i18nKey="Delete project" />
+      </a>
+    </div>
+  </Popover>
 );
 
 const PeopleList: React.FC<{
