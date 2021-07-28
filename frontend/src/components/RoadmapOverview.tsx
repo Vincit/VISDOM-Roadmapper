@@ -2,11 +2,12 @@ import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
+import {
+  chosenRoadmapSelector,
+  roadmapsVersionsSelector,
+} from '../redux/roadmaps/selectors';
+import { Roadmap, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { roadmapsVersionsSelector } from '../redux/versions/selectors';
-import { Version } from '../redux/versions/types';
 import css from './RoadmapOverview.module.scss';
 import { ReactComponent as WorkIcon } from '../icons/rate_work.svg';
 import { averageValueAndWork } from '../utils/TaskUtils';

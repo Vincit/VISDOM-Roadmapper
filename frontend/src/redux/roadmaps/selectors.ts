@@ -79,3 +79,11 @@ export const chosenIntegrationSelector = (name: string) =>
   createSelector(chosenRoadmapSelector, (roadmap) =>
     roadmap?.integrations.find((it) => it.name === name),
   );
+
+export const roadmapsVersionsSelector = createSelector(
+  chosenRoadmapSelector,
+  (roadmap) => {
+    if (!roadmap?.versions) return undefined;
+    return [...roadmap?.versions].sort((a, b) => a.sortingRank - b.sortingRank);
+  },
+);

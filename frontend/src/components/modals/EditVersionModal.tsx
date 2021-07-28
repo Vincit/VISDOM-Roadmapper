@@ -4,8 +4,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
+import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
-import { versionsActions } from '../../redux/versions';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -33,10 +33,10 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
     event.stopPropagation();
     setIsLoading(true);
     const res = await dispatch(
-      versionsActions.patchVersion({ id, name: newName }),
+      roadmapsActions.patchVersion({ id, name: newName }),
     );
     setIsLoading(false);
-    if (versionsActions.patchVersion.rejected.match(res)) {
+    if (roadmapsActions.patchVersion.rejected.match(res)) {
       if (res.payload?.message) setErrorMessage(res.payload.message);
       return;
     }

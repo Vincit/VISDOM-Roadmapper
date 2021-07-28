@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { api } from '../../api/api';
-import { chosenRoadmapIdSelector } from './selectors';
+import { chosenRoadmapIdSelector, roadmapsVersionsSelector } from './selectors';
 import { RootState } from '../types';
 import {
   ImportBoardRequest,
@@ -18,6 +18,10 @@ import {
   TaskRequest,
   IntegrationConfigurationRequest,
   IntegrationConfiguration,
+  AddTaskToVersionRequest,
+  RemoveTaskFromVersionRequest,
+  Version,
+  VersionRequest,
 } from './types';
 
 export const getCustomers = createAsyncThunk<
@@ -340,6 +344,159 @@ export const patchIntegrationConfiguration = createAsyncThunk<
       );
     } catch (err) {
       return thunkAPI.rejectWithValue(err as AxiosError<any>);
+    }
+  },
+);
+
+export const getVersions = createAsyncThunk<
+  { roadmapId: number; response: Version[] },
+  number,
+  { rejectValue: AxiosError }
+>('versions/getVersions', async (roadmapId, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId: roadmapId || currentroadmapId,
+      response: await api.getVersions(roadmapId || currentroadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const addVersion = createAsyncThunk<
+  { roadmapId: number; response: Version[] },
+  VersionRequest,
+  { rejectValue: AxiosError }
+>('versions/addVersion', async (version: VersionRequest, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    const roadmapId = version.roadmapId || currentroadmapId;
+    await api.addVersion({
+      roadmapId,
+      name: version.name,
+      tasks: [],
+    });
+    return {
+      roadmapId,
+      response: await api.getVersions(roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const patchVersion = createAsyncThunk<
+  { roadmapId: number; response: Version[] },
+  VersionRequest,
+  { rejectValue: AxiosError }
+>('versions/patchVersion', async (version: VersionRequest, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    const roadmapId = version.roadmapId || currentroadmapId;
+    await api.patchVersion({
+      ...version,
+      roadmapId,
+    });
+    return {
+      roadmapId,
+      response: await api.getVersions(roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const deleteVersion = createAsyncThunk<
+  { roadmapId: number; response: Version[] },
+  VersionRequest,
+  { rejectValue: AxiosError }
+>('versions/deleteVersion', async (version: VersionRequest, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    const roadmapId = version.roadmapId || currentroadmapId;
+    await api.deleteVersion({
+      ...version,
+      roadmapId,
+    });
+    return {
+      roadmapId,
+      response: await api.getVersions(roadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+const versionPayload = (versions?: Version[], id?: number) => {
+  const version = versions?.find((ver) => ver.id === id);
+  if (!version) throw new Error('Version not found!');
+  return {
+    ...version,
+    tasks: version.tasks.map((task) => task.id),
+  };
+};
+
+export const addTaskToVersion = createAsyncThunk<
+  { roadmapId: number; response: Version[] },
+  AddTaskToVersionRequest,
+  { rejectValue: AxiosError }
+>(
+  'versions/addTaskToVersion',
+  async (request: AddTaskToVersionRequest, thunkAPI) => {
+    const versions = roadmapsVersionsSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    if (versions === undefined) throw new Error('Versions not fetched yet!');
+
+    const payload = versionPayload(versions, request.version.id);
+
+    payload.tasks.splice(request.index, 0, request.task.id!);
+    try {
+      const res = await thunkAPI.dispatch(patchVersion(payload));
+      if (patchVersion.rejected.match(res)) {
+        return thunkAPI.rejectWithValue(res.payload!);
+      }
+      return res.payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const removeTaskFromVersion = createAsyncThunk<
+  { roadmapId: number; response: Version[] },
+  RemoveTaskFromVersionRequest,
+  { rejectValue: AxiosError }
+>(
+  'versions/removeTaskFromVersion',
+  async (request: RemoveTaskFromVersionRequest, thunkAPI) => {
+    const versions = roadmapsVersionsSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    if (versions === undefined) throw new Error('Versions not fetched yet!');
+
+    const payload = versionPayload(versions, request.version.id);
+
+    payload.tasks = payload.tasks.filter(
+      (taskId) => taskId !== request.task.id,
+    );
+    try {
+      const res = await thunkAPI.dispatch(patchVersion(payload));
+      if (patchVersion.rejected.match(res)) {
+        return thunkAPI.rejectWithValue(res.payload!);
+      }
+      return res.payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   },
 );

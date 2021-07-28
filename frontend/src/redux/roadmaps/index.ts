@@ -20,6 +20,12 @@ import {
   patchTaskrating,
   addIntegrationConfiguration,
   patchIntegrationConfiguration,
+  addTaskToVersion,
+  addVersion,
+  deleteVersion,
+  getVersions,
+  patchVersion,
+  removeTaskFromVersion,
 } from './actions';
 import {
   ADD_ROADMAP_FULFILLED,
@@ -43,6 +49,10 @@ import {
   CLEAR_PLANNER_CUSTOMER_WEIGHTS,
   ADD_INTEGRATION_CONFIGURATION_FULFILLED,
   PATCH_INTEGRATION_CONFIGURATION_FULFILLED,
+  ADD_VERSION_FULFILLED,
+  GET_VERSIONS_FULFILLED,
+  PATCH_VERSION_FULFILLED,
+  DELETE_VERSION_FULFILLED,
 } from './reducers';
 import { RoadmapsState } from './types';
 
@@ -85,6 +95,10 @@ export const roadmapsSlice = createSlice({
       patchIntegrationConfiguration.fulfilled,
       PATCH_INTEGRATION_CONFIGURATION_FULFILLED,
     );
+    builder.addCase(addVersion.fulfilled, ADD_VERSION_FULFILLED);
+    builder.addCase(getVersions.fulfilled, GET_VERSIONS_FULFILLED);
+    builder.addCase(patchVersion.fulfilled, PATCH_VERSION_FULFILLED);
+    builder.addCase(deleteVersion.fulfilled, DELETE_VERSION_FULFILLED);
   },
 });
 
@@ -110,4 +124,10 @@ export const roadmapsActions = {
   importIntegrationBoard,
   addIntegrationConfiguration,
   patchIntegrationConfiguration,
+  addVersion,
+  getVersions,
+  patchVersion,
+  deleteVersion,
+  addTaskToVersion,
+  removeTaskFromVersion,
 };

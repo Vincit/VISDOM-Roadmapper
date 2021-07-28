@@ -19,6 +19,8 @@ import {
   TaskRequest,
   GetRoadmapBoardsRequest,
   GetRoadmapBoardLabelsRequest,
+  Version,
+  VersionRequest,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -26,7 +28,6 @@ import {
   UserLoginRequest,
   UserRegisterRequest,
 } from '../redux/user/types';
-import { Version, VersionRequest } from '../redux/versions/types';
 
 dotenv.config();
 const axiosConfig: AxiosRequestConfig = {

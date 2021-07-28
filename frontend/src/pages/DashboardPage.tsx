@@ -9,17 +9,18 @@ import { RoadmapOverview } from '../components/RoadmapOverview';
 import { TaskHeatmap } from '../components/TaskHeatmap';
 import { TaskTableUnrated } from '../components/TaskTable';
 import { StoreDispatchType } from '../redux';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, Task } from '../redux/roadmaps/types';
 import { InfoTooltip } from '../components/InfoTooltip';
+import {
+  chosenRoadmapSelector,
+  roadmapsVersionsSelector,
+} from '../redux/roadmaps/selectors';
+import { Roadmap, Task, Version } from '../redux/roadmaps/types';
+import { roadmapsActions } from '../redux/roadmaps';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { isUnrated } from '../utils/TaskUtils';
-import { versionsActions } from '../redux/versions';
-import { roadmapsVersionsSelector } from '../redux/versions/selectors';
-import { Version } from '../redux/versions/types';
 import { getType } from '../utils/UserUtils';
 import css from './DashboardPage.module.scss';
 
@@ -61,8 +62,7 @@ export const DashboardPage = () => {
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
     if (roadmapsVersions === undefined) {
-      if (currentRoadmap)
-        dispatch(versionsActions.getVersions(currentRoadmap.id));
+      dispatch(roadmapsActions.getVersions(currentRoadmap!.id));
       return;
     }
     const versionLists: VersionListsObject = {};

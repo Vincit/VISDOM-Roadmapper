@@ -14,6 +14,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  Version,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -285,4 +286,48 @@ export const PATCH_INTEGRATION_CONFIGURATION_FULFILLED = (
   if (target) {
     Object.assign(target, action.payload);
   }
+};
+
+export const GET_VERSIONS_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; response: Version[] }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps?.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.versions = action.payload.response;
+};
+
+export const ADD_VERSION_FULFILLED: CaseReducer<
+  RoadmapsState,
+  PayloadAction<{ roadmapId: number; response: Version[] }>
+> = (state, action) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps?.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.versions = action.payload.response;
+};
+
+export const PATCH_VERSION_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; response: Version[] }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps?.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.versions = action.payload.response;
+};
+
+export const DELETE_VERSION_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; response: Version[] }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps?.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.versions = action.payload.response;
 };

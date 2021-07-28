@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import { StoreDispatchType } from '../../redux';
-import { versionsActions } from '../../redux/versions';
 import { roadmapsActions } from '../../redux/roadmaps/index';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
@@ -82,7 +81,7 @@ export const DeleteVersionModal: Modal<ModalTypes.DELETE_VERSION_MODAL> = ({
   return (
     <DeleteModalContent
       header={t('Delete milestone')}
-      action={versionsActions.deleteVersion}
+      action={roadmapsActions.deleteVersion}
       payload={payload}
       closeModal={closeModal}
     >

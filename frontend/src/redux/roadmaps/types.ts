@@ -52,6 +52,7 @@ export interface Roadmap {
   customers: Customer[] | undefined;
   plannerCustomerWeights: PlannerCustomerWeight[] | undefined;
   integrations: IntegrationConfiguration[];
+  versions: Version[] | undefined;
 }
 
 export interface RoadmapRequest {
@@ -156,4 +157,31 @@ export interface IntegrationConfigurationRequest extends IntegrationBase {
 
 export interface IntegrationConfiguration extends IntegrationBase {
   id: number;
+}
+
+export interface Version {
+  roadmapId: number;
+  id: number;
+  name: string;
+  tasks: Task[];
+  sortingRank: number;
+}
+
+export interface VersionRequest {
+  roadmapId?: number;
+  id?: number;
+  name?: string;
+  tasks?: number[];
+  sortingRank?: number;
+}
+
+export interface AddTaskToVersionRequest {
+  task: TaskRequest;
+  version: VersionRequest;
+  index: number;
+}
+
+export interface RemoveTaskFromVersionRequest {
+  task: TaskRequest;
+  version: VersionRequest;
 }

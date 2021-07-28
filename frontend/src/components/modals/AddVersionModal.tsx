@@ -2,8 +2,8 @@ import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
-import { versionsActions } from '../../redux/versions';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -31,12 +31,12 @@ export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
     if (form.checkValidity()) {
       setIsLoading(true);
       dispatch(
-        versionsActions.addVersion({
+        roadmapsActions.addVersion({
           name: versionName,
         }),
       ).then((res) => {
         setIsLoading(false);
-        if (versionsActions.addVersion.rejected.match(res)) {
+        if (roadmapsActions.addVersion.rejected.match(res)) {
           setHasError(true);
           if (res.payload) {
             setErrorMessage(res.payload.message);

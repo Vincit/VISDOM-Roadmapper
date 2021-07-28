@@ -7,8 +7,6 @@ import ListIcon from '@material-ui/icons/List';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
-import { roadmapsVersionsSelector } from '../redux/versions/selectors';
-import { Version } from '../redux/versions/types';
 import { totalWeightedValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
@@ -20,8 +18,9 @@ import {
 import {
   allCustomersSelector,
   chosenRoadmapSelector,
+  roadmapsVersionsSelector,
 } from '../redux/roadmaps/selectors';
-import { Customer, Roadmap } from '../redux/roadmaps/types';
+import { Customer, Roadmap, Version } from '../redux/roadmaps/types';
 import { roadmapsActions } from '../redux/roadmaps';
 
 const classes = classNames.bind(css);

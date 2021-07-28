@@ -4,14 +4,15 @@ import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { roadmapsActions } from '../redux/roadmaps';
 import {
+  chosenRoadmapSelector,
   roadmapsVersionsSelector,
-  plannerTimeEstimatesSelector,
-} from '../redux/versions/selectors';
-import { Version, TimeEstimate } from '../redux/versions/types';
+} from '../redux/roadmaps/selectors';
+import { Roadmap, Version } from '../redux/roadmaps/types';
+import { RootState } from '../redux/types';
+import { plannerTimeEstimatesSelector } from '../redux/versions/selectors';
+import { TimeEstimate } from '../redux/versions/types';
 import { totalValueAndWork } from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
@@ -51,7 +52,7 @@ export const TimeEstimationPage = () => {
 
   useEffect(() => {
     if (roadmap && !roadmapsVersions)
-      dispatch(versionsActions.getVersions(roadmap.id));
+      dispatch(roadmapsActions.getVersions(roadmap.id));
   }, [dispatch, roadmap, roadmapsVersions]);
 
   const handleMilestoneChange = (version: Version) => {

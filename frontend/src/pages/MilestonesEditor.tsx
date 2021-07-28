@@ -8,6 +8,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { roadmapsActions } from '../redux/roadmaps';
 import { RoleType } from '../../../shared/types/customTypes';
 import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
@@ -22,12 +23,16 @@ import {
   chosenRoadmapSelector,
   allCustomersSelector,
   roadmapUsersSelector,
+  roadmapsVersionsSelector,
 } from '../redux/roadmaps/selectors';
-import { Customer, Roadmap, Task, RoadmapUser } from '../redux/roadmaps/types';
+import {
+  Customer,
+  Roadmap,
+  Task,
+  RoadmapUser,
+  Version,
+} from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { versionsActions } from '../redux/versions';
-import { roadmapsVersionsSelector } from '../redux/versions/selectors';
-import { Version } from '../redux/versions/types';
 import {
   calcWeightedTaskPriority,
   dragDropBetweenLists,
@@ -116,7 +121,7 @@ export const MilestonesEditor = () => {
   useEffect(() => {
     if (disableUpdates) return;
     if (roadmapsVersionsLocal === undefined) {
-      dispatch(versionsActions.getVersions(currentRoadmap!.id));
+      dispatch(roadmapsActions.getVersions(currentRoadmap!.id));
     } else {
       const newVersionLists: VersionListsObject = {};
       const unversioned = new Map(
@@ -196,12 +201,12 @@ export const MilestonesEditor = () => {
     if (destination?.droppableId === ROADMAP_LIST_ID) return Promise.resolve();
 
     const res = await dispatch(
-      versionsActions.patchVersion({
+      roadmapsActions.patchVersion({
         id: +source.droppableId,
         tasks: copyLists[source.droppableId].map((task) => task.id),
       }),
     );
-    if (versionsActions.patchVersion.rejected.match(res)) {
+    if (roadmapsActions.patchVersion.rejected.match(res)) {
       return Promise.reject();
     }
     return Promise.resolve();
@@ -227,15 +232,15 @@ export const MilestonesEditor = () => {
     if (destination?.droppableId !== ROADMAP_LIST_ID) {
       // If moving to another version -> add to new version
       const addRes = await dispatch(
-        versionsActions.addTaskToVersion({
-          version: { id: +destination!.droppableId },
+        roadmapsActions.addTaskToVersion({
+          version: { id: +destination!.droppableId! },
           task: {
             id: +result.draggableId,
           },
           index: destination!.index,
         }),
       );
-      if (versionsActions.addTaskToVersion.rejected.match(addRes)) {
+      if (roadmapsActions.addTaskToVersion.rejected.match(addRes)) {
         setDisableUpdates(false);
         return Promise.reject();
       }
@@ -244,14 +249,14 @@ export const MilestonesEditor = () => {
     if (source.droppableId !== ROADMAP_LIST_ID) {
       // If moving from another version -> remove from previous version
       const removeRes = await dispatch(
-        versionsActions.removeTaskFromVersion({
-          version: { id: +source.droppableId },
+        roadmapsActions.removeTaskFromVersion({
+          version: { id: +source!.droppableId! },
           task: {
             id: +result.draggableId,
           },
         }),
       );
-      if (versionsActions.removeTaskFromVersion.rejected.match(removeRes)) {
+      if (roadmapsActions.removeTaskFromVersion.rejected.match(removeRes)) {
         setDisableUpdates(false);
         return Promise.reject();
       }
@@ -307,7 +312,7 @@ export const MilestonesEditor = () => {
       (task) => task.id,
     );
     dispatch(
-      versionsActions.patchVersion({
+      roadmapsActions.patchVersion({
         id: dragVersionId,
         sortingRank: destination!.index,
         tasks: versionTasks,

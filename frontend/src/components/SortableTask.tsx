@@ -2,13 +2,14 @@ import { FC, useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { shallowEqual, useSelector } from 'react-redux';
-import { Task } from '../redux/roadmaps/types';
+import { Task, Version } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './SortableTask.module.scss';
-import { allTasksSelector } from '../redux/roadmaps/selectors';
+import {
+  allTasksSelector,
+  roadmapsVersionsSelector,
+} from '../redux/roadmaps/selectors';
 import { RootState } from '../redux/types';
-import { roadmapsVersionsSelector } from '../redux/versions/selectors';
-import { Version } from '../redux/versions/types';
 
 interface VersionListsObject {
   [K: string]: Task[];
