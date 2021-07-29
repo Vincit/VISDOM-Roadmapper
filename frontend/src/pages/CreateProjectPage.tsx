@@ -54,14 +54,14 @@ export const CreateProjectPage = () => {
           <h2> {t('Greet user', { username: userInfo.username })} </h2>
         </ModalHeader>
         <ModalContent>
-          <div className={classes(css.about)}>
+          <div className={classes(css.formSubtitle)}>
             <Trans i18nKey="No projects yet" />
           </div>
           <div className={classes(css.body)}>
             <Trans i18nKey="First project info 1/2" />
           </div>
           <div className={classes(css.body)}>
-            <Trans i18nKey="First project info 1/2" />
+            <Trans i18nKey="First project info 2/2" />
           </div>
           <button
             className={classes(css.button)}

@@ -154,10 +154,12 @@ export const RegisterPage = () => {
     <>
       <div className={classes(css.formDiv)}>
         <ModalHeader>
-          <Trans i18nKey="New here?" />
+          <h2>
+            <Trans i18nKey="New here?" />
+          </h2>
         </ModalHeader>
         <ModalContent>
-          <div className={classes(css.about)}>
+          <div className={classes(css.formSubtitle)}>
             <Trans i18nKey="Please fill out some info about you" />
           </div>
           <form onSubmit={handleSubmit}>
@@ -201,7 +203,7 @@ export const RegisterPage = () => {
               <Trans i18nKey="Create account" />
             </button>
           </form>
-          <div className={classes(css.registerFooter)}>
+          <div className={classes(css.formFooter)}>
             <Trans i18nKey="Already have an account?" />{' '}
             <Link to={paths.loginPage}>
               <Trans i18nKey="Log in" />
