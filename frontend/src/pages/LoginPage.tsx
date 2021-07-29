@@ -115,7 +115,7 @@ export const LoginPage = () => {
               </button>
             )}
           </form>
-          <div className={classes(css.loginFooter)}>
+          <div className={classes(css.formFooter)}>
             <Trans i18nKey="No account?" />{' '}
             <Link to={paths.registerPage}>
               <Trans i18nKey="Register" />

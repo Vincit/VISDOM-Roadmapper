@@ -443,3 +443,39 @@ textarea {
     color: $COLOR_FOREST;
   }
 }
+
+.formDiv {
+  padding: 8px;
+  margin: auto;
+  margin-top: 150px;
+  margin-bottom: 150px;
+  width: 600px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 50px 30px;
+
+  & form {
+    @extend .layout-column;
+    gap: 20px;
+  }
+}
+
+.formSubtitle {
+  @extend .typography-subtitle;
+  color: $COLOR_BLACK60;
+  line-height: 10px;
+  margin-bottom: 50px;
+}
+
+.formFooter {
+  @extend .typography-body;
+  color: $COLOR_BLACK60;
+  margin-left: 160px;
+  margin-top: 50px;
+  line-height: 21px;
+  a {
+    @extend .typography-body-bold;
+    color: $COLOR_EMERALD;
+    margin-left: 10;
+  }
+}
