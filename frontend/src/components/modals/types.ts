@@ -22,6 +22,7 @@ export enum ModalTypes {
   SETUP_OAUTH_MODAL = 'SETUP_OAUTH_MODAL',
   INTEGRATION_CONFIGURATION_MODAL = 'INTEGRATION_CONFIGURATION_MODAL',
   USER_AUTH_TOKEN_MODAL = 'USER_AUTH_TOKEN_MODAL',
+  ADD_ROADMAP_MODAL = 'ADD_ROADMAP_MODAL',
 }
 
 type OwnProps = {
@@ -60,6 +61,7 @@ type OwnProps = {
     fields: { field: string; secret?: boolean }[];
   };
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: {};
+  [ModalTypes.ADD_ROADMAP_MODAL]: {};
 };
 
 type Props = {

@@ -1,0 +1,30 @@
+@import '../../shared.scss';
+
+.summaryStep {
+  width: 458px;
+  margin-bottom: 25px;
+
+  .summary {
+    display: flex;
+    flex-direction: column;
+    margin: 30px 20px 0;
+    gap: 7px;
+    .item {
+      display: flex;
+      flex-direction: row;
+      gap: 13px;
+    }
+  }
+}
+
+.addBox {
+  @extend .layout-column;
+  flex-grow: 1;
+  border-radius: 10px;
+  min-height: 150px;
+  background: $COLOR_BLACK5;
+  & > * {
+    margin: 20px;
+    max-height: 3rem;
+  }
+}

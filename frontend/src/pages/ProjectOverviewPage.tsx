@@ -10,6 +10,8 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../components/modals/types';
 import { ProjectSummary } from '../components/ProjectSummary';
 import { AddButton } from '../components/forms/AddButton';
 import css from './ProjectOverviewPage.module.scss';
@@ -40,11 +42,15 @@ export const ProjectOverviewPage = () => {
     }
   }, [chosenRoadmap]);
 
-  const addRoadmapClicked = (
-    e: React.MouseEvent<any, MouseEvent> | React.KeyboardEvent<HTMLDivElement>,
-  ) => {
+  const addRoadmapClicked = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.ADD_ROADMAP_MODAL,
+        modalProps: {},
+      }),
+    );
   };
 
   return (

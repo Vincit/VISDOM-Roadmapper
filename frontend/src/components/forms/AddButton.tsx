@@ -6,8 +6,7 @@ import css from './AddButton.module.scss';
 const classes = classNames.bind(css);
 
 export const AddButton: React.FC<{
-  onClick: (e: React.MouseEvent) => void;
-  children?: any;
+  onClick?: (e: React.MouseEvent) => void;
   disabled?: boolean;
 }> = ({ onClick, children, disabled }) => (
   <button
