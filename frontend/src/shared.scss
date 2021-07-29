@@ -428,20 +428,16 @@ textarea {
   }
 }
 
-a.green {
+.green {
   text-decoration: underline;
   color: $COLOR_EMERALD;
-  &:hover {
-    color: $COLOR_FOREST;
-  }
-}
 
-.linkButton.green {
-  background-color: transparent;
-  padding: 0;
-  border: none;
-  text-decoration: underline;
-  color: $COLOR_EMERALD;
+  &.linkButton {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+  }
+
   &:hover {
     text-decoration: none;
     color: $COLOR_FOREST;

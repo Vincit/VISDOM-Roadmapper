@@ -10,7 +10,7 @@ import { RootState } from '../../redux/types';
 
 import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
-import { DeleteVersionModal } from './DeleteVersionModal';
+import { DeleteVersionModal, DeleteRoadmapModal } from './DeleteModal';
 import { EditVersionModal } from './EditVersionModal';
 import { EditTaskModal } from './EditTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
@@ -44,6 +44,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: IntegrationConfigurationModal,
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: UserAuthTokenModal,
   [ModalTypes.ADD_ROADMAP_MODAL]: AddRoadmapModal,
+  [ModalTypes.DELETE_ROADMAP_MODAL]: DeleteRoadmapModal,
 } as const;
 
 // TODO: move this to css file

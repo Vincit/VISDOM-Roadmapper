@@ -11,7 +11,13 @@
   }
 }
 
+.warning {
+  @extend .typography-body-bold;
+  color: $COLOR_RASPBERRY;
+}
+
 .descriptionDiv {
+  @extend .typography-body;
   width: 458px;
   margin-bottom: 21px;
 }
