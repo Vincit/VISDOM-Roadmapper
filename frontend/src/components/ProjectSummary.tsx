@@ -12,6 +12,7 @@ import { MetricsSummary } from './MetricsSummary';
 import { MoreButton } from './forms/SvgButton';
 import { isCustomer } from '../utils/CustomerUtils';
 import { paths } from '../routers/paths';
+import { modalLink, ModalTypes } from './modals/types';
 import css from './ProjectSummary.module.scss';
 
 const classes = classNames.bind(css);
@@ -45,14 +46,17 @@ const ProjectMenu: React.FC<{
         className={classes(css.linkButton, css.green)}
         tabIndex={0}
         type="button"
+        onClick={() => onClose()}
       >
         <Trans i18nKey="Set as default project" />
       </button>
-      {/* TODO: href to roadmap deletion modal */}
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <a className={classes(css.green)}>
-        <Trans i18nKey="Delete project" />
-      </a>
+      <Link
+        className={classes(css.green)}
+        to={modalLink(ModalTypes.DELETE_ROADMAP_MODAL, { id: roadmapId })}
+        onClick={() => onClose()}
+      >
+        <Trans i18nKey="Delete project ellipsis" />
+      </Link>
     </div>
   </Popover>
 );
@@ -98,7 +102,7 @@ export const ProjectSummary: React.FC<{
         {/* TODO: add default project boolean to roadmap
         <div className={classes(css.defaultProject)}>
           <FavoriteSharpIcon fontSize="small" />
-        </div> 
+        </div>
         */}
         <div
           className={classes(css.moreButton)}

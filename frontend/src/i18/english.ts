@@ -41,7 +41,8 @@ export const english = {
     'Your projects': 'Your projects',
     'Add project': 'Add project',
     'Set as default project': 'Set as default project',
-    'Delete project': 'Delete project...',
+    'Delete project ellipsis': 'Delete project...',
+    'Delete project': 'Delete project',
     'task list': 'task list',
     Plan: 'Plan',
     Previous: 'Previous',
@@ -169,5 +170,8 @@ export const english = {
     Businessperson: 'Businessperson',
     Admin: 'Admin',
     Unordered: 'Unordered',
+    'Are you sure to continue': 'Are you sure you want to continue?',
+    'Project deletion warning':
+      'This action can’t be reverted, and all of the project information will be lost.',
   },
 };

@@ -23,6 +23,7 @@ export enum ModalTypes {
   INTEGRATION_CONFIGURATION_MODAL = 'INTEGRATION_CONFIGURATION_MODAL',
   USER_AUTH_TOKEN_MODAL = 'USER_AUTH_TOKEN_MODAL',
   ADD_ROADMAP_MODAL = 'ADD_ROADMAP_MODAL',
+  DELETE_ROADMAP_MODAL = 'DELETE_ROADMAP_MODAL',
 }
 
 type OwnProps = {
@@ -62,6 +63,9 @@ type OwnProps = {
   };
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: {};
   [ModalTypes.ADD_ROADMAP_MODAL]: {};
+  [ModalTypes.DELETE_ROADMAP_MODAL]: {
+    id: number;
+  };
 };
 
 type Props = {
