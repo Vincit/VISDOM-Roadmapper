@@ -10,11 +10,8 @@ import { TaskHeatmap } from '../components/TaskHeatmap';
 import { TaskTableUnrated } from '../components/TaskTable';
 import { StoreDispatchType } from '../redux';
 import { InfoTooltip } from '../components/InfoTooltip';
-import {
-  chosenRoadmapSelector,
-  roadmapsVersionsSelector,
-} from '../redux/roadmaps/selectors';
-import { Roadmap, Task, Version } from '../redux/roadmaps/types';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { Roadmap, Task } from '../redux/roadmaps/types';
 import { roadmapsActions } from '../redux/roadmaps';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -42,10 +39,7 @@ export const DashboardPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector(),
-    shallowEqual,
-  );
+  const roadmapsVersions = currentRoadmap?.versions;
   const [chartVersionLists, setChartVersionLists] = useState<
     {
       name: string;
@@ -59,12 +53,15 @@ export const DashboardPage = () => {
     return currentRoadmap.tasks.filter(isUnrated(userInfo));
   };
 
+  useEffect(() => {
+    if (!roadmapsVersions && currentRoadmap)
+      dispatch(roadmapsActions.getVersions(currentRoadmap.id));
+  }, [currentRoadmap, dispatch, roadmapsVersions]);
+
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
-    if (roadmapsVersions === undefined) {
-      dispatch(roadmapsActions.getVersions(currentRoadmap!.id));
-      return;
-    }
+    if (roadmapsVersions === undefined) return;
+
     const versionLists: VersionListsObject = {};
     versionLists[ROADMAP_LIST_ID] = [];
     roadmapsVersions.forEach((v) => {

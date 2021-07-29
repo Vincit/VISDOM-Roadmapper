@@ -23,7 +23,6 @@ import {
   chosenRoadmapSelector,
   allCustomersSelector,
   roadmapUsersSelector,
-  roadmapsVersionsSelector,
 } from '../redux/roadmaps/selectors';
 import {
   Customer,
@@ -63,10 +62,7 @@ export const MilestonesEditor = () => {
     chosenRoadmapSelector,
     shallowEqual,
   )!;
-  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector(),
-    shallowEqual,
-  );
+  const roadmapsVersions = currentRoadmap?.versions;
   const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
     undefined | Version[]
   >(undefined);
@@ -119,28 +115,30 @@ export const MilestonesEditor = () => {
   );
 
   useEffect(() => {
+    if (!roadmapsVersionsLocal && currentRoadmap)
+      dispatch(roadmapsActions.getVersions(currentRoadmap.id));
+  }, [currentRoadmap, dispatch, roadmapsVersionsLocal]);
+
+  useEffect(() => {
     if (disableUpdates) return;
-    if (roadmapsVersionsLocal === undefined) {
-      dispatch(roadmapsActions.getVersions(currentRoadmap!.id));
-    } else {
-      const newVersionLists: VersionListsObject = {};
-      const unversioned = new Map(
-        checkRatings(tasks).map((task) => [task.id, task]),
-      );
-      roadmapsVersionsLocal.forEach((v) => {
-        newVersionLists[v.id] = v.tasks;
-        v.tasks.forEach((task) => unversioned.delete(task.id));
-      });
-      newVersionLists[ROADMAP_LIST_ID] = Array.from(unversioned.values());
+    if (roadmapsVersionsLocal === undefined) return;
+    const newVersionLists: VersionListsObject = {};
+    const unversioned = new Map(
+      checkRatings(tasks).map((task) => [task.id, task]),
+    );
+    roadmapsVersionsLocal.forEach((v) => {
+      newVersionLists[v.id] = v.tasks;
+      v.tasks.forEach((task) => unversioned.delete(task.id));
+    });
+    newVersionLists[ROADMAP_LIST_ID] = Array.from(unversioned.values());
 
-      newVersionLists[ROADMAP_LIST_ID].sort(
-        (a, b) =>
-          calcWeightedTaskPriority(b, customers!, currentRoadmap) -
-          calcWeightedTaskPriority(a, customers!, currentRoadmap),
-      );
+    newVersionLists[ROADMAP_LIST_ID].sort(
+      (a, b) =>
+        calcWeightedTaskPriority(b, customers!, currentRoadmap) -
+        calcWeightedTaskPriority(a, customers!, currentRoadmap),
+    );
 
-      setVersionLists(newVersionLists);
-    }
+    setVersionLists(newVersionLists);
   }, [
     dispatch,
     roadmapsVersionsLocal,

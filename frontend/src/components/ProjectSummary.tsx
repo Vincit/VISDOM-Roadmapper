@@ -93,6 +93,7 @@ export const ProjectSummary: FC<{
   useEffect(() => {
     if (!roadmap.customers) dispatch(roadmapsActions.getCustomers(roadmap.id));
     if (!roadmap.users) dispatch(roadmapsActions.getRoadmapUsers(roadmap.id));
+    if (!roadmap.versions) dispatch(roadmapsActions.getVersions(roadmap.id));
   }, [dispatch, roadmap]);
 
   return (
@@ -122,7 +123,10 @@ export const ProjectSummary: FC<{
       </div>
       <div className={classes(css.metrics)}>
         <MetricsSummary label={t('Tasks')} value={roadmap.tasks.length} />
-        <MetricsSummary label={t('Milestones')} value="" />
+        <MetricsSummary
+          label={t('Milestones')}
+          value={roadmap.versions?.length ?? 0}
+        />
       </div>
       {!!roadmap.customers?.length && (
         <PeopleList label="Clients" people={roadmap.customers} />
