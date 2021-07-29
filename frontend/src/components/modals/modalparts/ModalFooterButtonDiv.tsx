@@ -17,7 +17,7 @@ export const ModalFooterButtonDiv: React.FC<ModalFooterButtonDivProps> = ({
         maxWidth: '210px',
       }}
     >
-      {children}
+      {!empty && children}
     </div>
   );
 };
