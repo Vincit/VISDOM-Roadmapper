@@ -22,7 +22,7 @@ export const RoadmapOverview = () => {
     shallowEqual,
   );
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector,
+    roadmapsVersionsSelector(),
     shallowEqual,
   );
 

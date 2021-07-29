@@ -43,7 +43,7 @@ export const DashboardPage = () => {
     shallowEqual,
   );
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector,
+    roadmapsVersionsSelector(),
     shallowEqual,
   );
   const [chartVersionLists, setChartVersionLists] = useState<
