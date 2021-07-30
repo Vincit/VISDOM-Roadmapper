@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Task } from '../redux/roadmaps/types';
@@ -7,7 +7,7 @@ import { totalValueAndWork, averageValueAndWork } from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
-const Rating: React.FC<{
+const Rating: FC<{
   title: string;
   value: number;
 }> = ({ title, value }) => {
@@ -28,7 +28,7 @@ const Rating: React.FC<{
   );
 };
 
-export const MilestoneRatingsSummary: React.FC<{
+export const MilestoneRatingsSummary: FC<{
   tasks: Task[];
 }> = ({ tasks }) => {
   const { t } = useTranslation();

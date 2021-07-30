@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -34,7 +34,7 @@ export const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();

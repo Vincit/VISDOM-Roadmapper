@@ -1,4 +1,3 @@
-import React from 'react';
 import { CustomPicker } from 'react-color';
 import convert from 'color-convert';
 import {

@@ -1,12 +1,12 @@
-import React from 'react';
+import { FC, MouseEvent } from 'react';
 import ControlPointSharpIcon from '@material-ui/icons/ControlPointSharp';
 import classNames from 'classnames';
 import css from './AddButton.module.scss';
 
 const classes = classNames.bind(css);
 
-export const AddButton: React.FC<{
-  onClick?: (e: React.MouseEvent) => void;
+export const AddButton: FC<{
+  onClick?: (e: MouseEvent) => void;
   disabled?: boolean;
 }> = ({ onClick, children, disabled }) => (
   <button

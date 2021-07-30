@@ -1,6 +1,6 @@
-import React from 'react';
+import { FC } from 'react';
 
-export const Dot: React.FC<{ fill: string }> = ({ fill }) => (
+export const Dot: FC<{ fill: string }> = ({ fill }) => (
   <svg
     width="14"
     height="14"

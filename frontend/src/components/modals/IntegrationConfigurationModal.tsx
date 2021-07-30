@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -39,7 +39,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
     ? roadmapsActions.patchIntegrationConfiguration
     : roadmapsActions.addIntegrationConfiguration;
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();

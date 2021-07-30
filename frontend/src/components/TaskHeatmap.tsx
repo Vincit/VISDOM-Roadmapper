@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 import { shallowEqual, useSelector } from 'react-redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';

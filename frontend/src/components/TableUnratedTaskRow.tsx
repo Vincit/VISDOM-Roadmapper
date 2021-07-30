@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import React, { useState, useEffect } from 'react';
+import { FC, SyntheticEvent, useState, useEffect } from 'react';
 import BuildIcon from '@material-ui/icons/Build';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -30,7 +30,7 @@ interface TableTaskRowProps {
   task: Task;
 }
 
-export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
+export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { name, roadmapId } = task;
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -125,7 +125,7 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       | ModalTypes.RATE_TASK_MODAL
       | ModalTypes.TASK_RATINGS_INFO_MODAL
       | ModalTypes.TASK_INFO_MODAL,
-  ) => (e: React.SyntheticEvent) => {
+  ) => (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(

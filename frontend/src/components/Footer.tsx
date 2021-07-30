@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 import { ReactComponent as VincitLogo } from '../icons/vincit_text_logo.svg';
 import css from './Footer.module.scss';

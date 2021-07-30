@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -70,9 +70,9 @@ const RoadmapConfigurationPageComponent = () => {
     );
   };
 
-  const [integrations, setIntegrations] = React.useState<Integrations>({});
+  const [integrations, setIntegrations] = useState<Integrations>({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (currentRoadmap)
       api.getIntegrations(currentRoadmap.id).then(setIntegrations);
   }, [currentRoadmap]);

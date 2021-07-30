@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -21,7 +21,7 @@ export interface DataPoint {
   color: string;
 }
 
-export const TaskValueCreatedVisualization: React.FC<{
+export const TaskValueCreatedVisualization: FC<{
   version: Version;
 }> = ({ version }) => {
   const customers = useSelector<RootState, Customer[] | undefined>(

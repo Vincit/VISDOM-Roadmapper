@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC, MouseEvent } from 'react';
 import classNames from 'classnames';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
@@ -15,7 +15,7 @@ import css from './SvgButton.module.scss';
 const classes = classNames.bind(css);
 
 type ButtonProps = {
-  onClick?: (event: React.MouseEvent) => void;
+  onClick?: (event: MouseEvent) => void;
 };
 
 type ExtraProps = {
@@ -24,10 +24,10 @@ type ExtraProps = {
   className?: string;
 };
 
-type SvgButton<T = {}> = React.FC<T & ButtonProps & { href?: string }>;
+type SvgButton<T = {}> = FC<T & ButtonProps & { href?: string }>;
 
 function svgButton<E = {}>(
-  Icon: React.FC<ButtonProps>,
+  Icon: FC<ButtonProps>,
   {
     iconColor,
     hoverColor,
@@ -48,7 +48,7 @@ function svgButton<E = {}>(
   };
 }
 
-export const EditButton = svgButton<{ fontSize: 'small' | 'default' }>(
+export const EditButton = svgButton<{ fontSize: 'small' | 'medium' }>(
   EditIcon,
   {
     hoverColor: colors.azure,

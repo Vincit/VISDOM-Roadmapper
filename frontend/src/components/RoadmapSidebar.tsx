@@ -1,5 +1,5 @@
+import { FC } from 'react';
 import classNames from 'classnames';
-import React from 'react';
 import PeopleIcon from '@material-ui/icons/People';
 import ListIcon from '@material-ui/icons/List';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -21,7 +21,7 @@ import { getType } from '../utils/UserUtils';
 
 const classes = classNames.bind(css);
 
-export const RoadmapSidebar: React.FC = () => {
+export const RoadmapSidebar: FC = () => {
   const { url } = useRouteMatch();
   const { pathname } = useLocation();
   const userInfo = useSelector<RootState, UserInfo | undefined>(

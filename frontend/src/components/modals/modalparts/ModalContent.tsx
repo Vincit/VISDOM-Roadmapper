@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 import css from './ModalContent.module.scss';
 
 export interface ModalContentProps {
   overflowAuto?: boolean;
 }
 
-export const ModalContent: React.FC<ModalContentProps> = ({
+export const ModalContent: FC<ModalContentProps> = ({
   children,
   overflowAuto,
 }) => {

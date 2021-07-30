@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
@@ -13,7 +13,7 @@ import css from './CustomerModalParts.module.scss';
 
 const classes = classNames.bind(css);
 
-export const SelectCustomerInfo: React.FC<{
+export const SelectCustomerInfo: FC<{
   name: string;
   email: string;
   colorType: string;
@@ -86,7 +86,7 @@ export const SelectCustomerInfo: React.FC<{
   );
 };
 
-export const SelectRepresentatives: React.FC<{
+export const SelectRepresentatives: FC<{
   representatives: CheckableUser[];
   onRepresentativeChange: (idx: number, checked: boolean) => void;
 }> = ({ representatives, onRepresentativeChange }) => (

@@ -24,9 +24,9 @@ export const randomColor = (
   tries: number = 1,
 ): string => {
   const hue = Math.random() * 360;
-  const found = customers?.some((obj) => {
-    if (obj.color) return difference(convert.hex.hsl(obj.color)[0], hue) < 30;
-  });
+  const found = customers?.some(
+    (obj) => obj.color && difference(convert.hex.hsl(obj.color)[0], hue) < 30,
+  );
   if (tries === 20) return `#${convert.hsl.hex([hue, 100, 65])}`;
   if (found) return randomColor(customers, tries + 1);
   return `#${convert.hsl.hex([hue, 100, 65])}`;

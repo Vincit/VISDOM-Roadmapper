@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Trans } from 'react-i18next';

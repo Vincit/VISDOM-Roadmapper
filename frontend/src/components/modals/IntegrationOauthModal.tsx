@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -59,7 +59,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     getOAuthURL();
   }, [currentConfiguration, roadmapId, name, retry, t]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();

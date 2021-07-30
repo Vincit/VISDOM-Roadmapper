@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ import css from './RateTaskModal.module.scss';
 
 const classes = classNames.bind(css);
 
-const CustomerHeader: React.FC<{
+const CustomerHeader: FC<{
   customer: Customer;
   ratings: Taskrating[];
 }> = ({ customer, ratings }) => {
@@ -140,7 +140,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   const [businessValueRatings, setBusinessValueRatings] = useState(ratings);
   const [businessRatingModified, setBusinessRatingModified] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     if (!businessRatingModified) {

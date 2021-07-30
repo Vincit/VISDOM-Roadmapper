@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Popover from '@material-ui/core/Popover';
-import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
+// import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { StoreDispatchType } from '../redux';
@@ -17,7 +17,7 @@ import css from './ProjectSummary.module.scss';
 
 const classes = classNames.bind(css);
 
-const ProjectMenu: React.FC<{
+const ProjectMenu: FC<{
   roadmapId: number;
   anchorEl: (EventTarget & Element) | null;
   open: boolean;
@@ -61,7 +61,7 @@ const ProjectMenu: React.FC<{
   </Popover>
 );
 
-const PeopleList: React.FC<{
+const PeopleList: FC<{
   label: string;
   people: Customer[] | RoadmapUser[];
 }> = ({ people, label }) => (
@@ -80,7 +80,7 @@ const PeopleList: React.FC<{
   </div>
 );
 
-export const ProjectSummary: React.FC<{
+export const ProjectSummary: FC<{
   roadmap: Roadmap;
   selected: boolean;
 }> = ({ roadmap, selected }) => {

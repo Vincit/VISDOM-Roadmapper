@@ -1,6 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from 'i18next';
-import React from 'react';
 import { initReactI18next } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 import { ModalRoot } from './components/modals/ModalRoot';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
@@ -28,7 +28,7 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [newName, setNewName] = useState(name);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setIsLoading(true);

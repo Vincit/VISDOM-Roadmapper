@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ interface TeamMemberTableHeader {
   width?: string;
 }
 
-export const TeamMemberList: React.FC<{
+export const TeamMemberList: FC<{
   search: string;
 }> = ({ search }) => {
   const [sortingType, setSortingType] = useState(UserSortingTypes.NO_SORT);

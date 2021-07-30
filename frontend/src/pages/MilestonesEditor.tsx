@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { MouseEvent, useEffect, useState, useCallback } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -155,10 +155,7 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const deleteVersionClicked = (
-    e: React.MouseEvent<any, MouseEvent>,
-    id: number,
-  ) => {
+  const deleteVersionClicked = (e: MouseEvent, id: number) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -169,11 +166,7 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const editVersionClicked = (
-    e: React.MouseEvent<any, MouseEvent>,
-    id: number,
-    name: string,
-  ) => {
+  const editVersionClicked = (e: MouseEvent, id: number, name: string) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../redux/types';

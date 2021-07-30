@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -47,7 +47,7 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
     closeModal();
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setIsLoading(true);

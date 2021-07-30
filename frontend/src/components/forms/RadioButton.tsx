@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Radio as MaterialRadio } from '@material-ui/core';
 import classNames from 'classnames';
@@ -8,7 +8,7 @@ import colors from '../../colors.module.scss';
 
 const classes = classNames.bind(css);
 
-export const RadioButton: React.FC<{
+export const RadioButton: FC<{
   value: string;
   checked: boolean;
   label: string;

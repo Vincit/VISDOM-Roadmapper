@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import { LockFill, UnlockFill } from 'react-bootstrap-icons';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
@@ -33,7 +33,7 @@ enum DataKeys {
   SavedData = 'Saved graph',
 }
 
-export const PlannerChart: React.FC<{
+export const PlannerChart: FC<{
   versions: { name: string; tasks: Task[] }[];
   hideButtons?: boolean;
 }> = ({ versions, hideButtons }) => {

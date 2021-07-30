@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FormEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -102,7 +102,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
     }
   }, [boards]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
@@ -133,7 +133,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
     }
   };
 
-  const configureOauth = (e: React.SyntheticEvent) => {
+  const configureOauth = (e: SyntheticEvent) => {
     e.preventDefault();
     if (chosenRoadmapId) {
       dispatch(

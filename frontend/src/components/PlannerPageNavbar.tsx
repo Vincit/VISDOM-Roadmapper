@@ -1,4 +1,3 @@
-import React from 'react';
 import { Trans } from 'react-i18next';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import classNames from 'classnames';

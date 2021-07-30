@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { FC, MouseEvent, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { DeleteButton, EditButton } from './forms/SvgButton';
@@ -25,7 +25,7 @@ interface TableRowProps {
   customer: Customer;
 }
 
-export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
+export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
   const { id, name, email, color } = customer;
   const weight = useSelector<RootState, number>(
     customerWeightSelector(customer),
@@ -53,7 +53,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
       );
   }, [currentRoadmap, customer]);
 
-  const deleteUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const deleteUserClicked = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -68,7 +68,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
     );
   };
 
-  const editUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const editUserClicked = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -101,7 +101,7 @@ export const TableCustomerRow: React.FC<TableRowProps> = ({ customer }) => {
           <div className={classes(css.editCustomer)}>
             <div>
               <EditButton
-                fontSize="default"
+                fontSize="medium"
                 onClick={editUserClicked}
                 href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, { customer })}
               />
