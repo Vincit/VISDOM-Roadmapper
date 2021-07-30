@@ -26,7 +26,6 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
-    '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.ts'] }],
@@ -53,6 +52,7 @@ module.exports = {
     ],
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
+    'react/no-array-index-key': 'warn',
     'react/jsx-one-expression-per-line': 'off', // conflicts with prettier
     'react/prop-types': 'off', // not needed with TypeScript
     'react/jsx-curly-newline': 'off', // conflicts with prettier
@@ -60,6 +60,18 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'error',
     'react/jsx-props-no-spreading': 'off',
     'consistent-return': 'off',
+
+    'prettier/prettier': ['error', { endOfLine: 'auto' }], // to accomodate CRLF locally
+
+    // see: https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#eslint
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
+
+    // see: https://github.com/typescript-eslint/typescript-eslint/issues/1856
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
   },
   settings: {
     'import/resolver': {
