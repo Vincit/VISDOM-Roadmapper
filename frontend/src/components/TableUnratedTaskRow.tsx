@@ -153,27 +153,22 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
       <td className={classes(css.unratedTd)}>{numFormat.format(work)}</td>
       <td className={classes(css.unratedTd)}>
         <div className={classes(css.missingContainer)}>
-          {missingRatings && (
-            <div className={classes(css.missingContainer)}>
-              {missingRatings.map((customer) => (
-                <div key={customer.id}>
-                  <Tooltip
-                    classes={{
-                      arrow: classes(css.tooltipArrow),
-                      tooltip: classes(css.tooltip),
-                    }}
-                    title={customer.name}
-                    placement="top"
-                    arrow
-                  >
-                    <div className={classes(css.dotContainer)}>
-                      <Dot fill={customer.color || 'red'} />
-                    </div>
-                  </Tooltip>
-                </div>
-              ))}
-            </div>
-          )}
+          {missingRatings?.map((customer) => (
+            <Tooltip
+              classes={{
+                arrow: classes(css.tooltipArrow),
+                tooltip: classes(css.tooltip),
+              }}
+              key={customer.id}
+              title={customer.name}
+              placement="top"
+              arrow
+            >
+              <div className={classes(css.dotContainer)}>
+                <Dot fill={customer.color || 'red'} />
+              </div>
+            </Tooltip>
+          ))}
           {missingDevRatings && (
             <div>
               {missingDevRatings.map((dev) => (
@@ -193,20 +188,18 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
             </div>
           )}
           {userRatingMissing && type === RoleType.Customer && (
-            <div>
-              <Tooltip
-                classes={{
-                  arrow: classNames(css.tooltipArrow),
-                  tooltip: classNames(css.tooltip),
-                }}
-                key={userInfo?.username}
-                title={userInfo?.username || ''}
-                placement="top"
-                arrow
-              >
-                <PermIdentityIcon className={classes(css.userIcon)} />
-              </Tooltip>
-            </div>
+            <Tooltip
+              classes={{
+                arrow: classNames(css.tooltipArrow),
+                tooltip: classNames(css.tooltip),
+              }}
+              key={userInfo?.username}
+              title={userInfo?.username || ''}
+              placement="top"
+              arrow
+            >
+              <PermIdentityIcon className={classes(css.userIcon)} />
+            </Tooltip>
           )}
         </div>
       </td>
@@ -221,23 +214,14 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
             <Trans i18nKey="Notify" />
           </button>
         )}
-        {taskAwaitsRatings(task, userInfo) ? (
-          <button
-            className={classes(css['button-small-filled'])}
-            type="button"
-            onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
-          >
-            <Trans i18nKey="Rate" />
-          </button>
-        ) : (
-          <button
-            className={classes(css['button-small-filled'])}
-            type="button"
-            disabled
-          >
-            <Trans i18nKey="Rate" />
-          </button>
-        )}
+        <button
+          className={classes(css['button-small-filled'])}
+          type="button"
+          disabled={!taskAwaitsRatings(task, userInfo)}
+          onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
+        >
+          <Trans i18nKey="Rate" />
+        </button>
       </td>
     </tr>
   );
