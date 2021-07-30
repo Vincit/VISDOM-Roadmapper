@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
@@ -15,13 +15,13 @@ import css from './StepForm.module.scss';
 const classes = classNames.bind(css);
 
 interface Step {
-  component: React.FC;
+  component: FC;
   description: string;
   disabled?: () => boolean;
   noCancelConfirmation?: () => boolean;
 }
 
-export const StepForm: React.FC<{
+export const StepForm: FC<{
   header: string;
   finishHeader?: string;
   finishMessage: string;
@@ -45,7 +45,7 @@ export const StepForm: React.FC<{
   const [step, setStep] = useState(1);
   const [previousStep, setPreviousStep] = useState(0);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     switch (step) {

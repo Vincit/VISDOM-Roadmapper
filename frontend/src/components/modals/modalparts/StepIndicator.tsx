@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import CheckSharpIcon from '@material-ui/icons/CheckSharp';
@@ -22,7 +22,7 @@ const getIndicatorState = (step: number, currentStep: number) => {
   return IndicatorState.activeStep;
 };
 
-const StepIcon: React.FC<{
+const StepIcon: FC<{
   state: IndicatorState;
 }> = ({ state }) => (
   <div className={classes(css.circle)}>
@@ -38,7 +38,7 @@ const StepIcon: React.FC<{
   </div>
 );
 
-export const StepIndicator: React.FC<{
+export const StepIndicator: FC<{
   step: number;
   currentStep: number;
   maxStep: number;

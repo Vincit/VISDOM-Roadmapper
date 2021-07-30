@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { Modal, ModalTypes } from './types';
@@ -17,7 +17,7 @@ export const UserAuthTokenModal: Modal<ModalTypes.USER_AUTH_TOKEN_MODAL> = ({
   const [visible, setVisible] = useState(false);
 
   function handleEvent<T>(endpoint: () => Promise<T>, callback: (_: T) => any) {
-    return (event: React.MouseEvent) => {
+    return (event: MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
 

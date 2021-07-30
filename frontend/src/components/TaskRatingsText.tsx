@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
 import { Task } from '../redux/roadmaps/types';
@@ -8,7 +8,7 @@ import css from './TaskRatingsText.module.scss';
 
 const classes = classNames.bind(css);
 
-export const TaskRatingsText: React.FC<{ task: Task }> = ({ task }) => {
+export const TaskRatingsText: FC<{ task: Task }> = ({ task }) => {
   const { work, value } = averageValueAndWork([task]);
   const numFormat = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 0,

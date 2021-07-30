@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';

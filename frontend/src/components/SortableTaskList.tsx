@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import { Task } from '../redux/roadmaps/types';
@@ -7,7 +7,7 @@ import css from './SortableTaskList.module.scss';
 
 const classes = classNames.bind(css);
 
-export const SortableTaskList: React.FC<{
+export const SortableTaskList: FC<{
   listId: string;
   tasks: Task[];
   disableDragging: boolean;

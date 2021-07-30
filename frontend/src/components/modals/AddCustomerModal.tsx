@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
@@ -127,7 +127,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
         <SelectRepresentatives
           representatives={representatives}
           onRepresentativeChange={(idx, checked) => {
-            if (0 <= idx && idx < representatives.length) {
+            if (idx >= 0 && idx < representatives.length) {
               const copy = [...representatives];
               copy[idx].checked = checked;
               setRepresentatives(copy);

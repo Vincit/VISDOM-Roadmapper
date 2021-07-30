@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC, ReactElement } from 'react';
 import classNames from 'classnames';
 import { NavBar } from './NavBar';
 import { RoadmapSidebar } from './RoadmapSidebar';
@@ -7,10 +7,10 @@ import css from './NavLayout.module.scss';
 const classes = classNames.bind(css);
 
 export interface NavLayoutProps {
-  Content: (() => JSX.Element) | React.FC<any>;
+  Content: (() => ReactElement) | FC<any>;
 }
 
-export const NavLayout: React.FC<NavLayoutProps> = ({ Content }) => {
+export const NavLayout: FC<NavLayoutProps> = ({ Content }) => {
   return (
     <div className="layout-row grow">
       <RoadmapSidebar />

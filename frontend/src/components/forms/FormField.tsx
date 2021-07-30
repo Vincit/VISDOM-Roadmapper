@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import {
+  ComponentType,
+  FC,
+  HTMLProps,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import classNames from 'classnames';
 import css from './FormField.module.scss';
 
@@ -10,7 +17,7 @@ interface FieldType extends HTMLElement {
   checkValidity(): boolean;
 }
 
-export interface FieldProps<T extends FieldType> extends React.HTMLProps<T> {
+export interface FieldProps<T extends FieldType> extends HTMLProps<T> {
   label?: string;
   error?: {
     message: string;
@@ -43,8 +50,8 @@ export const errorState = ([message, setMessage]: [
 });
 
 function field<T extends FieldType>(
-  Tag: React.ComponentType<React.HTMLProps<T>>,
-): React.FC<FieldProps<T>> {
+  Tag: ComponentType<HTMLProps<T>>,
+): FC<FieldProps<T>> {
   return ({ error = errorState(useState('')), label, id, ...props }) => {
     const ref = useRef<T>(null);
     useEffect(() => {

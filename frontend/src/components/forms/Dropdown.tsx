@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import classNames from 'classnames';
 
-export const Dropdown: React.FC<{
+export const Dropdown: FC<{
   css: any;
   title?: string;
   children?: any;

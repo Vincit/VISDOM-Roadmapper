@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { StylesProvider } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
@@ -12,11 +12,11 @@ import 'typeface-work-sans';
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
+    <StrictMode>
       <StylesProvider injectFirst>
         <App />
       </StylesProvider>
-    </React.StrictMode>
+    </StrictMode>
   </Provider>,
 
   document.getElementById('root'),

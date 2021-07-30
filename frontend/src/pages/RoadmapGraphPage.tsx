@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+
 import classNames from 'classnames';
 import ListIcon from '@material-ui/icons/List';
 import { StoreDispatchType } from '../redux';

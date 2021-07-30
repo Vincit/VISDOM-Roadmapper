@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,7 @@ interface TaskRatingWidgetProps {
   ratingDimension: TaskRatingDimension;
 }
 
-export const TaskRatingWidget: React.FC<TaskRatingWidgetProps> = ({
+export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
   initialRating,
   onRatingChange,
   ratingDimension,

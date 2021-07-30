@@ -1,10 +1,10 @@
-import React from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import css from './MetricsSummary.module.scss';
 
 const classes = classNames.bind(css);
 
-export const MetricsSummary: React.FC<{
+export const MetricsSummary: FC<{
   label: string;
   value: string | number;
   children?: any;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import assert from 'assert';
 import { withStyles } from '@material-ui/core/styles';
 import { Alert } from 'react-bootstrap';
@@ -107,7 +107,7 @@ export const RegisterPage = () => {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     if (!checked) return setErrorMessage(t('Terms of use error'));

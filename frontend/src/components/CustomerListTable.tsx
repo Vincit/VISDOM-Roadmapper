@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, MouseEvent, useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ interface CustomerTableHeader {
   width?: string;
 }
 
-export const CustomerList: React.FC<{
+export const CustomerList: FC<{
   search: string;
 }> = ({ search }) => {
   const [sortingType, setSortingType] = useState(CustomerSortingTypes.NO_SORT);
@@ -105,7 +105,7 @@ export const CustomerList: React.FC<{
       <ArrowDownCircle />
     );
 
-  const addUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const addUserClicked = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(

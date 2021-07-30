@@ -1,9 +1,9 @@
-import React from 'react';
+import { FC } from 'react';
 import { Trans } from 'react-i18next';
 import css from './ModalFooter.module.scss';
 import { ModalFooterButtonDiv } from './ModalFooterButtonDiv';
 
-export const ModalFooter: React.FC<{ closeModal?: () => void }> = ({
+export const ModalFooter: FC<{ closeModal?: () => void }> = ({
   closeModal,
   children,
 }) => (

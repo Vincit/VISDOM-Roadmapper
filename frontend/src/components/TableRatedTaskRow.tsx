@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -15,9 +15,7 @@ interface TableTaskRowRatedProps {
   task: Task;
 }
 
-export const TableRatedTaskRow: React.FC<TableTaskRowRatedProps> = ({
-  task,
-}) => {
+export const TableRatedTaskRow: FC<TableTaskRowRatedProps> = ({ task }) => {
   const [hovered, setHovered] = useState(false);
   const { value, work } = valueAndWorkSummary(task);
 

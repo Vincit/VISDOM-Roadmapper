@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { FC, MouseEvent, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
@@ -24,7 +24,7 @@ interface TableRowProps {
   member: RoadmapUser;
 }
 
-export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
+export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
   const { id, username, email, type } = member;
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -48,7 +48,7 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
       );
   }, [currentRoadmap, member]);
 
-  const deleteUserClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const deleteUserClicked = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -63,7 +63,7 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
     );
   };
 
-  const editTeamMemberClicked = (e: React.MouseEvent<any, MouseEvent>) => {
+  const editTeamMemberClicked = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -104,7 +104,7 @@ export const TableTeamMemberRow: React.FC<TableRowProps> = ({ member }) => {
           id !== userInfo?.id && (
             <div className={classes(css.editMember)}>
               <EditButton
-                fontSize="default"
+                fontSize="medium"
                 onClick={editTeamMemberClicked}
                 href={modalLink(ModalTypes.EDIT_TEAM_MEMBER_MODAL, { member })}
               />

@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Checkbox as MaterialCheckbox } from '@material-ui/core';
 import classNames from 'classnames';
@@ -8,7 +8,7 @@ import colors from '../../colors.module.scss';
 
 const classes = classNames.bind(css);
 
-export const Checkbox: React.FC<{
+export const Checkbox: FC<{
   checked: boolean;
   label: string;
   onChange: (checked: boolean) => void;

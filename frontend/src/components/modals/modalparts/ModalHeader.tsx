@@ -1,8 +1,8 @@
-import React from 'react';
+import { FC } from 'react';
 import { ModalCloseButton } from '../../forms/SvgButton';
 import css from './ModalHeader.module.scss';
 
-export const ModalHeader: React.FC<{ closeModal?: () => void }> = ({
+export const ModalHeader: FC<{ closeModal?: () => void }> = ({
   closeModal,
   children,
 }) => (

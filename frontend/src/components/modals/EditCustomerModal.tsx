@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -79,7 +79,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
       dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
   }, [currentRoadmap, dispatch, roadmapUsers]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setIsLoading(true);

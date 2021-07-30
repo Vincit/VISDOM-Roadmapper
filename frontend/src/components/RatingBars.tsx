@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import Rating from 'react-rating';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import {
@@ -15,7 +15,7 @@ interface RatingBarProps {
   readonly?: boolean;
 }
 
-export const TaskRatingBar: React.FC<RatingBarProps> = ({
+export const TaskRatingBar: FC<RatingBarProps> = ({
   dimension,
   onChange,
   initialValue,

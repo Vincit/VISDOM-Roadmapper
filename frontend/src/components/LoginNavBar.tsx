@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import css from './LoginNavBar.module.scss';
 
 const classes = classNames.bind(css);
 
-export const LoginNavBar: React.FC<{
+export const LoginNavBar: FC<{
   type: 'landing' | 'login' | 'register' | 'getStarted';
 }> = ({ type }) => (
   <div

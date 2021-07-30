@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -36,7 +36,7 @@ interface TableHeader {
   width?: string;
 }
 
-const TaskTable: React.FC<{
+const TaskTable: FC<{
   tasks: Task[];
   searchString?: string;
   searchFilter?: FilterTypes;
@@ -139,7 +139,7 @@ const TaskTable: React.FC<{
   );
 };
 
-export const TaskTableUnrated: React.FC<{
+export const TaskTableUnrated: FC<{
   tasks: Task[];
   searchString?: string;
   searchFilter?: FilterTypes;
@@ -195,7 +195,7 @@ export const TaskTableUnrated: React.FC<{
   );
 };
 
-export const TaskTableRated: React.FC<{
+export const TaskTableRated: FC<{
   tasks: Task[];
   searchString?: string;
   searchFilter?: FilterTypes;

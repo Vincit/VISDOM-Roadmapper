@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
@@ -17,7 +17,7 @@ import css from './DeleteModal.module.scss';
 
 const classes = classNames.bind(css);
 
-const DeleteModalContent: React.FC<{
+const DeleteModalContent: FC<{
   header: string;
   action: any;
   payload: any;
@@ -27,7 +27,7 @@ const DeleteModalContent: React.FC<{
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setIsLoading(true);

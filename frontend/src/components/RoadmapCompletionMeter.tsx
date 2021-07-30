@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
 import Chart from 'react-apexcharts';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { MouseEvent, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -42,7 +42,7 @@ export const ProjectOverviewPage = () => {
     }
   }, [chosenRoadmap]);
 
-  const addRoadmapClicked = (e: React.MouseEvent) => {
+  const addRoadmapClicked = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(

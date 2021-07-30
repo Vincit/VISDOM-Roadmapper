@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ interface VersionListsObject {
   [K: string]: Task[];
 }
 
-export const SortableTask: React.FC<{
+export const SortableTask: FC<{
   task: Task;
   index: number;
   disableDragging: boolean;

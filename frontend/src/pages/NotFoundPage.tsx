@@ -1,4 +1,3 @@
-import React from 'react';
 import { Col } from 'react-bootstrap';
 import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
 import classNames from 'classnames';

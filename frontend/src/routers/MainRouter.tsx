@@ -1,4 +1,3 @@
-import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
