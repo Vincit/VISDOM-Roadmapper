@@ -166,7 +166,7 @@ export const TaskTableUnrated: React.FC<{
           unratedProductOwnerTasks(
             tasks,
             allUsers,
-            currentRoadmap.customers ?? [], // FIXME: incorrect type, customers may be undefined
+            currentRoadmap.customers ?? [],
           ),
         );
       }
@@ -222,7 +222,7 @@ export const TaskTableRated: React.FC<{
         const unratedTasks = unratedProductOwnerTasks(
           tasks,
           allUsers,
-          currentRoadmap.customers ?? [], // FIXME: incorrect type, customers may be undefined
+          currentRoadmap.customers ?? [],
         );
         setTaskList(tasks.filter((task) => !unratedTasks?.includes(task)));
       }

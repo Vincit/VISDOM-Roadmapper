@@ -60,7 +60,8 @@ export const ADD_CUSTOMER_FULFILLED = (
   const roadmap = state.roadmaps.find(
     ({ id }) => id === action.payload.roadmapId,
   )!;
-  roadmap.customers.push(action.payload);
+  if (!roadmap.customers) roadmap.customers = [action.payload];
+  else roadmap.customers.push(action.payload);
 };
 
 export const PATCH_CUSTOMER_FULFILLED = (
@@ -72,8 +73,8 @@ export const PATCH_CUSTOMER_FULFILLED = (
     ({ id }) => id === action.payload.roadmapId,
   )!;
 
-  const patched = roadmap.customers.find(({ id }) => id === action.payload.id);
-  Object.assign(patched, action.payload);
+  const patched = roadmap.customers?.find(({ id }) => id === action.payload.id);
+  if (patched) Object.assign(patched, action.payload);
 };
 
 export const DELETE_CUSTOMER_FULFILLED = (
@@ -84,7 +85,7 @@ export const DELETE_CUSTOMER_FULFILLED = (
   const roadmap = state.roadmaps.find(
     ({ id }) => id === action.payload.roadmapId,
   )!;
-  roadmap.customers = roadmap.customers.filter(
+  roadmap.customers = roadmap.customers?.filter(
     ({ id }) => id !== action.payload.response.id,
   );
 };
