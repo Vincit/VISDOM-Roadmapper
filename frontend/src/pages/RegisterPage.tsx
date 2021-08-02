@@ -81,23 +81,21 @@ export const RegisterPage = () => {
     }
   };
 
-  const errorHandler = (
-    type: string | undefined,
-    data?: {
-      message: string;
-      columns: string[] | { column: string; message: string }[];
-    },
-  ) => {
-    switch (type) {
+  const errorHandler = (data?: {
+    error?: string;
+    message: string;
+    columns: string[] | { column: string; message: string }[];
+  }) => {
+    switch (data?.error) {
       case 'UniqueViolationError': {
-        const cols = data!.columns as string[];
+        const cols = data.columns as string[];
         cols.forEach((column) => {
           setError(column, t('uniqueViolation', { field: t(column) }));
         });
         break;
       }
       case 'ValidationError': {
-        const cols = data!.columns as { column: string; message: string }[];
+        const cols = data.columns as { column: string; message: string }[];
         cols.forEach(({ column }) => {
           setError(column, t('validationError', { field: t(column) }));
         });
@@ -126,8 +124,7 @@ export const RegisterPage = () => {
       }),
     );
     if (userActions.register.rejected.match(res)) {
-      const data = res.payload?.response?.data;
-      errorHandler(data?.error, data);
+      errorHandler(res.payload?.response?.data);
     } else if (userActions.register.fulfilled.match(res)) {
       history.push('/login');
     }

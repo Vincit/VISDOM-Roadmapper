@@ -25,13 +25,6 @@ export const RoadmapOverview = () => {
     roadmapsVersionsSelector,
     shallowEqual,
   );
-  const roadmapTasksCount = () => {
-    return roadmap!.tasks.length;
-  };
-
-  const roadmapMilestonesCount = () => {
-    return roadmapsVersions?.length || 0;
-  };
 
   const { value, work } = averageValueAndWork(roadmap?.tasks ?? []);
   const numFormat = new Intl.NumberFormat(undefined, {
@@ -42,11 +35,11 @@ export const RoadmapOverview = () => {
   const metrics = [
     {
       label: 'Tasks',
-      metricsValue: roadmapTasksCount(),
+      metricsValue: roadmap?.tasks.length ?? 0,
     },
     {
       label: 'Milestones',
-      metricsValue: roadmapMilestonesCount(),
+      metricsValue: roadmapsVersions?.length ?? 0,
     },
     {
       label: 'Avg Value',

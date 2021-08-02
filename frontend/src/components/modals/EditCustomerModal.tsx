@@ -62,7 +62,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
     if (!roadmapUsers) return;
     setRepresentatives(
       roadmapUsers
-        ?.filter(
+        .filter(
           (user) =>
             user.type === RoleType.Admin || user.type === RoleType.Business,
         )
@@ -130,8 +130,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
           <SelectRepresentatives
             representatives={representatives}
             onRepresentativeChange={(idx, checked) => {
-              const copy = [...(representatives ?? [])];
-              if (!copy) return;
+              const copy = [...representatives];
               copy[idx].checked = checked;
               setRepresentatives(copy);
             }}

@@ -18,7 +18,7 @@ export const UserInfoCard = () => {
         <>
           <div>{userInfo.username}</div>
           <div>{userInfo.email}</div>
-          {userInfo?.roles.map((roadmapRole) => (
+          {userInfo.roles.map((roadmapRole) => (
             <div>
               {`Roadmap ${roadmapRole.roadmapId}: ${
                 RoleType[roadmapRole.type]

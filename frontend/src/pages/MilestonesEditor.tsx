@@ -85,6 +85,7 @@ export const MilestonesEditor = () => {
   }, [roadmapsVersions]);
 
   // Checks if tasks in the tasks list have been given ratings, returns only tasks with ratings from everyone involved
+  // TODO: check if available task util
   const checkRatings = useCallback(
     (uncheckedTasks: Task[]) => {
       const ratedTasks: Task[] = [];
@@ -95,10 +96,10 @@ export const MilestonesEditor = () => {
         const allRatings = task.ratings.map((rating) => rating.createdByUser);
 
         const unratedByCustomer = customers?.some((customer) => {
-          const representativeIds = customer?.representatives?.map(
+          const representativeIds = customer.representatives?.map(
             (rep) => rep.id,
           );
-          return !representativeIds?.every((rep) => allRatings?.includes(rep));
+          return !representativeIds?.every((rep) => allRatings.includes(rep));
         });
 
         const unratedByDeveloper = developers?.some(
@@ -192,9 +193,9 @@ export const MilestonesEditor = () => {
     const copyLists = copyVersionLists(versionLists);
 
     // Reordering inside one list
-    copyLists[source!.droppableId] = reorderList(
-      copyLists[source!.droppableId],
-      source!.index,
+    copyLists[source.droppableId] = reorderList(
+      copyLists[source.droppableId],
+      source.index,
       destination!.index,
     );
 
@@ -204,7 +205,7 @@ export const MilestonesEditor = () => {
     const res = await dispatch(
       versionsActions.patchVersion({
         id: +source.droppableId,
-        tasks: copyLists[source!.droppableId].map((task) => task.id),
+        tasks: copyLists[source.droppableId].map((task) => task.id),
       }),
     );
     if (versionsActions.patchVersion.rejected.match(res)) {
@@ -221,9 +222,9 @@ export const MilestonesEditor = () => {
     Object.assign(
       copyLists,
       dragDropBetweenLists(
-        copyLists[source!.droppableId],
+        copyLists[source.droppableId],
         copyLists[destination!.droppableId],
-        source!,
+        source,
         destination!,
       ),
     );
@@ -234,7 +235,7 @@ export const MilestonesEditor = () => {
       // If moving to another version -> add to new version
       const addRes = await dispatch(
         versionsActions.addTaskToVersion({
-          version: { id: +destination!.droppableId! },
+          version: { id: +destination!.droppableId },
           task: {
             id: +result.draggableId,
           },
@@ -247,11 +248,11 @@ export const MilestonesEditor = () => {
       }
     }
 
-    if (source?.droppableId !== ROADMAP_LIST_ID) {
+    if (source.droppableId !== ROADMAP_LIST_ID) {
       // If moving from another version -> remove from previous version
       const removeRes = await dispatch(
         versionsActions.removeTaskFromVersion({
-          version: { id: +source!.droppableId! },
+          version: { id: +source.droppableId },
           task: {
             id: +result.draggableId,
           },
@@ -478,7 +479,7 @@ export const MilestonesEditor = () => {
                 {expandUnordered ? <ExpandLess /> : <ExpandMore />}
                 <div>
                   {`${t('Unordered tasks')} (${
-                    versionLists[ROADMAP_LIST_ID]?.length
+                    versionLists[ROADMAP_LIST_ID]?.length ?? 0
                   })`}
                 </div>
               </div>

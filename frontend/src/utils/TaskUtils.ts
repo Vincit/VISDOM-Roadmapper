@@ -117,7 +117,7 @@ export const calcTaskPriority = (task: Task) => {
 export const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
   return (task: Task) => {
     if (
-      task.ratings?.find((taskrating) => taskrating.createdByUser === userId)
+      task.ratings.some((taskrating) => taskrating.createdByUser === userId)
     ) {
       return rated;
     }
