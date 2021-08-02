@@ -72,7 +72,7 @@ export const TaskValueCreatedVisualization: React.FC<{
         ['--largest-dot-size' as any]: largestValue(data),
         ['--max-diameter-multiplier' as any]: Math.min(
           2,
-          Math.max(1, (data?.length || 0) * 0.3),
+          Math.max(1, data.length * 0.3),
         ),
       }}
     >

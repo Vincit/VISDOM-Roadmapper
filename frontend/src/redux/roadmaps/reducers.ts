@@ -46,7 +46,7 @@ export const GET_CUSTOMERS_FULFILLED = (
   action: PayloadAction<{ roadmapId: number; customers: Customer[] }>,
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  const roadmap = state.roadmaps?.find(
+  const roadmap = state.roadmaps.find(
     ({ id }) => id === action.payload.roadmapId,
   )!;
   roadmap.customers = action.payload.customers;
@@ -95,7 +95,7 @@ export const GET_ROADMAP_USERS_FULFILLED = (
   action: PayloadAction<{ roadmapId: number; response: RoadmapUser[] }>,
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  const roadmap = state.roadmaps?.find(
+  const roadmap = state.roadmaps.find(
     ({ id }) => id === action.payload.roadmapId,
   )!;
   roadmap.users = action.payload.response;

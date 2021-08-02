@@ -224,7 +224,7 @@ export const TaskTableRated: React.FC<{
           allUsers,
           currentRoadmap.customers ?? [],
         );
-        setTaskList(tasks.filter((task) => !unratedTasks?.includes(task)));
+        setTaskList(tasks.filter((task) => !unratedTasks.includes(task)));
       }
     }
     if (type === RoleType.Developer || type === RoleType.Business) {

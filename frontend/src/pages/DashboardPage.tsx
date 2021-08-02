@@ -58,7 +58,8 @@ export const DashboardPage = () => {
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
     if (roadmapsVersions === undefined) {
-      dispatch(versionsActions.getVersions(currentRoadmap!.id));
+      if (currentRoadmap)
+        dispatch(versionsActions.getVersions(currentRoadmap.id));
       return;
     }
     const versionLists: VersionListsObject = {};
@@ -67,20 +68,18 @@ export const DashboardPage = () => {
       versionLists[v.id] = v.tasks;
     });
 
-    const chartVersions = Object.keys(versionLists)
-      .filter(
-        (key) =>
-          key !== ROADMAP_LIST_ID &&
-          versionLists[key].length > 0 &&
-          roadmapsVersions!.find((ver) => ver.id === +key),
-      )
-      .map((key) => {
-        const version = roadmapsVersions!.find((ver) => ver.id === +key)!;
-        return {
-          name: version!.name,
-          sortingRank: version.sortingRank,
-          tasks: versionLists[key],
-        };
+    const chartVersions = Object.entries(versionLists)
+      .filter(([key, tasks]) => key !== ROADMAP_LIST_ID && tasks.length > 0)
+      .flatMap(([key, tasks]) => {
+        const version = roadmapsVersions.find((ver) => ver.id === +key);
+        if (!version) return [];
+        return [
+          {
+            name: version.name,
+            sortingRank: version.sortingRank,
+            tasks,
+          },
+        ];
       })
       .sort((a, b) => a.sortingRank - b.sortingRank);
 
@@ -93,7 +92,7 @@ export const DashboardPage = () => {
         <h2>
           <Trans i18nKey="Welcome user">
             <span style={{ fontWeight: 'normal' }}>Welcome, </span>
-            {{ name: userInfo!.username }}
+            {{ name: userInfo?.username }}
           </Trans>
         </h2>
         <RoadmapOverview />

@@ -70,7 +70,7 @@ export const TableUnratedTaskRow: React.FC<TableTaskRowProps> = ({ task }) => {
       }));
 
       const unratedCustomers = allCustomers?.filter((customer) => {
-        const representativeIds = customer?.representatives?.map(
+        const representativeIds = customer.representatives?.map(
           (rep) => rep.id,
         );
 

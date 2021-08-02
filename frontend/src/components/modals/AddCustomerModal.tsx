@@ -62,7 +62,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     if (!roadmapUsers) return;
     setRepresentatives(
       roadmapUsers
-        ?.filter(
+        .filter(
           (user) =>
             user.type === RoleType.Admin || user.type === RoleType.Business,
         )

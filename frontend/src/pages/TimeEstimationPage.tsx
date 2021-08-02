@@ -56,7 +56,7 @@ export const TimeEstimationPage = () => {
 
   const handleMilestoneChange = (version: Version) => {
     if (timeEstimates.filter((e) => e.id === version.id).length === 0) {
-      if (durationInput.current !== null) durationInput.current!.value = '';
+      if (durationInput.current !== null) durationInput.current.value = '';
     }
     if (version) {
       setSelectedMilestoneId(version.id);
@@ -73,7 +73,7 @@ export const TimeEstimationPage = () => {
     if (milestone !== undefined && roadmap) {
       dispatch(
         versionsActions.setTimeEstimate({
-          roadmapId: roadmap!.id,
+          roadmapId: roadmap.id,
           id: milestone,
           estimate: time > 0 ? time : undefined,
         }),
@@ -85,7 +85,7 @@ export const TimeEstimationPage = () => {
     roadmap && selectedMilestoneId !== undefined
       ? timeEstimates.find(
           ({ roadmapId, id }) =>
-            roadmapId === roadmap!.id && id === selectedMilestoneId,
+            roadmapId === roadmap.id && id === selectedMilestoneId,
         )?.estimate
       : undefined;
 
@@ -94,14 +94,10 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    const selectedMilestone = roadmapsVersions!.find(
+    const selectedMilestone = roadmapsVersions.find(
       (ver) => ver.id === selectedMilestoneId,
     );
-    if (!selectedMilestone) {
-      setCalculatedDaysPerWork(undefined);
-      return;
-    }
-    if (milestoneDuration === undefined) {
+    if (!selectedMilestone || milestoneDuration === undefined) {
       setCalculatedDaysPerWork(undefined);
       return;
     }
@@ -216,7 +212,7 @@ export const TimeEstimationPage = () => {
             ) : (
               <Dropdown title={selectedTitle} css={css} maxLength={40}>
                 {roadmapsVersions
-                  ?.filter((e) => e.name !== selectedTitle)
+                  .filter((e) => e.name !== selectedTitle)
                   .map((ver) => {
                     return (
                       <option

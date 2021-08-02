@@ -126,7 +126,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       const previous = taskRatings.find(
         ({ forCustomer, createdByUser }) =>
           (!forCustomer || forCustomer === rating.customer?.id) &&
-          createdByUser === userInfo!.id,
+          createdByUser === userInfo?.id,
       );
       return { ...previous, ...rating, changed: false };
     })
@@ -187,7 +187,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.taskHeader)}>
-            <h6 className={classes(css.taskTitle)}>{task?.name}</h6>
+            <h6 className={classes(css.taskTitle)}>{task.name}</h6>
             <p className={classes(css.dimText)}>{task.description}</p>
           </div>
 
