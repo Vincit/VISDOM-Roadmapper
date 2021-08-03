@@ -182,7 +182,7 @@ export const english = {
       'No problem. You can always start by making a new project. With a new project, you can start filling in tasks, milestones, and related people to your project to succeed in your product development goals.',
     'First project info 2/2':
       'Another way to start using VISDOM is to get an invitation to another existing project. Contact your project’s product owner to invite you in.',
-    tooltipMessage: 'Tooltip message placeholder',
+    tooltipMessage: 'Tooltip message placeholder', // TODO: remove it when the actual tooltip messages are added.
     workValueTitle: 'Work / Value',
     customerStakesTitle: 'Customer stakes in milestone',
     unratedTaskMessage: 'Waiting for ratings',

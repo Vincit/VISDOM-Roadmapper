@@ -21,7 +21,7 @@ import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { customerWeight } from '../utils/CustomerUtils';
 import { percent } from '../utils/string';
-import { TooltipIcon } from '../components/TooltipIcon';
+import { InfoTooltip } from '../components/InfoTooltip';
 import css from './PlannerWeightsPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -109,9 +109,9 @@ export const PlannerWeightsPage = () => {
       <header className={classes(css.weightsHeader)}>
         <h2 className={classes(css.title)}>
           <Trans i18nKey="Set different weighing for clients" />
-          <TooltipIcon title={t('tooltipMessage')}>
+          <InfoTooltip title={t('tooltipMessage')}>
             <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-          </TooltipIcon>
+          </InfoTooltip>
         </h2>
         <button
           className="button-small-outlined"
