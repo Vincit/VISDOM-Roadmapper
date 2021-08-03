@@ -4,14 +4,14 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import ListIcon from '@material-ui/icons/List';
-import { StoreDispatchType } from '../redux';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
 import { roadmapsVersionsSelector } from '../redux/versions/selectors';
 import { Version } from '../redux/versions/types';
 import { totalWeightedValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
-import { TooltipIcon } from '../components/TooltipIcon';
+import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
 import {
   BusinessValueFilled,
@@ -95,10 +95,10 @@ export const RoadmapGraphPage = () => {
     <div className={classes(css.plannerPagecontainer)}>
       <div className={classes(css.graphOuter)}>
         <div className={classes(css.titleContainer)}>
-          <h2 className={classes(css.graphTitle)}>Work / Value</h2>
-          <TooltipIcon title={t('tooltipMessage')}>
+          <h2 className={classes(css.graphTitle)}>{t('workValueTitle')}</h2>
+          <InfoTooltip title={t('tooltipMessage')}>
             <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-          </TooltipIcon>
+          </InfoTooltip>
         </div>
 
         <div className={classes(css.graphInner)}>
@@ -157,9 +157,9 @@ export const RoadmapGraphPage = () => {
           <h2 className={classes(css.graphTitle)}>
             {t('customerStakesTitle')}
           </h2>
-          <TooltipIcon title={t('tooltipMessage')}>
+          <InfoTooltip title={t('tooltipMessage')}>
             <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-          </TooltipIcon>
+          </InfoTooltip>
         </div>
         <div className={classes(css.stakesContainer)}>
           {roadmapsVersions?.map((ver) => (

@@ -11,7 +11,7 @@ import { TaskTableUnrated } from '../components/TaskTable';
 import { StoreDispatchType } from '../redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
-import { TooltipIcon } from '../components/TooltipIcon';
+import { InfoTooltip } from '../components/InfoTooltip';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -119,9 +119,9 @@ export const DashboardPage = () => {
             <h2 className={classes(css.title)}>
               <Trans i18nKey="Unrated tasks" />
             </h2>
-            <TooltipIcon title={t('tooltipMessage')}>
+            <InfoTooltip title={t('tooltipMessage')}>
               <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-            </TooltipIcon>
+            </InfoTooltip>
           </div>
           <TaskTableUnrated tasks={getUnratedTasks()} />
         </div>

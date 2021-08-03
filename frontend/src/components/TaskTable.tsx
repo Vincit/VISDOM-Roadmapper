@@ -10,7 +10,7 @@ import { Roadmap, RoadmapUser, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { TooltipIcon } from '../components/TooltipIcon';
+import { InfoTooltip } from './InfoTooltip';
 import {
   filterTasks,
   FilterTypes,
@@ -136,9 +136,9 @@ const TaskTable: FC<{
             <h2 className={classes(css.title)}>
               {label} ({getRenderTaskList().length})
             </h2>
-            <TooltipIcon title={t('tooltipMessage')}>
+            <InfoTooltip title={t('tooltipMessage')}>
               <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-            </TooltipIcon>
+            </InfoTooltip>
           </div>
           <div>{renderTasks()}</div>
         </div>
