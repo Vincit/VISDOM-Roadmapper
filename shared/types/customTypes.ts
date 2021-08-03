@@ -1,3 +1,8 @@
+export enum TaskRelationType {
+  Dependency,
+  Synergy,
+}
+
 export enum TaskRatingDimension {
   BusinessValue = 0,
   RequiredWork = 1,
