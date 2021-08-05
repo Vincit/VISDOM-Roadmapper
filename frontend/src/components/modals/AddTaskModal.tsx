@@ -18,6 +18,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Input, TextArea } from '../forms/FormField';
+import { representsCustomers } from '../../utils/UserUtils';
 import '../../shared.scss';
 
 export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
@@ -43,7 +44,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
     if (!userInfo) dispatch(userActions.getUserInfo());
   }, [userInfo, dispatch]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
@@ -57,24 +58,22 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
         createdByUser: userInfo?.id,
       };
 
-      dispatch(roadmapsActions.addTask(req)).then((res) => {
-        setIsLoading(false);
-        if (roadmapsActions.addTask.rejected.match(res)) {
-          if (res.payload) {
-            setErrorMessage(res.payload.message);
-          }
-        } else {
-          closeModal();
-          dispatch(
-            modalsActions.showModal({
-              modalType: ModalTypes.RATE_TASK_MODAL,
-              modalProps: {
-                taskId: res.payload.id,
-              },
-            }),
-          );
-        }
-      });
+      const res = await dispatch(roadmapsActions.addTask(req));
+      setIsLoading(false);
+      if (roadmapsActions.addTask.rejected.match(res)) {
+        if (res.payload) setErrorMessage(res.payload.message);
+        return;
+      }
+      closeModal();
+      if (!representsCustomers(userInfo!, chosenRoadmapId!)) return;
+      dispatch(
+        modalsActions.showModal({
+          modalType: ModalTypes.RATE_TASK_MODAL,
+          modalProps: {
+            taskId: res.payload.id,
+          },
+        }),
+      );
     }
   };
 

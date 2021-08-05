@@ -12,3 +12,8 @@ export const getType = (
 export const isUserInfo = (
   user: Customer | RoadmapUser | UserInfo,
 ): user is UserInfo => 'roles' in user;
+
+export const representsCustomers = (user: UserInfo, roadmapId: number) =>
+  !!user.representativeFor?.some(
+    (customer) => customer.roadmapId === roadmapId,
+  );
