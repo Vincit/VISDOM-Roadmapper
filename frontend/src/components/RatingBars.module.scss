@@ -1,0 +1,36 @@
+@import '../shared.scss';
+
+.ratingBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .rating {
+    @extend .typography-body-bold;
+  }
+
+  .unrated {
+    @extend .typography-body;
+    color: $COLOR_BLACK40;
+  }
+
+  .icon {
+    padding-right: 17.5px;
+    svg {
+      height: 22.5px;
+      width: 22.5px;
+    }
+  }
+
+  .iconFilled path {
+    fill: $COLOR_AZURE;
+  }
+
+  .iconEmpty path {
+    fill: $COLOR_BLACK10;
+  }
+
+  .iconActive {
+    transform: none;
+  }
+}

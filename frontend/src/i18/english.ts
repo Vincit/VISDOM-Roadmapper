@@ -33,9 +33,7 @@ export const english = {
     Completed: 'Completed',
     'Not completed': 'Not completed',
     'Rate task': 'Rate task',
-    'Comment your rating': 'Comment your rating...',
-    'Please input a rating before submitting':
-      'Please input a rating before submitting',
+    'Add a comment': 'Add a comment...',
     Roadmap: 'Roadmap',
     'Roadmap View': 'Roadmap View',
     'Your projects': 'Your projects',

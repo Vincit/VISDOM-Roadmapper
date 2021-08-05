@@ -1,10 +1,8 @@
 import { FC, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { ChatDots } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { ModalCloseButton } from './forms/SvgButton';
 import {
   TaskRatingDimension,
   RoleType,
@@ -55,11 +53,13 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
     },
   );
 
-  const [commentBoxOpen, setCommentBoxOpen] = useState(false);
+  const [commentBoxOpen, setCommentBoxOpen] = useState(!!initialRating?.value);
 
   const ratingChanged = (value: number) => {
     setRating({ ...rating, value });
     if (onRatingChange) onRatingChange({ ...rating, value });
+    if (value) setCommentBoxOpen(true);
+    else setCommentBoxOpen(false);
   };
 
   const commentChanged = (comment: string) => {
@@ -74,46 +74,33 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
 
   const renderRatingBars = () =>
     shouldShow && (
-      <Form.Group>
-        <div className="d-flex justify-content-around">
-          <TaskRatingBar
-            dimension={ratingDimension}
-            initialValue={rating.value}
-            onChange={ratingChanged}
-          />
-          <ChatDots
-            className={classes(css.commentButton)}
-            onClick={() => setCommentBoxOpen(true)}
-          />
-        </div>
-      </Form.Group>
+      <div className={classes(css.ratingBarWrapper)}>
+        <TaskRatingBar
+          dimension={ratingDimension}
+          initialValue={rating.value}
+          onChange={ratingChanged}
+        />
+      </div>
     );
 
-  const renderCommentBox = () => {
-    return (
+  const renderCommentBox = () =>
+    commentBoxOpen && (
       <Form.Group className={classes(css.commentBoxWrapper)}>
         <TextArea
-          required
           name="description"
           id="description"
           draggable="false"
-          placeholder={t('Comment your rating')}
+          placeholder={t('Add a comment')}
           value={rating.comment}
           onChange={(e) => commentChanged(e.currentTarget.value)}
         />
-        <div className={classes(css.closeCommentButton)}>
-          <ModalCloseButton
-            onClick={() => setCommentBoxOpen(false)}
-            aria-hidden="true"
-          />
-        </div>
       </Form.Group>
     );
-  };
 
   return (
-    <div className="position-relative">
-      {commentBoxOpen && renderCommentBox()} {renderRatingBars()}
+    <div className={classes(css.ratingWrapper)}>
+      {renderRatingBars()}
+      {renderCommentBox()}
     </div>
   );
 };

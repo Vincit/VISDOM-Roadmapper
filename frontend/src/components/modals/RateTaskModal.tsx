@@ -1,6 +1,6 @@
-import { FC, FormEvent, useState } from 'react';
+import { FC, FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { StoreDispatchType } from '../../redux';
@@ -75,7 +75,6 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
 }) => {
   const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
-  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -143,13 +142,20 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   const [businessValueRatings, setBusinessValueRatings] = useState(ratings);
   const [businessRatingModified, setBusinessRatingModified] = useState(false);
 
+  useEffect(() => {
+    const modified = ratings.some(({ id, comment, value }) => {
+      return !!businessValueRatings.find(
+        (rating) =>
+          rating.id === id &&
+          (rating.comment !== comment || rating.value !== value),
+      );
+    });
+    setBusinessRatingModified(modified);
+  }, [businessValueRatings, ratings]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!businessRatingModified) {
-      setErrorMessage(t('Please input a rating before submitting'));
-      return;
-    }
 
     setIsLoading(true);
     const promises = businessValueRatings.flatMap(({ changed, ...rating }) =>
@@ -177,7 +183,6 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     const original = idx < 0 ? { forCustomer } : copy[idx];
     copy[idx] = { ...original, ...rating, changed: true };
     setBusinessValueRatings(copy);
-    setBusinessRatingModified(true);
   };
 
   return (
@@ -235,7 +240,11 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
             {isLoading ? (
               <LoadingSpinner />
             ) : (
-              <button className="button-large" type="submit">
+              <button
+                className="button-large"
+                type="submit"
+                disabled={!businessRatingModified}
+              >
                 <Trans i18nKey="Submit" />
               </button>
             )}
