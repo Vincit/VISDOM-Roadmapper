@@ -27,6 +27,13 @@ export interface CustomerRequest {
   representatives?: number[];
 }
 
+export interface CustomerStakes {
+  id: number;
+  name: string;
+  value: number;
+  color: string;
+}
+
 export interface CheckableUser extends RoadmapUser {
   checked: boolean;
 }

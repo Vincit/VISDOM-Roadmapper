@@ -2,25 +2,10 @@
 @import './../pages/RoadmapGraphPage.module.scss';
 
 $MAX_DIAMETER: calc(60px * var(--max-diameter-multiplier));
-$DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--dot-size, 0));
 $LARGEST_DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--largest-dot-size, 0));
 
-.stakes {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.customerStakes {
   margin-right: calc(
     var(--version-width) + #{$GRAPH_ITEM_MARGIN} - #{$LARGEST_DOT_DIAMETER}
   );
-}
-
-.dotContainer {
-  display: flex;
-  justify-content: center;
-  height: $DOT_DIAMETER;
-
-  svg {
-    width: $DOT_DIAMETER;
-    height: $DOT_DIAMETER;
-  }
 }
