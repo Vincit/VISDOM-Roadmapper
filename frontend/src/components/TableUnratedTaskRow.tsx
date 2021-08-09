@@ -22,7 +22,12 @@ import {
 import { Dot } from './Dot';
 import { getType } from '../utils/UserUtils';
 import css from './TableUnratedTaskRow.module.scss';
-import { taskAwaitsRatings, averageValueAndWork } from '../utils/TaskUtils';
+import {
+  taskAwaitsRatings,
+  averageValueAndWork,
+  findMissingCustomers,
+  findMissingDevelopers,
+} from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -63,40 +68,14 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
     CustomerUser can see their own missing ratings
   */
   useEffect(() => {
-    if (type === RoleType.Admin) {
-      const ratings = task.ratings.map((rating) => ({
-        createdByUser: rating.createdByUser,
-        forCustomer: rating.forCustomer,
-      }));
-
-      const unratedCustomers = allCustomers?.filter((customer) => {
-        const representativeIds = customer.representatives?.map(
-          (rep) => rep.id,
-        );
-
-        return !representativeIds?.every((rep) => {
-          return ratings.some((rating) => {
-            if (
-              rating.createdByUser === rep &&
-              rating.forCustomer === customer.id
-            )
-              return true;
-            return false;
-          });
-        });
-      });
+    if (type === RoleType.Admin && allCustomers) {
+      const unratedCustomers = findMissingCustomers(task.ratings, allCustomers);
       setMissingRatings(unratedCustomers);
     }
 
-    if (type === RoleType.Admin || type === RoleType.Developer) {
-      const ratingIds = task.ratings.map((rating) => rating.createdByUser);
-      const developers = allUsers?.filter(
-        (user) => user.type === RoleType.Developer,
-      );
-      const missingDevs = developers?.filter(
-        (developer) => !ratingIds.includes(developer.id),
-      );
-      setMissingDevRatings(missingDevs);
+    if ((type === RoleType.Admin || type === RoleType.Developer) && allUsers) {
+      const missingDevelopers = findMissingDevelopers(task.ratings, allUsers);
+      setMissingDevRatings(missingDevelopers);
     }
 
     if (type === RoleType.Business) {
