@@ -5,6 +5,7 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classNames from 'classnames';
 import { ReactComponent as CornerPiece } from '../icons/corner_rounder.svg';
+import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -36,6 +37,11 @@ export const NavBar = () => {
   return (
     <div className={classes(css.navBarDiv)}>
       <CornerPiece />
+      {pathname.startsWith(paths.overview) && (
+        <div className={classes(css.logo)}>
+          <VisdomLogo />
+        </div>
+      )}
       <div className={classes(css.navBarRightSide)}>
         <div className={classes(css.navBarText)}>
           <Trans i18nKey="Project" />

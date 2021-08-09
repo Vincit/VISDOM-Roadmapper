@@ -108,14 +108,7 @@ export const RoadmapSidebar: FC = () => {
   return (
     <div className={classes('layout-column')}>
       <div className={classes(css.navButton, css.logo)}>
-        <Link
-          to={url + paths.roadmapRelative.overview}
-          className={classes(css.visdomLogo, {
-            [css.selected]: pathname.startsWith(
-              url + paths.roadmapRelative.overview,
-            ),
-          })}
-        >
+        <Link to={paths.overview} className={classes(css.visdomLogo)}>
           <VisdomLogo />
         </Link>
       </div>

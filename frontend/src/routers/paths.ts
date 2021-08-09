@@ -5,12 +5,12 @@ export const paths = {
   logoutPage: '/logout',
   registerPage: '/register',
   getStarted: '/getstarted',
+  overview: '/overview',
   roadmapHome: '/roadmap',
   notFound: '/404',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
   roadmapRelative: {
     home: '/',
-    overview: '/overview',
     dashboard: '/dashboard',
     people: '/people',
     taskList: '/tasks',

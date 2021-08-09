@@ -45,6 +45,7 @@ import {
   PATCH_TASKRATING_FULFILLED,
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
+  CLEAR_CURRENT_ROADMAP,
   SET_PLANNER_CUSTOMER_WEIGHT,
   CLEAR_PLANNER_CUSTOMER_WEIGHTS,
   ADD_INTEGRATION_CONFIGURATION_FULFILLED,
@@ -66,6 +67,7 @@ export const roadmapsSlice = createSlice({
   initialState,
   reducers: {
     selectCurrentRoadmap: SELECT_CURRENT_ROADMAP,
+    clearCurrentRoadmap: CLEAR_CURRENT_ROADMAP,
     setPlannerCustomerWeight: SET_PLANNER_CUSTOMER_WEIGHT,
     clearPlannerCustomerWeights: CLEAR_PLANNER_CUSTOMER_WEIGHTS,
   },

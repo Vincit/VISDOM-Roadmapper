@@ -231,6 +231,10 @@ export const SELECT_CURRENT_ROADMAP: CaseReducer<
   state.selectedRoadmapId = action.payload;
 };
 
+export const CLEAR_CURRENT_ROADMAP: CaseReducer<RoadmapsState> = (state) => {
+  state.selectedRoadmapId = undefined;
+};
+
 export const SET_PLANNER_CUSTOMER_WEIGHT: CaseReducer<
   RoadmapsState,
   PayloadAction<PlannerCustomerWeight>

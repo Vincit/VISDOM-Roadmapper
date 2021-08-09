@@ -1,46 +1,40 @@
-import { MouseEvent, useState, useEffect } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import {
-  roadmapsSelector,
-  chosenRoadmapSelector,
-} from '../redux/roadmaps/selectors';
+import { roadmapsSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
 import { ProjectSummary } from '../components/ProjectSummary';
 import { AddButton } from '../components/forms/AddButton';
+import { requireLogin } from '../utils/requirelogin';
 import css from './ProjectOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
 
-export const ProjectOverviewPage = () => {
+const ProjectOverviewComponent = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,
     shallowEqual,
   );
-  const chosenRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const [selectedRoadmapId, setSelectedRoadmapId] = useState<
-    number | undefined
-  >(undefined);
 
   useEffect(() => {
     if (!roadmaps) dispatch(roadmapsActions.getRoadmaps());
   }, [dispatch, roadmaps]);
 
   useEffect(() => {
-    if (chosenRoadmap) {
-      setSelectedRoadmapId(chosenRoadmap.id);
-    }
-  }, [chosenRoadmap]);
+    if (localStorage.getItem('chosenRoadmap'))
+      localStorage.removeItem('chosenRoadmap');
+  }, []);
+
+  useEffect(() => {
+    dispatch(roadmapsActions.clearCurrentRoadmap());
+  }, [dispatch]);
 
   const addRoadmapClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -60,11 +54,7 @@ export const ProjectOverviewPage = () => {
       </h2>
       <div className={classes(css.roadmapsContainer)}>
         {roadmaps?.map((roadmap) => (
-          <ProjectSummary
-            roadmap={roadmap}
-            selected={selectedRoadmapId === roadmap.id}
-            key={roadmap.id}
-          />
+          <ProjectSummary roadmap={roadmap} key={roadmap.id} />
         ))}
         <div className={classes(css.addButtonContainer)}>
           <AddButton onClick={addRoadmapClicked}>
@@ -75,3 +65,5 @@ export const ProjectOverviewPage = () => {
     </div>
   );
 };
+
+export const ProjectOverviewPage = requireLogin(ProjectOverviewComponent);

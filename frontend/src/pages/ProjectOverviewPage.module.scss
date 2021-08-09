@@ -4,24 +4,28 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: auto;
-  margin-left: 15px;
+  padding-top: 100px;
+  height: 100%;
 
   h2 {
-    margin-left: 10px;
-    margin-bottom: 60px;
+    margin-left: 25px;
+    margin-bottom: 40px;
   }
 }
 
 .roadmapsContainer {
   display: flex;
   align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  padding-left: 10px;
 }
 
 .addButtonContainer {
   display: flex;
   align-items: stretch;
   margin: 10px;
-  width: 360px;
-  height: 110px;
+  min-width: 360px;
+  min-height: 115px;
 }

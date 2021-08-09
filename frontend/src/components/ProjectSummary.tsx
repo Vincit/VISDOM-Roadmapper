@@ -82,8 +82,7 @@ const PeopleList: FC<{
 
 export const ProjectSummary: FC<{
   roadmap: Roadmap;
-  selected: boolean;
-}> = ({ roadmap, selected }) => {
+}> = ({ roadmap }) => {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<
     (EventTarget & HTMLDivElement) | null
@@ -134,18 +133,12 @@ export const ProjectSummary: FC<{
       {!!roadmap.users?.length && (
         <PeopleList label="Team members" people={roadmap.users} />
       )}
-      {selected ? (
-        <button className="button-large" type="button" disabled>
-          <Trans i18nKey="Open" />
-        </button>
-      ) : (
-        <Link
-          className={classes(css.openButton)}
-          to={`${paths.roadmapHome}/${roadmap.id}${paths.roadmapRelative.dashboard}`}
-        >
-          <Trans i18nKey="Open" />
-        </Link>
-      )}
+      <Link
+        className={classes(css.openButton)}
+        to={`${paths.roadmapHome}/${roadmap.id}${paths.roadmapRelative.dashboard}`}
+      >
+        <Trans i18nKey="Open" />
+      </Link>
     </div>
   );
 };
