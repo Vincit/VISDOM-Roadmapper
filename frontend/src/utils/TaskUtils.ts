@@ -383,3 +383,33 @@ export const unratedProductOwnerTasks: (
   });
   return unrated;
 };
+
+export const findMissingDevelopers = (
+  taskRatings: Taskrating[],
+  allUsers: RoadmapUser[],
+) => {
+  const ratingIds = taskRatings.map((rating) => rating.createdByUser);
+  return allUsers.filter(
+    (user) => user.type === RoleType.Developer && !ratingIds.includes(user.id),
+  );
+};
+
+export const findMissingCustomers = (
+  taskRatings: Taskrating[],
+  customers: Customer[],
+) => {
+  const ratings = taskRatings.map((rating) => ({
+    createdByUser: rating.createdByUser,
+    forCustomer: rating.forCustomer,
+  }));
+  return customers?.filter((customer) => {
+    const representativeIds = customer?.representatives?.map((rep) => rep.id);
+    return !representativeIds?.every((rep) => {
+      return ratings.some((rating) => {
+        if (rating.createdByUser === rep && rating.forCustomer === customer.id)
+          return true;
+        return false;
+      });
+    });
+  });
+};
