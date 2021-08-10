@@ -43,7 +43,7 @@ export const RoadmapSelectorWidget = () => {
         'chosenRoadmap',
         JSON.stringify({ id: chosenRoadmap.id }),
       );
-    }
+    } else setSelectedRoadmap('Select roadmap');
   }, [chosenRoadmap]);
 
   if (!roadmaps || roadmaps.length === 0) {
