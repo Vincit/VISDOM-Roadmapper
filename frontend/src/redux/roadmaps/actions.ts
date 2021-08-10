@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { shallowEqual, useSelector } from 'react-redux';
 import { AxiosError } from 'axios';
 import { api } from '../../api/api';
 import { chosenRoadmapIdSelector, roadmapsVersionsSelector } from './selectors';
@@ -453,9 +452,8 @@ export const addTaskToVersion = createAsyncThunk<
 >(
   'versions/addTaskToVersion',
   async (request: AddTaskToVersionRequest, thunkAPI) => {
-    const versions = useSelector<RootState, Version[] | undefined>(
-      roadmapsVersionsSelector(),
-      shallowEqual,
+    const versions = roadmapsVersionsSelector()(
+      thunkAPI.getState() as RootState,
     );
     if (versions === undefined) throw new Error('Versions not fetched yet!');
 
@@ -481,9 +479,8 @@ export const removeTaskFromVersion = createAsyncThunk<
 >(
   'versions/removeTaskFromVersion',
   async (request: RemoveTaskFromVersionRequest, thunkAPI) => {
-    const versions = useSelector<RootState, Version[] | undefined>(
-      roadmapsVersionsSelector(),
-      shallowEqual,
+    const versions = roadmapsVersionsSelector()(
+      thunkAPI.getState() as RootState,
     );
     if (versions === undefined) throw new Error('Versions not fetched yet!');
 
