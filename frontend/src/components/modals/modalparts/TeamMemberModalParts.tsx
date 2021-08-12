@@ -8,33 +8,24 @@ import css from './TeamMemberModalParts.module.scss';
 const classes = classNames.bind(css);
 
 export const SelectMemberRole: FC<{
-  role: string;
-  onChange: (role: string) => void;
+  role: RoleType;
+  onChange: (role: RoleType) => void;
 }> = ({ role, onChange }) => (
   <>
     <label htmlFor="role">
       <Trans i18nKey="Member role" />
     </label>
     <div id="role" className={classes(css.roleSection)}>
-      <RadioButton
-        label={RoleType[RoleType.Developer]}
-        value={RoleType[RoleType.Developer]}
-        checked={role === RoleType[RoleType.Developer]}
-        onChange={(value: string) => onChange(value)}
-      />
-      <RadioButton
-        label={RoleType[RoleType.Business]}
-        value={RoleType[RoleType.Business]}
-        checked={role === RoleType[RoleType.Business]}
-        onChange={(value: string) => onChange(value)}
-      />
-      <RadioButton
-        label={RoleType[RoleType.Admin]}
-        value={RoleType[RoleType.Admin]}
-        checked={role === RoleType[RoleType.Admin]}
-        onChange={(value: string) => onChange(value)}
-      />
-      {role === RoleType[RoleType.Admin] && (
+      {[RoleType.Developer, RoleType.Business, RoleType.Admin].map((type) => (
+        <RadioButton
+          key={type}
+          label={RoleType[type]}
+          value={RoleType[type]}
+          checked={role === type}
+          onChange={() => onChange(type)}
+        />
+      ))}
+      {role === RoleType.Admin && (
         <div className={classes(css.warning)}>
           <b>
             <Trans i18nKey="Admin caution" />

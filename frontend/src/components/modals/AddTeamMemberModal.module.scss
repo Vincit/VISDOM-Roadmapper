@@ -1,0 +1,44 @@
+@import '../../shared.scss';
+
+.addMemberContent {
+  display: flex;
+  flex-flow: column;
+  gap: 40px;
+}
+
+.instructions {
+  width: 418px;
+  padding: 20px;
+  border-radius: 10px;
+  background: $COLOR_CLOUD;
+}
+
+.joinLinkContent {
+  @extend .addMemberContent;
+  gap: 20px;
+
+  .buttons {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+.sendEmailContent {
+  display: flex;
+  flex-flow: column;
+  gap: 20px;
+  margin-bottom: 20px;
+
+  .header {
+    @extend .typography-body-bold;
+    display: flex;
+    gap: 10px;
+  }
+  .sendButton {
+    margin-top: 20px;
+  }
+}
+
+.inputContainer {
+  margin: 0 3px;
+}

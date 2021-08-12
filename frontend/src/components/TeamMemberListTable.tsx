@@ -1,7 +1,8 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, MouseEvent, useEffect, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
 import { TableTeamMemberRow } from './TableTeamMemberRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -12,12 +13,17 @@ import {
 } from '../redux/roadmaps/selectors';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from './modals/types';
 import { SortingOrders } from '../utils/SortCustomerUtils';
 import {
   UserSortingTypes,
   sortRoadmapUsers,
 } from '../utils/SortRoadmapUserUtils';
 import { RoleType } from '../../../shared/types/customTypes';
+import css from '../pages/PeopleListPage.module.scss';
+
+const classes = classNames.bind(css);
 
 interface TeamMemberTableHeader {
   label: string;
@@ -88,6 +94,17 @@ export const TeamMemberList: FC<{
       <ArrowDownCircle />
     );
 
+  const addTeamMemberClicked = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.ADD_TEAM_MEMBER_MODAL,
+        modalProps: {},
+      }),
+    );
+  };
+
   const teamMemberTableHeaders: TeamMemberTableHeader[] = [
     { label: 'Role', sorting: UserSortingTypes.SORT_ROLE, width: '1em' },
     { label: 'Name', sorting: UserSortingTypes.SORT_NAME },
@@ -126,7 +143,16 @@ export const TeamMemberList: FC<{
 
   return (
     <>
-      <h2>Team members</h2>
+      <div className={classes(css.header)}>
+        <h2>Team members</h2>
+        <button
+          className={classes(css['button-small-filled'])}
+          type="button"
+          onClick={addTeamMemberClicked}
+        >
+          + <Trans i18nKey="Add new team member" />
+        </button>
+      </div>
       {sortedMembers.length > 0 ? (
         <TeamMemberTable />
       ) : (

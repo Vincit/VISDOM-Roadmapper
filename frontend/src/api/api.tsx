@@ -318,6 +318,20 @@ const sendNotification = async (
   return response.status === 200;
 };
 
+const sendInvitation = async (
+  email: string,
+  link: string,
+  roadmapId: number,
+) => {
+  const response = await axios.post(
+    `roadmaps/${roadmapId}/invitations/${link}/email`,
+    {
+      email,
+    },
+  );
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -355,4 +369,5 @@ export const api = {
   addIntegrationConfiguration,
   patchIntegrationConfiguration,
   sendNotification,
+  sendInvitation,
 };
