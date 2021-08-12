@@ -20,7 +20,7 @@ import {
   allCustomersSelector,
 } from '../redux/roadmaps/selectors';
 import { Dot } from './Dot';
-import { getType } from '../utils/UserUtils';
+import { getType, representsCustomers } from '../utils/UserUtils';
 import css from './TableUnratedTaskRow.module.scss';
 import {
   taskAwaitsRatings,
@@ -194,14 +194,18 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
             <Trans i18nKey="Notify" />
           </button>
         )}
-        <button
-          className={classes(css['button-small-filled'])}
-          type="button"
-          disabled={!taskAwaitsRatings(task, userInfo)}
-          onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
-        >
-          <Trans i18nKey="Rate" />
-        </button>
+        {userInfo &&
+          (type === RoleType.Developer ||
+            representsCustomers(userInfo, task.roadmapId)) && (
+            <button
+              className={classes(css['button-small-filled'])}
+              type="button"
+              disabled={!taskAwaitsRatings(task, userInfo)}
+              onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
+            >
+              <Trans i18nKey="Rate" />
+            </button>
+          )}
       </td>
     </tr>
   );
