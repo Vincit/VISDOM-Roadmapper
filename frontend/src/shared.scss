@@ -439,6 +439,22 @@ textarea {
   }
 }
 
+.blue {
+  text-decoration: underline;
+  color: $COLOR_AZURE;
+
+  &.linkButton {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+  }
+
+  &:hover {
+    text-decoration: none;
+    color: darken($COLOR_AZURE, 10%);
+  }
+}
+
 .formDiv {
   padding: 8px;
   margin: auto;

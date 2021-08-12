@@ -20,6 +20,7 @@ import { RateTaskModal } from './RateTaskModal';
 import { RemovePeopleModal } from './RemovePeopleModal';
 import { EditCustomerModal } from './EditCustomerModal';
 import { AddCustomerModal } from './AddCustomerModal';
+import { AddTeamMemberModal } from './AddTeamMemberModal';
 import { EditTeamMemberModal } from './EditTeamMemberModal';
 import { TaskInfoModal } from './TaskInfoModal';
 import { TaskRatingsInfoModal } from './TaskRatingsInfoModal';
@@ -36,6 +37,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.REMOVE_PEOPLE_MODAL]: RemovePeopleModal,
   [ModalTypes.EDIT_CUSTOMER_MODAL]: EditCustomerModal,
   [ModalTypes.ADD_CUSTOMER_MODAL]: AddCustomerModal,
+  [ModalTypes.ADD_TEAM_MEMBER_MODAL]: AddTeamMemberModal,
   [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: EditTeamMemberModal,
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.DELETE_VERSION_MODAL]: DeleteVersionModal,
