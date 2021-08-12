@@ -166,6 +166,9 @@ export const english = {
     'Team members': 'Team members',
     'Modify team members': 'Modify team members',
     'Member role': 'Member role',
+    'Admin caution': 'Caution:',
+    'Admin caution description':
+      'giving Admin role to this member lets them manage the project however they like.',
     Developer: 'Developer',
     Businessperson: 'Businessperson',
     Admin: 'Admin',

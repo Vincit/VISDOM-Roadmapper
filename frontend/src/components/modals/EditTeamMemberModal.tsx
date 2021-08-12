@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { BusinessValueFilled } from '../RatingIcons';
-import { RadioButton } from '../forms/RadioButton';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { RoleType } from '../../../../shared/types/customTypes';
@@ -16,6 +15,8 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
+import { SelectMemberRole } from './modalparts/TeamMemberModalParts';
+import { getRoleType } from '../../utils/string';
 import css from './EditTeamMemberModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -38,13 +39,10 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
     }
     setIsLoading(true);
 
-    let type = RoleType.Admin;
-    if (selectedRole === 'Developer') type = RoleType.Developer;
-    if (selectedRole === 'Business') type = RoleType.Business;
     const res = await dispatch(
       roadmapsActions.patchRoadmapUser({
         id: member.id,
-        type,
+        type: getRoleType(selectedRole),
       }),
     );
 
@@ -74,35 +72,10 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
             {member.username}
           </div>
           <div className={classes(css.section)}>
-            <label htmlFor="role">
-              <Trans i18nKey="Member role" />
-            </label>
-            <div id="role" className={classes(css.roleSection)}>
-              <RadioButton
-                label="Developer"
-                value="Developer"
-                checked={selectedRole === 'Developer'}
-                onChange={(value: string) => setSelectedRole(value)}
-              />
-              <RadioButton
-                label="Businessperson"
-                value="Business"
-                checked={selectedRole === 'Business'}
-                onChange={(value: string) => setSelectedRole(value)}
-              />
-              <RadioButton
-                label="Admin"
-                value="Admin"
-                checked={selectedRole === 'Admin'}
-                onChange={(value: string) => setSelectedRole(value)}
-              />
-              {selectedRole === 'Admin' && (
-                <div className={classes(css.warning)}>
-                  <b>Caution:</b> giving Admin role to this member let’s them
-                  manage the project however they like.
-                </div>
-              )}
-            </div>
+            <SelectMemberRole
+              role={selectedRole}
+              onChange={(value) => setSelectedRole(value)}
+            />
           </div>
           <Alert
             show={errorMessage.length > 0}
