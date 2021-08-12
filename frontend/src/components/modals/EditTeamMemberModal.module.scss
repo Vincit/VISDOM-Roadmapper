@@ -16,16 +16,3 @@
   }
   gap: 23px;
 }
-
-.roleSection {
-  margin: 2px 20px 0 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.warning {
-  @extend .typography-body;
-  width: 422px;
-  margin-top: 20px;
-  color: $COLOR_RASPBERRY;
-}
