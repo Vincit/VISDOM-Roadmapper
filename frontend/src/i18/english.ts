@@ -163,6 +163,7 @@ export const english = {
     'Pick a color': 'Pick a color',
     "Who's responsible for the client value ratings?":
       "Who's responsible for the client value ratings?",
+    'Search for people': 'Search for people',
     'Team members': 'Team members',
     'Modify team members': 'Modify team members',
     'Member role': 'Member role',

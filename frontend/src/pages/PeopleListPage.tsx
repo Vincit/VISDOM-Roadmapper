@@ -22,7 +22,7 @@ export const PeopleListPage = () => {
       <div className="searchBarContainer">
         <input
           className="search"
-          placeholder={t('Search for customers')}
+          placeholder={t('Search for people')}
           onChange={(e: any) => onSearchChange(e.currentTarget.value)}
         />
         <Search />
