@@ -18,6 +18,8 @@ export const InfoTooltip: React.FC<{
       title={title}
       placement="top"
       arrow
+      interactive
+      leaveDelay={500}
     >
       {children}
     </Tooltip>
