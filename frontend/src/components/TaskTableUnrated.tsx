@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { FC, SyntheticEvent, useState, useEffect } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import BuildIcon from '@material-ui/icons/Build';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
-import { Task, Customer, RoadmapUser } from '../redux/roadmaps/types';
+import { Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -21,21 +21,24 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Dot } from './Dot';
 import { getType, representsCustomers } from '../utils/UserUtils';
-import css from './TableUnratedTaskRow.module.scss';
+import css from './TaskTable.module.scss';
 import {
   taskAwaitsRatings,
   averageValueAndWork,
   findMissingCustomers,
   findMissingDevelopers,
+  SortingTypes,
 } from '../utils/TaskUtils';
+import { taskTable, TaskRow } from './TaskTable';
 
 const classes = classNames.bind(css);
 
-interface TableTaskRowProps {
-  task: Task;
-}
+const numFormat = new Intl.NumberFormat(undefined, {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1,
+});
 
-export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
+const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { name, roadmapId } = task;
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -118,20 +121,12 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
     );
   };
 
-  const numFormat = new Intl.NumberFormat(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 1,
-  });
-
   return (
-    <tr
-      className={classes(css.styledTr, css.clickable)}
-      onClick={openModal(ModalTypes.TASK_INFO_MODAL)}
-    >
-      <td className={classes(css.taskTitle)}>{name}</td>
-      <td className={classes(css.unratedTd)}>{numFormat.format(value)}</td>
-      <td className={classes(css.unratedTd)}>{numFormat.format(work)}</td>
-      <td className={classes(css.unratedTd)}>
+    <div style={style} className={classes(css.taskTableRow)}>
+      <div className={classes(css.taskTitle)}>{name}</div>
+      <div>{numFormat.format(value)}</div>
+      <div>{numFormat.format(work)}</div>
+      <div>
         <div className={classes(css.missingContainer)}>
           {missingRatings?.map((customer) => (
             <Tooltip
@@ -145,20 +140,20 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
               arrow
             >
               <div className={classes(css.dotContainer)}>
-                <Dot fill={customer.color || 'red'} />
+                <Dot fill={customer.color} />
               </div>
             </Tooltip>
           ))}
           {missingDevRatings && (
             <div>
-              {missingDevRatings.map((dev) => (
+              {missingDevRatings.map(({ username }) => (
                 <Tooltip
                   classes={{
-                    arrow: classNames(css.tooltipArrow),
-                    tooltip: classNames(css.tooltip),
+                    arrow: classes(css.tooltipArrow),
+                    tooltip: classes(css.tooltip),
                   }}
-                  key={dev.username}
-                  title={dev.username}
+                  key={username}
+                  title={username}
                   placement="top"
                   arrow
                 >
@@ -170,8 +165,8 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
           {userRatingMissing && type === RoleType.Customer && (
             <Tooltip
               classes={{
-                arrow: classNames(css.tooltipArrow),
-                tooltip: classNames(css.tooltip),
+                arrow: classes(css.tooltipArrow),
+                tooltip: classes(css.tooltip),
               }}
               key={userInfo?.username}
               title={userInfo?.username || ''}
@@ -182,8 +177,8 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
             </Tooltip>
           )}
         </div>
-      </td>
-      <td className={classes(css.buttonContainer)}>
+      </div>
+      <div className={classes(css.buttonContainer)}>
         {type === RoleType.Admin && (
           <button
             style={{ marginRight: '10px' }}
@@ -206,7 +201,27 @@ export const TableUnratedTaskRow: FC<TableTaskRowProps> = ({ task }) => {
               <Trans i18nKey="Rate" />
             </button>
           )}
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 };
+
+export const TaskTableUnrated = taskTable({
+  title: 'unratedTaskMessage',
+  Row: TableUnratedTaskRow,
+  header: [
+    { label: 'Task title', width: '2fr', sorting: SortingTypes.SORT_NAME },
+    {
+      label: 'Current average value',
+      width: '0.5fr',
+      sorting: SortingTypes.SORT_AVG_VALUE,
+    },
+    {
+      label: 'Current average work',
+      width: '0.5fr',
+      sorting: SortingTypes.SORT_AVG_WORK,
+    },
+    { label: 'Waiting for ratings' },
+    { label: '' },
+  ],
+});

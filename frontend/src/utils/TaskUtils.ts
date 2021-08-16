@@ -358,30 +358,27 @@ export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
   return !task.ratings.find((rating) => rating.createdByUser === userInfo?.id);
 };
 
-export const unratedProductOwnerTasks: (
-  tasks: Task[],
+const isUnratedProductOwnerTask = (
   allUsers: RoadmapUser[],
   allCustomers: Customer[],
-) => Task[] = (tasks, allUsers, allCustomers) => {
+) => {
   const developers = allUsers.filter(
     (user) => user.type === RoleType.Developer,
   );
-  const unrated = tasks.filter((task) => {
+  return (task: Task) => {
     const ratingIds = task.ratings.map((rating) => rating.createdByUser);
 
-    const customersMissing = allCustomers.some((customer) => {
-      return !customer.representatives?.every((rep) =>
-        ratingIds.includes(rep.id),
-      );
-    });
+    const customersMissing = allCustomers.some(
+      (customer) =>
+        !customer.representatives?.every((rep) => ratingIds.includes(rep.id)),
+    );
 
     const devsMissing = developers.some(
       (developer) => !ratingIds.includes(developer.id),
     );
 
     return customersMissing || devsMissing;
-  });
-  return unrated;
+  };
 };
 
 export const findMissingDevelopers = (
@@ -407,4 +404,35 @@ export const findMissingCustomers = (
       });
     });
   });
+};
+
+export const splitTasksOnRated = (
+  tasks: Task[],
+  userInfo?: UserInfo,
+  currentRoadmap?: Roadmap,
+) => {
+  const type = getType(userInfo?.roles, currentRoadmap?.id);
+  let predicate: undefined | ((_: Task) => boolean);
+  if (type === RoleType.Admin) {
+    if (currentRoadmap) {
+      predicate = isUnratedProductOwnerTask(
+        currentRoadmap.users,
+        currentRoadmap.customers ?? [],
+      );
+    }
+  } else if (type === RoleType.Developer || type === RoleType.Business) {
+    predicate = (task) => taskAwaitsRatings(task, userInfo);
+  }
+  const unrated: Task[] = [];
+  const rated: Task[] = [];
+  if (predicate) {
+    tasks.forEach((task) => {
+      if (predicate!(task)) unrated.push(task);
+      else rated.push(task);
+    });
+  }
+  return {
+    rated,
+    unrated,
+  };
 };
