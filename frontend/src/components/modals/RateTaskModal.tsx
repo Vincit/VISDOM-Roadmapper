@@ -135,7 +135,10 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       if (b.id === undefined && a.id !== undefined) return 1;
       return 0;
     })
-    .filter((rating) => rating.customer?.roadmapId === task.roadmapId);
+    .filter(
+      (rating) =>
+        !rating.customer || rating.customer.roadmapId === task.roadmapId,
+    );
 
   const [businessValueRatings, setBusinessValueRatings] = useState(ratings);
   const [businessRatingModified, setBusinessRatingModified] = useState(false);
