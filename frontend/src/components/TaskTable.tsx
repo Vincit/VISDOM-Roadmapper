@@ -1,12 +1,13 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { FC, useEffect, useState } from 'react';
+import { FC, CSSProperties, useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
+import { FixedSizeList } from 'react-window';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
-import { TableUnratedTaskRow } from './TableUnratedTaskRow';
-import { Roadmap, RoadmapUser, Task } from '../redux/roadmaps/types';
+import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -17,59 +18,70 @@ import {
   SortingOrders,
   SortingTypes,
   sortTasks,
-  taskAwaitsRatings,
-  unratedProductOwnerTasks,
 } from '../utils/TaskUtils';
-import { RoleType } from '../../../shared/types/customTypes';
-import { getType } from '../utils/UserUtils';
 import css from './TaskTable.module.scss';
-import { TableRatedTaskRow } from './TableRatedTaskRow';
-import {
-  chosenRoadmapSelector,
-  roadmapUsersSelector,
-} from '../redux/roadmaps/selectors';
 
 const classes = classNames.bind(css);
 
 interface TableHeader {
   label: string;
-  sorting: SortingTypes;
+  sorting?: SortingTypes;
   textAlign?: 'end' | 'left' | 'center';
   width?: string;
 }
 
-const TaskTable: FC<{
+export type TaskRow = FC<{
+  task: Task;
+  style?: CSSProperties;
+}>;
+
+interface TaskTableDef {
+  header: TableHeader[];
+  title: string;
+  Row: TaskRow;
+}
+
+type TaskTableProps = {
   tasks: Task[];
   searchString?: string;
   searchFilter?: FilterTypes;
-  tableHeaders: TableHeader[];
-  label: string;
-  TaskRow: any;
-}> = ({ tasks, searchString, searchFilter, tableHeaders, label, TaskRow }) => {
-  const { t } = useTranslation();
-  const [sortingType, setSortingType] = useState(SortingTypes.NO_SORT);
-  const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
+  rowHeight?: number;
+  height?: number;
+};
+
+export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
+  header,
+  Row,
+  title,
+}) => ({ tasks, searchString, searchFilter, rowHeight = 80, height = 600 }) => {
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
 
-  const getRenderTaskList: () => Task[] = () => {
-    // Filter, search, sort tasks
-    const filtered = filterTasks(
-      tasks,
-      searchFilter || FilterTypes.SHOW_ALL, // Show all tasks if component didn't receive searchFilter as props
-      userInfo?.id,
-    );
-    const searched = filtered.filter(
-      (task) =>
-        task.name.toLowerCase().includes(searchString || '') ||
-        task.description.toLowerCase().includes(searchString || ''),
-    );
-    const sorted = sortTasks(searched, sortingType, sortingOrder);
+  const { t } = useTranslation();
+  const [sortingType, setSortingType] = useState(SortingTypes.NO_SORT);
+  const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
 
-    return sorted;
-  };
+  const [scrollBarWidth, setScrollBarWidth] = useState(0);
+
+  // Filter, search, sort tasks
+  const filtered =
+    searchFilter === undefined
+      ? tasks
+      : filterTasks(tasks, searchFilter, userInfo?.id);
+
+  const searched = !searchString
+    ? filtered
+    : filtered.filter(
+        (task) =>
+          task.name.toLowerCase().includes(searchString) ||
+          task.description.toLowerCase().includes(searchString),
+      );
+
+  const sorted = sortTasks(searched, sortingType, sortingOrder);
+
+  if (sorted.length === 0) return null;
 
   const toggleSortOrder = () => {
     if (sortingOrder === SortingOrders.ASCENDING) {
@@ -79,7 +91,8 @@ const TaskTable: FC<{
     }
   };
 
-  const onSortingChange = (sorter: SortingTypes) => {
+  const onSortingChange = (sorter?: SortingTypes) => {
+    if (sorter === undefined) return;
     if (sorter === sortingType) {
       toggleSortOrder();
     } else {
@@ -88,186 +101,60 @@ const TaskTable: FC<{
     setSortingType(sorter);
   };
 
-  const renderSortingArrow = () => {
-    return sortingOrder === SortingOrders.ASCENDING ? (
+  const renderSortingArrow = () =>
+    sortingOrder === SortingOrders.ASCENDING ? (
       <ArrowUpCircle />
     ) : (
       <ArrowDownCircle />
     );
-  };
 
-  const renderTasks = () => {
-    return (
-      <table className={classes(css.styledTable)}>
-        <thead>
-          <tr className={classes(css.styledTr)}>
-            {tableHeaders.map((header) => (
-              <th
-                className={classes(css.styledTh, css.clickable, {
-                  textAlignEnd: header.textAlign === 'end',
-                  textAlignCenter: header.textAlign === 'center',
-                })}
-                key={header.label}
-                onClick={() => onSortingChange(header.sorting)}
-                style={{ width: header.width }}
-              >
-                <span className="headerSpan">
-                  <Trans i18nKey={header.label} />
-                  {sortingType === header.sorting ? renderSortingArrow() : null}
-                </span>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {getRenderTaskList().map((task) => (
-            <TaskRow key={task.id} task={task} />
-          ))}
-        </tbody>
-      </table>
-    );
-  };
+  const gridTemplateColumns = header
+    .map(({ width }) => width || '1fr')
+    .join(' ');
 
   return (
-    <>
-      {getRenderTaskList().length > 0 && (
-        <div>
-          <div className={classes(css.titleContainer)}>
-            <h2 className={classes(css.title)}>
-              {label} ({getRenderTaskList().length})
-            </h2>
-            <InfoTooltip title={t('tooltipMessage')}>
-              <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-            </InfoTooltip>
+    <div>
+      <div className={classes(css.titleContainer)}>
+        <h2 className={classes(css.title)}>
+          <Trans i18nKey={title} /> ({sorted.length})
+        </h2>
+        <InfoTooltip title={t('tooltipMessage')}>
+          <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+        </InfoTooltip>
+      </div>
+      <div
+        style={{ marginRight: scrollBarWidth, gridTemplateColumns }}
+        className={classes(css.taskTableRow)}
+      >
+        {header.map(({ label, textAlign, sorting }) => (
+          <div
+            key={label}
+            className={classes(css.taskTableHeader, {
+              [css.clickable]: sorting !== undefined,
+              textAlignEnd: textAlign === 'end',
+              textAlignCenter: textAlign === 'center',
+            })}
+            onClick={() => onSortingChange(sorting)}
+          >
+            <Trans i18nKey={label} />
+            {sortingType === sorting ? renderSortingArrow() : null}
           </div>
-          <div>{renderTasks()}</div>
-        </div>
-      )}
-    </>
-  );
-};
-
-export const TaskTableUnrated: FC<{
-  tasks: Task[];
-  searchString?: string;
-  searchFilter?: FilterTypes;
-}> = ({ tasks, searchString, searchFilter }) => {
-  const { t } = useTranslation();
-
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const [taskList, setTaskList] = useState<Task[] | undefined>([]);
-
-  useEffect(() => {
-    const type = getType(userInfo?.roles, currentRoadmap?.id);
-    if (type === RoleType.Admin) {
-      if (userInfo && currentRoadmap && allUsers) {
-        setTaskList(
-          unratedProductOwnerTasks(
-            tasks,
-            allUsers,
-            currentRoadmap.customers ?? [],
-          ),
-        );
-      }
-    }
-    if (type === RoleType.Developer || type === RoleType.Business) {
-      setTaskList(tasks.filter((task) => taskAwaitsRatings(task, userInfo)));
-    }
-  }, [allUsers, currentRoadmap, tasks, userInfo]);
-
-  const tableHeaders: TableHeader[] = [
-    { label: 'Task title', sorting: SortingTypes.SORT_NAME },
-    { label: 'Current average value', sorting: SortingTypes.SORT_AVG_VALUE },
-    { label: 'Current average work', sorting: SortingTypes.SORT_AVG_WORK },
-    { label: 'Waiting for ratings', sorting: SortingTypes.NO_SORT },
-  ];
-
-  return (
-    <TaskTable
-      tasks={taskList || []}
-      searchString={searchString}
-      searchFilter={searchFilter}
-      tableHeaders={tableHeaders}
-      label={t('unratedTaskMessage')}
-      TaskRow={TableUnratedTaskRow}
-    />
-  );
-};
-
-export const TaskTableRated: FC<{
-  tasks: Task[];
-  searchString?: string;
-  searchFilter?: FilterTypes;
-}> = ({ tasks, searchString, searchFilter }) => {
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-
-  const [taskList, setTaskList] = useState<Task[] | undefined>([]);
-
-  useEffect(() => {
-    const type = getType(userInfo?.roles, currentRoadmap?.id);
-    if (type === RoleType.Admin) {
-      if (userInfo && currentRoadmap && allUsers) {
-        const unratedTasks = unratedProductOwnerTasks(
-          tasks,
-          allUsers,
-          currentRoadmap.customers ?? [],
-        );
-        setTaskList(tasks.filter((task) => !unratedTasks.includes(task)));
-      }
-    }
-    if (type === RoleType.Developer || type === RoleType.Business) {
-      setTaskList(tasks.filter((task) => !taskAwaitsRatings(task, userInfo)));
-    }
-  }, [allUsers, currentRoadmap, tasks, userInfo]);
-
-  const tableHeaders: TableHeader[] = [
-    {
-      label: 'Task title',
-      sorting: SortingTypes.SORT_NAME,
-      textAlign: 'center',
-      width: '1em',
-    },
-    { label: 'Average value', sorting: SortingTypes.SORT_AVG_VALUE },
-    { label: 'Average work', sorting: SortingTypes.SORT_AVG_WORK },
-    { label: 'Total value', sorting: SortingTypes.SORT_TOTAL_VALUE },
-    {
-      label: 'Total work',
-      sorting: SortingTypes.SORT_TOTAL_WORK,
-      width: '1em',
-    },
-    { label: 'Status', sorting: SortingTypes.SORT_STATUS },
-  ];
-
-  return (
-    <TaskTable
-      tasks={taskList || []}
-      searchString={searchString}
-      searchFilter={searchFilter}
-      tableHeaders={tableHeaders}
-      label="Rated tasks"
-      TaskRow={TableRatedTaskRow}
-    />
+        ))}
+      </div>
+      <hr style={{ width: '100%' }} />
+      <FixedSizeList
+        itemSize={rowHeight}
+        itemCount={sorted.length}
+        height={Math.min(height, rowHeight * sorted.length)}
+        width="100%"
+        outerRef={(div) => {
+          setScrollBarWidth(div ? div.offsetWidth - div.clientWidth : 0);
+        }}
+      >
+        {({ index, style }) => (
+          <Row style={{ gridTemplateColumns, ...style }} task={sorted[index]} />
+        )}
+      </FixedSizeList>
+    </div>
   );
 };

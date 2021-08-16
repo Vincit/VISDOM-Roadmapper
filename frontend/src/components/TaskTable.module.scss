@@ -1,13 +1,5 @@
 @import '../shared.scss';
 
-.tableContainer {
-  margin-bottom: 50px;
-}
-
-.infoContainer {
-  margin-left: 24px;
-}
-
 .titleContainer {
   display: flex;
   line-height: 150%;
@@ -19,4 +11,132 @@
   .infoIcon {
     margin-left: 12px;
   }
+}
+
+.taskTableRow {
+  display: grid;
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+  & > * {
+    margin: auto 0px;
+    padding: 16px;
+    cursor: inherit;
+    text-align: left;
+    white-space: inherit;
+    overflow: hidden;
+
+    &.clickable {
+      cursor: pointer;
+    }
+    &.nowrap {
+      white-space: nowrap;
+    }
+    &.textAlignEnd {
+      text-align: end;
+    }
+    &.textAlignCenter {
+      text-align: center;
+    }
+  }
+}
+
+.taskTableHeader {
+  @extend .typography-body-bold;
+  padding: 16px;
+  vertical-align: middle;
+  text-align: left;
+  text-transform: none;
+
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+  svg {
+    margin-left: 0.4em;
+    width: 1.2em;
+    height: 1.2em;
+  }
+}
+
+// Bottom and top left radius for clean looking hover
+.ratedTitle {
+  padding-left: 25px;
+  text-align: left;
+}
+
+.ratedButtons {
+  @extend .textAlignEnd;
+}
+
+.doneIcon {
+  color: $COLOR_EMERALD;
+  margin-right: 10px;
+  width: 24px;
+  height: 24px;
+}
+
+.arrowIcon {
+  height: 24px;
+  width: 24px;
+  color: $COLOR_BLACK40;
+  &:hover {
+    color: $COLOR_EMERALD;
+  }
+}
+
+.hoverRow {
+  background-color: #ddedf6; // No color found in shared.scss
+  border-radius: 12px;
+}
+
+.completedRow {
+  color: $COLOR_BLACK60;
+}
+
+.statusComplete {
+  @extend .typography-pre-title;
+  color: $COLOR_FOREST;
+}
+
+.statusUnordered {
+  @extend .typography-pre-title;
+  color: $COLOR_BLACK100;
+}
+
+.taskTitle {
+  text-align: left;
+  overflow-wrap: break-word;
+}
+
+.missingContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.dotContainer {
+  margin: auto 5px;
+}
+
+.developerIcon {
+  height: 16px !important;
+  width: 16px !important;
+  color: $COLOR_BLACK60;
+  margin-right: 7px;
+}
+
+.userIcon {
+  color: $COLOR_BLACK60;
+}
+
+.buttonContainer {
+  @extend .textAlignEnd;
+  @extend .nowrap;
 }

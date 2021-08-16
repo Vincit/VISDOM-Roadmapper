@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { TaskTableRated, TaskTableUnrated } from '../components/TaskTable';
+import { TaskTableRated } from '../components/TaskTableRated';
+import { TaskTableUnrated } from '../components/TaskTableUnrated';
 import { Checkbox } from '../components/forms/Checkbox';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../components/modals/types';
-import { Roadmap } from '../redux/roadmaps/types';
+import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { FilterTypes } from '../utils/TaskUtils';
+import { FilterTypes, splitTasksOnRated } from '../utils/TaskUtils';
 import { titleCase } from '../utils/string';
 import css from './TaskListPage.module.scss';
 import {
@@ -30,6 +31,8 @@ export const TaskListPage = () => {
   const [checked, setChecked] = useState(true);
   const [searchString, setSearchString] = useState('');
   const [searchFilter, setSearchFilter] = useState(FilterTypes.SHOW_ALL);
+  const [rated, setRated] = useState<Task[]>([]);
+  const [unrated, setUnrated] = useState<Task[]>([]);
 
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -41,6 +44,12 @@ export const TaskListPage = () => {
   );
 
   const dispatch = useDispatch<StoreDispatchType>();
+
+  useEffect(() => {
+    const split = splitTasksOnRated(tasks, userInfo, currentRoadmap);
+    setUnrated(split.unrated);
+    setRated(split.rated);
+  }, [currentRoadmap, tasks, userInfo]);
 
   const onSearchChange = (value: string) => {
     setSearchString(value.toLowerCase());
@@ -125,19 +134,20 @@ export const TaskListPage = () => {
       </div>
     );
   };
+
   return (
     <>
       {renderTopbar()}
       <div className={classes(css.unratedTableContainer)}>
         <TaskTableUnrated
-          tasks={tasks}
+          tasks={unrated}
           searchString={searchString}
           searchFilter={searchFilter}
         />
       </div>
       <div>
         <TaskTableRated
-          tasks={tasks}
+          tasks={rated}
           searchString={searchString}
           searchFilter={searchFilter}
         />

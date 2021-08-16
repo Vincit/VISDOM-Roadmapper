@@ -7,7 +7,7 @@ import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
 import { TaskHeatmap } from '../components/TaskHeatmap';
-import { TaskTableUnrated } from '../components/TaskTable';
+import { TaskTableUnrated } from '../components/TaskTableUnrated';
 import { StoreDispatchType } from '../redux';
 import { InfoTooltip } from '../components/InfoTooltip';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
@@ -17,7 +17,7 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { isUnrated } from '../utils/TaskUtils';
+import { splitTasksOnRated } from '../utils/TaskUtils';
 import { getType } from '../utils/UserUtils';
 import css from './DashboardPage.module.scss';
 
@@ -47,11 +47,7 @@ export const DashboardPage = () => {
       tasks: Task[];
     }[]
   >([]);
-
-  const getUnratedTasks = () => {
-    if (!currentRoadmap || !userInfo) return [];
-    return currentRoadmap.tasks.filter(isUnrated(userInfo));
-  };
+  const [unratedTasks, setUnratedTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     if (!roadmapsVersions && currentRoadmap)
@@ -86,6 +82,15 @@ export const DashboardPage = () => {
     setChartVersionLists(chartVersions);
   }, [dispatch, roadmapsVersions, currentRoadmap]);
 
+  useEffect(() => {
+    const { unrated } = splitTasksOnRated(
+      currentRoadmap?.tasks ?? [],
+      userInfo,
+      currentRoadmap,
+    );
+    setUnratedTasks(unrated);
+  }, [currentRoadmap, userInfo]);
+
   return (
     <>
       <div className={classes(css.overviewHeader)}>
@@ -110,7 +115,7 @@ export const DashboardPage = () => {
           </div>
         </div>
       )}
-      {getUnratedTasks().length > 0 && (
+      {unratedTasks.length > 0 && (
         <div className={classes(css.taskTableWrapper)}>
           <div className={classes(css.titleContainer)}>
             <h2 className={classes(css.title)}>
@@ -120,7 +125,7 @@ export const DashboardPage = () => {
               <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
             </InfoTooltip>
           </div>
-          <TaskTableUnrated tasks={getUnratedTasks()} />
+          <TaskTableUnrated tasks={unratedTasks} />
         </div>
       )}
     </>
