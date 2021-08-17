@@ -416,7 +416,7 @@ export const splitTasksOnRated = (
   if (type === RoleType.Admin) {
     if (currentRoadmap) {
       predicate = isUnratedProductOwnerTask(
-        currentRoadmap.users,
+        currentRoadmap.users ?? [],
         currentRoadmap.customers ?? [],
       );
     }
