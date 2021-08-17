@@ -12,19 +12,6 @@ export const HomePage = () => {
     shallowEqual,
   );
 
-  if (roadmaps && localStorage.getItem('chosenRoadmap')) {
-    const previousRoadmap = JSON.parse(
-      localStorage.getItem('chosenRoadmap') ?? '{}',
-    );
-
-    const match = roadmaps.find((map) => map.id === previousRoadmap.id);
-    if (match) {
-      return (
-        <Redirect to={`${paths.roadmapHome}/${previousRoadmap.id}/dashboard`} />
-      );
-    }
-  }
-
   if (!roadmaps) return <LoadingSpinner />;
 
   return roadmaps.length > 0 ? (

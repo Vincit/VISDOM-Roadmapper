@@ -28,11 +28,6 @@ const ProjectOverviewComponent = () => {
   }, [dispatch, roadmaps]);
 
   useEffect(() => {
-    if (localStorage.getItem('chosenRoadmap'))
-      localStorage.removeItem('chosenRoadmap');
-  }, []);
-
-  useEffect(() => {
     dispatch(roadmapsActions.clearCurrentRoadmap());
   }, [dispatch]);
 
