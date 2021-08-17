@@ -39,10 +39,6 @@ export const RoadmapSelectorWidget = () => {
   useEffect(() => {
     if (chosenRoadmap) {
       setSelectedRoadmap(chosenRoadmap.name);
-      localStorage.setItem(
-        'chosenRoadmap',
-        JSON.stringify({ id: chosenRoadmap.id }),
-      );
     } else setSelectedRoadmap('Select roadmap');
   }, [chosenRoadmap]);
 
