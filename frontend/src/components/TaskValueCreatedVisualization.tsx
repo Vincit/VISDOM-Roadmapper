@@ -49,7 +49,7 @@ export const TaskValueCreatedVisualization: FC<{
   }, [dispatch, currentRoadmap, version.tasks]);
 
   const largestValue = (stakes: CustomerStakes[]) => {
-    if (!stakes.length) return 0;
+    if (!stakes.length) return undefined;
     return stakes[0].value / version.totalValue;
   };
 

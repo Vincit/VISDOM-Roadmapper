@@ -1,6 +1,6 @@
 @import '../shared.scss';
 
-$MAX_DIAMETER: calc(60px * var(--max-diameter-multiplier));
+$MAX_DIAMETER: calc(60px * var(--max-diameter-multiplier, 1));
 $DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--dot-size, 0));
 $LARGEST_DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--largest-dot-size, 0));
 

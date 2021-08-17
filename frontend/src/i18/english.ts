@@ -199,6 +199,7 @@ export const english = {
     tooltipMessage: 'Tooltip message placeholder', // TODO: remove it when the actual tooltip messages are added.
     workValueTitle: 'Work / Value',
     customerStakesTitle: 'Customer stakes in milestone',
+    'No ratings': 'No ratings',
     unratedTaskMessage: 'Waiting for ratings',
     'Optional message': 'Optional message',
   },

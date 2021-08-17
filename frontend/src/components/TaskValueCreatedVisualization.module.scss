@@ -2,7 +2,7 @@
 @import './../pages/RoadmapGraphPage.module.scss';
 
 $MAX_DIAMETER: calc(60px * var(--max-diameter-multiplier));
-$LARGEST_DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--largest-dot-size, 0));
+$LARGEST_DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--largest-dot-size, 0.5));
 
 .customerStakes {
   margin-right: calc(
