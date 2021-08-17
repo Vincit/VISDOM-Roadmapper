@@ -110,7 +110,7 @@ export const PATCH_ROADMAP_USER_FULFILLED = (
   const roadmap = state.roadmaps.find(
     ({ id }) => id === action.payload.roadmapId,
   )!;
-  const patched = roadmap.users.find(({ id }) => id === action.payload.userId);
+  const patched = roadmap.users?.find(({ id }) => id === action.payload.userId);
   Object.assign(patched, { ...patched, type: action.payload.type });
 };
 
@@ -122,7 +122,7 @@ export const DELETE_ROADMAP_USER_FULFILLED = (
   const roadmap = state.roadmaps.find(
     ({ id }) => id === action.payload.roadmapId,
   )!;
-  roadmap.users = roadmap.users.filter(
+  roadmap.users = roadmap.users?.filter(
     ({ id }) => id !== action.payload.response.id,
   );
 };

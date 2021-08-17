@@ -55,7 +55,7 @@ export interface Roadmap {
   name: string;
   description: string;
   tasks: Task[];
-  users: RoadmapUser[];
+  users: RoadmapUser[] | undefined;
   customers: Customer[] | undefined;
   plannerCustomerWeights: PlannerCustomerWeight[] | undefined;
   integrations: IntegrationConfiguration[];
