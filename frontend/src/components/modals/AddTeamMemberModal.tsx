@@ -19,18 +19,16 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { SelectMemberRole } from './modalparts/TeamMemberModalParts';
 import { Input } from '../forms/FormField';
 import { ControlledTooltip } from '../ControlledTooltip';
-import { getRoleType } from '../../utils/string';
 import css from './AddTeamMemberModal.module.scss';
 
 const classes = classNames.bind(css);
 
 const SendEmail: FC<{
-  open: boolean;
-  role: string;
-}> = ({ open, role }) => {
+  email: string;
+  onChange: (email: string) => void;
+}> = ({ email, onChange }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
-  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [openToolTip, setOpenTooltip] = useState(false);
@@ -47,7 +45,6 @@ const SendEmail: FC<{
       roadmapsActions.sendInvitation({
         email,
         link: 'todo',
-        role: getRoleType(role)!,
         roadmapId: chosenRoadmapId!,
       }),
     );
@@ -61,48 +58,46 @@ const SendEmail: FC<{
 
   return (
     <>
-      {open && (
-        <>
-          <Form onSubmit={handleSubmit}>
-            <Input
-              label={t('Member email the link will be sent to')}
-              placeholder={t('Example email', { localPart: 'teammember' })}
-              name="send link"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.currentTarget.value)}
-            />
-            <div className={classes(css.sendButton)}>
-              <ControlledTooltip
-                title={t('Sent!')}
-                placement="bottom"
-                open={openToolTip}
-                onClose={() => setOpenTooltip(false)}
-              >
-                {isLoading ? (
-                  <LoadingSpinner />
-                ) : (
-                  <button
-                    className={classes(css['button-small-filled'])}
-                    type="submit"
-                    disabled={!email}
-                  >
-                    <Trans i18nKey="Send link" />
-                  </button>
-                )}
-              </ControlledTooltip>
-            </div>
-          </Form>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
+      <Form onSubmit={handleSubmit}>
+        <div className={classes(css.inputContainer)}>
+          <Input
+            label={t('Member email the link will be sent to')}
+            placeholder={t('Example email', { localPart: 'teammember' })}
+            name="send link"
+            type="email"
+            value={email}
+            onChange={(e) => onChange(e.currentTarget.value)}
+          />
+        </div>
+        <div className={classes(css.sendButton)}>
+          <ControlledTooltip
+            title={t('Sent!')}
+            placement="bottom"
+            open={openToolTip}
+            onClose={() => setOpenTooltip(false)}
           >
-            {errorMessage}
-          </Alert>
-        </>
-      )}
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <button
+                className={classes(css['button-small-filled'])}
+                type="submit"
+                disabled={!email}
+              >
+                <Trans i18nKey="Send link" />
+              </button>
+            )}
+          </ControlledTooltip>
+        </div>
+      </Form>
+      <Alert
+        show={errorMessage.length > 0}
+        variant="danger"
+        dismissible
+        onClose={() => setErrorMessage('')}
+      >
+        {errorMessage}
+      </Alert>
     </>
   );
 };
@@ -117,9 +112,8 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
     tooltip: false,
     email: false,
   });
-  const [selectedRole, setSelectedRole] = useState(
-    RoleType[RoleType.Developer],
-  );
+  const [selectedRole, setSelectedRole] = useState(RoleType.Developer);
+  const [email, setEmail] = useState('');
 
   return (
     <>
@@ -130,22 +124,33 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
       </ModalHeader>
       <ModalContent>
         <div className={classes(css.addMemberContent)}>
-          {open.info && (
-            <div className={classes(css.instructions)}>
-              <b>
-                <Trans i18nKey="Here’s how to add a team member" />
-              </b>{' '}
-              <Trans i18nKey="Team member addition instructions" />{' '}
+          <div className={classes(css.instructions)}>
+            {open.info ? (
+              <>
+                <b>
+                  <Trans i18nKey="Here’s how to add a team member" />
+                </b>{' '}
+                <Trans i18nKey="Team member addition instructions" />{' '}
+                <button
+                  className={classes(css.linkButton, css.blue)}
+                  tabIndex={0}
+                  type="button"
+                  onClick={() => setOpen({ ...open, info: false })}
+                >
+                  <Trans i18nKey="Hide info" />
+                </button>
+              </>
+            ) : (
               <button
                 className={classes(css.linkButton, css.blue)}
                 tabIndex={0}
                 type="button"
-                onClick={() => setOpen({ ...open, info: false })}
+                onClick={() => setOpen({ ...open, info: true })}
               >
-                <Trans i18nKey="Hide info" />
+                <Trans i18nKey="Show info" />
               </button>
-            </div>
-          )}
+            )}
+          </div>
           <div>
             <SelectMemberRole
               role={selectedRole}
@@ -153,12 +158,14 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
             />
           </div>
           <div className={classes(css.joinLinkContent)}>
-            <Input
-              label={t('Joining link')}
-              disabled
-              name="joining link"
-              value="todo"
-            />
+            <div className={classes(css.inputContainer)}>
+              <Input
+                label={t('Joining link')}
+                disabled
+                name="joining link"
+                value="todo"
+              />
+            </div>
             <div className={classes(css.buttons)}>
               <ControlledTooltip
                 title={t('Copied!')}
@@ -204,7 +211,9 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
               <Trans i18nKey="Send via email" />{' '}
               {open.email ? <ExpandLessSharpIcon /> : <ExpandMoreSharpIcon />}
             </div>
-            <SendEmail open={open.email} role={selectedRole} />
+            {open.email && (
+              <SendEmail email={email} onChange={(value) => setEmail(value)} />
+            )}
           </div>
         </div>
       </ModalContent>

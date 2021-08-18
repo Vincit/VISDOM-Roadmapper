@@ -16,7 +16,6 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { SelectMemberRole } from './modalparts/TeamMemberModalParts';
-import { getRoleType } from '../../utils/string';
 import css from './EditTeamMemberModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -28,12 +27,12 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [selectedRole, setSelectedRole] = useState(RoleType[member.type]);
+  const [selectedRole, setSelectedRole] = useState(member.type);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    if (RoleType[member.type] === selectedRole) {
+    if (member.type === selectedRole) {
       closeModal();
       return;
     }
@@ -42,7 +41,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
     const res = await dispatch(
       roadmapsActions.patchRoadmapUser({
         id: member.id,
-        type: getRoleType(selectedRole),
+        type: selectedRole,
       }),
     );
 
@@ -64,9 +63,9 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.section, css.memberSection)}>
-            {selectedRole === 'Admin' && <StarSharpIcon />}
-            {selectedRole === 'Developer' && <BuildSharpIcon />}
-            {selectedRole === 'Business' && (
+            {selectedRole === RoleType.Admin && <StarSharpIcon />}
+            {selectedRole === RoleType.Developer && <BuildSharpIcon />}
+            {selectedRole === RoleType.Business && (
               <BusinessValueFilled className={classes(css.business)} />
             )}
             {member.username}

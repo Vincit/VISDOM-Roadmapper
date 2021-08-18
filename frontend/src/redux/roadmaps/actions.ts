@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { api } from '../../api/api';
 import { chosenRoadmapIdSelector, roadmapsVersionsSelector } from './selectors';
-import { RoleType } from '../../../../shared/types/customTypes';
 import { RootState } from '../types';
 import {
   ImportBoardRequest,
@@ -517,12 +516,12 @@ export const notifyUsers = createAsyncThunk<
 
 export const sendInvitation = createAsyncThunk<
   boolean,
-  { email: string; link: string; role: RoleType; roadmapId: number },
+  { email: string; link: string; roadmapId: number },
   { rejectValue: AxiosError }
 >('sendInvitation', async (invitationRequest, thunkAPI) => {
-  const { email, link, role, roadmapId } = invitationRequest;
+  const { email, link, roadmapId } = invitationRequest;
   try {
-    return await api.sendInvitation(email, link, role, roadmapId);
+    return await api.sendInvitation(email, link, roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
