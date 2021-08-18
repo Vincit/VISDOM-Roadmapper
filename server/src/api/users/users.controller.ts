@@ -2,6 +2,8 @@ import passport from 'passport';
 import uuid from 'uuid';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
+import Invitation from '../invitations/invitations.model';
+import { Role } from '../roles/roles.model';
 
 export const getUsers: RouteHandlerFnc = async (ctx) => {
   const query = User.query();
@@ -116,4 +118,23 @@ export const getUserRoles: RouteHandlerFnc = async (ctx) => {
   }
   const roles = await User.relatedQuery('roles').for(ctx.state.user.id);
   ctx.body = roles;
+};
+
+export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
+  const { email, ...others } = ctx.request.body;
+  const invitation = await Invitation.query().findById(ctx.params.invitationId);
+
+  if (Object.keys(others).length || !invitation) return void (ctx.status = 400);
+  if (invitation.email !== email) return void (ctx.status = 403);
+
+  const role = await Invitation.transaction(async (trx) => {
+    await invitation.$query(trx).delete();
+
+    return await Role.query(trx).insertAndFetch({
+      userId: Number(ctx.params.userId),
+      roadmapId: invitation.roadmapId,
+      type: invitation.type,
+    });
+  });
+  return void (ctx.body = role);
 };

@@ -16,6 +16,7 @@ import tasksRouter from '../tasks/tasks.routes';
 import integrationRouter from '../integration/integration.routes';
 import customerRouter from '../customer/customer.routes';
 import rolesRouter from '../roles/roles.routes';
+import invitationsRouter from '../invitations/invitations.routes';
 
 const roadmapRouter = new KoaRouter<IKoaState, Context>();
 
@@ -52,7 +53,11 @@ roadmapRouter.use('/roadmaps/:roadmapId', integrationRouter.allowedMethods());
 
 roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.routes());
 roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.allowedMethods());
+
 roadmapRouter.use('/roadmaps/:roadmapId', rolesRouter.routes());
 roadmapRouter.use('/roadmaps/:roadmapId', rolesRouter.allowedMethods());
+
+roadmapRouter.use('/roadmaps/:roadmapId', invitationsRouter.routes());
+roadmapRouter.use('/roadmaps/:roadmapId', invitationsRouter.allowedMethods());
 
 export default roadmapRouter;

@@ -319,7 +319,7 @@ const sendNotification = async (
   return response.status === 200;
 };
 
-const sendInvitation = async (
+const addInvitation = async (
   email: string,
   type: RoleType,
   roadmapId: number,
@@ -368,5 +368,5 @@ export const api = {
   addIntegrationConfiguration,
   patchIntegrationConfiguration,
   sendNotification,
-  sendInvitation,
+  addInvitation,
 };

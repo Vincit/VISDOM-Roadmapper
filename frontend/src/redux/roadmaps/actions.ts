@@ -515,14 +515,14 @@ export const notifyUsers = createAsyncThunk<
   }
 });
 
-export const sendInvitation = createAsyncThunk<
+export const addInvitation = createAsyncThunk<
   boolean,
   { email: string; type: RoleType; roadmapId: number },
   { rejectValue: AxiosError }
->('sendInvitation', async (invitationRequest, thunkAPI) => {
+>('addInvitation', async (invitationRequest, thunkAPI) => {
   const { email, type, roadmapId } = invitationRequest;
   try {
-    return await api.sendInvitation(email, type, roadmapId);
+    return await api.addInvitation(email, type, roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }

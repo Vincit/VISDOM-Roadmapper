@@ -35,6 +35,8 @@ export enum Permission {
   CustomerRepresent = 1 << 20,
 
   IntegrationConfigurationEdit = 1 << 21,
+
+  RoadmapInvite = 1 << 22,
 }
 
 export enum RoleType {
