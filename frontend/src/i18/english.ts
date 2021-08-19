@@ -140,7 +140,6 @@ export const english = {
     Step: 'Step',
     'Client info': 'Client info',
     'Select representative': 'Select representative',
-    'All done button': 'All done',
     'All done': 'All done.',
     'All done customer description':
       ' You can now confirm adding the client, or go back to previous steps if you missed something.',
@@ -170,13 +169,8 @@ export const english = {
     'Add a team member': 'Add a team member',
     'Here’s how to add a team member': 'Here’s how to add a team member.',
     'Team member addition instructions':
-      'VISDOM provides two options for adding a team member: you can either send them by hand an impermanent, one-time-usage link, which they can use to register, or deliver the link straight to their email.',
+      'VISDOM delivers an impermanent, one-time-usage link, to the team member’s email, which they can use to join the roadmap.',
     'Hide info': 'Hide info',
-    'Joining link': 'Joining link',
-    'Copy link': 'Copy link',
-    'Copied!': 'Copied!',
-    'Create a new link': 'Create a new link',
-    'Send via email': 'Send via email',
     'Member email the link will be sent to':
       'Member email the link will be sent to',
     'Send link': 'Send link',

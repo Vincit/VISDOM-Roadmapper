@@ -1,5 +1,6 @@
 import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
+import { RoleType } from '../../../shared/types/customTypes';
 import {
   ImportBoardRequest,
   IntegrationConfigurationRequest,
@@ -320,15 +321,13 @@ const sendNotification = async (
 
 const sendInvitation = async (
   email: string,
-  link: string,
+  type: RoleType,
   roadmapId: number,
 ) => {
-  const response = await axios.post(
-    `roadmaps/${roadmapId}/invitations/${link}/email`,
-    {
-      email,
-    },
-  );
+  const response = await axios.post(`roadmaps/${roadmapId}/invitations/`, {
+    email,
+    type,
+  });
   return response.status === 200;
 };
 
