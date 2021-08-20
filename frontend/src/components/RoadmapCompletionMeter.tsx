@@ -5,6 +5,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { partition } from '../utils/array';
 import css from './RoadmapCompletionMeter.module.scss';
 
 const classes = classNames.bind(css);
@@ -15,13 +16,14 @@ export const RoadmapCompletionMeter = () => {
     shallowEqual,
   );
 
+  const [completed, uncompleted] = partition(
+    currentRoadmap?.tasks ?? [],
+    (t) => t.completed,
+  ).map((a) => a.length);
+
   const getCompletionPercent = () => {
-    const totalTasks = currentRoadmap!.tasks.length;
-    if (totalTasks === 0) return 0;
-    const completedTasks = currentRoadmap!.tasks.filter(
-      (task) => task.completed,
-    ).length;
-    return Math.round((completedTasks / totalTasks) * 100);
+    const total = completed + uncompleted;
+    return total === 0 ? 0 : Math.round((completed / total) * 100);
   };
 
   const options = {
@@ -78,12 +80,8 @@ export const RoadmapCompletionMeter = () => {
         series={[getCompletionPercent()]}
         width="250"
       />
-      <span className={classes(css.completedtasks)}>
-        {currentRoadmap!.tasks.filter((task) => task.completed).length}
-      </span>
-      <span className={classes(css.notcompletedtasks)}>
-        {currentRoadmap!.tasks.filter((task) => !task.completed).length}
-      </span>
+      <span className={classes(css.completedtasks)}>{completed}</span>
+      <span className={classes(css.notcompletedtasks)}>{uncompleted}</span>
     </div>
   );
 };
