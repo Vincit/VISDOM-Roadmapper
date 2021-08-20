@@ -462,11 +462,7 @@ export const addTaskToVersion = createAsyncThunk<
 
     payload.tasks.splice(request.index, 0, request.task.id!);
     try {
-      const res = await thunkAPI.dispatch(patchVersion(payload));
-      if (patchVersion.rejected.match(res)) {
-        return thunkAPI.rejectWithValue(res.payload!);
-      }
-      return res.payload;
+      return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
@@ -491,11 +487,7 @@ export const removeTaskFromVersion = createAsyncThunk<
       (taskId) => taskId !== request.task.id,
     );
     try {
-      const res = await thunkAPI.dispatch(patchVersion(payload));
-      if (patchVersion.rejected.match(res)) {
-        return thunkAPI.rejectWithValue(res.payload!);
-      }
-      return res.payload;
+      return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
