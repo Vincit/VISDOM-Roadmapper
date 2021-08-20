@@ -120,7 +120,7 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const deleteVersionClicked = (e: MouseEvent, id: number) => {
+  const deleteVersionClicked = (id: number) => (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -131,7 +131,7 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const editVersionClicked = (e: MouseEvent, id: number, name: string) => {
+  const editVersionClicked = (id: number, name: string) => (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
@@ -332,16 +332,14 @@ export const MilestonesEditor = () => {
                     <div className={classes(css.milestoneFooter)}>
                       <DeleteButton
                         type="filled"
-                        onClick={(e) => deleteVersionClicked(e, version.id)}
+                        onClick={deleteVersionClicked(version.id)}
                         href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
                           id: version.id,
                           roadmapId: currentRoadmap.id,
                         })}
                       />
                       <SettingsButton
-                        onClick={(e) =>
-                          editVersionClicked(e, version.id, version.name)
-                        }
+                        onClick={editVersionClicked(version.id, version.name)}
                         href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
                           id: version.id,
                           name: version.name,
