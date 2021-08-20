@@ -146,7 +146,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
           <Trans i18nKey="All done customer description" />
           <div className={classes(css.summary)}>
             {Object.entries(formValues).map(([key, value]) => (
-              <div className={classes(css.customerData)}>
+              <div key={key} className={classes(css.customerData)}>
                 <b>
                   <Trans i18nKey={titleCase(key)} />:
                 </b>
@@ -162,7 +162,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
               {representatives
                 .filter((rep) => rep.checked)
                 .map((rep) => (
-                  <div className={classes(css.rep)}>
+                  <div key={rep.id} className={classes(css.rep)}>
                     {rep.username}
                     <div className={classes(css[RoleType[rep.type]])}>
                       {rep.type === RoleType.Admin ? (
