@@ -15,10 +15,8 @@ import classNames from 'classnames';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import {
-  calcWeightedTaskPriority,
-  valueAndWorkSummary,
-} from '../utils/TaskUtils';
+import { weightedTaskPriority, valueAndWorkSummary } from '../utils/TaskUtils';
+import { sort, sortKeyNumeric } from '../utils/SortUtils';
 import css from './PlannerChart.module.scss';
 
 const classes = classNames.bind(css);
@@ -47,10 +45,8 @@ export const PlannerChart: FC<{
 
     graphTaskLists.unshift({
       name: DataKeys.OptimalRoadmap,
-      tasks: [...currentRoadmap.tasks].sort(
-        (a, b) =>
-          calcWeightedTaskPriority(b, currentRoadmap) -
-          calcWeightedTaskPriority(a, currentRoadmap),
+      tasks: sort(sortKeyNumeric(weightedTaskPriority(currentRoadmap)))(
+        currentRoadmap.tasks,
       ),
     });
   }

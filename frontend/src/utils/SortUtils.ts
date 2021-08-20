@@ -40,7 +40,10 @@ export const sortKeyNumeric = <T>(key: Key<T, number>) =>
 export const sortKeyLocale = <T>(key: Key<T, string>) =>
   sortKeyCompare(key, (a, b) => a.localeCompare(b));
 
-const sort = <T, K>(by: Sort<T, K>, order: SortingOrders) => {
+export const sort = <T, K>(
+  by: Sort<T, K>,
+  order: SortingOrders = SortingOrders.ASCENDING,
+) => {
   // no sorting
   if (!by) return (list: T[]) => list;
 
