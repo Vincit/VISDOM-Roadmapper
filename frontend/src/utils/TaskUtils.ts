@@ -104,7 +104,7 @@ const calcTaskPriority = (task: Task) => {
   return value.avg / work.avg;
 };
 
-const not = <T>(f: (t: T) => boolean) => (t: T) => !f(t);
+export const not = <T>(f: (t: T) => boolean) => (t: T) => !f(t);
 
 export const ratedByUser = (user: RoadmapUser | UserInfo) => (task: Task) =>
   task.ratings.some((rating) => rating.createdByUser === user.id);
@@ -225,7 +225,7 @@ export const totalWeightedValueAndWork = (tasks: Task[], roadmap: Roadmap) => {
   return { value: totalValues.sum, totalValue: totalValues.total, work };
 };
 
-export const calcWeightedTaskPriority = (task: Task, roadmap: Roadmap) => {
+export const weightedTaskPriority = (roadmap: Roadmap) => (task: Task) => {
   const weightedValue = taskWeightedValueSummary(task, roadmap).avg;
   if (!weightedValue) return -2;
 
@@ -253,7 +253,7 @@ export const awaitsUserRatings = (
   return not(ratedByUser(user));
 };
 
-const isUnratedProductOwnerTask = ({ users = [], customers = [] }: Roadmap) => {
+export const hasMissingRatings = ({ users = [], customers = [] }: Roadmap) => {
   const devs = users.filter((user) => user.type === RoleType.Developer);
   const reps = customers.map((customer) => customer.representatives ?? []);
   const shouldHaveRated = devs.concat(...reps);
@@ -275,7 +275,7 @@ export const isUnrated = (
 
   if (isUserInfo(user)) {
     return getType(user.roles, roadmap.id) === RoleType.Admin
-      ? isUnratedProductOwnerTask(roadmap)
+      ? hasMissingRatings(roadmap)
       : awaitsUserRatings(user, roadmap);
   }
 
