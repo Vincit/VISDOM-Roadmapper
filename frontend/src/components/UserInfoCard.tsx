@@ -11,26 +11,20 @@ export const UserInfoCard = () => {
     shallowEqual,
   );
 
-  return (
+  return userInfo ? (
     <div>
-      {userInfo ? (
-        <>
-          <div>{userInfo.username}</div>
-          <div>{userInfo.email}</div>
-          {userInfo.roles.map((roadmapRole) => (
-            <div>
-              {`Roadmap ${roadmapRole.roadmapId}: ${
-                RoleType[roadmapRole.type]
-              }`}
-            </div>
-          ))}
-          <div>{userInfo.id}</div>
-        </>
-      ) : (
-        <div>
-          <Trans i18nKey="Not logged in" />
+      <div>{userInfo.username}</div>
+      <div>{userInfo.email}</div>
+      {userInfo.roles.map((roadmapRole) => (
+        <div key={roadmapRole.roadmapId}>
+          {`Roadmap ${roadmapRole.roadmapId}: ${RoleType[roadmapRole.type]}`}
         </div>
-      )}
+      ))}
+      <div>{userInfo.id}</div>
+    </div>
+  ) : (
+    <div>
+      <Trans i18nKey="Not logged in" />
     </div>
   );
 };
