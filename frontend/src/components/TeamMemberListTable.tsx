@@ -1,5 +1,4 @@
-import { FC, MouseEvent, useEffect, useState } from 'react';
-import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
+import { FC, MouseEvent, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -15,11 +14,9 @@ import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
-import { SortingOrders } from '../utils/SortCustomerUtils';
-import {
-  UserSortingTypes,
-  sortRoadmapUsers,
-} from '../utils/SortRoadmapUserUtils';
+import { SortingArrow } from './SortingArrow';
+import { useSorting } from '../utils/SortUtils';
+import { UserSortingTypes, userSort } from '../utils/SortRoadmapUserUtils';
 import { RoleType } from '../../../shared/types/customTypes';
 import css from '../pages/PeopleListPage.module.scss';
 
@@ -34,8 +31,6 @@ interface TeamMemberTableHeader {
 export const TeamMemberList: FC<{
   search: string;
 }> = ({ search }) => {
-  const [sortingType, setSortingType] = useState(UserSortingTypes.NO_SORT);
-  const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
   const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
   const teamMembers = useSelector<RootState, RoadmapUser[] | undefined>(
     roadmapUsersSelector(),
@@ -48,6 +43,13 @@ export const TeamMemberList: FC<{
   const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
+  const [sort, sorting] = useSorting(
+    useMemo(() => userSort(tasks, currentRoadmap?.customers), [
+      tasks,
+      currentRoadmap,
+    ]),
+  );
+
   useEffect(() => {
     if (!teamMembers && currentRoadmap)
       dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
@@ -59,40 +61,17 @@ export const TeamMemberList: FC<{
       ({ type, username }) =>
         type !== RoleType.Customer && username.toLowerCase().includes(search),
     );
-    setSortedMembers(
-      sortRoadmapUsers(
-        members || [],
-        sortingType,
-        sortingOrder,
-        tasks,
-        currentRoadmap?.customers,
-      ),
-    );
-  }, [teamMembers, sortingType, sortingOrder, tasks, currentRoadmap, search]);
-
-  const toggleSortOrder = () => {
-    if (sortingOrder === SortingOrders.ASCENDING) {
-      setSortingOrder(SortingOrders.DESCENDING);
-    } else {
-      setSortingOrder(SortingOrders.ASCENDING);
-    }
-  };
+    setSortedMembers(sort(members || []));
+  }, [teamMembers, sort, search]);
 
   const onSortingChange = (sorter: UserSortingTypes) => {
-    if (sorter === sortingType) {
-      toggleSortOrder();
+    if (sorter === sorting.type.get()) {
+      sorting.order.toggle();
     } else {
-      setSortingOrder(SortingOrders.ASCENDING);
+      sorting.order.reset();
+      sorting.type.set(sorter);
     }
-    setSortingType(sorter);
   };
-
-  const sortingArrow = () =>
-    sortingOrder === SortingOrders.ASCENDING ? (
-      <ArrowUpCircle />
-    ) : (
-      <ArrowDownCircle />
-    );
 
   const addTeamMemberClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -116,21 +95,22 @@ export const TeamMemberList: FC<{
     <table className="styledTable">
       <thead>
         <tr>
-          {teamMemberTableHeaders.map((header) => {
-            return (
-              <th
-                className="styledTh clickable"
-                key={header.label}
-                onClick={() => onSortingChange(header.sorting)}
-                style={{ width: header.width }}
-              >
-                <span className="headerSpan">
-                  <Trans i18nKey={header.label} />
-                  {sortingType === header.sorting ? sortingArrow() : null}
-                </span>
-              </th>
-            );
-          })}
+          {teamMemberTableHeaders.map((header) => (
+            <th
+              className="styledTh clickable"
+              key={header.label}
+              onClick={() => onSortingChange(header.sorting)}
+              style={{ width: header.width }}
+            >
+              <span className="headerSpan">
+                <Trans i18nKey={header.label} />
+                {header.sorting !== undefined &&
+                  sorting.type.get() === header.sorting && (
+                    <SortingArrow order={sorting.order.get()} />
+                  )}
+              </span>
+            </th>
+          ))}
         </tr>
       </thead>
       <tbody>

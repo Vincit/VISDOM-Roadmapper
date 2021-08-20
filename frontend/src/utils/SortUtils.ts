@@ -1,3 +1,5 @@
+import { useState, useMemo } from 'react';
+
 export enum SortingOrders {
   ASCENDING = 1,
   DESCENDING = -1,
@@ -18,7 +20,9 @@ type PropertyKey<T, K> = {
 type Key<T, K> = PropertyKey<T, K> | ((value: T) => K);
 
 type Comparison<T> = (a: T, b: T) => number;
-export type Sort<T, K> =
+
+export type Sort<T, K = any> =
+  | undefined
   | {
       key: Key<T, K>;
       compare: Comparison<K>;
@@ -36,10 +40,7 @@ export const sortKeyNumeric = <T>(key: Key<T, number>) =>
 export const sortKeyLocale = <T>(key: Key<T, string>) =>
   sortKeyCompare(key, (a, b) => a.localeCompare(b));
 
-export const sort = <T, K>(
-  by?: Sort<T, K>,
-  order: SortingOrders = SortingOrders.ASCENDING,
-): ((_: T[]) => T[]) => {
+const sort = <T, K>(by: Sort<T, K>, order: SortingOrders) => {
   // no sorting
   if (!by) return (list: T[]) => list;
 
@@ -61,4 +62,25 @@ export const sort = <T, K>(
 
   // sort by comparison function
   return (list: T[]) => [...list].sort((a, b) => by.compare(a, b) * order);
+};
+
+export const useSorting = <SortingType, ItemType>(
+  getSort: (t: SortingType | undefined) => Sort<ItemType>,
+) => {
+  const [type, setType] = useState<SortingType | undefined>();
+  const [order, setOrder] = useState(SortingOrders.ASCENDING);
+  return [
+    useMemo(() => sort(getSort(type), order), [getSort, order, type]),
+    {
+      type: {
+        get: () => type,
+        set: setType,
+      },
+      order: {
+        get: () => order,
+        toggle: () => setOrder((prev) => prev * -1),
+        reset: () => setOrder(SortingOrders.ASCENDING),
+      },
+    },
+  ] as const;
 };

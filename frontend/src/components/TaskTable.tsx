@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { FC, CSSProperties, useState } from 'react';
-import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import { FixedSizeList } from 'react-window';
@@ -12,12 +11,13 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { InfoTooltip } from './InfoTooltip';
+import { SortingArrow } from './SortingArrow';
+import { useSorting } from '../utils/SortUtils';
 import {
   filterTasks,
   FilterTypes,
-  SortingOrders,
   SortingTypes,
-  sortTasks,
+  taskSort,
 } from '../utils/TaskUtils';
 import css from './TaskTable.module.scss';
 
@@ -60,8 +60,7 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
   );
 
   const { t } = useTranslation();
-  const [sortingType, setSortingType] = useState(SortingTypes.NO_SORT);
-  const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
+  const [sort, sorting] = useSorting(taskSort);
 
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
 
@@ -79,34 +78,19 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
           task.description.toLowerCase().includes(searchString),
       );
 
-  const sorted = sortTasks(searched, sortingType, sortingOrder);
+  const sorted = sort(searched);
 
   if (sorted.length === 0) return null;
 
-  const toggleSortOrder = () => {
-    if (sortingOrder === SortingOrders.ASCENDING) {
-      setSortingOrder(SortingOrders.DESCENDING);
-    } else {
-      setSortingOrder(SortingOrders.ASCENDING);
-    }
-  };
-
   const onSortingChange = (sorter?: SortingTypes) => {
     if (sorter === undefined) return;
-    if (sorter === sortingType) {
-      toggleSortOrder();
+    if (sorter === sorting.type.get()) {
+      sorting.order.toggle();
     } else {
-      setSortingOrder(SortingOrders.ASCENDING);
+      sorting.order.reset();
+      sorting.type.set(sorter);
     }
-    setSortingType(sorter);
   };
-
-  const renderSortingArrow = () =>
-    sortingOrder === SortingOrders.ASCENDING ? (
-      <ArrowUpCircle />
-    ) : (
-      <ArrowDownCircle />
-    );
 
   const gridTemplateColumns = header
     .map(({ width }) => width || '1fr')
@@ -126,18 +110,20 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
         style={{ marginRight: scrollBarWidth, gridTemplateColumns }}
         className={classes(css.taskTableRow)}
       >
-        {header.map(({ label, textAlign, sorting }) => (
+        {header.map(({ label, textAlign, sorting: sorter }) => (
           <div
             key={label}
             className={classes(css.taskTableHeader, {
-              [css.clickable]: sorting !== undefined,
+              [css.clickable]: sorter !== undefined,
               textAlignEnd: textAlign === 'end',
               textAlignCenter: textAlign === 'center',
             })}
-            onClick={() => onSortingChange(sorting)}
+            onClick={() => onSortingChange(sorter)}
           >
             <Trans i18nKey={label} />
-            {sortingType === sorting ? renderSortingArrow() : null}
+            {sorter !== undefined && sorting.type.get() === sorter && (
+              <SortingArrow order={sorting.order.get()} />
+            )}
           </div>
         ))}
       </div>
