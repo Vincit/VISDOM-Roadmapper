@@ -243,12 +243,9 @@ export const TimeEstimationPage = () => {
                 type="number"
                 placeholder={t('Duration')}
                 value={milestoneDuration || ''}
-                onChange={(e: any) => onDurationChange(e.currentTarget.value)}
-                onKeyPress={(e: any) => {
-                  // Prevents input of non-numeric characters
-                  if (e.which < 48 || e.which > 57) {
-                    e.preventDefault();
-                  }
+                onChange={(e) => onDurationChange(e.currentTarget.value)}
+                onKeyPress={(e) => {
+                  if (!/^\d$/.test(e.key)) e.preventDefault();
                 }}
               />
             </label>
