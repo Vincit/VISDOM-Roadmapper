@@ -32,11 +32,8 @@ import {
   Version,
 } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import {
-  calcWeightedTaskPriority,
-  dragDropBetweenLists,
-  reorderList,
-} from '../utils/TaskUtils';
+import { calcWeightedTaskPriority } from '../utils/TaskUtils';
+import { move } from '../utils/array';
 import css from './MilestonesEditor.module.scss';
 
 const classes = classNames.bind(css);
@@ -188,12 +185,8 @@ export const MilestonesEditor = () => {
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
 
-    // Reordering inside one list
-    copyLists[source.droppableId] = reorderList(
-      copyLists[source.droppableId],
-      source.index,
-      destination!.index,
-    );
+    const list = copyLists[source.droppableId];
+    move().from(list, source.index).to(list, destination!.index);
 
     setVersionLists(copyLists);
     if (destination?.droppableId === ROADMAP_LIST_ID) return Promise.resolve();
@@ -214,16 +207,9 @@ export const MilestonesEditor = () => {
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
 
-    // Moving from one list to another
-    Object.assign(
-      copyLists,
-      dragDropBetweenLists(
-        copyLists[source.droppableId],
-        copyLists[destination!.droppableId],
-        source,
-        destination!,
-      ),
-    );
+    move()
+      .from(copyLists[source.droppableId], source.index)
+      .to(copyLists[destination!.droppableId], destination!.index);
     setVersionLists(copyLists);
 
     setDisableUpdates(true);
