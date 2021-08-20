@@ -1,5 +1,4 @@
-import { FC, MouseEvent, useEffect, useState } from 'react';
-import { ArrowDownCircle, ArrowUpCircle } from 'react-bootstrap-icons';
+import { FC, MouseEvent, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -20,11 +19,9 @@ import {
 import { RootState } from '../redux/types';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
-import {
-  SortingOrders,
-  CustomerSortingTypes,
-  sortCustomers,
-} from '../utils/SortCustomerUtils';
+import { SortingArrow } from './SortingArrow';
+import { useSorting } from '../utils/SortUtils';
+import { CustomerSortingTypes, customerSort } from '../utils/SortCustomerUtils';
 import css from '../pages/PeopleListPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -38,8 +35,6 @@ interface CustomerTableHeader {
 export const CustomerList: FC<{
   search: string;
 }> = ({ search }) => {
-  const [sortingType, setSortingType] = useState(CustomerSortingTypes.NO_SORT);
-  const [sortingOrder, setSortingOrder] = useState(SortingOrders.ASCENDING);
   const [sortedCustomers, setSortedCustomers] = useState<Customer[]>([]);
   const plannedWeights = useSelector<RootState, PlannerCustomerWeight[]>(
     plannerCustomerWeightsSelector,
@@ -56,6 +51,10 @@ export const CustomerList: FC<{
   const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
+  const [sort, sorting] = useSorting(
+    useMemo(() => customerSort(tasks, plannedWeights), [tasks, plannedWeights]),
+  );
+
   useEffect(() => {
     if (!customers && currentRoadmap)
       dispatch(roadmapsActions.getCustomers(currentRoadmap.id));
@@ -70,40 +69,17 @@ export const CustomerList: FC<{
     const searched = customers?.filter(({ name }) =>
       name.toLowerCase().includes(search),
     );
-    setSortedCustomers(
-      sortCustomers(
-        searched || [],
-        sortingType,
-        sortingOrder,
-        tasks,
-        plannedWeights,
-      ),
-    );
-  }, [customers, sortingType, sortingOrder, tasks, plannedWeights, search]);
-
-  const toggleSortOrder = () => {
-    if (sortingOrder === SortingOrders.ASCENDING) {
-      setSortingOrder(SortingOrders.DESCENDING);
-    } else {
-      setSortingOrder(SortingOrders.ASCENDING);
-    }
-  };
+    setSortedCustomers(sort(searched || []));
+  }, [customers, sort, search]);
 
   const onSortingChange = (sorter: CustomerSortingTypes) => {
-    if (sorter === sortingType) {
-      toggleSortOrder();
+    if (sorter === sorting.type.get()) {
+      sorting.order.toggle();
     } else {
-      setSortingOrder(SortingOrders.ASCENDING);
+      sorting.order.reset();
+      sorting.type.set(sorter);
     }
-    setSortingType(sorter);
   };
-
-  const sortingArrow = () =>
-    sortingOrder === SortingOrders.ASCENDING ? (
-      <ArrowUpCircle />
-    ) : (
-      <ArrowDownCircle />
-    );
 
   const addUserClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -138,7 +114,9 @@ export const CustomerList: FC<{
               >
                 <span className={classes(css.headerSpan)}>
                   <Trans i18nKey={header.label} />
-                  {sortingType === header.sorting ? sortingArrow() : null}
+                  {sorting.type.get() === header.sorting && (
+                    <SortingArrow order={sorting.order.get()} />
+                  )}
                 </span>
               </th>
             );
@@ -166,7 +144,7 @@ export const CustomerList: FC<{
         </button>
       </div>
       {sortedCustomers.length > 0 ? (
-        <CustomersTable />
+        CustomersTable()
       ) : (
         <Trans i18nKey="No customers found" />
       )}

@@ -12,16 +12,8 @@ import {
   RoleType,
   TaskRatingDimension,
 } from '../../../shared/types/customTypes';
-import {
-  SortingOrders,
-  sort,
-  Sort,
-  sortKeyNumeric,
-  sortKeyLocale,
-} from './SortUtils';
+import { Sort, sortKeyNumeric, sortKeyLocale } from './SortUtils';
 import { getType, isUserInfo } from './UserUtils';
-
-export { SortingOrders } from './SortUtils';
 
 export enum FilterTypes {
   SHOW_ALL,
@@ -32,7 +24,6 @@ export enum FilterTypes {
 }
 
 export enum SortingTypes {
-  NO_SORT,
   SORT_NAME,
   SORT_STATUS,
   SORT_DESC,
@@ -154,10 +145,8 @@ export const filterTasks = (
   return taskList.filter(filterFunc);
 };
 
-const taskCompare = (
-  sortingType: SortingTypes,
-): Sort<Task, any> | undefined => {
-  switch (sortingType) {
+export const taskSort = (type: SortingTypes | undefined): Sort<Task> => {
+  switch (type) {
     case SortingTypes.SORT_CREATEDAT:
       return sortKeyNumeric((t) => new Date(t.createdAt).getTime());
     case SortingTypes.SORT_NAME:
@@ -177,16 +166,9 @@ const taskCompare = (
     case SortingTypes.SORT_TOTAL_WORK:
       return sortKeyNumeric((t) => valueAndWorkSummary(t).work.total);
     default:
-      // SortingTypes.NO_SORT
       break;
   }
 };
-
-export const sortTasks = (
-  taskList: Task[],
-  sortingType: SortingTypes,
-  sortingOrder: SortingOrders,
-) => sort(taskCompare(sortingType), sortingOrder)(taskList);
 
 // Function to help with reordering item in list
 export const reorderList = (
