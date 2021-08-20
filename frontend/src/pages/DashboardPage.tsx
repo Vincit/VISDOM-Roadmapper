@@ -17,7 +17,7 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType, Permission } from '../../../shared/types/customTypes';
-import { splitTasksOnRated } from '../utils/TaskUtils';
+import { isUnrated } from '../utils/TaskUtils';
 import { getType, hasPermission } from '../utils/UserUtils';
 import css from './DashboardPage.module.scss';
 
@@ -88,12 +88,11 @@ export const DashboardPage = () => {
   }, [dispatch, roadmapsVersions, currentRoadmap]);
 
   useEffect(() => {
-    const { unrated } = splitTasksOnRated(
-      currentRoadmap?.tasks ?? [],
-      userInfo,
-      currentRoadmap,
-    );
-    setUnratedTasks(unrated);
+    if (userInfo && currentRoadmap) {
+      setUnratedTasks(
+        currentRoadmap.tasks.filter(isUnrated(userInfo, currentRoadmap)),
+      );
+    }
   }, [currentRoadmap, userInfo]);
 
   return (

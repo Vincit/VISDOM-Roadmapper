@@ -8,7 +8,6 @@ import { roadmapsActions } from '../redux/roadmaps';
 import {
   allCustomersSelector,
   plannerCustomerWeightsSelector,
-  allTasksSelector,
   chosenRoadmapSelector,
 } from '../redux/roadmaps/selectors';
 import {
@@ -48,11 +47,13 @@ export const CustomerList: FC<{
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
   const [sort, sorting] = useSorting(
-    useMemo(() => customerSort(tasks, plannedWeights), [tasks, plannedWeights]),
+    useMemo(() => customerSort(currentRoadmap, plannedWeights), [
+      currentRoadmap,
+      plannedWeights,
+    ]),
   );
 
   useEffect(() => {

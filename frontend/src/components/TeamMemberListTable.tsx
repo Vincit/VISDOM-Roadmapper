@@ -8,7 +8,6 @@ import { roadmapsActions } from '../redux/roadmaps';
 import {
   roadmapUsersSelector,
   chosenRoadmapSelector,
-  allTasksSelector,
 } from '../redux/roadmaps/selectors';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -40,14 +39,10 @@ export const TeamMemberList: FC<{
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
 
   const [sort, sorting] = useSorting(
-    useMemo(() => userSort(tasks, currentRoadmap?.customers), [
-      tasks,
-      currentRoadmap,
-    ]),
+    useMemo(() => userSort(currentRoadmap), [currentRoadmap]),
   );
 
   useEffect(() => {
