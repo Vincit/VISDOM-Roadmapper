@@ -4,7 +4,6 @@ import {
   Redirect,
   Route,
   Switch,
-  useLocation,
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
@@ -14,8 +13,6 @@ import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
 import { PeopleListPage } from '../pages/PeopleListPage';
 import { StoreDispatchType } from '../redux';
-import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../components/modals/types';
 import { roadmapsActions } from '../redux/roadmaps';
 import {
   chosenRoadmapSelector,
@@ -58,7 +55,6 @@ const routes = [
 ];
 
 const RoadmapRouterComponent = () => {
-  const query = new URLSearchParams(useLocation().search);
   const { path } = useRouteMatch();
   const { roadmapId } = useParams<{ roadmapId: string | undefined }>();
   const dispatch = useDispatch<StoreDispatchType>();
@@ -78,35 +74,6 @@ const RoadmapRouterComponent = () => {
     allCustomersSelector(),
     shallowEqual,
   );
-
-  // Parse query params
-  let queryModal = query.get('openModal');
-  if (
-    !queryModal ||
-    !Object.values(ModalTypes).includes(queryModal as ModalTypes)
-  ) {
-    queryModal = null;
-  }
-  let queryProps = query.get('modalProps');
-  try {
-    queryProps = JSON.parse(queryProps!);
-  } catch (e) {
-    queryProps = null;
-  }
-
-  useEffect(() => {
-    // Open modals for corresponding query params
-    if (!queryModal) return;
-    if (!queryProps) return;
-    if (!currentRoadmap) return;
-
-    dispatch(
-      modalsActions.showModal({
-        modalType: queryModal as ModalTypes,
-        modalProps: queryProps as any,
-      }),
-    );
-  }, [queryModal, queryProps, currentRoadmap, dispatch]);
 
   useEffect(() => {
     // Try to select roadmap given in route parameters

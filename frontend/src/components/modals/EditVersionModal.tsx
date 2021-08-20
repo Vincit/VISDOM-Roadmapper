@@ -55,7 +55,7 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
           </div>
         </ModalHeader>
         <ModalContent>
-          <div className={classes(css.formDiv)}>
+          <div className={classes(css.versionformDiv)}>
             <Input
               label={t('Milestone name')}
               required
