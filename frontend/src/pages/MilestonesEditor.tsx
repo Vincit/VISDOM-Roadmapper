@@ -38,6 +38,10 @@ import css from './MilestonesEditor.module.scss';
 
 const classes = classNames.bind(css);
 
+type DropWithDestination = DropResult & {
+  destination: NonNullable<DropResult['destination']>;
+};
+
 interface VersionListsObject {
   [K: string]: Task[];
 }
@@ -181,97 +185,81 @@ export const MilestonesEditor = () => {
     setDisableDrag(true);
   };
 
-  const onDragReorder = async (result: DropResult) => {
+  const onDragReorder = async (result: DropWithDestination) => {
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
 
     const list = copyLists[source.droppableId];
-    move().from(list, source.index).to(list, destination!.index);
+    move().from(list, source.index).to(list, destination.index);
 
     setVersionLists(copyLists);
-    if (destination?.droppableId === ROADMAP_LIST_ID) return Promise.resolve();
-
-    const res = await dispatch(
-      roadmapsActions.patchVersion({
-        id: +source.droppableId,
-        tasks: copyLists[source.droppableId].map((task) => task.id),
-      }),
-    );
-    if (roadmapsActions.patchVersion.rejected.match(res)) {
-      return Promise.reject();
+    if (destination.droppableId !== ROADMAP_LIST_ID) {
+      await dispatch(
+        roadmapsActions.patchVersion({
+          id: +source.droppableId,
+          tasks: copyLists[source.droppableId].map((task) => task.id),
+        }),
+      ).unwrap();
     }
-    return Promise.resolve();
   };
 
-  const onDragMoveToList = async (result: DropResult) => {
+  const onDragMoveToList = async (result: DropWithDestination) => {
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
 
     move()
       .from(copyLists[source.droppableId], source.index)
-      .to(copyLists[destination!.droppableId], destination!.index);
+      .to(copyLists[destination.droppableId], destination.index);
     setVersionLists(copyLists);
 
-    setDisableUpdates(true);
-    if (destination?.droppableId !== ROADMAP_LIST_ID) {
+    if (destination.droppableId !== ROADMAP_LIST_ID) {
       // If moving to another version -> add to new version
-      const addRes = await dispatch(
+      await dispatch(
         roadmapsActions.addTaskToVersion({
-          version: { id: +destination!.droppableId! },
+          version: { id: +destination.droppableId },
           task: {
             id: +result.draggableId,
           },
-          index: destination!.index,
+          index: destination.index,
         }),
-      );
-      if (roadmapsActions.addTaskToVersion.rejected.match(addRes)) {
-        setDisableUpdates(false);
-        return Promise.reject();
-      }
+      ).unwrap();
     }
 
     if (source.droppableId !== ROADMAP_LIST_ID) {
       // If moving from another version -> remove from previous version
-      const removeRes = await dispatch(
+      await dispatch(
         roadmapsActions.removeTaskFromVersion({
-          version: { id: +source!.droppableId! },
+          version: { id: +source.droppableId },
           task: {
             id: +result.draggableId,
           },
         }),
-      );
-      if (roadmapsActions.removeTaskFromVersion.rejected.match(removeRes)) {
-        setDisableUpdates(false);
-        return Promise.reject();
-      }
+      ).unwrap();
     }
-    setDisableUpdates(false);
-
-    return Promise.resolve();
   };
 
-  const onTaskDragEnd = async (result: DropResult) => {
+  const onTaskDragEnd = async (result: DropWithDestination) => {
     const { source, destination } = result;
 
     // Backup list that is not mutated, used for reverting action if api request fails
     const backupLists = copyVersionLists(versionLists);
-    let res: Promise<void> | undefined;
-    if (source.droppableId === destination!.droppableId) {
-      res = onDragReorder(result);
-    } else {
-      res = onDragMoveToList(result);
-    }
-
     try {
-      await res;
-      setDisableDrag(false);
+      if (source.droppableId === destination.droppableId) {
+        await onDragReorder(result);
+      } else {
+        try {
+          setDisableUpdates(true);
+          await onDragMoveToList(result);
+        } finally {
+          setDisableUpdates(false);
+        }
+      }
     } catch (e) {
       setVersionLists(backupLists);
-      setDisableDrag(false);
     }
   };
 
-  const onVersionDragEnd = async (result: DropResult) => {
+  const onVersionDragEnd = async (result: DropWithDestination) => {
     const { source, destination, draggableId } = result;
     const dragVersionId = parseInt(draggableId.match(/\d+/)![0], 10);
     const versionsCopy = roadmapsVersionsLocal!
@@ -283,27 +271,25 @@ export const MilestonesEditor = () => {
       })
       .map((ver) => {
         if (ver.id === dragVersionId) {
-          return { ...ver, sortingRank: destination!.index };
+          return { ...ver, sortingRank: destination.index };
         }
-        if (ver.sortingRank >= destination!.index) {
+        if (ver.sortingRank >= destination.index) {
           return { ...ver, sortingRank: ver.sortingRank + 1 };
         }
         return ver;
       })
       .sort((a, b) => a.sortingRank - b.sortingRank);
     setRoadmapsVersionsLocal(versionsCopy);
-    const versionTasks = versionsCopy[destination!.index].tasks.map(
+    const versionTasks = versionsCopy[destination.index].tasks.map(
       (task) => task.id,
     );
-    dispatch(
+    await dispatch(
       roadmapsActions.patchVersion({
         id: dragVersionId,
-        sortingRank: destination!.index,
+        sortingRank: destination.index,
         tasks: versionTasks,
       }),
-    ).then(() => {
-      setDisableDrag(false);
-    });
+    );
   };
 
   const onDragEnd = async (result: DropResult) => {
@@ -319,166 +305,154 @@ export const MilestonesEditor = () => {
       return;
     }
 
-    if (result.type === 'TASKS') {
-      await onTaskDragEnd(result);
-    } else if (result.type === 'VERSIONS') {
-      await onVersionDragEnd(result);
+    try {
+      if (result.type === 'TASKS') {
+        await onTaskDragEnd(result as DropWithDestination);
+      } else if (result.type === 'VERSIONS') {
+        await onVersionDragEnd(result as DropWithDestination);
+      }
+    } finally {
+      setDisableDrag(false);
     }
   };
-  const renderMilestones = () => {
-    return (
-      <>
-        <Droppable
-          droppableId="roadmapVersions"
-          type="VERSIONS"
-          direction="horizontal"
-        >
-          {(droppableProvided) => (
-            <div
-              className={classes(
-                css.layoutRow,
-                css.overflowYAuto,
-                css.horizontalScroller,
-              )}
-              ref={droppableProvided.innerRef}
-            >
-              {roadmapsVersionsLocal!.map((version, index) => {
-                return (
-                  <Draggable
-                    key={`ver-${version.id}`}
-                    draggableId={`ver-${version.id}`}
-                    index={index}
-                    isDragDisabled={disableDrag}
-                  >
-                    {(draggableProvided) => (
-                      <div
-                        className={classes(css.layoutCol, css.milestoneCol)}
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                      >
-                        <div className={classes(css.milestoneWrapper)}>
-                          <div
-                            className={classes(css.milestoneHeader)}
-                            {...draggableProvided.dragHandleProps}
-                          >
-                            {version.name}
-                          </div>
-
-                          <div
-                            className={classes(
-                              css.sortableListWrapper,
-                              css.milestone,
-                            )}
-                          >
-                            <SortableTaskList
-                              listId={`${version.id}`}
-                              tasks={versionLists[version.id] || []}
-                              disableDragging={disableDrag}
-                            />
-                          </div>
-                          <div className={classes(css.ratingsSummaryWrapper)}>
-                            <MilestoneRatingsSummary
-                              tasks={versionLists[version.id] || []}
-                            />
-                          </div>
-                          <div className={classes(css.milestoneFooter)}>
-                            <DeleteButton
-                              type="filled"
-                              onClick={(e) =>
-                                deleteVersionClicked(e, version.id)
-                              }
-                              href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
-                                id: version.id,
-                                roadmapId: currentRoadmap.id,
-                              })}
-                            />
-                            <SettingsButton
-                              onClick={(e) =>
-                                editVersionClicked(e, version.id, version.name)
-                              }
-                              href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
-                                id: version.id,
-                                name: version.name,
-                              })}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-              <div className={classes(css.layoutCol, css.milestoneCol)}>
-                <div
-                  className={classes(
-                    css.milestoneWrapper,
-                    css.addNewBtnWrapper,
-                  )}
-                  onClick={addVersion}
-                  onKeyPress={addVersion}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <button
-                    className={classes(css['button-large'])}
-                    type="submit"
-                  >
-                    <Trans i18nKey="+ Add new milestone" />
-                  </button>
-                </div>
-              </div>
-              {droppableProvided.placeholder}
-            </div>
+  const renderMilestones = () => (
+    <Droppable
+      droppableId="roadmapVersions"
+      type="VERSIONS"
+      direction="horizontal"
+    >
+      {(droppableProvided) => (
+        <div
+          className={classes(
+            css.layoutRow,
+            css.overflowYAuto,
+            css.horizontalScroller,
           )}
-        </Droppable>
-      </>
-    );
-  };
+          ref={droppableProvided.innerRef}
+        >
+          {roadmapsVersionsLocal!.map((version, index) => (
+            <Draggable
+              key={`ver-${version.id}`}
+              draggableId={`ver-${version.id}`}
+              index={index}
+              isDragDisabled={disableDrag}
+            >
+              {(draggableProvided) => (
+                <div
+                  className={classes(css.layoutCol, css.milestoneCol)}
+                  ref={draggableProvided.innerRef}
+                  {...draggableProvided.draggableProps}
+                >
+                  <div className={classes(css.milestoneWrapper)}>
+                    <div
+                      className={classes(css.milestoneHeader)}
+                      {...draggableProvided.dragHandleProps}
+                    >
+                      {version.name}
+                    </div>
+
+                    <div
+                      className={classes(
+                        css.sortableListWrapper,
+                        css.milestone,
+                      )}
+                    >
+                      <SortableTaskList
+                        listId={`${version.id}`}
+                        tasks={versionLists[version.id] || []}
+                        disableDragging={disableDrag}
+                      />
+                    </div>
+                    <div className={classes(css.ratingsSummaryWrapper)}>
+                      <MilestoneRatingsSummary
+                        tasks={versionLists[version.id] || []}
+                      />
+                    </div>
+                    <div className={classes(css.milestoneFooter)}>
+                      <DeleteButton
+                        type="filled"
+                        onClick={(e) => deleteVersionClicked(e, version.id)}
+                        href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
+                          id: version.id,
+                          roadmapId: currentRoadmap.id,
+                        })}
+                      />
+                      <SettingsButton
+                        onClick={(e) =>
+                          editVersionClicked(e, version.id, version.name)
+                        }
+                        href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
+                          id: version.id,
+                          name: version.name,
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </Draggable>
+          ))}
+          <div className={classes(css.layoutCol, css.milestoneCol)}>
+            <div
+              className={classes(css.milestoneWrapper, css.addNewBtnWrapper)}
+              onClick={addVersion}
+              onKeyPress={addVersion}
+              role="button"
+              tabIndex={0}
+            >
+              <button className={classes(css['button-large'])} type="submit">
+                <Trans i18nKey="+ Add new milestone" />
+              </button>
+            </div>
+          </div>
+          {droppableProvided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  );
 
   return (
-    <>
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        <div className={classes(css.layoutRow, css.overflowYAuto)}>
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <div className={classes(css.layoutRow, css.overflowYAuto)}>
+        <div
+          className={classes(css.layoutCol, css.unorderedTasksCol, {
+            [css.minimized]: !expandUnordered,
+          })}
+        >
           <div
-            className={classes(css.layoutCol, css.unorderedTasksCol, {
+            className={classes(css.unorderedTasksWrapper, {
               [css.minimized]: !expandUnordered,
             })}
           >
             <div
-              className={classes(css.unorderedTasksWrapper, {
+              className={classes(css.unorderedTasksHeader, {
                 [css.minimized]: !expandUnordered,
               })}
+              onClick={() => setExpandUnordered(!expandUnordered)}
+              onKeyPress={() => setExpandUnordered(!expandUnordered)}
+              role="button"
+              tabIndex={0}
             >
-              <div
-                className={classes(css.unorderedTasksHeader, {
-                  [css.minimized]: !expandUnordered,
-                })}
-                onClick={() => setExpandUnordered(!expandUnordered)}
-                onKeyPress={() => setExpandUnordered(!expandUnordered)}
-                role="button"
-                tabIndex={0}
-              >
-                {expandUnordered ? <ExpandLess /> : <ExpandMore />}
-                <div>
-                  {`${t('Unordered tasks')} (${
-                    versionLists[ROADMAP_LIST_ID]?.length ?? 0
-                  })`}
-                </div>
+              {expandUnordered ? <ExpandLess /> : <ExpandMore />}
+              <div>
+                {`${t('Unordered tasks')} (${
+                  versionLists[ROADMAP_LIST_ID]?.length ?? 0
+                })`}
               </div>
-              {expandUnordered && (
-                <div className={classes(css.sortableListWrapper)}>
-                  <SortableTaskList
-                    listId={ROADMAP_LIST_ID}
-                    tasks={versionLists[ROADMAP_LIST_ID] || []}
-                    disableDragging={disableDrag}
-                  />
-                </div>
-              )}
             </div>
+            {expandUnordered && (
+              <div className={classes(css.sortableListWrapper)}>
+                <SortableTaskList
+                  listId={ROADMAP_LIST_ID}
+                  tasks={versionLists[ROADMAP_LIST_ID] || []}
+                  disableDragging={disableDrag}
+                />
+              </div>
+            )}
           </div>
-          {roadmapsVersionsLocal && renderMilestones()}
         </div>
-      </DragDropContext>
-    </>
+        {roadmapsVersionsLocal && renderMilestones()}
+      </div>
+    </DragDropContext>
   );
 };
