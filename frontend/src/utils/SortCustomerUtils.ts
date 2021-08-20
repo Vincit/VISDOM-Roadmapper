@@ -4,8 +4,8 @@ import { customerWeight } from './CustomerUtils';
 
 import {
   SortingOrders,
-  SortComparison,
-  sorted,
+  Sort,
+  sort,
   sortKeyLocale,
   sortKeyNumeric,
 } from './SortUtils';
@@ -23,19 +23,22 @@ export enum CustomerSortingTypes {
 
 const customerCompare = (
   sortingType: CustomerSortingTypes,
+  tasks: Task[],
   plannedWeights?: PlannerCustomerWeight[],
-): SortComparison<Customer> | undefined => {
+): Sort<Customer, any> | undefined => {
   switch (sortingType) {
     case CustomerSortingTypes.SORT_NAME:
-      return sortKeyLocale(({ name }) => name);
+      return sortKeyLocale('name');
     case CustomerSortingTypes.SORT_EMAIL:
-      return sortKeyLocale(({ email }) => email);
+      return sortKeyLocale('email');
     case CustomerSortingTypes.SORT_VALUE:
       return sortKeyNumeric((customer) =>
         customerWeight(customer, plannedWeights),
       );
     case CustomerSortingTypes.SORT_COLOR:
-      return sortKeyLocale(({ color }) => color || '');
+      return sortKeyLocale('color');
+    case CustomerSortingTypes.SORT_UNRATED:
+      return sortKeyNumeric((customer) => unratedTasksAmount(customer, tasks));
     default:
       // SortingTypes.NO_SORT
       break;
@@ -48,19 +51,4 @@ export const sortCustomers = (
   order: SortingOrders,
   tasks: Task[],
   plannedWeights?: PlannerCustomerWeight[],
-) => {
-  if (type === CustomerSortingTypes.SORT_UNRATED) {
-    // use decorate-sort-undecorate pattern
-    const decorated = customers.map((customer) => ({
-      key: unratedTasksAmount(customer, tasks),
-      customer,
-    }));
-    const sortedUsers = sorted(
-      decorated,
-      sortKeyNumeric(({ key }) => key),
-      order,
-    );
-    return sortedUsers.map(({ customer }) => customer);
-  }
-  return sorted(customers, customerCompare(type, plannedWeights), order);
-};
+) => sort(customerCompare(type, tasks, plannedWeights), order)(customers);

@@ -3,25 +3,62 @@ export enum SortingOrders {
   DESCENDING = -1,
 }
 
-export type SortKey<T, K> = (value: T) => K;
-export type SortComparison<T> = (a: T, b: T) => number;
+// from: https://stackoverflow.com/a/52991061
+type RequiredKeys<T> = {
+  [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
+}[keyof T];
 
-export const sortKeyCompare = <T, K>(
-  key: SortKey<T, K>,
-  compare: SortComparison<K>,
-): SortComparison<T> => (a: T, b: T) => compare(key(a), key(b));
+// The type doesn't play nice with optional properties,
+// so those are just not allowed.
+// If optional property is needed for sorting, the key must be a function
+type PropertyKey<T, K> = {
+  [P in keyof T]: T[P] extends K ? P : never;
+}[RequiredKeys<T>];
 
-export const sortKeyNumeric = <T>(key: SortKey<T, number>) =>
+type Key<T, K> = PropertyKey<T, K> | ((value: T) => K);
+
+type Comparison<T> = (a: T, b: T) => number;
+export type Sort<T, K> =
+  | {
+      key: Key<T, K>;
+      compare: Comparison<K>;
+    }
+  | { compare: Comparison<T> };
+
+const sortKeyCompare = <T, K>(
+  key: Key<T, K>,
+  compare: Comparison<K>,
+): Sort<T, K> => ({ key, compare });
+
+export const sortKeyNumeric = <T>(key: Key<T, number>) =>
   sortKeyCompare(key, (a, b) => a - b);
 
-export const sortKeyLocale = <T>(key: SortKey<T, string>) =>
+export const sortKeyLocale = <T>(key: Key<T, string>) =>
   sortKeyCompare(key, (a, b) => a.localeCompare(b));
 
-export const sorted = <T>(
-  list: T[],
-  compare?: SortComparison<T>,
+export const sort = <T, K>(
+  by?: Sort<T, K>,
   order: SortingOrders = SortingOrders.ASCENDING,
-) =>
-  compare === undefined
-    ? list
-    : [...list].sort((a, b) => compare(a, b) * order);
+): ((_: T[]) => T[]) => {
+  // no sorting
+  if (!by) return (list: T[]) => list;
+
+  if ('key' in by) {
+    const { key, compare } = by;
+    if (typeof key === 'function') {
+      // use decorate-sort-undecorate pattern for calculated keys
+      return (list: T[]) =>
+        list
+          .map((t) => ({ key: key(t), item: t }))
+          .sort((a, b) => compare(a.key, b.key) * order)
+          .map(({ item }) => item);
+    }
+
+    // sort by direct property of the object
+    return (list: T[]) =>
+      [...list].sort((a, b) => compare(a[key], b[key]) * order);
+  }
+
+  // sort by comparison function
+  return (list: T[]) => [...list].sort((a, b) => by.compare(a, b) * order);
+};

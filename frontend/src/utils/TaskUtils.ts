@@ -14,10 +14,10 @@ import {
 } from '../../../shared/types/customTypes';
 import {
   SortingOrders,
-  sorted,
+  sort,
+  Sort,
   sortKeyNumeric,
   sortKeyLocale,
-  SortComparison,
 } from './SortUtils';
 import { getType, isUserInfo } from './UserUtils';
 
@@ -105,7 +105,7 @@ export const averageValueAndWork = (tasks: Task[]) => {
   };
 };
 
-export const calcTaskPriority = (task: Task) => {
+const calcTaskPriority = (task: Task) => {
   const ratings = ratingsSummaryByDimension(task);
   const value = ratings.get(TaskRatingDimension.BusinessValue);
   const work = ratings.get(TaskRatingDimension.RequiredWork);
@@ -114,7 +114,7 @@ export const calcTaskPriority = (task: Task) => {
   return value.avg / work.avg;
 };
 
-export const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
+const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
   return (task: Task) => {
     if (
       task.ratings.some((taskrating) => taskrating.createdByUser === userId)
@@ -125,7 +125,7 @@ export const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
   };
 };
 
-export const filterTasksByCompletion = (completion: boolean) => {
+const filterTasksByCompletion = (completion: boolean) => {
   return (task: Task) => task.completed === completion;
 };
 
@@ -156,14 +156,14 @@ export const filterTasks = (
 
 const taskCompare = (
   sortingType: SortingTypes,
-): SortComparison<Task> | undefined => {
+): Sort<Task, any> | undefined => {
   switch (sortingType) {
     case SortingTypes.SORT_CREATEDAT:
       return sortKeyNumeric((t) => new Date(t.createdAt).getTime());
     case SortingTypes.SORT_NAME:
-      return sortKeyLocale((t) => t.name);
+      return sortKeyLocale('name');
     case SortingTypes.SORT_DESC:
-      return sortKeyLocale((t) => t.description);
+      return sortKeyLocale('description');
     case SortingTypes.SORT_STATUS:
       return sortKeyNumeric((t) => +t.completed);
     case SortingTypes.SORT_RATINGS:
@@ -186,7 +186,7 @@ export const sortTasks = (
   taskList: Task[],
   sortingType: SortingTypes,
   sortingOrder: SortingOrders,
-) => sorted(taskList, taskCompare(sortingType), sortingOrder);
+) => sort(taskCompare(sortingType), sortingOrder)(taskList);
 
 // Function to help with reordering item in list
 export const reorderList = (
@@ -288,22 +288,19 @@ export const calcWeightedTaskPriority = (task: Task, roadmap: Roadmap) => {
   return weightedValue / avgWorkRating;
 };
 
-export const isRatedByUser = (user: RoadmapUser | UserInfo) => (
-  rating: Taskrating,
-) => rating.createdByUser === user.id;
+const isRatedByUser = (user: RoadmapUser | UserInfo) => (rating: Taskrating) =>
+  rating.createdByUser === user.id;
 
-export const isRatedByCustomer = (
-  customer: Customer,
-  rep: RoadmapUser | UserInfo,
-) => (rating: Taskrating) =>
-  rating.forCustomer === customer.id && rating.createdByUser === rep.id;
+const isRatedByCustomer = (customer: Customer, rep: RoadmapUser | UserInfo) => (
+  rating: Taskrating,
+) => rating.forCustomer === customer.id && rating.createdByUser === rep.id;
 
 /*
   For Customers consider missing representative ratings
   For Admin and Business -users consider missing represented ratings
   For others consider their own missing ratings
 */
-export const isUnrated = (
+const isUnrated = (
   user: RoadmapUser | Customer | UserInfo,
   customers?: Customer[],
 ) => (task: Task) => {
@@ -330,7 +327,7 @@ export const isUnrated = (
   return !task.ratings.find(isRatedByUser(user));
 };
 
-export const unratedTasks = (
+const unratedTasks = (
   user: RoadmapUser | Customer | UserInfo,
   tasks: Task[],
   customers?: Customer[],

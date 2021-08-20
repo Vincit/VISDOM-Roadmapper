@@ -3,8 +3,8 @@ import { RoleType } from '../../../shared/types/customTypes';
 import { unratedTasksAmount } from './TaskUtils';
 import {
   SortingOrders,
-  SortComparison,
-  sorted,
+  sort,
+  Sort,
   sortKeyLocale,
   sortKeyNumeric,
 } from './SortUtils';
@@ -21,14 +21,20 @@ export enum UserSortingTypes {
 
 const userCompare = (
   sortingType: UserSortingTypes,
-): SortComparison<RoadmapUser> | undefined => {
+  tasks: Task[],
+  customers?: Customer[],
+): Sort<RoadmapUser, any> | undefined => {
   switch (sortingType) {
     case UserSortingTypes.SORT_NAME:
-      return sortKeyLocale(({ username }) => username);
+      return sortKeyLocale('username');
     case UserSortingTypes.SORT_EMAIL:
-      return sortKeyLocale(({ email }) => email);
+      return sortKeyLocale('email');
     case UserSortingTypes.SORT_ROLE:
       return sortKeyLocale(({ type }) => RoleType[type]);
+    case UserSortingTypes.SORT_UNRATED:
+      return sortKeyNumeric((user) =>
+        unratedTasksAmount(user, tasks, customers),
+      );
     default:
       // SortingTypes.NO_SORT
       break;
@@ -41,19 +47,4 @@ export const sortRoadmapUsers = (
   order: SortingOrders,
   tasks: Task[],
   customers?: Customer[],
-) => {
-  if (type === UserSortingTypes.SORT_UNRATED) {
-    // use decorate-sort-undecorate pattern
-    const decorated = users.map((user) => ({
-      key: unratedTasksAmount(user, tasks, customers),
-      user,
-    }));
-    const sortedUsers = sorted(
-      decorated,
-      sortKeyNumeric(({ key }) => key),
-      order,
-    );
-    return sortedUsers.map(({ user }) => user);
-  }
-  return sorted(users, userCompare(type), order);
-};
+) => sort(userCompare(type, tasks, customers), order)(users);
