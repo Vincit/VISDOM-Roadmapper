@@ -44,13 +44,7 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
 
   useEffect(() => {
     if (currentRoadmap?.tasks)
-      setUnratedAmount(
-        unratedTasksAmount(
-          customer,
-          currentRoadmap.tasks,
-          currentRoadmap.customers,
-        ),
-      );
+      setUnratedAmount(unratedTasksAmount(customer, currentRoadmap));
   }, [currentRoadmap, customer]);
 
   const deleteUserClicked = (e: MouseEvent) => {

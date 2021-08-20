@@ -39,13 +39,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
 
   useEffect(() => {
     if (currentRoadmap?.tasks)
-      setUnratedAmount(
-        unratedTasksAmount(
-          member,
-          currentRoadmap.tasks,
-          currentRoadmap.customers,
-        ),
-      );
+      setUnratedAmount(unratedTasksAmount(member, currentRoadmap));
   }, [currentRoadmap, member]);
 
   const deleteUserClicked = (e: MouseEvent) => {

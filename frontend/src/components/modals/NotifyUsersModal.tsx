@@ -24,10 +24,7 @@ import { RoleType } from '../../../../shared/types/customTypes';
 import css from './NotifyUsersModal.module.scss';
 import { getType } from '../../utils/UserUtils';
 import { Modal, ModalTypes } from './types';
-import {
-  findMissingCustomers,
-  findMissingDevelopers,
-} from '../../utils/TaskUtils';
+import { missingDeveloper } from '../../utils/TaskUtils';
 import { TextArea } from '../forms/FormField';
 
 const classes = classNames.bind(css);
@@ -71,22 +68,19 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
       customers &&
       allUsers
     ) {
-      const missingCustomers = findMissingCustomers(task.ratings, customers);
       const missingRepresentatives = new Map<number, CheckableUser>();
 
       // Find representatives who haven't given ratings
-      missingCustomers.forEach((customer) => {
+      customers.forEach((customer) => {
         const ratingsForTask = task.ratings
           .filter((rating) => rating.forCustomer === customer.id)
           .map((e) => e.createdByUser);
 
-        // Filter out logged in user, so they won't send email to themselves
-        const representatives = customer.representatives?.filter(
-          (user) => user.id !== userInfo?.id,
-        );
-
-        representatives?.forEach((rep) => {
+        customer.representatives?.forEach((rep) => {
           if (
+            // skip logged in user, so they won't send email to themselves
+            rep.id !== userInfo?.id &&
+            // skip representatives who have given a rating
             !ratingsForTask.includes(rep.id) &&
             !missingRepresentatives.has(rep.id)
           )
@@ -97,17 +91,19 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
         });
       });
 
-      const missingDevelopers = findMissingDevelopers(
-        task.ratings,
-        allUsers,
-      ).map((dev) => ({ ...dev, checked: false }));
+      const missingDevelopers = allUsers
+        .filter(missingDeveloper(task))
+        .map((dev) => ({
+          ...dev,
+          checked: false,
+        }));
 
       setMissingUsers([
         ...Array.from(missingRepresentatives.values()),
         ...missingDevelopers,
       ]);
     }
-  }, [allUsers, customers, task.ratings, task.roadmapId, userInfo]);
+  }, [allUsers, customers, task, userInfo]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

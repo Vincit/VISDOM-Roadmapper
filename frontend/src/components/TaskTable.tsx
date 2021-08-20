@@ -14,7 +14,7 @@ import { InfoTooltip } from './InfoTooltip';
 import { SortingArrow } from './SortingArrow';
 import { useSorting } from '../utils/SortUtils';
 import {
-  filterTasks,
+  taskFilter,
   FilterTypes,
   SortingTypes,
   taskSort,
@@ -64,11 +64,10 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
 
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
 
+  const predicate = taskFilter(searchFilter, userInfo);
+
   // Filter, search, sort tasks
-  const filtered =
-    searchFilter === undefined
-      ? tasks
-      : filterTasks(tasks, searchFilter, userInfo?.id);
+  const filtered = predicate ? tasks.filter(predicate) : tasks;
 
   const searched = !searchString
     ? filtered

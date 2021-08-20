@@ -14,7 +14,8 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { FilterTypes, splitTasksOnRated } from '../utils/TaskUtils';
+import { FilterTypes, isUnrated } from '../utils/TaskUtils';
+import { partition } from '../utils/array';
 import { titleCase } from '../utils/string';
 import css from './TaskListPage.module.scss';
 import {
@@ -31,8 +32,7 @@ export const TaskListPage = () => {
   const [checked, setChecked] = useState(true);
   const [searchString, setSearchString] = useState('');
   const [searchFilter, setSearchFilter] = useState(FilterTypes.SHOW_ALL);
-  const [rated, setRated] = useState<Task[]>([]);
-  const [unrated, setUnrated] = useState<Task[]>([]);
+  const [[unrated, rated], setTasks] = useState<[Task[], Task[]]>([[], []]);
 
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -46,9 +46,8 @@ export const TaskListPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
 
   useEffect(() => {
-    const split = splitTasksOnRated(tasks, userInfo, currentRoadmap);
-    setUnrated(split.unrated);
-    setRated(split.rated);
+    if (userInfo && currentRoadmap)
+      setTasks(partition(tasks, isUnrated(userInfo, currentRoadmap)));
   }, [currentRoadmap, tasks, userInfo]);
 
   const onSearchChange = (value: string) => {

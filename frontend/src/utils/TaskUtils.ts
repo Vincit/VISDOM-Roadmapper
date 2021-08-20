@@ -105,44 +105,43 @@ const calcTaskPriority = (task: Task) => {
   return value.avg / work.avg;
 };
 
-const filterTasksRatedByUser = (userId: number = -1, rated: boolean) => {
-  return (task: Task) => {
-    if (
-      task.ratings.some((taskrating) => taskrating.createdByUser === userId)
-    ) {
-      return rated;
-    }
-    return !rated;
-  };
+const not = <T>(f: (t: T) => boolean) => (t: T) => !f(t);
+
+export const ratedByUser = (user: RoadmapUser | UserInfo) => (task: Task) =>
+  task.ratings.some((rating) => rating.createdByUser === user.id);
+
+const hasUserRating = (task: Task) => {
+  const ids = task.ratings.map((rating) => rating.createdByUser);
+  return (user: RoadmapUser | UserInfo) => ids.includes(user.id);
 };
 
-const filterTasksByCompletion = (completion: boolean) => {
-  return (task: Task) => task.completed === completion;
-};
+export const ratedByCustomer = (
+  customer: Customer,
+  rep: RoadmapUser | UserInfo,
+) => (task: Task) =>
+  task.ratings.some(
+    (rating) =>
+      rating.forCustomer === customer.id && rating.createdByUser === rep.id,
+  );
 
-export const filterTasks = (
-  taskList: Task[],
-  filterType: FilterTypes,
-  userId?: number,
-) => {
-  let filterFunc: (task: Task) => boolean;
-  switch (filterType) {
+const completed = (task: Task) => task.completed;
+
+export const taskFilter = (
+  type: FilterTypes | undefined,
+  user?: UserInfo,
+): ((task: Task) => boolean) | undefined => {
+  switch (type) {
     case FilterTypes.NOT_RATED_BY_ME:
-      filterFunc = filterTasksRatedByUser(userId, false);
-      break;
+      return user && not(ratedByUser(user));
     case FilterTypes.RATED_BY_ME:
-      filterFunc = filterTasksRatedByUser(userId, true);
-      break;
+      return user && ratedByUser(user);
     case FilterTypes.COMPLETED:
-      filterFunc = filterTasksByCompletion(true);
-      break;
+      return completed;
     case FilterTypes.NOT_COMPLETED:
-      filterFunc = filterTasksByCompletion(false);
-      break;
+      return not(completed);
     default:
-      filterFunc = () => true;
+      break;
   }
-  return taskList.filter(filterFunc);
 };
 
 export const taskSort = (type: SortingTypes | undefined): Sort<Task> => {
@@ -270,148 +269,71 @@ export const calcWeightedTaskPriority = (task: Task, roadmap: Roadmap) => {
   return weightedValue / avgWorkRating;
 };
 
-const isRatedByUser = (user: RoadmapUser | UserInfo) => (rating: Taskrating) =>
-  rating.createdByUser === user.id;
+export const awaitsUserRatings = (
+  user: UserInfo,
+  roadmap: number | Roadmap,
+) => {
+  const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
+  const type = getType(user.roles, roadmapId);
+  if (type === RoleType.Admin || type === RoleType.Business) {
+    const reps = user.representativeFor?.filter(
+      (customer) => customer.roadmapId === roadmapId,
+    );
+    return (task: Task) =>
+      task.roadmapId === roadmapId &&
+      !reps?.every((customer) => ratedByCustomer(customer, user)(task));
+  }
+  return not(ratedByUser(user));
+};
 
-const isRatedByCustomer = (customer: Customer, rep: RoadmapUser | UserInfo) => (
-  rating: Taskrating,
-) => rating.forCustomer === customer.id && rating.createdByUser === rep.id;
+const isUnratedProductOwnerTask = ({ users = [], customers = [] }: Roadmap) => {
+  const devs = users.filter((user) => user.type === RoleType.Developer);
+  const reps = customers.map((customer) => customer.representatives ?? []);
+  const shouldHaveRated = devs.concat(...reps);
+  return (task: Task) => !shouldHaveRated.every(hasUserRating(task));
+};
 
 /*
   For Customers consider missing representative ratings
   For Admin and Business -users consider missing represented ratings
   For others consider their own missing ratings
 */
-const isUnrated = (
+export const isUnrated = (
   user: RoadmapUser | Customer | UserInfo,
-  customers?: Customer[],
-) => (task: Task) => {
+  roadmap: Roadmap,
+): ((task: Task) => boolean) => {
   if (isCustomer(user))
-    return !!user.representatives?.find(
-      (rep) => !task.ratings.some(isRatedByCustomer(user, rep)),
-    );
-  if (isUserInfo(user)) {
-    const type = getType(user.roles, task.roadmapId);
-    if (type === RoleType.Admin || type === RoleType.Business)
-      return !!user.representativeFor?.find(
-        (customer) => !task.ratings.some(isRatedByCustomer(customer, user)),
-      );
-    return !task.ratings.find(isRatedByUser(user));
-  }
-  if (user.type === RoleType.Admin || user.type === RoleType.Business) {
-    const represented = customers?.filter((customer) =>
-      customer.representatives?.find((rep) => rep.id === user.id),
-    );
-    return !!represented?.find(
-      (customer) => !task.ratings.some(isRatedByCustomer(customer, user)),
-    );
-  }
-  return !task.ratings.find(isRatedByUser(user));
-};
+    return (task) =>
+      !!user.representatives?.some((rep) => !ratedByCustomer(user, rep)(task));
 
-const unratedTasks = (
-  user: RoadmapUser | Customer | UserInfo,
-  tasks: Task[],
-  customers?: Customer[],
-) => tasks.filter(isUnrated(user, customers));
+  if (isUserInfo(user)) {
+    return getType(user.roles, roadmap.id) === RoleType.Admin
+      ? isUnratedProductOwnerTask(roadmap)
+      : awaitsUserRatings(user, roadmap);
+  }
+
+  if (user.type === RoleType.Admin || user.type === RoleType.Business) {
+    const represented = roadmap.customers?.filter((customer) =>
+      customer.representatives?.some((rep) => rep.id === user.id),
+    );
+    return (task) =>
+      !!represented?.some((customer) => !ratedByCustomer(customer, user)(task));
+  }
+  return not(ratedByUser(user));
+};
 
 export const unratedTasksAmount = (
   user: RoadmapUser | Customer | UserInfo,
-  tasks: Task[],
-  customers?: Customer[],
-) => unratedTasks(user, tasks, customers).length;
+  roadmap: Roadmap,
+) => roadmap.tasks.filter(isUnrated(user, roadmap)).length;
 
-export const taskAwaitsRatings = (task: Task, userInfo?: UserInfo) => {
-  const type = getType(userInfo?.roles, task.roadmapId);
-  if (type === RoleType.Admin || type === RoleType.Business)
-    return !!userInfo?.representativeFor
-      ?.filter((customer) => customer.roadmapId === task.roadmapId)
-      ?.find(
-        (customer) =>
-          !task.ratings.some(
-            (rating) =>
-              customer.id === rating.forCustomer &&
-              rating.createdByUser === userInfo?.id,
-          ),
-      );
-  return !task.ratings.find((rating) => rating.createdByUser === userInfo?.id);
+export const missingDeveloper = (task: Task) => {
+  const ratedBy = hasUserRating(task);
+  return (user: RoadmapUser) =>
+    user.type === RoleType.Developer && !ratedBy(user);
 };
 
-const isUnratedProductOwnerTask = (
-  allUsers: RoadmapUser[],
-  allCustomers: Customer[],
-) => {
-  const developers = allUsers.filter(
-    (user) => user.type === RoleType.Developer,
+export const missingCustomer = (task: Task) => (customer: Customer) =>
+  !customer.representatives?.every((rep) =>
+    ratedByCustomer(customer, rep)(task),
   );
-  return (task: Task) => {
-    const ratingIds = task.ratings.map((rating) => rating.createdByUser);
-
-    const customersMissing = allCustomers.some(
-      (customer) =>
-        !customer.representatives?.every((rep) => ratingIds.includes(rep.id)),
-    );
-
-    const devsMissing = developers.some(
-      (developer) => !ratingIds.includes(developer.id),
-    );
-
-    return customersMissing || devsMissing;
-  };
-};
-
-export const findMissingDevelopers = (
-  taskRatings: Taskrating[],
-  allUsers: RoadmapUser[],
-) => {
-  const ratingIds = taskRatings.map((rating) => rating.createdByUser);
-  return allUsers.filter(
-    (user) => user.type === RoleType.Developer && !ratingIds.includes(user.id),
-  );
-};
-
-export const findMissingCustomers = (
-  taskRatings: Taskrating[],
-  customers: Customer[],
-) => {
-  return customers?.filter((customer) => {
-    return !customer.representatives?.every((rep) => {
-      return taskRatings.some((rating) => {
-        return (
-          rating.createdByUser === rep.id && rating.forCustomer === customer.id
-        );
-      });
-    });
-  });
-};
-
-export const splitTasksOnRated = (
-  tasks: Task[],
-  userInfo?: UserInfo,
-  currentRoadmap?: Roadmap,
-) => {
-  const type = getType(userInfo?.roles, currentRoadmap?.id);
-  let predicate: undefined | ((_: Task) => boolean);
-  if (type === RoleType.Admin) {
-    if (currentRoadmap) {
-      predicate = isUnratedProductOwnerTask(
-        currentRoadmap.users ?? [],
-        currentRoadmap.customers ?? [],
-      );
-    }
-  } else if (type === RoleType.Developer || type === RoleType.Business) {
-    predicate = (task) => taskAwaitsRatings(task, userInfo);
-  }
-  const unrated: Task[] = [];
-  const rated: Task[] = [];
-  if (predicate) {
-    tasks.forEach((task) => {
-      if (predicate!(task)) unrated.push(task);
-      else rated.push(task);
-    });
-  }
-  return {
-    rated,
-    unrated,
-  };
-};

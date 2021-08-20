@@ -1,4 +1,8 @@
-import { Customer, PlannerCustomerWeight, Task } from '../redux/roadmaps/types';
+import {
+  Customer,
+  PlannerCustomerWeight,
+  Roadmap,
+} from '../redux/roadmaps/types';
 import { unratedTasksAmount } from './TaskUtils';
 import { customerWeight } from './CustomerUtils';
 
@@ -13,7 +17,7 @@ export enum CustomerSortingTypes {
 }
 
 export const customerSort = (
-  tasks: Task[],
+  roadmap?: Roadmap,
   plannedWeights?: PlannerCustomerWeight[],
 ) => (type: CustomerSortingTypes | undefined): Sort<Customer> => {
   switch (type) {
@@ -28,7 +32,10 @@ export const customerSort = (
     case CustomerSortingTypes.SORT_COLOR:
       return sortKeyLocale('color');
     case CustomerSortingTypes.SORT_UNRATED:
-      return sortKeyNumeric((customer) => unratedTasksAmount(customer, tasks));
+      return (
+        roadmap &&
+        sortKeyNumeric((customer) => unratedTasksAmount(customer, roadmap))
+      );
     default:
       break;
   }

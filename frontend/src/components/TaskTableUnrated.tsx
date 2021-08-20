@@ -23,11 +23,13 @@ import { Dot } from './Dot';
 import { getType, representsCustomers } from '../utils/UserUtils';
 import css from './TaskTable.module.scss';
 import {
-  taskAwaitsRatings,
+  awaitsUserRatings,
   averageValueAndWork,
-  findMissingCustomers,
-  findMissingDevelopers,
+  missingCustomer,
+  missingDeveloper,
   SortingTypes,
+  ratedByUser,
+  ratedByCustomer,
 } from '../utils/TaskUtils';
 import { taskTable, TaskRow } from './TaskTable';
 
@@ -72,34 +74,26 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
   */
   useEffect(() => {
     if (type === RoleType.Admin && allCustomers) {
-      const unratedCustomers = findMissingCustomers(task.ratings, allCustomers);
-      setMissingRatings(unratedCustomers);
+      setMissingRatings(allCustomers.filter(missingCustomer(task)));
     }
 
     if ((type === RoleType.Admin || type === RoleType.Developer) && allUsers) {
-      const missingDevelopers = findMissingDevelopers(task.ratings, allUsers);
-      setMissingDevRatings(missingDevelopers);
+      setMissingDevRatings(allUsers.filter(missingDeveloper(task)));
     }
 
     if (type === RoleType.Business) {
-      const unratedCustomers = userInfo?.representativeFor?.filter(
-        (customer) =>
-          !task.ratings.some(
-            (rating) =>
-              customer.id === rating.forCustomer &&
-              rating.createdByUser === userInfo?.id,
-          ),
+      setMissingRatings(
+        userInfo?.representativeFor?.filter(
+          (customer) => !ratedByCustomer(customer, userInfo)(task),
+        ),
       );
-      setMissingRatings(unratedCustomers);
     }
 
-    if (type === RoleType.Customer) {
+    if (type === RoleType.Customer && userInfo) {
       // if task doesn't have ratings from the user that is logged in, display icon to them.
-      setUserRatingMissing(
-        !task.ratings.some((rating) => rating.createdByUser === userInfo?.id),
-      );
+      setUserRatingMissing(!ratedByUser(userInfo)(task));
     }
-  }, [task.ratings, allCustomers, allUsers, userInfo, type, task.roadmapId]);
+  }, [task, allCustomers, allUsers, userInfo, type]);
 
   const openModal = (
     modalType:
@@ -191,11 +185,11 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
         )}
         {userInfo &&
           (type === RoleType.Developer ||
-            representsCustomers(userInfo, task.roadmapId)) && (
+            representsCustomers(userInfo, roadmapId)) && (
             <button
               className={classes(css['button-small-filled'])}
               type="button"
-              disabled={!taskAwaitsRatings(task, userInfo)}
+              disabled={!awaitsUserRatings(userInfo, roadmapId)(task)}
               onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
             >
               <Trans i18nKey="Rate" />
