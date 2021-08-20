@@ -90,35 +90,28 @@ export const SelectRepresentatives: FC<{
   representatives: CheckableUser[];
   onRepresentativeChange: (idx: number, checked: boolean) => void;
 }> = ({ representatives, onRepresentativeChange }) => (
-  <>
-    <div className={classes(css.section)}>
-      <label htmlFor="representatives">
-        <Trans i18nKey="Who's responsible for the client value ratings?" />
-      </label>
-      <div id="representatives" className={classes(css.representatives)}>
-        {representatives.map((rep, idx) => (
-          <div className={classes(css.representative)}>
-            <Checkbox
-              label={rep.username}
-              checked={rep.checked}
-              onChange={(checked: boolean) =>
-                onRepresentativeChange(idx, checked)
-              }
-              key={rep.id}
-            />
-            <div
-              className={classes(css.icon, css[RoleType[rep.type]], {
-                [css.disabled]: !rep.checked,
-              })}
-            >
-              {rep.type === RoleType.Admin && (
-                <StarSharpIcon fontSize="small" />
-              )}
-              {rep.type === RoleType.Business && <BusinessValueFilled />}
-            </div>
+  <div className={classes(css.section)}>
+    <label htmlFor="representatives">
+      <Trans i18nKey="Who's responsible for the client value ratings?" />
+    </label>
+    <div id="representatives" className={classes(css.representatives)}>
+      {representatives.map((rep, idx) => (
+        <div key={rep.id} className={classes(css.representative)}>
+          <Checkbox
+            label={rep.username}
+            checked={rep.checked}
+            onChange={(checked) => onRepresentativeChange(idx, checked)}
+          />
+          <div
+            className={classes(css.icon, css[RoleType[rep.type]], {
+              [css.disabled]: !rep.checked,
+            })}
+          >
+            {rep.type === RoleType.Admin && <StarSharpIcon fontSize="small" />}
+            {rep.type === RoleType.Business && <BusinessValueFilled />}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
-  </>
+  </div>
 );
