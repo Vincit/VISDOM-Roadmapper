@@ -17,12 +17,13 @@ export const postUsers: RouteHandlerFnc = async (ctx) => {
 };
 
 export const patchUsers: RouteHandlerFnc = async (ctx) => {
-  const { id, username, email, ...others } = ctx.request.body;
+  const { id, username, email, defaultRoadmapId, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const updated = await User.query().patchAndFetchById(ctx.params.id, {
     username: username,
     email: email,
+    defaultRoadmapId: defaultRoadmapId,
   });
   if (!updated) {
     return void (ctx.status = 404);

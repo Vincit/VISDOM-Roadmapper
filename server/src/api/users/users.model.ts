@@ -14,6 +14,7 @@ export default class User extends Password(Model) {
   authToken!: string | null;
   roles!: Role[];
   representativeFor!: Customer[];
+  defaultRoadmapId!: number | null;
 
   tokens!: Token[];
 
