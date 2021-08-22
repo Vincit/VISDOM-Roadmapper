@@ -202,5 +202,6 @@ export const english = {
     'No ratings': 'No ratings',
     unratedTaskMessage: 'Waiting for ratings',
     'Optional message': 'Optional message',
+    'Unselect default project': 'Unselect default project',
   },
 };

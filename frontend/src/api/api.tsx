@@ -331,6 +331,13 @@ const sendInvitation = async (
   return response.status === 200;
 };
 
+const patchDefaultRoadmap = async (userId: number, roadmapId?: number) => {
+  const response = await axios.patch(`users/${userId}`, {
+    defaultRoadmapId: roadmapId ?? null,
+  });
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -369,4 +376,5 @@ export const api = {
   patchIntegrationConfiguration,
   sendNotification,
   sendInvitation,
+  patchDefaultRoadmap,
 };
