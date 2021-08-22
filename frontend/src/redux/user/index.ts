@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUserInfo, login, logout, register } from './actions';
+import {
+  getUserInfo,
+  login,
+  logout,
+  register,
+  patchDefaultRoadmap,
+} from './actions';
 import { UserState } from './types';
 import { GET_USER_INFO_FULFILLED, LOGOUT_FULFILLED } from './reducers';
 
@@ -23,4 +29,5 @@ export const userActions = {
   login,
   logout,
   register,
+  patchDefaultRoadmap,
 };

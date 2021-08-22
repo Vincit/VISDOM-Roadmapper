@@ -56,3 +56,16 @@ export const register = createAsyncThunk<
     return thunkAPI.rejectWithValue(err);
   }
 });
+
+export const patchDefaultRoadmap = createAsyncThunk<
+  boolean,
+  { userId: number; roadmapId?: number },
+  { rejectValue: AxiosError }
+>('/users/patchDefaultRoadmap', async (defaultRoadmapRequest, thunkAPI) => {
+  const { userId, roadmapId } = defaultRoadmapRequest;
+  try {
+    return await api.patchDefaultRoadmap(userId, roadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});

@@ -7,6 +7,7 @@ export interface UserInfo {
   id: number;
   roles: RoadmapRole[];
   representativeFor?: Customer[];
+  defaultRoadmapId: number | null;
 }
 
 export interface RoadmapRole {
