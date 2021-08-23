@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { UserLoginRequest, UserInfo, UserRegisterRequest } from './types';
 import { api } from '../../api/api';
+import { RoadmapRoleResponse } from '../roadmaps/types';
 
 export const getUserInfo = createAsyncThunk<
   UserInfo,
@@ -52,6 +53,19 @@ export const register = createAsyncThunk<
       return true;
     }
     return false;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const joinRoadmap = createAsyncThunk<
+  RoadmapRoleResponse,
+  { user: UserInfo; invitationLink: string },
+  { rejectValue: AxiosError }
+>('joinRoadmap', async (joinRequest, thunkAPI) => {
+  const { user, invitationLink } = joinRequest;
+  try {
+    return await api.joinRoadmap(user, invitationLink);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
