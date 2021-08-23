@@ -27,7 +27,7 @@ import {
   patchVersion,
   removeTaskFromVersion,
   notifyUsers,
-  addInvitation,
+  sendInvitation,
 } from './actions';
 import {
   ADD_ROADMAP_FULFILLED,
@@ -135,5 +135,5 @@ export const roadmapsActions = {
   addTaskToVersion,
   removeTaskFromVersion,
   notifyUsers,
-  addInvitation,
+  sendInvitation,
 };

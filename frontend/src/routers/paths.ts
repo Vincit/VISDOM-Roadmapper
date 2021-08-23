@@ -1,3 +1,6 @@
+const uuidPattern =
+  '[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}';
+
 export const paths = {
   home: '/',
   userInfo: '/user',
@@ -6,6 +9,7 @@ export const paths = {
   registerPage: '/register',
   getStarted: '/getstarted',
   overview: '/overview',
+  joinRoadmap: `/join/:invitationLink(${uuidPattern})`,
   roadmapHome: '/roadmap',
   notFound: '/404',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',

@@ -42,14 +42,14 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
 
     setIsLoading(true);
     const res = await dispatch(
-      roadmapsActions.addInvitation({
+      roadmapsActions.sendInvitation({
         email: formValues.email,
         type: formValues.type,
         roadmapId: chosenRoadmapId!,
       }),
     );
     setIsLoading(false);
-    if (roadmapsActions.addInvitation.rejected.match(res)) {
+    if (roadmapsActions.sendInvitation.rejected.match(res)) {
       if (res.payload?.response?.data.errors)
         setErrorMessage(res.payload?.response?.data.errors);
       else if (res.payload?.message) setErrorMessage(res.payload.message);

@@ -19,6 +19,7 @@ import { UserInfoPage } from '../pages/UserInfoPage';
 import { paths } from './paths';
 import { RoadmapRouter } from './RoadmapRouter';
 import { CreateProjectPage } from '../pages/CreateProjectPage';
+import { JoinRoadmapPage } from '../pages/JoinRoadmapPage';
 
 const Home = () => {
   const loggedInUser = useSelector<RootState, UserInfo | undefined>(
@@ -47,6 +48,11 @@ const routes = [
   {
     path: paths.getStarted,
     component: () => <NavLayout Content={CreateProjectPage} />,
+    exact: false,
+  },
+  {
+    path: paths.joinRoadmap,
+    component: () => <NavLayout Content={JoinRoadmapPage} />,
     exact: false,
   },
   {
