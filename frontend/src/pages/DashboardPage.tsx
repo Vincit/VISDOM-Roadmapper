@@ -16,9 +16,9 @@ import { roadmapsActions } from '../redux/roadmaps';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { RoleType } from '../../../shared/types/customTypes';
+import { RoleType, Permission } from '../../../shared/types/customTypes';
 import { splitTasksOnRated } from '../utils/TaskUtils';
-import { getType } from '../utils/UserUtils';
+import { getType, hasPermission } from '../utils/UserUtils';
 import css from './DashboardPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -39,6 +39,7 @@ export const DashboardPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+  const type = getType(userInfo?.roles, currentRoadmap?.id);
   const roadmapsVersions = currentRoadmap?.versions;
   const [chartVersionLists, setChartVersionLists] = useState<
     {
@@ -50,9 +51,13 @@ export const DashboardPage = () => {
   const [unratedTasks, setUnratedTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    if (!roadmapsVersions && currentRoadmap)
+    if (
+      !roadmapsVersions &&
+      currentRoadmap &&
+      hasPermission(type, Permission.VersionRead)
+    )
       dispatch(roadmapsActions.getVersions(currentRoadmap.id));
-  }, [currentRoadmap, dispatch, roadmapsVersions]);
+  }, [currentRoadmap, dispatch, roadmapsVersions, type]);
 
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
@@ -102,7 +107,7 @@ export const DashboardPage = () => {
         </h2>
         <RoadmapOverview />
       </div>
-      {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+      {type === RoleType.Admin && (
         <div className={classes(css.chartFlexbox)}>
           <div className={classes(css.meterWrapper)}>
             <TaskHeatmap />

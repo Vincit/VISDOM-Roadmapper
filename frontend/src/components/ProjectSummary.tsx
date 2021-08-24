@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Popover from '@material-ui/core/Popover';
 // import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
@@ -13,6 +13,11 @@ import { MoreButton } from './forms/SvgButton';
 import { isCustomer } from '../utils/CustomerUtils';
 import { paths } from '../routers/paths';
 import { modalLink, ModalTypes } from './modals/types';
+import { RootState } from '../redux/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo } from '../redux/user/types';
+import { getType, hasPermission } from '../utils/UserUtils';
+import { Permission } from '../../../shared/types/customTypes';
 import css from './ProjectSummary.module.scss';
 
 const classes = classNames.bind(css);
@@ -88,12 +93,22 @@ export const ProjectSummary: FC<{
     (EventTarget & HTMLDivElement) | null
   >(null);
   const dispatch = useDispatch<StoreDispatchType>();
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  const type = getType(userInfo?.roles, roadmap.id);
 
   useEffect(() => {
-    if (!roadmap.customers) dispatch(roadmapsActions.getCustomers(roadmap.id));
-    if (!roadmap.users) dispatch(roadmapsActions.getRoadmapUsers(roadmap.id));
-    if (!roadmap.versions) dispatch(roadmapsActions.getVersions(roadmap.id));
-  }, [dispatch, roadmap]);
+    if (!roadmap.customers && hasPermission(type, Permission.RoadmapReadUsers))
+      dispatch(roadmapsActions.getCustomers(roadmap.id));
+
+    if (!roadmap.users && hasPermission(type, Permission.RoadmapReadUsers))
+      dispatch(roadmapsActions.getRoadmapUsers(roadmap.id));
+
+    if (!roadmap.versions && hasPermission(type, Permission.VersionRead))
+      dispatch(roadmapsActions.getVersions(roadmap.id));
+  }, [dispatch, roadmap, type]);
 
   return (
     <div className={classes(css.roadmapSummary)}>

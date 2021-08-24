@@ -14,6 +14,10 @@ import { TaskListPage } from '../pages/TaskListPage';
 import { PeopleListPage } from '../pages/PeopleListPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo } from '../redux/user/types';
+import { getType, hasPermission } from '../utils/UserUtils';
+import { Permission } from '../../../shared/types/customTypes';
 import {
   chosenRoadmapSelector,
   roadmapUsersSelector,
@@ -62,6 +66,11 @@ const RoadmapRouterComponent = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  const type = getType(userInfo?.roles, currentRoadmap?.id);
   const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [useEffectFinished, setUseEffectFinished] = useState(false);
@@ -86,20 +95,28 @@ const RoadmapRouterComponent = () => {
         setIsLoadingRoadmap(false);
       });
     }
-    if (!roadmapUsers && currentRoadmap) {
+    if (
+      !roadmapUsers &&
+      currentRoadmap &&
+      hasPermission(type, Permission.RoadmapReadUsers)
+    ) {
       setIsLoadingUsers(true);
       dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id)).then(() => {
         setIsLoadingUsers(false);
       });
     }
-    if (!customers && currentRoadmap) {
+    if (
+      !customers &&
+      currentRoadmap &&
+      hasPermission(type, Permission.RoadmapReadUsers)
+    ) {
       setIsLoadingCustomers(true);
       dispatch(roadmapsActions.getCustomers(currentRoadmap.id)).then(() => {
         setIsLoadingCustomers(false);
       });
     }
     setUseEffectFinished(true);
-  }, [currentRoadmap, roadmapId, dispatch, roadmapUsers, customers]);
+  }, [currentRoadmap, roadmapId, dispatch, roadmapUsers, customers, type]);
 
   const renderOrRedirect = () => {
     if (!useEffectFinished) return;
