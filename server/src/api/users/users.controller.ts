@@ -121,11 +121,12 @@ export const getUserRoles: RouteHandlerFnc = async (ctx) => {
 };
 
 export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
-  const { email, ...others } = ctx.request.body;
+  if (!ctx.state.user) throw new Error('User is required');
+  const { ...others } = ctx.request.body;
   const invitation = await Invitation.query().findById(ctx.params.invitationId);
 
   if (Object.keys(others).length || !invitation) return void (ctx.status = 400);
-  if (invitation.email !== email) return void (ctx.status = 403);
+  if (invitation.email !== ctx.state.user.email) return void (ctx.status = 403);
 
   const role = await Invitation.transaction(async (trx) => {
     await invitation.$query(trx).delete();

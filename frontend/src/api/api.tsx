@@ -332,10 +332,7 @@ const addInvitation = async (
 };
 
 const joinRoadmap = async (user: UserInfo, invitationLink: string) => {
-  const response = await axios.post(
-    `/users/${user.id}/join/${invitationLink}`,
-    { email: user.email },
-  );
+  const response = await axios.post(`/users/${user.id}/join/${invitationLink}`);
   return response.data as RoadmapRoleResponse;
 };
 

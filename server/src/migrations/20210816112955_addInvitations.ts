@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<any> {
       .inTable('roadmaps')
       .onDelete('CASCADE');
     table.integer('type');
-    table.string('email', 75);
+    table.string('email', 255);
   });
 }
 
