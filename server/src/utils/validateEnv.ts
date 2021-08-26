@@ -9,6 +9,9 @@ const requiredEnvVars = [
   'SESSION_SECRET',
   'CORS_ORIGIN',
   'JIRA_CONSUMER_KEY',
+  'AWS_REGION',
+  'SENDER_EMAIL',
+  'FRONTEND_BASE_URL',
 ];
 
 export const validateEnv = () => {
