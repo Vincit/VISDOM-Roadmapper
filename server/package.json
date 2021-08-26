@@ -31,6 +31,7 @@
     "@types/passport": "1.0.3"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.27.0",
     "@koa/cors": "^3.1.0",
     "@koa/router": "^8.0.8",
     "@types/jira-client": "^6.13.1",

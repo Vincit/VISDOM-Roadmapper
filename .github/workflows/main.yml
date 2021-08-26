@@ -44,3 +44,8 @@ jobs:
           CHOKIDAR_USEPOLLING: "true"
           REACT_APP_API_BASE_URL: "http://localhost:5000/"
           JIRA_CONSUMER_KEY: "roadmapper"
+          AWS_REGION: "TEST_DUMMY"
+          AWS_ACCESS_KEY_ID: "TEST_DUMMY"
+          AWS_SECRET_ACCESS_KEY: "TEST_DUMMY"
+          FRONTEND_BASE_URL: "TEST_DUMMY"
+          SENDER_EMAIL: "TEST_DUMMY"

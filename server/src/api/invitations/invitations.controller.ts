@@ -2,6 +2,10 @@ import { RouteHandlerFnc } from 'src/types/customTypes';
 import Invitation from './invitations.model';
 import User from '../users/users.model';
 import uuid from 'uuid';
+import { sendEmail } from '../../utils/sendEmail';
+
+// should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
+const BASE_URL = process.env.FRONTEND_BASE_URL!;
 
 export const addInvitations: RouteHandlerFnc = async (ctx) => {
   const { type, email, ...others } = ctx.request.body;
@@ -34,6 +38,11 @@ export const addInvitations: RouteHandlerFnc = async (ctx) => {
     type,
     email,
   });
+  await sendEmail(
+    email,
+    'Invitation to roadmap',
+    `You have been invited to a roadmap, here is a link:\r\n${BASE_URL}/join/${created.id}`,
+  );
   return void (ctx.body = created);
 };
 
