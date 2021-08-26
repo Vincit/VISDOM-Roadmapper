@@ -48,8 +48,6 @@ import {
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
   CLEAR_CURRENT_ROADMAP,
-  SET_PLANNER_CUSTOMER_WEIGHT,
-  CLEAR_PLANNER_CUSTOMER_WEIGHTS,
   ADD_INTEGRATION_CONFIGURATION_FULFILLED,
   PATCH_INTEGRATION_CONFIGURATION_FULFILLED,
   ADD_VERSION_FULFILLED,
@@ -70,8 +68,6 @@ export const roadmapsSlice = createSlice({
   reducers: {
     selectCurrentRoadmap: SELECT_CURRENT_ROADMAP,
     clearCurrentRoadmap: CLEAR_CURRENT_ROADMAP,
-    setPlannerCustomerWeight: SET_PLANNER_CUSTOMER_WEIGHT,
-    clearPlannerCustomerWeights: CLEAR_PLANNER_CUSTOMER_WEIGHTS,
   },
   extraReducers: (builder) => {
     builder.addCase(getRoadmaps.fulfilled, GET_ROADMAPS_FULFILLED);

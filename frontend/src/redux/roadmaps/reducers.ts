@@ -1,6 +1,5 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
-  PlannerCustomerWeight,
   IntegrationConfiguration,
   Customer,
   CustomerRequest,
@@ -233,36 +232,6 @@ export const SELECT_CURRENT_ROADMAP: CaseReducer<
 
 export const CLEAR_CURRENT_ROADMAP: CaseReducer<RoadmapsState> = (state) => {
   state.selectedRoadmapId = undefined;
-};
-
-export const SET_PLANNER_CUSTOMER_WEIGHT: CaseReducer<
-  RoadmapsState,
-  PayloadAction<PlannerCustomerWeight>
-> = (state, action) => {
-  const selectedRoadmap = state.roadmaps?.find(
-    (roadmap) => roadmap.id === state.selectedRoadmapId,
-  );
-  if (!selectedRoadmap) throw new Error('No roadmap has been selected');
-  const weights = selectedRoadmap.plannerCustomerWeights || [];
-  const existing = weights.find(
-    ({ customerId }) => customerId === action.payload.customerId,
-  );
-  if (existing) Object.assign(existing, action.payload);
-  if (!existing) {
-    weights.push(action.payload);
-  }
-  selectedRoadmap.plannerCustomerWeights = weights;
-};
-
-export const CLEAR_PLANNER_CUSTOMER_WEIGHTS: CaseReducer<
-  RoadmapsState,
-  PayloadAction<void>
-> = (state) => {
-  const selectedRoadmap = state.roadmaps?.find(
-    (roadmap) => roadmap.id === state.selectedRoadmapId,
-  );
-  if (!selectedRoadmap) throw new Error('No roadmap has been selected');
-  selectedRoadmap.plannerCustomerWeights = [];
 };
 
 export const ADD_INTEGRATION_CONFIGURATION_FULFILLED = (

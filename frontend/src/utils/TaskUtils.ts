@@ -5,7 +5,7 @@ import {
   Task,
   Taskrating,
 } from '../redux/roadmaps/types';
-import { customerWeight, isCustomer } from './CustomerUtils';
+import { isCustomer } from './CustomerUtils';
 import { UserInfo } from '../redux/user/types';
 import {
   RoleType,
@@ -174,9 +174,7 @@ const ratingValueAndCreator = (roadmap: Roadmap, notWeighted?: boolean) => (
   const ratingCreator = roadmap.customers?.find(
     ({ id }) => id === rating.forCustomer,
   );
-  const creatorWeight = ratingCreator
-    ? customerWeight(ratingCreator, roadmap.plannerCustomerWeights)
-    : 0;
+  const creatorWeight = ratingCreator?.weight ?? 0;
 
   return {
     value: notWeighted ? rating.value : rating.value * creatorWeight,

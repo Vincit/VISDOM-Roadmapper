@@ -94,8 +94,6 @@ export const english = {
       'Set different weighting for clients',
     'Weighting description':
       "Client weights affect the scaling of milestone's total values in roadmap graph. Weight of 0% will ignore the ratings of the client in question.",
-    'Weighting instructions':
-      'The effects of different weighting can be explored without saving.',
     'Client Weights': 'Client Weights',
     register: 'register',
     'New here?': 'New here?',

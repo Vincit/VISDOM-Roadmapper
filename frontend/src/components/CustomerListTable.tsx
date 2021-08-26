@@ -7,14 +7,9 @@ import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
 import {
   allCustomersSelector,
-  plannerCustomerWeightsSelector,
   chosenRoadmapSelector,
 } from '../redux/roadmaps/selectors';
-import {
-  Customer,
-  PlannerCustomerWeight,
-  Roadmap,
-} from '../redux/roadmaps/types';
+import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
@@ -35,10 +30,6 @@ export const CustomerList: FC<{
   search: string;
 }> = ({ search }) => {
   const [sortedCustomers, setSortedCustomers] = useState<Customer[]>([]);
-  const plannedWeights = useSelector<RootState, PlannerCustomerWeight[]>(
-    plannerCustomerWeightsSelector,
-    shallowEqual,
-  );
   const customers = useSelector<RootState, Customer[] | undefined>(
     allCustomersSelector(),
     shallowEqual,
@@ -50,10 +41,7 @@ export const CustomerList: FC<{
   const dispatch = useDispatch<StoreDispatchType>();
 
   const [sort, sorting] = useSorting(
-    useMemo(() => customerSort(currentRoadmap, plannedWeights), [
-      currentRoadmap,
-      plannedWeights,
-    ]),
+    useMemo(() => customerSort(currentRoadmap), [currentRoadmap]),
   );
 
   useEffect(() => {

@@ -57,7 +57,6 @@ export interface Roadmap {
   tasks: Task[];
   users: RoadmapUser[] | undefined;
   customers: Customer[] | undefined;
-  plannerCustomerWeights: PlannerCustomerWeight[] | undefined;
   integrations: IntegrationConfiguration[];
   versions: Version[] | undefined;
 }
@@ -133,10 +132,6 @@ export interface ImportBoardRequest {
   };
 }
 
-export interface PlannerCustomerWeight {
-  customerId: number;
-  weight: number;
-}
 export interface OAuthURLResponse {
   url: URL;
   token: string;

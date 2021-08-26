@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../types';
-import { Roadmap, Customer } from './types';
-import { customerWeight } from '../../utils/CustomerUtils';
+import { Roadmap } from './types';
 
 export const roadmapsSelector = (state: RootState): Roadmap[] | undefined =>
   state.roadmaps.roadmaps;
@@ -61,17 +60,6 @@ export const roadmapUsersSelector = (roadmapId?: number) =>
 export const userSelector = (id: number) => {
   return createSelector(roadmapUsersSelector(), (users) =>
     users?.find((user) => user.id === id),
-  );
-};
-
-export const plannerCustomerWeightsSelector = createSelector(
-  chosenRoadmapSelector,
-  (roadmap) => roadmap?.plannerCustomerWeights || [],
-);
-
-export const customerWeightSelector = (customer: Customer) => {
-  return createSelector(plannerCustomerWeightsSelector, (planned) =>
-    customerWeight(customer, planned),
   );
 };
 

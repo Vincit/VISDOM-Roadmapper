@@ -1,20 +1,10 @@
 import convert from 'color-convert';
-import {
-  Customer,
-  PlannerCustomerWeight,
-  CheckableUser,
-  RoadmapUser,
-} from '../redux/roadmaps/types';
+import { Customer, CheckableUser, RoadmapUser } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 
 export const isCustomer = (
   user: Customer | RoadmapUser | UserInfo,
 ): user is Customer => 'representatives' in user;
-
-export const customerWeight = (
-  { id, weight }: Customer,
-  planned?: PlannerCustomerWeight[],
-) => planned?.find((plan) => plan.customerId === id)?.weight ?? weight;
 
 const difference = (first: number, second: number) =>
   180 - Math.abs(Math.abs(first - second) - 180);

@@ -6,10 +6,7 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from './modals/types';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
-import {
-  customerWeightSelector,
-  chosenRoadmapSelector,
-} from '../redux/roadmaps/selectors';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -26,11 +23,7 @@ interface TableRowProps {
 }
 
 export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
-  const { id, name, email, color } = customer;
-  const weight = useSelector<RootState, number>(
-    customerWeightSelector(customer),
-    shallowEqual,
-  );
+  const { id, name, email, color, weight } = customer;
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
