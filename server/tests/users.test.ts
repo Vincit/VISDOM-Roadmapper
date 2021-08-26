@@ -74,7 +74,7 @@ describe('Test /users/ api', function () {
         .send({ username: 'patched' });
       expect(patchResponse.status).to.equal(403);
     });
-    it.only('Should update defaultRoadmapId to existing roadmap id', async function () {
+    it('Should update defaultRoadmapId from null to existing roadmap id', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
         await User.query().where({ username: 'AdminPerson1' }).first()
@@ -87,10 +87,10 @@ describe('Test /users/ api', function () {
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
 
-      const res2 = await loggedInAgent.get('/users/whoami');
-      expect(res2.body.defaultRoadmapId).to.equal(firstRoadmapId);
+      const userAfter = await loggedInAgent.get('/users/whoami');
+      expect(userAfter.body.defaultRoadmapId).to.equal(firstRoadmapId);
     });
-    it.only('Should set defaultRoadmapId to null', async function () {
+    it('Should update defaultRoadmapId from existing roadmap id to another', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
         await User.query().where({ username: 'AdminPerson1' }).first()
@@ -103,8 +103,35 @@ describe('Test /users/ api', function () {
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
 
-      const whoamiRes = await loggedInAgent.get('/users/whoami');
-      expect(whoamiRes.body.defaultRoadmapId).to.equal(firstRoadmapId);
+      const userBefore = await loggedInAgent.get('/users/whoami');
+      expect(userBefore.body.defaultRoadmapId).to.equal(firstRoadmapId);
+
+      const patchResponse2 = await loggedInAgent
+        .patch('/users/' + userId)
+        .type('json')
+        .send({ defaultRoadmapId: firstRoadmapId + 1 });
+
+      expect(patchResponse2.status).to.equal(200);
+      expect(patchResponse2.body.id).to.equal(userId);
+
+      const userAfter = await loggedInAgent.get('/users/whoami');
+      expect(userAfter.body.defaultRoadmapId).to.equal(firstRoadmapId + 1);
+    });
+    it('Should set defaultRoadmapId to null', async function () {
+      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const userId = (
+        await User.query().where({ username: 'AdminPerson1' }).first()
+      ).id;
+      const patchResponse = await loggedInAgent
+        .patch('/users/' + userId)
+        .type('json')
+        .send({ defaultRoadmapId: firstRoadmapId });
+
+      expect(patchResponse.status).to.equal(200);
+      expect(patchResponse.body.id).to.equal(userId);
+
+      const userBefore = await loggedInAgent.get('/users/whoami');
+      expect(userBefore.body.defaultRoadmapId).to.equal(firstRoadmapId);
 
       const patchToNullRes = await loggedInAgent
         .patch('/users/' + userId)
@@ -114,8 +141,8 @@ describe('Test /users/ api', function () {
       expect(patchToNullRes.status).to.equal(200);
       expect(patchToNullRes.body.id).to.equal(userId);
 
-      const whoamiRes2 = await loggedInAgent.get('/users/whoami');
-      expect(whoamiRes2.body.defaultRoadmapId).to.equal(null);
+      const userAfter = await loggedInAgent.get('/users/whoami');
+      expect(userAfter.body.defaultRoadmapId).to.equal(null);
     });
   });
 
