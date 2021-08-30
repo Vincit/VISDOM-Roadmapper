@@ -2,113 +2,153 @@ import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import { Permission } from '../../shared/types/customTypes';
-import { loggedInAgent } from './setuptests';
+import { loggedInAgent, agentData } from './setuptests';
 import { withoutPermission } from './testUtils';
+import User from '../src/api/users/users.model';
 chai.use(chaiHttp);
 
 describe('Test /roadmaps/ api', function () {
   describe('GET /roadmaps/', function () {
     it('Should return all roadmaps', async function () {
       const res = await loggedInAgent.get('/roadmaps/');
+      const fetchedAgent = await User.query()
+        .findOne('username', agentData.username)
+        .withGraphFetched('roadmaps');
+
       expect(res.status).to.equal(200);
-      expect(res.body.length).to.be.greaterThan(0);
-      expect(res.body[0]).to.have.property('id');
-      expect(res.body[0]).to.have.property('name');
-      expect(res.body[0]).to.have.property('description');
-      expect(res.body[0]).to.have.property('tasks');
+      expect(res.body.length).to.equal(fetchedAgent.roadmaps.length);
+      expect(res.body[0]).to.have.keys('id', 'name', 'description', 'tasks');
     });
 
     it('Should return all roadmaps, eager loaded', async function () {
       const res = await loggedInAgent.get('/roadmaps?eager=1');
+      const fetchedAgent = await User.query()
+        .findOne('username', agentData.username)
+        .withGraphFetched('roadmaps');
+
       expect(res.status).to.equal(200);
-      expect(res.body.length).to.be.greaterThan(0);
-      expect(res.body[0]).to.have.property('id');
-      expect(res.body[0]).to.have.property('name');
-      expect(res.body[0]).to.have.property('description');
-      expect(res.body[0]).to.have.property('tasks');
-      expect(res.body[0].tasks[0]).to.have.property('id');
-      expect(res.body[0].tasks[0]).to.have.property('name');
-      expect(res.body[0].tasks[0]).to.have.property('description');
-      expect(res.body[0].tasks[0]).to.have.property('completed');
-      expect(res.body[0].tasks[0]).to.have.property('createdAt');
-      expect(res.body[0].tasks[0]).to.have.property('roadmapId');
-      expect(res.body[0].tasks[0]).to.have.property('createdByUser');
-      expect(res.body[0].tasks[0]).to.have.property('ratings');
+      expect(res.body.length).to.equal(fetchedAgent.roadmaps.length);
+      expect(res.body[0]).to.have.keys(
+        'id',
+        'name',
+        'description',
+        'tasks',
+        'integrations',
+      );
+      expect(res.body[0].tasks[0]).to.have.keys(
+        'id',
+        'name',
+        'description',
+        'completed',
+        'createdAt',
+        'importedFrom',
+        'externalId',
+        'externalLink',
+        'ratings',
+        'createdByUser',
+        'roadmapId',
+      );
     });
   });
 
   describe('POST /roadmaps/', function () {
     it('Should add new roadmap', async function () {
+      const newRoadmap = {
+        name: 'TestRoadmap',
+        description: 'TestDescription',
+      };
+
       const before = await loggedInAgent.get('/roadmaps/');
       const res = await loggedInAgent
         .post('/roadmaps/')
         .type('json')
-        .send({ name: 'TestRoadmap', description: 'TestDescription' });
+        .send(newRoadmap);
       const after = await loggedInAgent.get('/roadmaps/');
+
+      const fetchedAgent = await User.query()
+        .findOne('username', agentData.username)
+        .withGraphFetched('roadmaps');
+
+      const addedRoadmapDb = fetchedAgent.roadmaps.find(
+        (rm: any) =>
+          rm.name == newRoadmap.name &&
+          rm.description == newRoadmap.description,
+      );
+
       expect(res.status).to.equal(200);
       expect(before.body.length + 1).to.equal(after.body.length);
-      const addedRoadmap = after.body.find(
-        (rm: any) => rm.name == 'TestRoadmap',
-      );
-      expect(addedRoadmap).to.exist;
+      expect(addedRoadmapDb).to.exist;
     });
   });
 
   describe('PATCH /roadmaps/:roadmapId', function () {
     it('Should patch roadmap', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapToPatchId = (await Roadmap.query().first()).id;
+      const patchPayload = {
+        name: 'patchedName',
+        description: 'patchedDesc',
+      };
       const res = await loggedInAgent
-        .patch('/roadmaps/' + firstRoadmapId)
+        .patch('/roadmaps/' + roadmapToPatchId)
         .type('json')
-        .send({ name: 'patchedname', description: 'patcheddesc' });
-      const after = await loggedInAgent.get('/roadmaps/');
+        .send(patchPayload);
+
+      const patchedRoadmap = await Roadmap.query().findById(roadmapToPatchId);
+
       expect(res.status).to.equal(200);
-      const patchedRoadmap = after.body.find(
-        (rm: any) => rm.name == 'patchedname',
-      );
-      expect(patchedRoadmap).to.exist;
-      expect(patchedRoadmap.description).to.equal('patcheddesc');
+      expect(patchedRoadmap.name).to.equal('patchedName');
+      expect(patchedRoadmap.description).to.equal('patchedDesc');
     });
     it('Should not patch roadmap with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const firstRoadmap = await Roadmap.query().first();
+      const patchPayload = {
+        name: 'patchedName',
+        description: 'patchedDesc',
+      };
       const res = await withoutPermission(
-        firstRoadmapId,
+        firstRoadmap.id,
         Permission.RoadmapEdit,
         () =>
           loggedInAgent
-            .patch('/roadmaps/' + firstRoadmapId)
+            .patch('/roadmaps/' + firstRoadmap.id)
             .type('json')
-            .send({ name: 'patchedname', description: 'patcheddesc' }),
+            .send(patchPayload),
       );
-      const after = await loggedInAgent.get('/roadmaps/');
+      const firstRoadmapAfter = await Roadmap.query().findById(firstRoadmap.id);
+
+      expect(firstRoadmap).to.eql(firstRoadmapAfter);
       expect(res.status).to.equal(403);
-      const patchedRoadmap = after.body.find(
-        (rm: any) => rm.name == 'patchedname',
-      );
-      expect(patchedRoadmap).not.to.exist;
     });
   });
 
   describe('DELETE /roadmaps/:roadmapId', function () {
     it('Should delete roadmap', async function () {
-      const before = await loggedInAgent.get('/roadmaps/');
       const firstRoadmapId = (await Roadmap.query().first()).id;
+
+      const before = await loggedInAgent.get('/roadmaps/');
       const res = await loggedInAgent.delete('/roadmaps/' + firstRoadmapId);
       const after = await loggedInAgent.get('/roadmaps/');
+      const firstRoadmapAfter = await Roadmap.query().findById(firstRoadmapId);
+
       expect(res.status).to.equal(200);
       expect(before.body.length - 1).to.equal(after.body.length);
+      expect(firstRoadmapAfter).to.not.exist;
     });
     it('Should not delete roadmap with incorrect permissions', async function () {
       const before = await loggedInAgent.get('/roadmaps/');
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const firstRoadmap = await Roadmap.query().first();
       const res = await withoutPermission(
-        firstRoadmapId,
+        firstRoadmap.id,
         Permission.RoadmapDelete,
-        () => loggedInAgent.delete('/roadmaps/' + firstRoadmapId),
+        () => loggedInAgent.delete('/roadmaps/' + firstRoadmap.id),
+      );
+      const firstRoadmapAfterDelete = await Roadmap.query().findById(
+        firstRoadmap.id,
       );
       const after = await loggedInAgent.get('/roadmaps/');
       expect(res.status).to.equal(403);
       expect(before.body.length).to.equal(after.body.length);
+      expect(firstRoadmapAfterDelete).to.eql(firstRoadmap);
     });
   });
 
@@ -133,6 +173,7 @@ describe('Test /roadmaps/ api', function () {
         () => loggedInAgent.get(`/roadmaps/${firstRoadmapId}/users/`),
       );
       expect(res.status).to.equal(403);
+      expect(res.body).to.be.empty;
     });
   });
 });
