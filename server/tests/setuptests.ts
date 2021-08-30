@@ -3,6 +3,11 @@ import chaiHttp from 'chai-http';
 import chai from 'chai';
 chai.use(chaiHttp);
 
+export const agentData = {
+  username: 'AdminPerson1',
+  password: 'test',
+};
+
 before(async () => {
   app = await server;
   await knex.migrate.latest();
@@ -12,10 +17,7 @@ beforeEach(async () => {
   await knex.seed.run();
   loggedInAgent = chai.request.agent(app);
 
-  await loggedInAgent
-    .post('/users/login')
-    .type('json')
-    .send({ username: 'AdminPerson1', password: 'test' });
+  await loggedInAgent.post('/users/login').type('json').send(agentData);
 });
 
 afterEach(async () => {
