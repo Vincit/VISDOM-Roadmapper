@@ -1,7 +1,7 @@
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { unratedTasksAmount } from './TaskUtils';
-import { Sort, sortKeyLocale, sortKeyNumeric } from './SortUtils';
+import { SortBy, sortKeyLocale, sortKeyNumeric } from './SortUtils';
 
 export enum UserSortingTypes {
   SORT_NAME,
@@ -12,7 +12,7 @@ export enum UserSortingTypes {
 
 export const userSort = (roadmap?: Roadmap) => (
   type: UserSortingTypes | undefined,
-): Sort<RoadmapUser> => {
+): SortBy<RoadmapUser> => {
   switch (type) {
     case UserSortingTypes.SORT_NAME:
       return sortKeyLocale('username');

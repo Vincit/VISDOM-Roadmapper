@@ -21,7 +21,7 @@ type Key<T, K> = PropertyKey<T, K> | ((value: T) => K);
 
 type Comparison<T> = (a: T, b: T) => number;
 
-export type Sort<T, K = any> =
+export type SortBy<T, K = any> =
   | undefined
   | {
       key: Key<T, K>;
@@ -32,7 +32,7 @@ export type Sort<T, K = any> =
 const sortKeyCompare = <T, K>(
   key: Key<T, K>,
   compare: Comparison<K>,
-): Sort<T, K> => ({ key, compare });
+): SortBy<T, K> => ({ key, compare });
 
 export const sortKeyNumeric = <T>(key: Key<T, number>) =>
   sortKeyCompare(key, (a, b) => a - b);
@@ -41,7 +41,7 @@ export const sortKeyLocale = <T>(key: Key<T, string>) =>
   sortKeyCompare(key, (a, b) => a.localeCompare(b));
 
 export const sort = <T, K>(
-  by: Sort<T, K>,
+  by: SortBy<T, K>,
   order: SortingOrders = SortingOrders.ASCENDING,
 ) => {
   // no sorting
@@ -68,7 +68,7 @@ export const sort = <T, K>(
 };
 
 export const useSorting = <SortingType, ItemType>(
-  getSort: (t: SortingType | undefined) => Sort<ItemType>,
+  getSort: (t: SortingType | undefined) => SortBy<ItemType>,
 ) => {
   const [type, setType] = useState<SortingType | undefined>();
   const [order, setOrder] = useState(SortingOrders.ASCENDING);
