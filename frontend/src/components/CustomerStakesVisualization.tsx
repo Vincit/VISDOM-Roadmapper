@@ -11,10 +11,9 @@ import colors from '../colors.module.scss';
 const classes = classNames.bind(css);
 
 const noRatingsStakes = [
-  { id: 1, value: 0.5 },
-  { id: 2, value: 0.3 },
-  { id: 3, value: 0.1 },
-  { id: 4, value: 0.1 },
+  { id: 1, value: 0.3 },
+  { id: 2, value: 0.23 },
+  { id: 3, value: 0.2 },
 ];
 
 const StakeVisualizationTooltip: FC<{
