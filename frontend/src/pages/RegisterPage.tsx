@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { userActions } from '../redux/user';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
@@ -21,6 +21,7 @@ const classes = classNames.bind(css);
 
 export const RegisterPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
+  const { search } = useLocation();
   const history = useHistory();
   const { t } = useTranslation();
   const [formValues, setFormValues] = useState({
@@ -126,7 +127,7 @@ export const RegisterPage = () => {
     if (userActions.register.rejected.match(res)) {
       errorHandler(res.payload?.response?.data);
     } else if (userActions.register.fulfilled.match(res)) {
-      history.push('/login');
+      history.push({ pathname: paths.loginPage, search });
     }
   };
 
