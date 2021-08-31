@@ -6,7 +6,7 @@ import {
 import { unratedTasksAmount } from './TaskUtils';
 import { customerWeight } from './CustomerUtils';
 
-import { Sort, sortKeyLocale, sortKeyNumeric } from './SortUtils';
+import { SortBy, sortKeyLocale, sortKeyNumeric } from './SortUtils';
 
 export enum CustomerSortingTypes {
   SORT_NAME,
@@ -19,7 +19,7 @@ export enum CustomerSortingTypes {
 export const customerSort = (
   roadmap?: Roadmap,
   plannedWeights?: PlannerCustomerWeight[],
-) => (type: CustomerSortingTypes | undefined): Sort<Customer> => {
+) => (type: CustomerSortingTypes | undefined): SortBy<Customer> => {
   switch (type) {
     case CustomerSortingTypes.SORT_NAME:
       return sortKeyLocale('name');

@@ -11,7 +11,7 @@ import {
   RoleType,
   TaskRatingDimension,
 } from '../../../shared/types/customTypes';
-import { Sort, sortKeyNumeric, sortKeyLocale } from './SortUtils';
+import { SortBy, sortKeyNumeric, sortKeyLocale } from './SortUtils';
 import { getType, isUserInfo } from './UserUtils';
 
 export enum FilterTypes {
@@ -143,7 +143,7 @@ export const taskFilter = (
   }
 };
 
-export const taskSort = (type: SortingTypes | undefined): Sort<Task> => {
+export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
   switch (type) {
     case SortingTypes.SORT_CREATEDAT:
       return sortKeyNumeric((t) => new Date(t.createdAt).getTime());
@@ -243,12 +243,12 @@ export const awaitsUserRatings = (
   const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
   const type = getType(user.roles, roadmapId);
   if (type === RoleType.Admin || type === RoleType.Business) {
-    const reps = user.representativeFor?.filter(
+    const customers = user.representativeFor?.filter(
       (customer) => customer.roadmapId === roadmapId,
     );
     return (task: Task) =>
       task.roadmapId === roadmapId &&
-      !reps?.every((customer) => ratedByCustomer(customer, user)(task));
+      !customers?.every((customer) => ratedByCustomer(customer, user)(task));
   }
   return not(ratedByUser(user));
 };
@@ -280,11 +280,11 @@ export const isUnrated = (
   }
 
   if (user.type === RoleType.Admin || user.type === RoleType.Business) {
-    const represented = roadmap.customers?.filter((customer) =>
+    const customers = roadmap.customers?.filter((customer) =>
       customer.representatives?.some((rep) => rep.id === user.id),
     );
     return (task) =>
-      !!represented?.some((customer) => !ratedByCustomer(customer, user)(task));
+      !!customers?.some((customer) => !ratedByCustomer(customer, user)(task));
   }
   return not(ratedByUser(user));
 };
