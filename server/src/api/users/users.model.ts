@@ -17,6 +17,7 @@ export default class User extends Password(Model) {
   defaultRoadmapId!: number | null;
 
   tokens!: Token[];
+  roadmaps!: Roadmap[];
 
   static tableName = 'users';
 
