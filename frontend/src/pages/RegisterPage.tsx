@@ -4,9 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { Alert } from 'react-bootstrap';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation, Redirect, matchPath } from 'react-router-dom';
 import { userActions } from '../redux/user';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
@@ -14,6 +14,9 @@ import { Footer } from '../components/Footer';
 import { Input, FieldProps, errorState } from '../components/forms/FormField';
 import { paths } from '../routers/paths';
 import { StoreDispatchType } from '../redux';
+import { RootState } from '../redux/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo } from '../redux/user/types';
 import css from './RegisterPage.module.scss';
 import colors from '../colors.module.scss';
 
@@ -21,8 +24,7 @@ const classes = classNames.bind(css);
 
 export const RegisterPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const { search } = useLocation();
-  const history = useHistory();
+  const query = new URLSearchParams(useLocation().search);
   const { t } = useTranslation();
   const [formValues, setFormValues] = useState({
     username: '',
@@ -30,6 +32,10 @@ export const RegisterPage = () => {
     password: '',
     confirmPassword: '',
   });
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
 
   const [checked, setChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -126,8 +132,6 @@ export const RegisterPage = () => {
     );
     if (userActions.register.rejected.match(res)) {
       errorHandler(res.payload?.response?.data);
-    } else if (userActions.register.fulfilled.match(res)) {
-      history.push({ pathname: paths.loginPage, search });
     }
   };
 
@@ -150,6 +154,17 @@ export const RegisterPage = () => {
 
   return (
     <>
+      {userInfo && (
+        <Redirect
+          to={
+            matchPath(query.get('redirectTo') || '', {
+              path: paths.joinRoadmap,
+            })
+              ? query.get('redirectTo')!
+              : paths.home
+          }
+        />
+      )}
       <div className={classes(css.formDiv)}>
         <ModalHeader>
           <h2>
