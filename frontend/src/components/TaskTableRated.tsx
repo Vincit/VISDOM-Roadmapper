@@ -1,11 +1,11 @@
 import { useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Trans } from 'react-i18next';
 import css from './TaskTable.module.scss';
-import { paths } from '../routers/paths';
 import { SortingTypes, valueAndWorkSummary } from '../utils/TaskUtils';
 import { taskTable, TaskRow } from './TaskTable';
 
@@ -19,6 +19,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 const TableRatedTaskRow: TaskRow = ({ task, style }) => {
   const { value, work } = valueAndWorkSummary(task);
   const ref = useRef<HTMLDivElement | null>(null);
+  const currentLocation = useLocation();
   const names = classes(css.hoverRow).split(/ +/);
   return (
     <div
@@ -52,7 +53,7 @@ const TableRatedTaskRow: TaskRow = ({ task, style }) => {
           {/* To do: Component for single task and path for it */}
           <Link
             className={classes(css.navBarLink)}
-            to={paths.roadmapRelative.home}
+            to={`${currentLocation.pathname}/${task.id}`}
           >
             <ArrowForwardIcon
               onMouseEnter={() => ref.current?.classList.add(...names)}
