@@ -9,7 +9,16 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 const SENDER = process.env.SENDER_EMAIL!;
 const REGION = process.env.AWS_SES_REGION!;
-const sesClient = new SESClient({ region: REGION });
+
+const sesClient =
+  process.env.NODE_ENV === 'production'
+    ? new SESClient({ region: REGION })
+    : {
+        send: (async (params) => {
+          console.dir(params.input, { depth: null });
+          return { $metadata: { httpStatusCode: 200 } };
+        }) as SESClient['send'],
+      };
 
 /**
  * send email
@@ -51,11 +60,9 @@ export const sendEmail = async (
   };
 
   try {
-    const data = await sesClient.send(new SendEmailCommand(params));
-    console.log('Success:', data);
-    return data;
+    return await sesClient.send(new SendEmailCommand(params));
   } catch (err) {
-    console.log('Error:', err);
+    console.log('SES error:', err);
     throw err;
   }
 };
