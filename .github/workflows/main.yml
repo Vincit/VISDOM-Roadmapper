@@ -1,5 +1,8 @@
 name: Continuous integration
-on: push
+on:
+  push:
+    paths-ignore:
+      - 'frontend/**'
 jobs:
   build-and-test:
     name: Test
