@@ -83,3 +83,15 @@ export const joinRoadmap = createAsyncThunk<
     return thunkAPI.rejectWithValue(err);
   }
 });
+
+export const verifyEmail = createAsyncThunk<
+  boolean,
+  { user: UserInfo; verificationId: string },
+  { rejectValue: AxiosError }
+>('verifyEmail', async ({ user, verificationId }, thunkAPI) => {
+  try {
+    return await api.verifyEmail(user, verificationId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError);
+  }
+});

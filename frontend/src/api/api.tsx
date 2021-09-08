@@ -343,6 +343,13 @@ const joinRoadmap = async (user: UserInfo, invitationLink: string) => {
   return response.data as RoadmapRoleResponse;
 };
 
+const verifyEmail = async (user: UserInfo, verificationId: string) => {
+  const response = await axios.post(
+    `/users/${user.id}/verifyEmail/${verificationId}`,
+  );
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -383,4 +390,5 @@ export const api = {
   patchDefaultRoadmap,
   sendInvitation,
   joinRoadmap,
+  verifyEmail,
 };

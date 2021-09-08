@@ -10,6 +10,7 @@ export const paths = {
   getStarted: '/getstarted',
   overview: '/overview',
   joinRoadmap: `/join/:invitationLink(${uuidPattern})`,
+  verifyEmail: `/verifyEmail/:verificationId(${uuidPattern})`,
   roadmapHome: '/roadmap',
   notFound: '/404',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
