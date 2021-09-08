@@ -6,12 +6,14 @@ import {
   register,
   patchDefaultRoadmap,
   joinRoadmap,
+  verifyEmail,
 } from './actions';
 import { UserState } from './types';
 import {
   GET_USER_INFO_FULFILLED,
   LOGOUT_FULFILLED,
   JOIN_ROADMAP_FULFILLED,
+  VERIFY_EMAIL_FULFILLED,
 } from './reducers';
 
 const initialState: UserState = {
@@ -26,6 +28,7 @@ export const userSlice = createSlice({
     builder.addCase(getUserInfo.fulfilled, GET_USER_INFO_FULFILLED);
     builder.addCase(logout.fulfilled, LOGOUT_FULFILLED);
     builder.addCase(joinRoadmap.fulfilled, JOIN_ROADMAP_FULFILLED);
+    builder.addCase(verifyEmail.fulfilled, VERIFY_EMAIL_FULFILLED);
   },
 });
 
@@ -37,4 +40,5 @@ export const userActions = {
   register,
   patchDefaultRoadmap,
   joinRoadmap,
+  verifyEmail,
 };

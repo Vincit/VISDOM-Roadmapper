@@ -4,6 +4,7 @@ import { RoleType } from '../../../../shared/types/customTypes';
 export interface UserInfo {
   username: string;
   email: string;
+  emailVerified: boolean;
   id: number;
   roles: RoadmapRole[];
   representativeFor?: Customer[];

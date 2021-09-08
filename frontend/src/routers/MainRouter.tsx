@@ -20,6 +20,7 @@ import { paths } from './paths';
 import { RoadmapRouter } from './RoadmapRouter';
 import { CreateProjectPage } from '../pages/CreateProjectPage';
 import { JoinRoadmapPage } from '../pages/JoinRoadmapPage';
+import { VerifyEmailPage } from '../pages/VerifyEmailPage';
 
 const Home = () => {
   const loggedInUser = useSelector<RootState, UserInfo | undefined>(
@@ -53,6 +54,11 @@ const routes = [
   {
     path: paths.joinRoadmap,
     component: () => <NavLayout Content={JoinRoadmapPage} />,
+    exact: false,
+  },
+  {
+    path: paths.verifyEmail,
+    component: () => <NavLayout Content={VerifyEmailPage} />,
     exact: false,
   },
   {
