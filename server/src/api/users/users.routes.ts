@@ -16,6 +16,7 @@ import {
   getCurrentUser,
   logoutUser,
   joinRoadmap,
+  verifyEmail,
 } from './users.controller';
 import { Context } from 'koa';
 import { IKoaState } from 'src/types/customTypes';
@@ -37,5 +38,10 @@ userRouter.get('/users/logout', logoutUser);
 userRouter.get('/users/whoami', requireAuth, getCurrentUser);
 userRouter.get('/users/roles', requireAuth, getUserRoles);
 userRouter.post('/users/:userId/join/:invitationId', requireAuth, joinRoadmap);
+userRouter.post(
+  '/users/:userId/verifyEmail/:verificationId',
+  requireAuth,
+  verifyEmail,
+);
 
 export default userRouter;

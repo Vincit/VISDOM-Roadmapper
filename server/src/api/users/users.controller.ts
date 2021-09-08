@@ -3,6 +3,8 @@ import uuid from 'uuid';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
 import Invitation from '../invitations/invitations.model';
+import EmailVerification from '../emailVerification/emailVerification.model';
+import { sendVerificationLink } from '../emailVerification/emailVerification.controller';
 import { Role } from '../roles/roles.model';
 
 export const getUsers: RouteHandlerFnc = async (ctx) => {
@@ -12,24 +14,43 @@ export const getUsers: RouteHandlerFnc = async (ctx) => {
 };
 
 export const postUsers: RouteHandlerFnc = async (ctx) => {
-  const { id, ...others } = ctx.request.body;
+  const { id, emailVerified, ...others } = ctx.request.body;
   const inserted = await User.query().insertAndFetch(others);
 
   ctx.body = inserted;
 };
 
 export const patchUsers: RouteHandlerFnc = async (ctx) => {
-  const { id, username, email, defaultRoadmapId, ...others } = ctx.request.body;
+  const {
+    id,
+    username,
+    email,
+    emailVerified,
+    defaultRoadmapId,
+    ...others
+  } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
-  const updated = await User.query().patchAndFetchById(ctx.params.id, {
-    username: username,
-    email: email,
-    defaultRoadmapId: defaultRoadmapId,
+  const updated = await User.transaction(async (trx) => {
+    const previous = await User.query(trx).findById(ctx.params.id);
+    if (!previous) return null;
+    const emailVerified =
+      email === undefined || email === previous.email
+        ? previous.emailVerified
+        : false;
+    return await previous.$query(trx).patchAndFetch({
+      username,
+      email,
+      emailVerified,
+      defaultRoadmapId,
+    });
   });
   if (!updated) {
     return void (ctx.status = 404);
   } else {
+    if (!updated.emailVerified) {
+      await sendVerificationLink(updated.id, updated.email);
+    }
     return void (ctx.body = updated);
   }
 };
@@ -50,6 +71,7 @@ export const registerUser: RouteHandlerFnc = async (ctx) => {
   const user = await User.query()
     .insertAndFetch(request)
     .withGraphFetched('[representativeFor, roles]');
+  await sendVerificationLink(user.id, user.email);
   await ctx.login(user);
   ctx.body = user;
   ctx.status = 200;
@@ -132,11 +154,42 @@ export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
   const role = await Invitation.transaction(async (trx) => {
     await invitation.$query(trx).delete();
 
+    const userId = Number(ctx.params.userId);
+
+    await User.query(trx).findById(userId).patch({ emailVerified: true });
+
     return await Role.query(trx).insertAndFetch({
-      userId: Number(ctx.params.userId),
+      userId,
       roadmapId: invitation.roadmapId,
       type: invitation.type,
     });
   });
   return void (ctx.body = role);
+};
+
+export const verifyEmail: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) throw new Error('User is required');
+  if (Object.keys(ctx.request.body).length) {
+    ctx.status = 400;
+    return;
+  }
+
+  const verification = await EmailVerification.query()
+    .findById(ctx.state.user.id)
+    .where({
+      uuid: ctx.params.verificationId,
+      email: ctx.state.user.email,
+    });
+
+  if (!verification) {
+    ctx.status = 404;
+    return;
+  }
+
+  await User.query()
+    .findById(verification.userId)
+    .where({ email: verification.email })
+    .patch({ emailVerified: true });
+  await verification.$query().delete();
+  ctx.status = 200;
 };
