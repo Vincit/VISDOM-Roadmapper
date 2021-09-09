@@ -1,10 +1,8 @@
 import { FC, MouseEvent } from 'react';
 import classNames from 'classnames';
-import EditIcon from '@material-ui/icons/EditOutlined';
+import EditIcon from '@material-ui/icons/Edit';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
-import ForumIcon from '@material-ui/icons/ForumOutlined';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
@@ -59,19 +57,10 @@ export const MoreButton = svgButton(MoreVertSharpIcon, {
   iconColor: colors.black60,
   hoverColor: colors.black100,
 });
-export const RatingsButton = svgButton(ForumIcon, { hoverColor: colors.azure });
 export const InfoButton = svgButton(InfoIcon, { hoverColor: colors.azure });
-export const DeleteButton: SvgButton<{
-  type: 'outlined' | 'filled';
-}> = ({ type, ...props }) => {
-  const Type = svgButton<{}>(
-    type === 'outlined' ? DeleteOutlineOutlinedIcon : DeleteIcon,
-    {
-      hoverColor: colors.raspberry,
-    },
-  );
-  return <Type {...props} />;
-};
+export const DeleteButton = svgButton(DeleteIcon, {
+  hoverColor: colors.raspberry,
+});
 export const ModalCloseButton = svgButton(CloseIcon, {
   className: classes(css.closeButton),
 });

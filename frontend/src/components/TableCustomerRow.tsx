@@ -93,7 +93,6 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
                 href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, { customer })}
               />
               <DeleteButton
-                type="filled"
                 onClick={deleteUserClicked}
                 href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
                   userId: id,

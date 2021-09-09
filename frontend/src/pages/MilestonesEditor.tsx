@@ -331,7 +331,6 @@ export const MilestonesEditor = () => {
                     </div>
                     <div className={classes(css.milestoneFooter)}>
                       <DeleteButton
-                        type="filled"
                         onClick={deleteVersionClicked(version.id)}
                         href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
                           id: version.id,
