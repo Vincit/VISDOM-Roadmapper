@@ -72,6 +72,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
             <SelectMemberRole
               role={selectedRole}
               onChange={(value) => setSelectedRole(value)}
+              disableRoleIcons
             />
           </div>
           <Alert

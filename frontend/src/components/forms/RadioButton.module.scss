@@ -23,7 +23,7 @@
   user-select: none;
   color: $COLOR_BLACK60;
 
-  &.checked {
+  &.checked .labelContainer {
     @extend .typography-body-bold;
     color: $COLOR_BLACK100;
   }

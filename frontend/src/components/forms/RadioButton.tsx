@@ -37,7 +37,7 @@ export const RadioButton: FC<{
       className={classes(css.radioButton, {
         [css.checked]: checked,
       })}
-      label={label}
+      label={<div className={classes(css.labelContainer)}>{label}</div>}
       checked={checked}
       labelPlacement="end"
       control={<EmeraldRadio />}

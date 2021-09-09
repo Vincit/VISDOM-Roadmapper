@@ -6,6 +6,23 @@
   flex-direction: column;
 }
 
+.role {
+  display: flex;
+  align-items: center;
+
+  .memberIcon {
+    position: relative;
+    top: -4px;
+
+    path {
+      fill: $COLOR_BLACK40;
+    }
+  }
+  &.checked .memberIcon path {
+    fill: $COLOR_BLACK100;
+  }
+}
+
 .warning {
   @extend .typography-body;
   width: 422px;
