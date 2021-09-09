@@ -17,19 +17,14 @@ export const TaskRatingsText: FC<{ task: Task }> = ({ task }) => {
   });
   return (
     <div className={classes(css.taskRatingRow)}>
-      {value && (
-        <div className={classes(css.taskRating)}>
-          <BusinessIcon size="xxsmall" color={colors.azure} />
-          {numFormat.format(value)}
-        </div>
-      )}
-      {work && (
-        <div className={classes(css.taskRating)}>
-          <WorkRoundIcon size="xxsmall" color={colors.azure} />
-          {numFormat.format(work)}
-        </div>
-      )}
-      {!work && !value && <span>-</span>}
+      <div className={classes(css.taskRating)}>
+        <BusinessIcon size="xxsmall" color={colors.azure} />
+        {numFormat.format(value)}
+      </div>
+      <div className={classes(css.taskRating)}>
+        <WorkRoundIcon size="xxsmall" color={colors.azure} />
+        {numFormat.format(work)}
+      </div>
     </div>
   );
 };
