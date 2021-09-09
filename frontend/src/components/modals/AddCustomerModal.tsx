@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { BusinessValueFilled } from '../RatingIcons';
+import { BusinessIcon } from '../RoleIcons';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { userActions } from '../../redux/user';
@@ -29,6 +29,7 @@ import { StepForm } from '../forms/StepForm';
 import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
 import { titleCase } from '../../utils/string';
 import { Dot } from '../Dot';
+import colors from '../../colors.module.scss';
 import css from './AddCustomerModal.module.scss';
 
 const classes = classNames.bind(css);
@@ -168,7 +169,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
                       {rep.type === RoleType.Admin ? (
                         <StarSharpIcon fontSize="small" />
                       ) : (
-                        <BusinessValueFilled />
+                        <BusinessIcon size="xsmall" color={colors.azure} />
                       )}
                     </div>
                   </div>

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
-import { BusinessValueFilled } from '../../RatingIcons';
+import { BusinessIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
 import { Checkbox } from '../../forms/Checkbox';
 import { CheckableUser } from '../../../redux/roadmaps/types';
@@ -103,12 +103,12 @@ export const SelectRepresentatives: FC<{
             onChange={(checked) => onRepresentativeChange(idx, checked)}
           />
           <div
-            className={classes(css.icon, css[RoleType[rep.type]], {
-              [css.disabled]: !rep.checked,
+            className={classes(css.icon, {
+              [css.active]: rep.checked,
             })}
           >
             {rep.type === RoleType.Admin && <StarSharpIcon fontSize="small" />}
-            {rep.type === RoleType.Business && <BusinessValueFilled />}
+            {rep.type === RoleType.Business && <BusinessIcon size="xsmall" />}
           </div>
         </div>
       ))}

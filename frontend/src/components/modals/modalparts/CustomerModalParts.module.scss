@@ -22,18 +22,16 @@
 .representative {
   display: flex;
   align-items: center;
-  color: $COLOR_AZURE;
 
   > :last-child {
     margin-left: 20px;
     position: relative;
-    top: -2px;
+    top: -4px;
   }
-  .Business svg {
-    width: 13.5px;
-    height: 13.5px;
-  }
-  .disabled svg {
+  .icon path {
     fill: $COLOR_BLACK40;
+  }
+  .active path {
+    fill: $COLOR_AZURE;
   }
 }

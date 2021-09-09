@@ -7,12 +7,9 @@
 .memberSection {
   padding: 20px 23px;
   display: flex;
+  gap: 23px;
+
   path {
     fill: $COLOR_BLACK40;
   }
-  .business {
-    width: 18px;
-    height: 18px;
-  }
-  gap: 23px;
 }

@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { BusinessValueFilled, RequiredWorkFilled } from './RatingIcons';
+import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { Task } from '../redux/roadmaps/types';
 import { averageValueAndWork } from '../utils/TaskUtils';
+import colors from '../colors.module.scss';
 
 import css from './TaskRatingsText.module.scss';
 
@@ -18,17 +19,13 @@ export const TaskRatingsText: FC<{ task: Task }> = ({ task }) => {
     <div className={classes(css.taskRatingRow)}>
       {value && (
         <div className={classes(css.taskRating)}>
-          <div>
-            <BusinessValueFilled />
-          </div>
+          <BusinessIcon size="xxsmall" color={colors.azure} />
           {numFormat.format(value)}
         </div>
       )}
       {work && (
         <div className={classes(css.taskRating)}>
-          <div>
-            <RequiredWorkFilled />
-          </div>
+          <WorkRoundIcon size="xxsmall" color={colors.azure} />
           {numFormat.format(work)}
         </div>
       )}

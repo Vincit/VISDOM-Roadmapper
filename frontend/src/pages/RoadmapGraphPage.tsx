@@ -11,16 +11,14 @@ import { totalWeightedValueAndWork } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
-import {
-  BusinessValueFilled,
-  RequiredWorkFilled,
-} from '../components/RatingIcons';
+import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import {
   chosenRoadmapSelector,
   roadmapsVersionsSelector,
 } from '../redux/roadmaps/selectors';
 import { Roadmap, Version } from '../redux/roadmaps/types';
 import { roadmapsActions } from '../redux/roadmaps';
+import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -107,11 +105,11 @@ export const RoadmapGraphPage = () => {
                 >
                   <div className={classes(css.versionData)}>
                     <div className={classes(css.ratingDiv)}>
-                      <BusinessValueFilled />
+                      <BusinessIcon size="xxsmall" color={colors.azure} />
                       <p>{numFormat.format(ver.value)}</p>
                     </div>
                     <div className={classes(css.ratingDiv)}>
-                      <RequiredWorkFilled />
+                      <WorkRoundIcon size="xxsmall" color={colors.azure} />
                       <p>{numFormat.format(ver.work)}</p>
                     </div>
                     <div className={classes(css.dash)} />

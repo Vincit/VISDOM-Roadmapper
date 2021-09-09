@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { Rating as MaterialRating } from '@material-ui/lab';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
-import { RequiredWorkEmpty, BusinessValueEmpty } from './RatingIcons';
+import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import css from './RatingBars.module.scss';
 
 const classes = classNames.bind(css);
@@ -34,9 +34,9 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
         onChangeActive={(e, value) => setHover(value)}
         icon={
           dimension === TaskRatingDimension.BusinessValue ? (
-            <BusinessValueEmpty />
+            <BusinessIcon />
           ) : (
-            <RequiredWorkEmpty />
+            <WorkRoundIcon />
           )
         }
         classes={{

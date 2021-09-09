@@ -5,7 +5,7 @@ import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
 import { DeleteButton, EditButton } from './forms/SvgButton';
-import { BusinessValueFilled } from './RatingIcons';
+import { BusinessIcon } from './RoleIcons';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
@@ -73,10 +73,10 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
   return (
     <tr>
       <td className="styledTd roleIcon">
-        <div className={classes(css.memberIcon, css[RoleType[type]])}>
+        <div className={classes(css.memberIcon)}>
           {type === RoleType.Admin && <StarSharpIcon />}
           {type === RoleType.Developer && <BuildSharpIcon />}
-          {type === RoleType.Business && <BusinessValueFilled />}
+          {type === RoleType.Business && <BusinessIcon />}
         </div>
       </td>
       <td className="styledTd">

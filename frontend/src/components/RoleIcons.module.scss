@@ -1,0 +1,28 @@
+@import './../shared.scss';
+
+.icon {
+  path {
+    fill: var(--icon--color, $COLOR_BLACK40);
+  }
+}
+
+.xxsmall svg {
+  width: 10.5px;
+  height: 10.5px;
+}
+.xsmall svg {
+  width: 13.5px;
+  height: 13.5px;
+}
+.small svg {
+  width: 15px;
+  height: 15px;
+}
+.default svg {
+  width: 18px;
+  height: 18px;
+}
+.large svg {
+  width: 20px;
+  height: 20px;
+}

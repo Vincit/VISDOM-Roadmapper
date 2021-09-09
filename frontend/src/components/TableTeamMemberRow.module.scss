@@ -7,14 +7,8 @@
   gap: 20px;
 }
 
-.memberIcon {
-  path {
-    fill: $COLOR_BLACK40;
-  }
-  &.Business svg {
-    width: 18px;
-    height: 18px;
-  }
+.memberIcon path {
+  fill: $COLOR_BLACK40;
 }
 
 .userText {

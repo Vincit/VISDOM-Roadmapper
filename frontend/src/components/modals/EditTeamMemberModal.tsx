@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
-import { BusinessValueFilled } from '../RatingIcons';
+import { BusinessIcon } from '../RoleIcons';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { RoleType } from '../../../../shared/types/customTypes';
@@ -65,9 +65,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
           <div className={classes(css.section, css.memberSection)}>
             {selectedRole === RoleType.Admin && <StarSharpIcon />}
             {selectedRole === RoleType.Developer && <BuildSharpIcon />}
-            {selectedRole === RoleType.Business && (
-              <BusinessValueFilled className={classes(css.business)} />
-            )}
+            {selectedRole === RoleType.Business && <BusinessIcon />}
             {member.username}
           </div>
           <div className={classes(css.section)}>
