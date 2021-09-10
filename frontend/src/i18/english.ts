@@ -165,7 +165,7 @@ export const english = {
     'Add a team member': 'Add a team member',
     'Here’s how to add a team member': 'Here’s how to add a team member.',
     'Team member addition instructions':
-      'VISDOM delivers an impermanent, one-time-usage link, to the team member’s email, which they can use to join the roadmap.',
+      'VISDOM delivers an email with impermanent, one-time-usage link, which added members can use to register.',
     'Hide info': 'Hide info',
     'Member email the link will be sent to':
       'Member email the link will be sent to',

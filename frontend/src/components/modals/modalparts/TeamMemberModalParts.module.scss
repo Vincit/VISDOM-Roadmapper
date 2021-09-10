@@ -1,5 +1,12 @@
 @import './../../../shared.scss';
 
+.instructions {
+  width: 418px;
+  padding: 20px;
+  border-radius: 10px;
+  background: $COLOR_CLOUD;
+}
+
 .roleSection {
   margin: 2px 20px 0 20px;
   display: flex;

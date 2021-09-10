@@ -21,9 +21,11 @@ export const SelectMemberRole: FC<{
     </label>
     <div id="role" className={classes(css.roleSection)}>
       {[RoleType.Developer, RoleType.Business, RoleType.Admin].map((type) => (
-        <div className={classes(css.role, { [css.checked]: role === type })}>
+        <div
+          key={type}
+          className={classes(css.role, { [css.checked]: role === type })}
+        >
           <RadioButton
-            key={type}
             label={RoleType[type]}
             value={RoleType[type]}
             checked={role === type}
@@ -50,4 +52,28 @@ export const SelectMemberRole: FC<{
       )}
     </div>
   </>
+);
+
+export const AddTeamMemberInfo: FC<{
+  open: boolean;
+  onChange: (open: boolean) => void;
+}> = ({ open, onChange }) => (
+  <div className={classes(css.instructions)}>
+    {open && (
+      <>
+        <b>
+          <Trans i18nKey="Here’s how to add a team member" />
+        </b>{' '}
+        <Trans i18nKey="Team member addition instructions" />{' '}
+      </>
+    )}
+    <button
+      className={classes(css.linkButton, css.blue)}
+      tabIndex={0}
+      type="button"
+      onClick={() => onChange(!open)}
+    >
+      <Trans i18nKey={open ? 'Hide info' : 'Show info'} />
+    </button>
+  </div>
 );

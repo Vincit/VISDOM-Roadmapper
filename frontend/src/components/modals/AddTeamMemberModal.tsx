@@ -14,7 +14,10 @@ import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
-import { SelectMemberRole } from './modalparts/TeamMemberModalParts';
+import {
+  SelectMemberRole,
+  AddTeamMemberInfo,
+} from './modalparts/TeamMemberModalParts';
 import { Input } from '../forms/FormField';
 import css from './AddTeamMemberModal.module.scss';
 
@@ -68,24 +71,7 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
       </ModalHeader>
       <ModalContent>
         <div className={classes(css.addMemberContent)}>
-          <div className={classes(css.instructions)}>
-            {openInfo && (
-              <>
-                <b>
-                  <Trans i18nKey="Here’s how to add a team member" />
-                </b>{' '}
-                <Trans i18nKey="Team member addition instructions" />{' '}
-              </>
-            )}
-            <button
-              className={classes(css.linkButton, css.blue)}
-              tabIndex={0}
-              type="button"
-              onClick={() => setOpenInfo((prev) => !prev)}
-            >
-              <Trans i18nKey={openInfo ? 'Hide info' : 'Show info'} />
-            </button>
-          </div>
+          <AddTeamMemberInfo open={openInfo} onChange={setOpenInfo} />
           <div>
             <SelectMemberRole
               role={formValues.type}
