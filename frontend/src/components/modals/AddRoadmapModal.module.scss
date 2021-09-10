@@ -1,30 +1,50 @@
 @import '../../shared.scss';
 
-.summaryStep {
+.finishStep {
   width: 458px;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 
-  .summary {
-    display: flex;
-    flex-direction: column;
-    margin: 30px 20px 0;
-    gap: 7px;
-    .item {
-      display: flex;
-      flex-direction: row;
-      gap: 13px;
-    }
+  .members {
+    margin-left: 13px;
   }
+}
+
+.addMembersStep {
+  @extend .layout-column;
+  width: 458px;
+  gap: 15px;
 }
 
 .addBox {
   @extend .layout-column;
-  flex-grow: 1;
-  border-radius: 10px;
-  min-height: 150px;
   background: $COLOR_BLACK5;
-  & > * {
-    margin: 20px;
-    max-height: 3rem;
+  border-radius: 10px;
+  min-height: 390px;
+  padding: 20px;
+
+  // hide member list scrollbar
+  @extend .hide-scrollbar;
+
+  .members {
+    overflow: auto;
+    height: 300px;
+  }
+
+  .addMemberButton {
+    @extend .layout-row;
+    &.bottomItem {
+      margin-top: auto;
+    }
+  }
+}
+
+.finishStep {
+  @extend .layout-column;
+  align-items: center;
+  gap: 13px;
+
+  button {
+    @extend .linkButton;
+    @extend .green;
   }
 }

@@ -24,7 +24,7 @@ interface Step {
 export const StepForm: FC<{
   header: string;
   finishHeader?: string;
-  finishMessage: string;
+  finishMessage: any;
   cancelHeader?: string;
   cancelMessage: string;
   steps: Step[];

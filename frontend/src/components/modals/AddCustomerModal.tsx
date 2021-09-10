@@ -140,20 +140,15 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     {
       description: t('Finish'),
       component: () => (
-        <div className={classes(css.step3)}>
-          <b>
-            <Trans i18nKey="All done" />
-          </b>{' '}
+        <div className={classes(css.finishStep)}>
           <Trans i18nKey="All done customer description" />
-          <div className={classes(css.summary)}>
+          <div className={classes(css.modalSummary)}>
             {Object.entries(formValues).map(([key, value]) => (
-              <div key={key} className={classes(css.customerData)}>
+              <div key={key} className={classes(css.item)}>
                 <b>
                   <Trans i18nKey={titleCase(key)} />:
                 </b>
-                <div className={classes(css.value)}>
-                  {key === 'color' ? <Dot fill={value} /> : value}
-                </div>
+                <div>{key === 'color' ? <Dot fill={value} /> : value}</div>
               </div>
             ))}
             <div className={classes(css.representatives)}>

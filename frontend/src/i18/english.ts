@@ -136,9 +136,10 @@ export const english = {
     Step: 'Step',
     'Client info': 'Client info',
     'Select representative': 'Select representative',
-    'All done': 'All done.',
+    'All done roadmap description':
+      '<strong>All done.</strong> You can now confirm the project creation, or go back to previous steps if you missed something.',
     'All done customer description':
-      ' You can now confirm adding the client, or go back to previous steps if you missed something.',
+      '<strong>All done.</strong> You can now confirm adding the client, or go back to previous steps if you missed something.',
     Finish: 'Finish',
     'Customer added': 'Awesome! {{customer}} is now added!',
     'Give them a name': 'Give them a name',
@@ -161,11 +162,21 @@ export const english = {
       "Who's responsible for the client value ratings?",
     'Search for people': 'Search for people',
     'Team members': 'Team members',
+    'Add members': 'Add members',
+    'Skip adding members 1/3':
+      'Adding members at this point is optional. You can',
+    'Skip adding members 2/3': 'skip it',
+    'Skip adding members 3/3': 'if you want to.',
+    'Skip warning': 'Created list will be lost if you skip. <1>Skip anyway</1>',
+    'Members summary': '<strong>Members:</strong>',
+    'Add member': 'Add member',
+    'Edit member': 'Edit member',
     'Add new team member': 'Add new team member',
     'Add a team member': 'Add a team member',
-    'Here’s how to add a team member': 'Here’s how to add a team member.',
-    'Team member addition instructions':
-      'VISDOM delivers an email with impermanent, one-time-usage link, which added members can use to register.',
+    'Here’s how to add a team member':
+      '<strong>Here’s how to add a team member.</strong> VISDOM delivers an email with impermanent, one-time-usage link, which added members can use to register.',
+    'Invitation status info':
+      'The invitation statuses can be checked at <2>People page</2>',
     'Hide info': 'Hide info',
     'Member email the link will be sent to':
       'Member email the link will be sent to',
@@ -173,9 +184,8 @@ export const english = {
     'Sent!': 'Sent!',
     'Modify team members': 'Modify team members',
     'Member role': 'Member role',
-    'Admin caution': 'Caution:',
-    'Admin caution description':
-      'giving Admin role to this member lets them manage the project however they like.',
+    'Admin caution':
+      '<strong>Caution:</strong> giving Admin role to this member lets them manage the project however they like.',
     Developer: 'Developer',
     Businessperson: 'Businessperson',
     Admin: 'Admin',

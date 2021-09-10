@@ -45,6 +45,11 @@ export interface RoadmapUser {
   type: RoleType;
 }
 
+export interface InviteRoadmapUser {
+  email: string;
+  type: RoleType;
+}
+
 export interface RoadmapUserRequest {
   id?: number;
   type?: RoleType | null;

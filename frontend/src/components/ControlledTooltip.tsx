@@ -8,20 +8,21 @@ const classes = classNames.bind(css);
 export const ControlledTooltip: React.FC<{
   open: boolean;
   onClose: (value: boolean) => void;
-  title: string;
+  content: any;
   children?: any;
   placement?: 'bottom' | 'left' | 'right' | 'top';
-}> = ({ open, onClose, title, children, placement }) => {
+}> = ({ open, onClose, content, children, placement }) => {
   return (
     <Tooltip
       classes={{
         arrow: classes(css.tooltipArrow),
         tooltip: classes(css.tooltip),
       }}
-      title={title}
+      title={content}
       placement={placement || 'top'}
       arrow
       open={open}
+      interactive
       onClose={() => onClose(false)}
       leaveDelay={500}
     >

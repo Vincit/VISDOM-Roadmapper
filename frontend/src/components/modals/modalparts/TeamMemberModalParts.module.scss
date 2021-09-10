@@ -1,38 +1,100 @@
 @import './../../../shared.scss';
 
 .instructions {
-  width: 418px;
+  min-width: 418px;
   padding: 20px;
   border-radius: 10px;
   background: $COLOR_CLOUD;
 }
 
-.roleSection {
+.roleSelection {
+  @extend .layout-column;
   margin: 2px 20px 0 20px;
-  display: flex;
-  flex-direction: column;
-}
 
-.role {
-  display: flex;
-  align-items: center;
+  .role {
+    @extend .layout-row;
+    align-items: center;
 
-  .memberIcon {
-    position: relative;
-    top: -4px;
+    .memberIcon {
+      position: relative;
+      top: -4px;
 
-    path {
-      fill: $COLOR_BLACK40;
+      path {
+        fill: $COLOR_BLACK40;
+      }
+    }
+    &.checked .memberIcon path {
+      fill: $COLOR_BLACK100;
     }
   }
-  &.checked .memberIcon path {
-    fill: $COLOR_BLACK100;
+
+  .warning {
+    @extend .typography-body;
+    max-width: 422px;
+    margin-top: 20px;
+    color: $COLOR_RASPBERRY;
   }
 }
 
-.warning {
+.displayMember {
+  @extend .layout-row;
+  user-select: none;
+  padding-bottom: 15px;
+
+  .leftSideDiv {
+    @extend .layout-row;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 17.5px;
+
+    .email {
+      width: 290px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .rightSideDiv {
+    @extend .layout-row;
+    @extend .grow;
+    justify-content: flex-end;
+    gap: 18px;
+  }
+
+  .memberIcon {
+    @extend .layout-row;
+    justify-content: center;
+    align-items: center;
+    width: 21px;
+    height: 21px;
+
+    path {
+      fill: $COLOR_FOREST;
+    }
+  }
+}
+
+.addOrEditMember {
+  @extend .layout-column;
+  background-color: white;
+  padding: 25px 20px;
+  border-radius: 10px;
+
+  gap: 30px;
+
+  .buttons {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+.skip {
+  margin-top: 25px;
+}
+
+.skip button,
+.skipTooltip button {
+  @extend .linkButton;
+  @extend .green;
   @extend .typography-body;
-  width: 422px;
-  margin-top: 20px;
-  color: $COLOR_RASPBERRY;
 }

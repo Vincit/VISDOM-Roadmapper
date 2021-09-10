@@ -1,11 +1,15 @@
-import { FC } from 'react';
-import { Trans } from 'react-i18next';
+import { FC, useState, useRef, MouseEvent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { BusinessIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
+import { Input } from '../../forms/FormField';
 import { RoleType } from '../../../../../shared/types/customTypes';
+import { DeleteButton, EditButton } from '../../forms/SvgButton';
+import { ControlledTooltip } from '../../ControlledTooltip';
+import { InviteRoadmapUser } from '../../../redux/roadmaps/types';
 import css from './TeamMemberModalParts.module.scss';
 
 const classes = classNames.bind(css);
@@ -19,7 +23,7 @@ export const SelectMemberRole: FC<{
     <label htmlFor="role">
       <Trans i18nKey="Member role" />
     </label>
-    <div id="role" className={classes(css.roleSection)}>
+    <div id="role" className={classes(css.roleSelection)}>
       {[RoleType.Developer, RoleType.Business, RoleType.Admin].map((type) => (
         <div
           key={type}
@@ -44,10 +48,7 @@ export const SelectMemberRole: FC<{
       ))}
       {role === RoleType.Admin && (
         <div className={classes(css.warning)}>
-          <b>
-            <Trans i18nKey="Admin caution" />
-          </b>{' '}
-          <Trans i18nKey="Admin caution description" />
+          <Trans i18nKey="Admin caution" />
         </div>
       )}
     </div>
@@ -59,14 +60,7 @@ export const AddTeamMemberInfo: FC<{
   onChange: (open: boolean) => void;
 }> = ({ open, onChange }) => (
   <div className={classes(css.instructions)}>
-    {open && (
-      <>
-        <b>
-          <Trans i18nKey="Here’s how to add a team member" />
-        </b>{' '}
-        <Trans i18nKey="Team member addition instructions" />{' '}
-      </>
-    )}
+    {open && <Trans i18nKey="Here’s how to add a team member" />}{' '}
     <button
       className={classes(css.linkButton, css.blue)}
       tabIndex={0}
@@ -77,3 +71,133 @@ export const AddTeamMemberInfo: FC<{
     </button>
   </div>
 );
+
+export const DisplayInvitedMember: FC<{
+  member: InviteRoadmapUser;
+  readonly?: true;
+  onEdit?: (member: InviteRoadmapUser) => void;
+  onDelete?: (member: InviteRoadmapUser) => void;
+}> = ({ member, readonly, onEdit, onDelete }) => (
+  <div className={classes(css.displayMember)}>
+    <div className={classes(css.leftSideDiv)}>
+      <div className={classes(css.memberIcon)}>
+        {member.type === RoleType.Admin && <StarSharpIcon />}
+        {member.type === RoleType.Developer && (
+          <BuildSharpIcon fontSize="small" />
+        )}
+        {member.type === RoleType.Business && <BusinessIcon size="small" />}
+      </div>
+      <div className={classes(css.email)}>{member.email}</div>
+    </div>
+    {!readonly && onEdit && onDelete && (
+      <div className={classes(css.rightSideDiv)}>
+        <EditButton fontSize="medium" onClick={() => onEdit(member)} />
+        <DeleteButton onClick={() => onDelete(member)} />
+      </div>
+    )}
+  </div>
+);
+
+export const AddOrModifyMember: FC<{
+  initialMember?: InviteRoadmapUser;
+  onSubmit: (member: InviteRoadmapUser) => void;
+  onCancel: () => void;
+}> = ({ initialMember, onSubmit, onCancel }) => {
+  const { t } = useTranslation();
+  const [member, setMember] = useState(
+    initialMember || { email: '', type: RoleType.Developer },
+  );
+  const [validForm, setValidForm] = useState(!!initialMember);
+
+  return (
+    <div className={classes(css.addOrEditMember)}>
+      <div>
+        <SelectMemberRole
+          role={member.type}
+          onChange={(type) => setMember({ ...member, type })}
+        />
+      </div>
+      <Input
+        label={t('Member email the link will be sent to')}
+        placeholder={t('Example email', { localPart: 'teammember' })}
+        name="send link"
+        type="email"
+        value={member.email}
+        onChange={(e) => {
+          setMember({ ...member, email: e.currentTarget.value });
+          setValidForm(
+            e.currentTarget.checkValidity() && !!e.currentTarget.value,
+          );
+        }}
+      />
+      <div className={classes(css.buttons)}>
+        <button
+          className="button-small-filled"
+          type="button"
+          disabled={!validForm}
+          onClick={() => onSubmit(member)}
+        >
+          {initialMember ? (
+            <Trans i18nKey="Edit member" />
+          ) : (
+            <Trans i18nKey="Add member" />
+          )}
+        </button>
+        <button
+          className="button-small-outlined"
+          type="button"
+          onClick={() => onCancel()}
+        >
+          <Trans i18nKey="Cancel" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const SkipMemberAddition: FC<{
+  extraStep: Boolean;
+  onSkip: () => void;
+}> = ({ extraStep, onSkip }) => {
+  const [openTooltip, setOpenTooltip] = useState(false);
+  // tooltip button's submitEvent won't bubble to the correct handler
+  const submitButton = useRef<HTMLButtonElement>(null);
+
+  const handleSkip = (e: MouseEvent) => {
+    if (!extraStep || openTooltip) {
+      onSkip();
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenTooltip(true);
+  };
+
+  return (
+    <div className={classes(css.skip)}>
+      <Trans i18nKey="Skip adding members 1/3" />{' '}
+      <ControlledTooltip
+        content={
+          <div className={classes(css.skipTooltip)}>
+            <Trans i18nKey="Skip warning">
+              Created list will be lost if you skip.
+              <button
+                type="button"
+                onClick={() => submitButton.current?.click()}
+              >
+                Skip anyway
+              </button>
+            </Trans>
+          </div>
+        }
+        open={openTooltip}
+        onClose={() => setOpenTooltip(false)}
+      >
+        <button type="submit" onClick={handleSkip} ref={submitButton}>
+          <Trans i18nKey="Skip adding members 2/3" />
+        </button>
+      </ControlledTooltip>{' '}
+      <Trans i18nKey="Skip adding members 3/3" />
+    </div>
+  );
+};
