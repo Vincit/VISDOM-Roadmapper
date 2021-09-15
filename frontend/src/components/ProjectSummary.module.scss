@@ -18,8 +18,13 @@
 .header {
   @extend .typography-subtitle;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 11.5px;
+
+  .roadmapName {
+    display: flex;
+    word-break: break-word;
+  }
 
   .defaultProject path {
     fill: $COLOR_FOREST;

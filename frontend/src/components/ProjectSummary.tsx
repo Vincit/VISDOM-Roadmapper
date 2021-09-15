@@ -138,7 +138,7 @@ export const ProjectSummary: FC<{
   return (
     <div className={classes(css.roadmapSummary)}>
       <div className={classes(css.header)}>
-        <div>{roadmap.name}</div>
+        <div className={classes(css.roadmapName)}>{roadmap.name}</div>
         {userInfo?.defaultRoadmapId === roadmap.id && (
           <div className={classes(css.defaultProject)}>
             <FavoriteSharpIcon fontSize="small" />
