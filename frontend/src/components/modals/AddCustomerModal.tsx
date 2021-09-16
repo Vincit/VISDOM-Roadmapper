@@ -27,8 +27,7 @@ import {
 } from './modalparts/CustomerModalParts';
 import { StepForm } from '../forms/StepForm';
 import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
-import { titleCase } from '../../utils/string';
-import { Dot } from '../Dot';
+import { SummaryStepContent } from './modalparts/SummaryStepContent';
 import colors from '../../colors.module.scss';
 import css from './AddCustomerModal.module.scss';
 
@@ -140,38 +139,30 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     {
       description: t('Finish'),
       component: () => (
-        <div className={classes(css.finishStep)}>
-          <Trans i18nKey="All done customer description" />
-          <div className={classes(css.modalSummary)}>
-            {Object.entries(formValues).map(([key, value]) => (
-              <div key={key} className={classes(css.item)}>
-                <b>
-                  <Trans i18nKey={titleCase(key)} />:
-                </b>
-                <div>{key === 'color' ? <Dot fill={value} /> : value}</div>
-              </div>
-            ))}
-            <div className={classes(css.representatives)}>
-              <b>
-                <Trans i18nKey="Representatives" />:
-              </b>
-              {representatives
-                .filter((rep) => rep.checked)
-                .map((rep) => (
-                  <div key={rep.id} className={classes(css.rep)}>
-                    {rep.username}
-                    <div className={classes(css[RoleType[rep.type]])}>
-                      {rep.type === RoleType.Admin ? (
-                        <StarSharpIcon fontSize="small" />
-                      ) : (
-                        <BusinessIcon size="xsmall" color={colors.azure} />
-                      )}
-                    </div>
+        <SummaryStepContent
+          description="All done customer description"
+          formValues={formValues}
+        >
+          <div className={classes(css.representatives)}>
+            <b>
+              <Trans i18nKey="Representatives" />:
+            </b>
+            {representatives
+              .filter((rep) => rep.checked)
+              .map((rep) => (
+                <div key={rep.id} className={classes(css.rep)}>
+                  {rep.username}
+                  <div className={classes(css[RoleType[rep.type]])}>
+                    {rep.type === RoleType.Admin ? (
+                      <StarSharpIcon fontSize="small" />
+                    ) : (
+                      <BusinessIcon size="xsmall" color={colors.azure} />
+                    )}
                   </div>
-                ))}
-            </div>
+                </div>
+              ))}
           </div>
-        </div>
+        </SummaryStepContent>
       ),
     },
   ];

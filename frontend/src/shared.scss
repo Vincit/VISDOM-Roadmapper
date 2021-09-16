@@ -509,16 +509,3 @@ textarea {
   }
   cursor: help;
 }
-
-.modalSummary {
-  display: flex;
-  flex-direction: column;
-  margin: 30px 20px 0;
-  gap: 7px;
-
-  .item {
-    display: flex;
-    flex-direction: row;
-    gap: 13px;
-  }
-}

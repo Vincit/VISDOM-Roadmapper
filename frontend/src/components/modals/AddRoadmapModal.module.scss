@@ -1,14 +1,5 @@
 @import '../../shared.scss';
 
-.finishStep {
-  width: 458px;
-  margin-bottom: 10px;
-
-  .members {
-    margin-left: 13px;
-  }
-}
-
 .addMembersStep {
   @extend .layout-column;
   width: 458px;
@@ -36,6 +27,15 @@
       margin-top: auto;
     }
   }
+}
+
+.summaryItem {
+  @extend .layout-row;
+  gap: 13px;
+}
+
+.summaryMembers {
+  margin-left: 13px;
 }
 
 .finishStep {

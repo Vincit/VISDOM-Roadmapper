@@ -11,8 +11,8 @@ import { Modal, ModalTypes } from './types';
 import { StepForm } from '../forms/StepForm';
 import { Input, TextArea } from '../forms/FormField';
 import { AddButton } from '../forms/AddButton';
-import { titleCase } from '../../utils/string';
 import { paths } from '../../routers/paths';
+import { SummaryStepContent } from './modalparts/SummaryStepContent';
 import {
   AddTeamMemberInfo,
   DisplayInvitedMember,
@@ -184,32 +184,24 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
     {
       description: 'Finish',
       component: () => (
-        <div className={classes(css.finishStep)}>
-          <Trans i18nKey="All done roadmap description" />
-          <div className={classes(css.modalSummary)}>
-            {Object.entries(formValues).map(([key, value]) => (
-              <div key={key} className={classes(css.item)}>
-                <b>
-                  <Trans i18nKey={titleCase(key)} />:
-                </b>
-                {value}
-              </div>
-            ))}
-            <div className={classes(css.item)}>
-              <Trans i18nKey="Members summary" />
-              {members.length === 0 && '-'}
-            </div>
-            <div className={classes(css.members)}>
-              {members.map((member) => (
-                <DisplayInvitedMember
-                  key={`${member.email}-${member.type}`}
-                  member={member}
-                  readonly
-                />
-              ))}
-            </div>
+        <SummaryStepContent
+          description="All done roadmap description"
+          formValues={formValues}
+        >
+          <div className={classes(css.summaryItem)}>
+            <Trans i18nKey="Members summary" />
+            {members.length === 0 && '-'}
           </div>
-        </div>
+          <div className={classes(css.summaryMembers)}>
+            {members.map((member) => (
+              <DisplayInvitedMember
+                key={`${member.email}-${member.type}`}
+                member={member}
+                readonly
+              />
+            ))}
+          </div>
+        </SummaryStepContent>
       ),
     },
   ];

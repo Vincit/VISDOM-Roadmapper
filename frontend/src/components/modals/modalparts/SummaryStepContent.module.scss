@@ -1,0 +1,17 @@
+@import './../../../shared.scss';
+
+.summaryStep {
+  width: 458px;
+  margin-bottom: 10px;
+
+  .modalSummary {
+    @extend .layout-column;
+    margin: 30px 20px 0;
+    gap: 7px;
+
+    .item {
+      @extend .layout-row;
+      gap: 13px;
+    }
+  }
+}
