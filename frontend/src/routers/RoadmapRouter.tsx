@@ -14,7 +14,6 @@ import { TaskListPage } from '../pages/TaskListPage';
 import { PeopleListPage } from '../pages/PeopleListPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { getType, hasPermission } from '../utils/UserUtils';
 import { Permission } from '../../../shared/types/customTypes';
@@ -58,7 +57,7 @@ const routes = [
   },
 ];
 
-const RoadmapRouterComponent = () => {
+const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
   const { path } = useRouteMatch();
   const { roadmapId } = useParams<{ roadmapId: string | undefined }>();
   const dispatch = useDispatch<StoreDispatchType>();
@@ -66,11 +65,7 @@ const RoadmapRouterComponent = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const type = getType(userInfo?.roles, currentRoadmap?.id);
+  const type = getType(userInfo.roles, currentRoadmap?.id);
   const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [useEffectFinished, setUseEffectFinished] = useState(false);
@@ -118,37 +113,32 @@ const RoadmapRouterComponent = () => {
     setUseEffectFinished(true);
   }, [currentRoadmap, roadmapId, dispatch, roadmapUsers, customers, type]);
 
-  const renderOrRedirect = () => {
-    if (!useEffectFinished) return;
-    if (!isLoadingRoadmap && !currentRoadmap)
-      return (
-        <>
-          <div className="layoutRow">
-            <div className="layoutCol">Roadmap not found!</div>
-          </div>
-        </>
-      );
-    if (!isLoadingRoadmap && !isLoadingUsers && !isLoadingCustomers) {
-      return (
-        <div className="layoutRow overflowYAuto">
-          <div className="layoutCol roadmapPageContainer">
-            <Switch>
-              {routes.map((route) => (
-                <Route
-                  key={path + route.path}
-                  path={path + route.path}
-                  component={route.component}
-                  exact={route.exact}
-                />
-              ))}
-            </Switch>
-          </div>
-        </div>
-      );
-    }
+  if (!useEffectFinished) return null;
+  if (!isLoadingRoadmap && !currentRoadmap)
+    return (
+      <div className="layoutRow">
+        <div className="layoutCol">Roadmap not found!</div>
+      </div>
+    );
+  if (isLoadingRoadmap || isLoadingUsers || isLoadingCustomers)
     return <LoadingSpinner />;
-  };
-  return <>{renderOrRedirect()}</>;
+
+  return (
+    <div className="layoutRow overflowYAuto">
+      <div className="layoutCol roadmapPageContainer">
+        <Switch>
+          {routes.map((route) => (
+            <Route
+              key={path + route.path}
+              path={path + route.path}
+              component={route.component}
+              exact={route.exact}
+            />
+          ))}
+        </Switch>
+      </div>
+    </div>
+  );
 };
 
 export const RoadmapRouter = requireLogin(RoadmapRouterComponent);
