@@ -8,7 +8,6 @@ import { ModalTypes } from '../components/modals/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap } from '../redux/roadmaps/types';
 import { RootState, Integrations } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { requireLogin } from '../utils/requirelogin';
@@ -19,15 +18,15 @@ import css from './ConfigurationPage.module.scss';
 
 const classes = classNames.bind(css);
 
-const RoadmapConfigurationPageComponent = () => {
+const RoadmapConfigurationPageComponent = ({
+  userInfo,
+}: {
+  userInfo: UserInfo;
+}) => {
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
   )!;
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
   const dispatch = useDispatch<StoreDispatchType>();
 
   const onConfigurationClick = (target: string, fields: any[]) => (e: any) => {
@@ -80,7 +79,7 @@ const RoadmapConfigurationPageComponent = () => {
   return (
     <div className={classes(css.configurationPage)}>
       This is the roadmap configuration page.
-      {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+      {getType(userInfo.roles, currentRoadmap?.id) === RoleType.Admin && (
         <>
           {Object.entries(integrations).flatMap(([name, fields]) => [
             <div key={`config-${name}`} className={classes(css.layoutRow)}>

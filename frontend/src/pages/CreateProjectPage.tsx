@@ -8,23 +8,18 @@ import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { Footer } from '../components/Footer';
 import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
 import css from './CreateProjectPage.module.scss';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
 import { Roadmap } from '../redux/roadmaps/types';
 import { roadmapsSelector } from '../redux/roadmaps/selectors';
+import { requireLogin } from '../utils/requirelogin';
 
 const classes = classNames.bind(css);
 
-export const CreateProjectPage = () => {
+export const CreateProjectPage = requireLogin(({ userInfo }) => {
   const { t } = useTranslation();
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,
     shallowEqual,
@@ -41,8 +36,6 @@ export const CreateProjectPage = () => {
       }),
     );
   };
-
-  if (!userInfo) return <Redirect to={paths.loginPage} />;
 
   if (roadmaps && roadmaps.length > 0)
     return <Redirect to={`${paths.roadmapHome}/${roadmaps[0].id}/dashboard`} />;
@@ -81,4 +74,4 @@ export const CreateProjectPage = () => {
       <Footer />
     </>
   );
-};
+});

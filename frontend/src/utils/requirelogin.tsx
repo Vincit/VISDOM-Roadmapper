@@ -8,7 +8,9 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 
-export function requireLogin<T>(Component: ComponentType<T>) {
+export function requireLogin<T>(
+  Component: ComponentType<T & { userInfo: UserInfo }>,
+) {
   const Inner: FC<T> = (props) => {
     const dispatch = useDispatch<StoreDispatchType>();
     const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -28,7 +30,7 @@ export function requireLogin<T>(Component: ComponentType<T>) {
     const { pathname, search } = useLocation();
 
     if (!loadedUserInfo) return null;
-    if (userInfo) return <Component {...props} />;
+    if (userInfo) return <Component {...props} userInfo={userInfo} />;
     return (
       <Redirect
         to={`${paths.loginPage}?redirectTo=${encodeURIComponent(
