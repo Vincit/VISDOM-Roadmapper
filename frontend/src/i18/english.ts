@@ -163,6 +163,7 @@ export const english = {
     'Search for people': 'Search for people',
     'Team members': 'Team members',
     'Add members': 'Add members',
+    'The email should be unique': 'The email should be unique.',
     'Skip adding members 1/3':
       'Adding members at this point is optional. You can',
     'Skip adding members 2/3': 'skip it',

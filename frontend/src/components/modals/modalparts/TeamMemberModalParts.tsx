@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
+import { Alert } from 'react-bootstrap';
 import { BusinessIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
 import { Input } from '../../forms/FormField';
@@ -100,9 +101,11 @@ export const DisplayInvitedMember: FC<{
 
 export const AddOrModifyMember: FC<{
   initialMember?: InviteRoadmapUser;
+  error: boolean;
   onSubmit: (member: InviteRoadmapUser) => void;
   onCancel: () => void;
-}> = ({ initialMember, onSubmit, onCancel }) => {
+  onCloseError: () => void;
+}> = ({ initialMember, error, onSubmit, onCancel, onCloseError }) => {
   const { t } = useTranslation();
   const [member, setMember] = useState(
     initialMember || { email: '', type: RoleType.Developer },
@@ -125,11 +128,20 @@ export const AddOrModifyMember: FC<{
         value={member.email}
         onChange={(e) => {
           setMember({ ...member, email: e.currentTarget.value });
+          if (validForm) e.currentTarget.checkValidity();
           setValidForm(
-            e.currentTarget.checkValidity() && !!e.currentTarget.value,
+            e.currentTarget.validity.valid && !!e.currentTarget.value,
           );
         }}
       />
+      <Alert
+        show={error}
+        variant="danger"
+        dismissible
+        onClose={() => onCloseError()}
+      >
+        <Trans i18nKey="The email should be unique" />
+      </Alert>
       <div className={classes(css.buttons)}>
         <button
           className="button-small-filled"

@@ -42,6 +42,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
   const [editMember, setEditMember] = useState<undefined | InviteRoadmapUser>(
     undefined,
   );
+  const [emailError, setEmailError] = useState(false);
   const [createdRoadmapId, setCreatedRoadmapId] = useState<undefined | number>(
     undefined,
   );
@@ -58,7 +59,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
       return { message: res.payload?.message ?? t('Internal server error') };
     }
 
-    const promises = members.flatMap((member) =>
+    const promises = members.map((member) =>
       dispatch(
         roadmapsActions.sendInvitation({
           ...member,
@@ -122,16 +123,19 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
             {!open.addMember && !editMember && (
               <>
                 <div className={classes({ [css.members]: members.length > 0 })}>
-                  {members.map((member, idx) => (
+                  {members.map((member) => (
                     <DisplayInvitedMember
-                      key={idx}
+                      key={member.email}
                       member={member}
-                      onDelete={() => {
-                        const copy = [...members];
-                        copy.splice(idx, 1);
-                        setMembers(copy);
+                      onDelete={() =>
+                        setMembers(
+                          members.filter(({ email }) => email !== member.email),
+                        )
+                      }
+                      onEdit={() => {
+                        setEditMember(member);
+                        setEmailError(false);
                       }}
-                      onEdit={() => setEditMember(member)}
                     />
                   ))}
                 </div>
@@ -141,7 +145,10 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                   })}
                 >
                   <AddButton
-                    onClick={() => setOpen({ ...open, addMember: true })}
+                    onClick={() => {
+                      setOpen({ ...open, addMember: true });
+                      setEmailError(false);
+                    }}
                   >
                     <Trans i18nKey="Add member" />
                   </AddButton>
@@ -150,17 +157,35 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
             )}
             {open.addMember && (
               <AddOrModifyMember
+                error={emailError}
                 onSubmit={(member) => {
+                  const alreadyExists = members.find(
+                    ({ email }) => email === member.email,
+                  );
+                  if (alreadyExists) {
+                    setEmailError(true);
+                    return;
+                  }
                   setMembers([...members, member]);
                   setOpen({ ...open, addMember: false });
                 }}
                 onCancel={() => setOpen({ ...open, addMember: false })}
+                onCloseError={() => setEmailError(false)}
               />
             )}
             {editMember && (
               <AddOrModifyMember
+                error={emailError}
                 initialMember={editMember}
                 onSubmit={(member) => {
+                  const alreadyExists = members.find(
+                    ({ email }) =>
+                      email !== editMember.email && email === member.email,
+                  );
+                  if (alreadyExists) {
+                    setEmailError(true);
+                    return;
+                  }
                   setMembers(
                     members.map(({ email, type }) =>
                       email === editMember.email && type === editMember.type
@@ -171,6 +196,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                   setEditMember(undefined);
                 }}
                 onCancel={() => setEditMember(undefined)}
+                onCloseError={() => setEmailError(false)}
               />
             )}
           </div>
