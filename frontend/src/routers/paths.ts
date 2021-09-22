@@ -20,7 +20,7 @@ export const paths = {
     clients: '/clients',
     clientOverview: '/clients/:clientId([0-9]+)',
     people: '/people',
-    taskList: '/tasks',
+    tasks: '/tasks',
     taskOverview: '/tasks/:taskId([0-9]+)',
     planner: '/planner',
     configure: '/configure',
@@ -30,5 +30,9 @@ export const paths = {
     editor: '/editor',
     timeEstimation: '/timeestimation',
     weights: '/weights',
+  },
+  tasksRelative: {
+    tasklist: '/tasklist',
+    taskmap: '/taskmap',
   },
 };

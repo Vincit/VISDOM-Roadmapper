@@ -51,10 +51,10 @@ export const RoadmapSidebar: FC = () => {
           <Trans i18nKey="Dashboard" />
         </Link>
         <Link
-          to={url + paths.roadmapRelative.taskList}
+          to={url + paths.roadmapRelative.tasks + paths.tasksRelative.tasklist}
           className={classes(css.navButton, {
             [css.selected]: pathname.startsWith(
-              url + paths.roadmapRelative.taskList,
+              url + paths.roadmapRelative.tasks,
             ),
           })}
         >
