@@ -99,7 +99,7 @@ export const TaskListPage = () => {
 
   const renderTopbar = () => {
     return (
-      <div className={classes(css.topBar)}>
+      <div className={classes(css.taskListTopBar)}>
         <div className={classes(css.searchBarContainer)}>
           <>
             <input
