@@ -95,26 +95,29 @@ export const TaskListPage = () => {
 
   return (
     <>
-      <TopBar
-        searchType={t('tasks')}
-        addType={t('task')}
-        onSearchChange={(value) => setSearchString(value)}
-        onAddClick={onAddNewTaskClick}
-      >
-        <div className={classes(css.addNewButtonContainer)}>
-          <Checkbox
-            label="Show completed tasks"
-            onChange={toggleCheckedClicked}
-            checked={checked}
-          />
-          {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
-            <>
-              {renderImportButton('trello')}
-              {renderImportButton('jira')}
-            </>
-          )}
-        </div>
-      </TopBar>
+      <div className={classes(css.taskListTopBar)}>
+        <TopBar
+          searchType={t('tasks')}
+          addType={t('task')}
+          onSearchChange={(value) => setSearchString(value)}
+          onAddClick={onAddNewTaskClick}
+        >
+          <div className={classes(css.addNewButtonContainer)}>
+            <Checkbox
+              label="Show completed tasks"
+              onChange={toggleCheckedClicked}
+              checked={checked}
+            />
+            {getType(userInfo?.roles, currentRoadmap?.id) ===
+              RoleType.Admin && (
+              <>
+                {renderImportButton('trello')}
+                {renderImportButton('jira')}
+              </>
+            )}
+          </div>
+        </TopBar>
+      </div>
       <div className={classes(css.unratedTableContainer)}>
         <TaskTableUnrated
           tasks={unrated}
