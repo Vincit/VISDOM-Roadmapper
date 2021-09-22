@@ -1,5 +1,6 @@
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
-import { PlannerPageNavbar } from '../components/PlannerPageNavbar';
+import { useTranslation } from 'react-i18next';
+import { PageNavBar } from '../components/PageNavBar';
 import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { PlannerWeightsPage } from '../pages/PlannerWeightsPage';
 import { RoadmapGraphPage } from '../pages/RoadmapGraphPage';
@@ -37,10 +38,30 @@ const routes = [
 
 export const PlannerPageRouter = () => {
   const { path } = useRouteMatch();
+  const { t } = useTranslation();
+
+  const headers = [
+    {
+      url: '/graph',
+      text: t('Roadmap'),
+    },
+    {
+      url: '/editor',
+      text: t('Milestones'),
+    },
+    {
+      url: '/weights',
+      text: t('Client Weights'),
+    },
+    {
+      url: '/timeestimation',
+      text: t('Time Estimation'),
+    },
+  ];
 
   return (
     <>
-      <PlannerPageNavbar />
+      <PageNavBar headers={headers} />
       <div className="layoutCol">
         <Switch>
           {routes.map((route) => (
