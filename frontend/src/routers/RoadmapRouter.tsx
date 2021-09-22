@@ -10,7 +10,6 @@ import {
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
-import { TaskListPage } from '../pages/TaskListPage';
 import { TeamListPage } from '../pages/TeamListPage';
 import { TaskOverviewPage } from '../pages/TaskOverviewPage';
 import { ClientsListPage } from '../pages/ClientsListPage';
@@ -30,6 +29,7 @@ import { RootState } from '../redux/types';
 import { requireVerifiedEmail } from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
+import { TasksPageRouter } from './TasksPageRouter';
 import '../shared.scss';
 
 const routes = [
@@ -46,8 +46,8 @@ const routes = [
     component: TaskOverviewPage,
   },
   {
-    path: paths.roadmapRelative.taskList,
-    component: TaskListPage,
+    path: paths.roadmapRelative.tasks,
+    component: TasksPageRouter,
   },
   {
     path: paths.roadmapRelative.clientOverview,
