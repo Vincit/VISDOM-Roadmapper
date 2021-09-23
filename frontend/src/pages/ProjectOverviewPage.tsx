@@ -11,7 +11,7 @@ import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
 import { ProjectSummary } from '../components/ProjectSummary';
 import { AddButton } from '../components/forms/AddButton';
-import { requireLogin } from '../utils/requirelogin';
+import { requireVerifiedEmail } from '../utils/requirelogin';
 import css from './ProjectOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -61,4 +61,6 @@ const ProjectOverviewComponent = () => {
   );
 };
 
-export const ProjectOverviewPage = requireLogin(ProjectOverviewComponent);
+export const ProjectOverviewPage = requireVerifiedEmail(
+  ProjectOverviewComponent,
+);

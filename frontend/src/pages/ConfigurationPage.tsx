@@ -10,7 +10,7 @@ import { Roadmap } from '../redux/roadmaps/types';
 import { RootState, Integrations } from '../redux/types';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { requireLogin } from '../utils/requirelogin';
+import { requireVerifiedEmail } from '../utils/requirelogin';
 import { titleCase } from '../utils/string';
 import { getType } from '../utils/UserUtils';
 import { api } from '../api/api';
@@ -130,6 +130,6 @@ const RoadmapConfigurationPageComponent = ({
   );
 };
 
-export const ConfigurationPage = requireLogin(
+export const ConfigurationPage = requireVerifiedEmail(
   RoadmapConfigurationPageComponent,
 );

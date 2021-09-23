@@ -42,3 +42,19 @@ export function requireLogin<T>(
 
   return Inner;
 }
+
+export function requireVerifiedEmail<T>(
+  Component: ComponentType<T & { userInfo: UserInfo }>,
+) {
+  return requireLogin<T>((props) => {
+    const { pathname, search } = useLocation();
+    if (props.userInfo.emailVerified) return <Component {...props} />;
+    return (
+      <Redirect
+        to={`${paths.userInfo}?redirectTo=${encodeURIComponent(
+          pathname + search,
+        )}`}
+      />
+    );
+  });
+}

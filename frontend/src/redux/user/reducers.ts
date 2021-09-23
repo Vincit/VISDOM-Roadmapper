@@ -19,6 +19,7 @@ export const JOIN_ROADMAP_FULFILLED = (
 ) => {
   if (!state.info) throw new Error('UserInfo has not been fetched yet');
   state.info.roles.push(action.payload);
+  state.info.emailVerified = true;
 };
 
 export const VERIFY_EMAIL_FULFILLED = (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -17,6 +17,7 @@ import css from './RoadmapSelectorWidget.module.scss';
 const classes = classNames.bind(css);
 
 export const RoadmapSelectorWidget = () => {
+  const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,
@@ -42,8 +43,21 @@ export const RoadmapSelectorWidget = () => {
     } else setSelectedRoadmap('Select roadmap');
   }, [chosenRoadmap]);
 
-  if (!roadmaps || roadmaps.length === 0) {
+  if (!roadmaps)
     return <Dropdown css={css} title="No roadmaps available" disabled empty />;
+
+  if (roadmaps.length === 0) {
+    return (
+      <div className={classes(css.dropContainer)}>
+        <button
+          type="button"
+          className={classes(css.dropButton)}
+          onClick={() => history.push(paths.getStarted)}
+        >
+          <div className={classes(css.dropTitle)}>Get started</div>
+        </button>
+      </div>
+    );
   }
 
   return (
