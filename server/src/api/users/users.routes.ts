@@ -17,6 +17,7 @@ import {
   logoutUser,
   joinRoadmap,
   verifyEmail,
+  sendNewVerificationLink,
 } from './users.controller';
 import { Context } from 'koa';
 import { IKoaState } from 'src/types/customTypes';
@@ -42,6 +43,11 @@ userRouter.post(
   '/users/:userId/verifyEmail/:verificationId',
   requireAuth,
   verifyEmail,
+);
+userRouter.post(
+  '/users/:userId/sendEmailVerificationLink/',
+  requireAuth,
+  sendNewVerificationLink,
 );
 
 export default userRouter;

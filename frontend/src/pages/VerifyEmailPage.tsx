@@ -17,15 +17,17 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
   }>();
 
   useEffect(() => {
-    if (!verificationId || userInfo.emailVerified) return;
+    if (userInfo.emailVerified) {
+      history.push(paths.getStarted);
+      return;
+    }
+    if (!verificationId) return;
 
     setIsLoading(true);
     dispatch(userActions.verifyEmail({ user: userInfo, verificationId }))
       .then((res) => {
         if (userActions.verifyEmail.rejected.match(res)) {
           setErrorMessage(res.payload?.message ?? 'Something went wrong');
-        } else {
-          history.push(paths.getStarted);
         }
       })
       .finally(() => setIsLoading(false));

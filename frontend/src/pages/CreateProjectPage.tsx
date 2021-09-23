@@ -14,11 +14,11 @@ import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
 import { Roadmap } from '../redux/roadmaps/types';
 import { roadmapsSelector } from '../redux/roadmaps/selectors';
-import { requireLogin } from '../utils/requirelogin';
+import { requireVerifiedEmail } from '../utils/requirelogin';
 
 const classes = classNames.bind(css);
 
-export const CreateProjectPage = requireLogin(({ userInfo }) => {
+export const CreateProjectPage = requireVerifiedEmail(({ userInfo }) => {
   const { t } = useTranslation();
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,

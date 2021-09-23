@@ -24,7 +24,7 @@ import {
 } from '../redux/roadmaps/selectors';
 import { RoadmapUser, Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { requireLogin } from '../utils/requirelogin';
+import { requireVerifiedEmail } from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
 import '../shared.scss';
@@ -141,4 +141,4 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
   );
 };
 
-export const RoadmapRouter = requireLogin(RoadmapRouterComponent);
+export const RoadmapRouter = requireVerifiedEmail(RoadmapRouterComponent);

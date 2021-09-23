@@ -350,6 +350,13 @@ const verifyEmail = async (user: UserInfo, verificationId: string) => {
   return response.status === 200;
 };
 
+const sendEmailVerificationLink = async (user: UserInfo) => {
+  const response = await axios.post(
+    `/users/${user.id}/sendEmailVerificationLink/`,
+  );
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -391,4 +398,5 @@ export const api = {
   sendInvitation,
   joinRoadmap,
   verifyEmail,
+  sendEmailVerificationLink,
 };

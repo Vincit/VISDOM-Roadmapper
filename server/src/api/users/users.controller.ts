@@ -55,6 +55,14 @@ export const patchUsers: RouteHandlerFnc = async (ctx) => {
   }
 };
 
+export const sendNewVerificationLink: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) throw new Error('User is required');
+
+  const { id, email } = ctx.state.user;
+  const ok = await sendVerificationLink(id, email);
+  ctx.status = ok ? 200 : 500;
+};
+
 export const deleteUsers: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await User.query().findById(ctx.params.id).delete();
 
