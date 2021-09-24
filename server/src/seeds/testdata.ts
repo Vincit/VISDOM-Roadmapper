@@ -40,46 +40,21 @@ const clearData = async () => {
 };
 
 const createTestUsers = async () => {
-  await User.query().insert({
-    username: 'BusinessPerson1',
-    email: 'biz@business.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'BusinessPerson2',
-    email: 'biz2@business.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'DeveloperPerson1',
-    email: 'dev@coders.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'DeveloperPerson2',
-    email: 'dev2@coders.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'CustomerPerson1',
-    email: 'customer@webuystuff.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'CustomerPerson2',
-    email: 'customer2@webuystuff.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'AdminPerson1',
-    email: 'admin@admins.com',
-    password: 'test',
-  });
-  await User.query().insert({
-    username: 'AdminPerson2',
-    email: 'admin2@admins.com',
-    password: 'test',
-  });
+  const users = [
+    { username: 'BusinessPerson1', email: 'biz@business.com' },
+    { username: 'BusinessPerson2', email: 'biz2@business.com' },
+    { username: 'DeveloperPerson1', email: 'dev@coders.com' },
+    { username: 'DeveloperPerson2', email: 'dev2@coders.com' },
+    { username: 'CustomerPerson1', email: 'customer@webuystuff.com' },
+    { username: 'CustomerPerson2', email: 'customer2@webuystuff.com' },
+    { username: 'AdminPerson1', email: 'admin@admins.com' },
+    { username: 'AdminPerson2', email: 'admin2@admins.com' },
+  ];
+  await Promise.all(
+    users.map((user) =>
+      User.query().insert({ ...user, password: 'test', emailVerified: true }),
+    ),
+  );
 };
 
 const createTestRoadmaps = async () => {

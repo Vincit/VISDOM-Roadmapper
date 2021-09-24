@@ -1,4 +1,4 @@
-import { requireAuth } from './../../utils/requireAuth';
+import { requireAuth, requireVerifiedEmail } from './../../utils/requireAuth';
 import { requirePermission, requireRole } from './../../utils/checkPermissions';
 import { IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
@@ -18,46 +18,51 @@ import customerRouter from '../customer/customer.routes';
 import rolesRouter from '../roles/roles.routes';
 import invitationsRouter from '../invitations/invitations.routes';
 
-const roadmapRouter = new KoaRouter<IKoaState, Context>();
+const roadmapRouter = new KoaRouter<IKoaState, Context>({
+  prefix: '/roadmaps',
+});
 
 roadmapRouter.use(requireAuth);
-roadmapRouter.use('/roadmaps/:roadmapId', requireRole);
+roadmapRouter.use('/:roadmapId', requireRole);
 
-roadmapRouter.get('/roadmaps', getRoadmaps);
-roadmapRouter.post('/roadmaps', postRoadmaps);
+roadmapRouter.get('/', getRoadmaps);
+
+roadmapRouter.use(requireVerifiedEmail);
+
+roadmapRouter.post('/', postRoadmaps);
 roadmapRouter.patch(
-  '/roadmaps/:roadmapId',
+  '/:roadmapId',
   requirePermission(Permission.RoadmapEdit),
   patchRoadmaps,
 );
 roadmapRouter.delete(
-  '/roadmaps/:roadmapId',
+  '/:roadmapId',
   requirePermission(Permission.RoadmapDelete),
   deleteRoadmaps,
 );
 
 roadmapRouter.get(
-  '/roadmaps/:roadmapId/users',
+  '/:roadmapId/users',
   requirePermission(Permission.RoadmapReadUsers),
   getRoadmapsUsers,
 );
 
-roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', versionsRouter.allowedMethods());
+roadmapRouter.use('/:roadmapId', versionsRouter.routes());
+roadmapRouter.use('/:roadmapId', versionsRouter.allowedMethods());
 
-roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', tasksRouter.allowedMethods());
+roadmapRouter.use('/:roadmapId', tasksRouter.routes());
+roadmapRouter.use('/:roadmapId', tasksRouter.allowedMethods());
 
-roadmapRouter.use('/roadmaps/:roadmapId', integrationRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', integrationRouter.allowedMethods());
+roadmapRouter.use('/:roadmapId', integrationRouter.routes());
+roadmapRouter.use('/:roadmapId', integrationRouter.allowedMethods());
 
-roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', customerRouter.allowedMethods());
+roadmapRouter.use('/:roadmapId', customerRouter.routes());
+roadmapRouter.use('/:roadmapId', customerRouter.allowedMethods());
 
-roadmapRouter.use('/roadmaps/:roadmapId', rolesRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', rolesRouter.allowedMethods());
+roadmapRouter.use('/:roadmapId', rolesRouter.routes());
+roadmapRouter.use('/:roadmapId', rolesRouter.allowedMethods());
 
-roadmapRouter.use('/roadmaps/:roadmapId', invitationsRouter.routes());
-roadmapRouter.use('/roadmaps/:roadmapId', invitationsRouter.allowedMethods());
+roadmapRouter.use('/:roadmapId', invitationsRouter.routes());
+roadmapRouter.use('/:roadmapId', invitationsRouter.allowedMethods());
 
 export default roadmapRouter;

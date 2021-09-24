@@ -6,29 +6,6 @@ import Roadmap from '../src/api/roadmaps/roadmaps.model';
 chai.use(chaiHttp);
 
 describe('Test /users/ api', function () {
-  describe('GET /users/', function () {
-    it('Access of the route should be temporarily forbidden', async function () {
-      const res = await loggedInAgent.get('/users/');
-      expect(res.status).to.equal(403);
-    });
-  });
-
-  describe('POST /users/', function () {
-    it('Access of the route should be temporarily forbidden', async function () {
-      const testUser = {
-        username: 'Testuser',
-        email: 'testuser@testuser.com',
-        type: 0,
-        password: 'test',
-      };
-      const postResponse = await loggedInAgent
-        .post('/users')
-        .type('json')
-        .send(testUser);
-      expect(postResponse.status).to.equal(403);
-    });
-  });
-
   describe('DELETE /users/', function () {
     it('Should delete user', async function () {
       const userId = (
