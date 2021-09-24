@@ -1,11 +1,8 @@
-import { requireAuth } from './../../utils/requireAuth';
-import { forbidden } from '../../utils/forbidden';
+import { requireAuth, requireVerifiedEmail } from './../../utils/requireAuth';
 import { isCurrentUser } from '../../utils/isCurrent';
 import KoaRouter from '@koa/router';
 import {
-  getUsers,
   getUserRoles,
-  postUsers,
   patchUsers,
   deleteUsers,
   registerUser,
@@ -22,30 +19,30 @@ import {
 import { Context } from 'koa';
 import { IKoaState } from 'src/types/customTypes';
 
-const userRouter = new KoaRouter<IKoaState, Context>();
+const userRouter = new KoaRouter<IKoaState, Context>({
+  prefix: '/users',
+});
 
-userRouter.get('/users/mytoken', requireAuth, getToken);
-userRouter.post('/users/mytoken', requireAuth, generateToken);
-userRouter.delete('/users/mytoken', requireAuth, deleteToken);
+userRouter.get('/mytoken', requireAuth, requireVerifiedEmail, getToken);
+userRouter.post('/mytoken', requireAuth, requireVerifiedEmail, generateToken);
+userRouter.delete('/mytoken', requireAuth, requireVerifiedEmail, deleteToken);
 
-userRouter.get('/users', requireAuth, forbidden, getUsers);
-userRouter.post('/users', requireAuth, forbidden, postUsers);
-userRouter.patch('/users/:id', requireAuth, isCurrentUser, patchUsers);
-userRouter.delete('/users/:id', requireAuth, isCurrentUser, deleteUsers);
+userRouter.patch('/:id', requireAuth, isCurrentUser, patchUsers);
+userRouter.delete('/:id', requireAuth, isCurrentUser, deleteUsers);
 
-userRouter.post('/users/register', registerUser);
-userRouter.post('/users/login', loginUser);
-userRouter.get('/users/logout', logoutUser);
-userRouter.get('/users/whoami', requireAuth, getCurrentUser);
-userRouter.get('/users/roles', requireAuth, getUserRoles);
-userRouter.post('/users/:userId/join/:invitationId', requireAuth, joinRoadmap);
+userRouter.post('/register', registerUser);
+userRouter.post('/login', loginUser);
+userRouter.get('/logout', logoutUser);
+userRouter.get('/whoami', requireAuth, getCurrentUser);
+userRouter.get('/roles', requireAuth, getUserRoles);
+userRouter.post('/:userId/join/:invitationId', requireAuth, joinRoadmap);
 userRouter.post(
-  '/users/:userId/verifyEmail/:verificationId',
+  '/:userId/verifyEmail/:verificationId',
   requireAuth,
   verifyEmail,
 );
 userRouter.post(
-  '/users/:userId/sendEmailVerificationLink/',
+  '/:userId/sendEmailVerificationLink/',
   requireAuth,
   sendNewVerificationLink,
 );
