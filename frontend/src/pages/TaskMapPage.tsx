@@ -6,9 +6,11 @@ import ReactFlow, { Handle } from 'react-flow-renderer';
 import classNames from 'classnames';
 // import CircleTwoToneIcon from '@mui/material-ui/icons/CircleTwoTone';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import { allTasksSelector } from '../redux/roadmaps/selectors';
+import { RootState } from '../redux/types';
+import { allTasksSelector, taskSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from '../components/TaskRatingsText';
+import { groupTaskRelations } from '../utils/TaskRelationUtils';
 
 import css from './TaskMapPage.module.scss';
 
@@ -23,65 +25,73 @@ enum Position {
 
 // Tähän on olemassa valmis komponentti
 const PlaceHolderComp: FC<{
-  task: Task | undefined;
-}> = ({ task }) => {
-  if (!task) return <div>taskia ei selectattu</div>;
-  return <div>{task.name}</div>;
+  taskId: number | undefined;
+}> = ({ taskId }) => {
+  if (!taskId) return <div>taskia ei selectattu</div>;
+  return <div>{taskId}</div>;
 };
 
 // To do: Lisää Taskille mahdollisuus olla completed, jolloin sen tekstit on vihreet
 const SingleTask: FC<{
-  task: Task;
+  taskId: number;
   selected?: boolean;
   setSelectedTask?: any;
-}> = ({ task, setSelectedTask, selected }) => {
-  return (
-    <button
-      type="button"
-      onClick={
-        selected
-          ? () => setSelectedTask(undefined)
-          : () => setSelectedTask(task)
-      }
-      className={selected ? classes(css.selectedTask) : classes(css.singleTask)}
-    >
-      <RadioButtonUncheckedIcon className={classes(css.leftTaskIcon)} />
-      <Handle
-        id={`left-${task.id}`}
-        type="target"
-        position={Position.Left}
-        style={{ borderRadius: 0 }}
-      />
-      {task.name}
-      <div className={classes(css.taskRatingTexts)}>
-        <TaskRatingsText task={task} selected={selected} />
-      </div>
-      <RadioButtonUncheckedIcon className={classes(css.rightTaskIcon)} />
-      <Handle
-        id={`right-${task.id}`}
-        type="source"
-        position={Position.Right}
-        style={{ borderRadius: 0 }}
-      />
-    </button>
+}> = ({ taskId, setSelectedTask, selected }) => {
+  const task = useSelector<RootState, Task | undefined>(
+    taskSelector(taskId),
+    shallowEqual,
   );
+  if (task)
+    return (
+      <button
+        type="button"
+        onClick={
+          selected
+            ? () => setSelectedTask(undefined)
+            : () => setSelectedTask(task)
+        }
+        className={
+          selected ? classes(css.selectedTask) : classes(css.singleTask)
+        }
+      >
+        <RadioButtonUncheckedIcon className={classes(css.leftTaskIcon)} />
+        <Handle
+          id={`to-${task!.id}`}
+          type="target"
+          position={Position.Left}
+          style={{ borderRadius: 0 }}
+        />
+        {task!.name}
+        <div className={classes(css.taskRatingTexts)}>
+          <TaskRatingsText task={task!} selected={selected} />
+        </div>
+        <RadioButtonUncheckedIcon className={classes(css.rightTaskIcon)} />
+        <Handle
+          id={`from-${task!.id}`}
+          type="source"
+          position={Position.Right}
+          style={{ borderRadius: 0 }}
+        />
+      </button>
+    );
+  return <></>;
 };
 
 const TaskComponent: FC<{
-  tasks: Task[];
-  selectedTask: Task | undefined;
-  setSelectedTask: any;
+  taskIds: number[];
+  selectedTaskId: number | undefined;
+  setSelectedTaskId: any;
   position: number;
-}> = ({ tasks, selectedTask, setSelectedTask, position }) => {
+}> = ({ taskIds, selectedTaskId, setSelectedTaskId, position }) => {
   return (
     <div className={classes(css.taskContainer)}>
-      {tasks.map((task) => {
+      {taskIds.map((taskId) => {
         return (
           <div>
             <SingleTask
-              task={task}
-              selected={selectedTask?.id === task.id}
-              setSelectedTask={setSelectedTask}
+              taskId={taskId}
+              selected={selectedTaskId === taskId}
+              setSelectedTask={setSelectedTaskId}
             />
           </div>
         );
@@ -99,9 +109,9 @@ const customNodeStyles = {
 const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
   return (
     <div style={customNodeStyles}>
-      {data.tasks.map((task: Task) => (
+      {data.taskIds.map((taskId: number) => (
         <SingleTask
-          task={task}
+          taskId={taskId}
           selected={data.selected}
           setSelectedTask={data.setSelectedTask}
         />
@@ -117,51 +127,50 @@ const nodeTypes = {
 
 export const TaskMapPage = () => {
   const tasks = useSelector(allTasksSelector(), shallowEqual);
-  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
+  const taskRelations = groupTaskRelations(tasks);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>(
+    undefined,
+  );
 
-  const elements = [
-    {
-      id: '1',
-      type: 'special',
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-      selectable: false,
-      data: {
-        label: (
-          <TaskComponent
-            tasks={tasks.slice(0, 3)}
-            selectedTask={selectedTask}
-            setSelectedTask={setSelectedTask}
-            position={0}
-          />
-        ),
-        tasks: tasks.slice(0, 3),
-        selectedTask,
-        setSelectedTask,
-      },
-      position: { x: 0, y: 80 },
+  const groups = taskRelations.map(({ synergies }, idx) => ({
+    id: `${idx}`,
+    type: 'special',
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+    selectable: false,
+    position: { x: 550 * idx, y: 80 },
+    data: {
+      label: (
+        <TaskComponent
+          taskIds={synergies}
+          selectedTaskId={selectedTaskId}
+          setSelectedTaskId={setSelectedTaskId}
+          position={0}
+        />
+      ),
+      taskIds: synergies,
+      selectedTaskId,
+      setSelectedTaskId,
     },
-    {
-      id: '3',
-      type: 'special',
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-      selectable: false,
-      data: {
-        label: (
-          <TaskComponent
-            tasks={tasks.slice(4, 6)}
-            selectedTask={selectedTask}
-            setSelectedTask={setSelectedTask}
-            position={1}
-          />
-        ),
-        tasks: tasks.slice(4, 6),
-      },
-      position: { x: 700, y: 100 },
-    },
-    { id: 'e1-3', source: '1', target: '3' },
-  ];
+  }));
+
+  const edges = taskRelations.flatMap(({ dependencies }, idx) =>
+    dependencies.map(({ from, to }) => {
+      const targetGroupIdx = taskRelations.findIndex(({ synergies }) =>
+        synergies.includes(to),
+      );
+
+      return {
+        id: `${idx}-${targetGroupIdx}`,
+        source: String(idx),
+        sourceHandle: `from-${from}`,
+        target: String(targetGroupIdx),
+        targetHandle: `to-${to}`,
+      };
+    }),
+  );
+
+  const elements = [...groups, ...edges];
 
   return (
     <>
@@ -176,7 +185,7 @@ export const TaskMapPage = () => {
         nodeTypes={nodeTypes}
         draggable={false}
       />
-      <PlaceHolderComp task={selectedTask} />
+      <PlaceHolderComp taskId={selectedTaskId} />
     </>
   );
 };
