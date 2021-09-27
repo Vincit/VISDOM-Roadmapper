@@ -5,6 +5,8 @@ import User from '../api/users/users.model';
 import Task from '../api/tasks/tasks.model';
 import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
+import { TaskRelation } from '../api/taskrelation/taskrelation.model';
+import { TaskRelationType } from '../../../shared/types/customTypes';
 import {
   RoleType,
   TaskRatingDimension,
@@ -293,6 +295,42 @@ const createTestTasks = async () => {
     .catch((err) => {
       throw err;
     });
+
+  const fstRoadmapTasks = await Task.query().where({
+    roadmapId: roadmaps[0].id,
+  });
+  await TaskRelation.query().insert([
+    {
+      from: fstRoadmapTasks[0].id,
+      to: fstRoadmapTasks[1].id,
+      type: TaskRelationType.Synergy,
+    },
+    {
+      from: fstRoadmapTasks[1].id,
+      to: fstRoadmapTasks[2].id,
+      type: TaskRelationType.Synergy,
+    },
+    {
+      from: fstRoadmapTasks[1].id,
+      to: fstRoadmapTasks[3].id,
+      type: TaskRelationType.Synergy,
+    },
+    {
+      from: fstRoadmapTasks[1].id,
+      to: fstRoadmapTasks[5].id,
+      type: TaskRelationType.Dependency,
+    },
+    {
+      from: fstRoadmapTasks[2].id,
+      to: fstRoadmapTasks[5].id,
+      type: TaskRelationType.Dependency,
+    },
+    {
+      from: fstRoadmapTasks[5].id,
+      to: fstRoadmapTasks[4].id,
+      type: TaskRelationType.Dependency,
+    },
+  ]);
 };
 
 const createTestVersions = async () => {
