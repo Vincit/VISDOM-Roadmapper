@@ -1,6 +1,7 @@
 import {
   TaskRatingDimension,
   RoleType,
+  TaskRelationType,
 } from '../../../../shared/types/customTypes';
 
 export interface RoadmapsState {
@@ -87,6 +88,7 @@ export interface Task {
   createdAt: string;
   completed: boolean;
   ratings: Taskrating[];
+  relations: TaskRelation[];
   createdByUser: number;
 }
 
@@ -117,6 +119,12 @@ export interface TaskratingRequest {
   createdByUser?: number;
   forCustomer?: number;
   parentTask?: number;
+}
+
+export interface TaskRelation {
+  from: number;
+  to: number;
+  type: TaskRelationType;
 }
 
 export interface GetRoadmapBoardsRequest {
