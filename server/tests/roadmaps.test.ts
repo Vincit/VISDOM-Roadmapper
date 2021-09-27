@@ -45,6 +45,7 @@ describe('Test /roadmaps/ api', function () {
         'externalId',
         'externalLink',
         'ratings',
+        'relations',
         'createdByUser',
         'roadmapId',
       );
