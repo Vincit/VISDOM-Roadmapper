@@ -1,25 +1,29 @@
 @import '../shared.scss';
 
-.taskMapCanvas {
-  width: 90vw;
-  height: 70vh;
-  margin-top: 20px;
-  background-color: #ffffff;
+.flowContainer {
+  background-color: $COLOR_WHITE;
   border-radius: 10px;
+  height: 600px;
+  margin-top: 10px;
 }
 
-.area {
-  width: 85vw;
-  height: 65vh;
-  margin-top: 25px;
-  padding: 25px;
-  background-color: #ffffff;
+.taskContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 15px;
+  width: 356px;
+  height: auto;
+  background-color: $COLOR_CLOUD;
+  border-radius: 10px;
+  cursor: default;
 }
 
 .singleTask {
   width: 309px;
   height: 41px;
-  background-color: #ffffff;
+  background-color: $COLOR_WHITE;
   margin: 10px;
   border-radius: 5px;
   border: 0px;
@@ -32,32 +36,28 @@
 
 .selectedTask {
   @extend .singleTask;
-  color: #ffffff;
+  color: $COLOR_WHITE;
   background-color: $COLOR_AZURE;
 }
 
-.taskContainer {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px 15px;
-  width: 356px;
-  height: auto;
-  background-color: #ecf8ff;
-  border-radius: 10px;
-}
-
-.leftTaskIcon {
+.leftHandle {
   position: absolute;
   left: -3%;
-  color: #ffac30; // To do: Väri import
+  border-radius: 20;
+  height: 17px;
+  width: 17px;
+  background-color: $COLOR_WHITE;
+  border: 2px solid $COLOR_ORANGE;
 }
 
-.rightTaskIcon {
+.rightHandle {
   position: absolute;
-  left: 96.5%;
-  color: #289c6b; // To do: Väri import
+  left: 97%;
+  border-radius: 20;
+  height: 17px;
+  width: 17px;
+  background-color: $COLOR_WHITE;
+  border: 2px solid $COLOR_FOREST;
 }
 
 .taskRatingTexts {
