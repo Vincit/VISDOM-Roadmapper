@@ -1,13 +1,12 @@
 import { useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Trans } from 'react-i18next';
-import css from './TaskTable.module.scss';
 import { SortingTypes, valueAndWorkSummary } from '../utils/TaskUtils';
 import { taskTable, TaskRow } from './TaskTable';
+import css from './TaskTable.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -49,19 +48,16 @@ const TableRatedTaskRow: TaskRow = ({ task, style }) => {
         )}
       </div>
       <div className={classes(css.ratedButtons)}>
-        <div className={classes(css.buttonWrapper)}>
-          {/* To do: Component for single task and path for it */}
-          <Link
-            className={classes(css.navBarLink)}
-            to={`${currentLocation.pathname}/${task.id}`}
-          >
-            <ArrowForwardIcon
-              onMouseEnter={() => ref.current?.classList.add(...names)}
-              onMouseLeave={() => ref.current?.classList.remove(...names)}
-              className={classes(css.arrowIcon)}
-            />
-          </Link>
-        </div>
+        <Link
+          className={classes(css.navBarLink)}
+          to={`${currentLocation.pathname}/${task.id}`}
+        >
+          <ArrowForwardIcon
+            onMouseEnter={() => ref.current?.classList.add(...names)}
+            onMouseLeave={() => ref.current?.classList.remove(...names)}
+            className={classes(css.arrowIcon)}
+          />
+        </Link>
       </div>
     </div>
   );

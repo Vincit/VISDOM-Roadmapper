@@ -1,7 +1,6 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import {
   chosenRoadmapSelector,
   roadmapsVersionsSelector,
@@ -9,9 +8,10 @@ import {
 import { Roadmap, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import css from './RoadmapOverview.module.scss';
-import { ReactComponent as WorkIcon } from '../icons/rate_work.svg';
+import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { averageValueAndWork } from '../utils/TaskUtils';
 import { MetricsSummary } from './MetricsSummary';
+import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -44,12 +44,12 @@ export const RoadmapOverview = () => {
     {
       label: 'Avg Value',
       metricsValue: numFormat.format(value),
-      children: <MonetizationOnIcon />,
+      children: <BusinessIcon color={colors.black100} />,
     },
     {
       label: 'Avg Work',
       metricsValue: numFormat.format(work),
-      children: <WorkIcon />,
+      children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
 

@@ -1,20 +1,44 @@
 @import '../shared.scss';
 
-.data {
-  margin-top: 32px;
-  display: flex;
+.overviewContainer {
+  @extend .layout-column;
+  gap: 60px;
+  margin-left: 24px;
+  margin-right: 40px;
 }
 
-table {
-  margin-top: 32px;
+.section {
+  @extend .layout-column;
+  align-items: flex-start;
+  gap: 52px;
+}
 
-  td {
-    vertical-align: top;
-    text-align: left;
-    padding: 8px 16px;
+.header {
+  @extend .layout-row;
+  @extend .typography-h2;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+
+  .taskName {
+    font-weight: normal;
+  }
+  .arrowIcon {
+    height: 24px;
+    width: 24px;
+    color: $COLOR_BLACK100;
   }
 }
-.attName {
-  color: #00a3ff;
-  font-weight: bold;
+
+.buttons {
+  margin-left: auto;
+
+  .disabled path:first-child {
+    fill: $COLOR_BLACK40;
+  }
+}
+
+.content {
+  @extend .layout-row;
+  width: 100%;
 }
