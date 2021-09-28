@@ -1,11 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import ReactFlow, { Handle } from 'react-flow-renderer';
 import classNames from 'classnames';
-// import CircleTwoToneIcon from '@mui/material-ui/icons/CircleTwoTone';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import { RootState } from '../redux/types';
 import { allTasksSelector, taskSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
@@ -16,6 +12,7 @@ import css from './TaskMapPage.module.scss';
 
 const classes = classNames.bind(css);
 
+// Node positions require special Position-enum in typescript
 enum Position {
   Left = 'left',
   Top = 'top',
@@ -48,29 +45,27 @@ const SingleTask: FC<{
         onClick={
           selected
             ? () => setSelectedTask(undefined)
-            : () => setSelectedTask(task)
+            : () => setSelectedTask(taskId)
         }
         className={
           selected ? classes(css.selectedTask) : classes(css.singleTask)
         }
       >
-        <RadioButtonUncheckedIcon className={classes(css.leftTaskIcon)} />
         <Handle
+          className={classes(css.leftHandle)}
           id={`to-${task!.id}`}
           type="target"
           position={Position.Left}
-          style={{ borderRadius: 0 }}
         />
         {task!.name}
         <div className={classes(css.taskRatingTexts)}>
           <TaskRatingsText task={task!} selected={selected} />
         </div>
-        <RadioButtonUncheckedIcon className={classes(css.rightTaskIcon)} />
         <Handle
+          className={classes(css.rightHandle)}
           id={`from-${task!.id}`}
           type="source"
           position={Position.Right}
-          style={{ borderRadius: 0 }}
         />
       </button>
     );
@@ -81,8 +76,7 @@ const TaskComponent: FC<{
   taskIds: number[];
   selectedTaskId: number | undefined;
   setSelectedTaskId: any;
-  position: number;
-}> = ({ taskIds, selectedTaskId, setSelectedTaskId, position }) => {
+}> = ({ taskIds, selectedTaskId, setSelectedTaskId }) => {
   return (
     <div className={classes(css.taskContainer)}>
       {taskIds.map((taskId) => {
@@ -100,25 +94,8 @@ const TaskComponent: FC<{
   );
 };
 
-const customNodeStyles = {
-  backGroundColor: 'red',
-  border: '1px solid black',
-  width: '370px',
-};
-
 const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
-  return (
-    <div style={customNodeStyles}>
-      {data.taskIds.map((taskId: number) => (
-        <SingleTask
-          taskId={taskId}
-          selected={data.selected}
-          setSelectedTask={data.setSelectedTask}
-        />
-      ))}
-      <div>{data.length}</div>
-    </div>
-  );
+  return <div>{data.label}</div>;
 };
 
 const nodeTypes = {
@@ -137,7 +114,7 @@ export const TaskMapPage = () => {
     type: 'special',
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
-    selectable: false,
+    draggable: false,
     position: { x: 550 * idx, y: 80 },
     data: {
       label: (
@@ -145,12 +122,8 @@ export const TaskMapPage = () => {
           taskIds={synergies}
           selectedTaskId={selectedTaskId}
           setSelectedTaskId={setSelectedTaskId}
-          position={0}
         />
       ),
-      taskIds: synergies,
-      selectedTaskId,
-      setSelectedTaskId,
     },
   }));
 
@@ -166,6 +139,7 @@ export const TaskMapPage = () => {
         sourceHandle: `from-${from}`,
         target: String(targetGroupIdx),
         targetHandle: `to-${to}`,
+        style: { stroke: 'green' },
       };
     }),
   );
@@ -175,12 +149,7 @@ export const TaskMapPage = () => {
   return (
     <>
       <ReactFlow
-        style={{
-          backgroundColor: 'white',
-          borderRadius: '10px',
-          height: '600px',
-          marginTop: '10px',
-        }}
+        className={classes(css.flowContainer)}
         elements={elements}
         nodeTypes={nodeTypes}
         draggable={false}
