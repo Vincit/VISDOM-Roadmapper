@@ -19,6 +19,7 @@ export const PageNavBar: FC<{
     <div className={classes(css.navbar)}>
       {headers.map((header: any) => (
         <Link
+          key={header.text}
           className={classes(css.navbarButton, {
             [css.highlight]: !!pathname.startsWith(url + header.url),
           })}
