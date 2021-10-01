@@ -400,6 +400,20 @@ const sendEmailVerificationLink = async (user: UserInfo) => {
   return response.status === 200;
 };
 
+const addTaskRelation = async (
+  from: number,
+  to: number,
+  type: number,
+  roadmapId: number,
+) => {
+  const response = await axios.post(`/roadmaps/${roadmapId}/tasks/relations`, {
+    from,
+    to,
+    type,
+  });
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -448,4 +462,5 @@ export const api = {
   joinRoadmap,
   verifyEmail,
   sendEmailVerificationLink,
+  addTaskRelation,
 };

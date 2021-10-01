@@ -1,14 +1,20 @@
 import { FC, useState } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import ReactFlow, { Handle } from 'react-flow-renderer';
 import classNames from 'classnames';
 import { RootState } from '../redux/types';
-import { allTasksSelector, taskSelector } from '../redux/roadmaps/selectors';
-import { Task } from '../redux/roadmaps/types';
+import {
+  allTasksSelector,
+  chosenRoadmapSelector,
+  taskSelector,
+} from '../redux/roadmaps/selectors';
+import { Roadmap, Task } from '../redux/roadmaps/types';
+import { StoreDispatchType } from '../redux';
 import { TaskRatingsText } from '../components/TaskRatingsText';
 import { groupTaskRelations } from '../utils/TaskRelationUtils';
 
 import css from './TaskMapPage.module.scss';
+import { roadmapsActions } from '../redux/roadmaps';
 
 const classes = classNames.bind(css);
 
@@ -81,7 +87,7 @@ const TaskComponent: FC<{
     <div className={classes(css.taskContainer)}>
       {taskIds.map((taskId) => {
         return (
-          <div>
+          <div key={taskId}>
             <SingleTask
               taskId={taskId}
               selected={selectedTaskId === taskId}
@@ -104,7 +110,12 @@ const nodeTypes = {
 
 export const TaskMapPage = () => {
   const tasks = useSelector(allTasksSelector, shallowEqual);
+  const dispatch = useDispatch<StoreDispatchType>();
   const taskRelations = groupTaskRelations(tasks);
+  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
+    chosenRoadmapSelector,
+    shallowEqual,
+  );
   const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>(
     undefined,
   );
@@ -134,7 +145,7 @@ export const TaskMapPage = () => {
       );
 
       return {
-        id: `${idx}-${targetGroupIdx}`,
+        id: `from-${from}-to-${to}`,
         source: String(idx),
         sourceHandle: `from-${from}`,
         target: String(targetGroupIdx),
@@ -146,6 +157,32 @@ export const TaskMapPage = () => {
 
   const elements = [...groups, ...edges];
 
+  const onConnect = async (data: any) => {
+    const { sourceHandle, targetHandle } = data;
+    const roadmapId = currentRoadmap?.id;
+    const type = 0; // Type 0 = dependency
+
+    // Handles are in form 'from-{id}' and 'to-{id}', splitting required
+    const from = sourceHandle.includes('from')
+      ? Number(sourceHandle.split('-')[1])
+      : Number(targetHandle.split('-')[1]);
+
+    const to = targetHandle.includes('to')
+      ? Number(targetHandle.split('-')[1])
+      : Number(sourceHandle.split('-')[1]);
+
+    if (!roadmapId) return;
+    await dispatch(
+      roadmapsActions.addTaskRelation({
+        from,
+        to,
+        type,
+        roadmapId,
+      }),
+    );
+    dispatch(roadmapsActions.getRoadmaps());
+  };
+
   return (
     <>
       <ReactFlow
@@ -153,6 +190,7 @@ export const TaskMapPage = () => {
         elements={elements}
         nodeTypes={nodeTypes}
         draggable={false}
+        onConnect={onConnect}
       />
       <PlaceHolderComp taskId={selectedTaskId} />
     </>
