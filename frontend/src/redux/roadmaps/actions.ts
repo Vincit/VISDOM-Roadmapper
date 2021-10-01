@@ -519,3 +519,16 @@ export const sendInvitation = createAsyncThunk<
     return thunkAPI.rejectWithValue(err);
   }
 });
+
+export const addTaskRelation = createAsyncThunk<
+  boolean,
+  { from: number; to: number; type: number; roadmapId: number },
+  { rejectValue: AxiosError }
+>('addTaskRelation', async (relationRequest, thunkAPI) => {
+  const { from, to, type, roadmapId } = relationRequest;
+  try {
+    return await api.addTaskRelation(from, to, type, roadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
