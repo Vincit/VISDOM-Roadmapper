@@ -11,7 +11,6 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TeamListPage } from '../pages/TeamListPage';
-import { TaskOverviewPage } from '../pages/TaskOverviewPage';
 import { ClientsListPage } from '../pages/ClientsListPage';
 import { ClientOverviewPage } from '../pages/ClientOverviewPage';
 import { StoreDispatchType } from '../redux';
@@ -40,10 +39,6 @@ const routes = [
   {
     path: paths.roadmapRelative.team,
     component: TeamListPage,
-  },
-  {
-    path: paths.roadmapRelative.taskOverview,
-    component: TaskOverviewPage,
   },
   {
     path: paths.roadmapRelative.tasks,
