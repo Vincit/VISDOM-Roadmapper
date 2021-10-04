@@ -39,7 +39,7 @@ export const TaskOverviewPage = () => {
 
   const changeTask = (toTaskId: number) =>
     history.push(
-      `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}/${toTaskId}`,
+      `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/task/${toTaskId}`,
     );
 
   return (
@@ -47,7 +47,7 @@ export const TaskOverviewPage = () => {
       <div className={classes(css.section)}>
         <div className={classes(css.header)}>
           <Link
-            to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}`}
+            to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/tasklist`}
           >
             <ArrowBackIcon className={classes(css.arrowIcon)} />
           </Link>
