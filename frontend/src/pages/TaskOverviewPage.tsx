@@ -42,7 +42,7 @@ const TaskOverview: FC<{
   const { value: valueRatings, work: workRatings } = getRatingsByType(
     task.ratings,
   );
-  const tasksListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}`;
+  const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
 
   const siblingTasks = [
     {
@@ -119,11 +119,11 @@ const TaskOverview: FC<{
   return (
     <div className="overviewContainer">
       <Overview
-        backHref={tasksListPage}
+        backHref={`${tasksPage}${paths.tasksRelative.tasklist}`}
         overviewType={t('Task')}
         name={task.name}
         previousAndNext={siblingTasks}
-        onOverviewChange={(id) => history.push(`${tasksListPage}/${id}`)}
+        onOverviewChange={(id) => history.push(`${tasksPage}/task/${id}`)}
         metrics={metrics}
         data={taskData}
         onDataEditConfirm={handleEditConfirm}

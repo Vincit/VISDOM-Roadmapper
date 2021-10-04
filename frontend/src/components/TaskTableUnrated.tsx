@@ -8,6 +8,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { InfoTooltip } from './InfoTooltip';
+import { paths } from '../routers/paths';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
@@ -33,7 +34,6 @@ import {
   taskSort,
 } from '../utils/TaskUtils';
 import { table, TableRow } from './Table';
-import { paths } from '../routers/paths';
 import { DeleteButton } from './forms/SvgButton';
 
 const classes = classNames.bind(css);
@@ -122,7 +122,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
-      to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}/${task.id}`}
+      to={`${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/task/${task.id}`}
     >
       <div style={style} className={classes(css.virtualizedTableRow)}>
         <div className={classes(css.taskTitle)}>{name}</div>

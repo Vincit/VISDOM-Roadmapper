@@ -22,7 +22,6 @@ export const paths = {
     team: '/team',
     taskList: '/tasks',
     tasks: '/tasks',
-    taskOverview: '/tasks/:taskId([0-9]+)',
     planner: '/planner',
     configure: '/configure',
   },
@@ -35,5 +34,6 @@ export const paths = {
   tasksRelative: {
     tasklist: '/tasklist',
     taskmap: '/taskmap',
+    taskOverview: '/task/:taskId([0-9]+)',
   },
 };
