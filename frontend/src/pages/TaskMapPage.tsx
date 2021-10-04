@@ -12,6 +12,7 @@ import { Roadmap, Task } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { TaskRatingsText } from '../components/TaskRatingsText';
 import { groupTaskRelations } from '../utils/TaskRelationUtils';
+import { TaskOverview } from '../components/TaskOverview';
 
 import css from './TaskMapPage.module.scss';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -25,14 +26,6 @@ enum Position {
   Right = 'right',
   Bottom = 'bottom',
 }
-
-// Tähän on olemassa valmis komponentti
-const PlaceHolderComp: FC<{
-  taskId: number | undefined;
-}> = ({ taskId }) => {
-  if (!taskId) return <div>taskia ei selectattu</div>;
-  return <div>{taskId}</div>;
-};
 
 // To do: Lisää Taskille mahdollisuus olla completed, jolloin sen tekstit on vihreet
 const SingleTask: FC<{
@@ -51,7 +44,7 @@ const SingleTask: FC<{
         onClick={
           selected
             ? () => setSelectedTask(undefined)
-            : () => setSelectedTask(taskId)
+            : () => setSelectedTask(task)
         }
         className={
           selected ? classes(css.selectedTask) : classes(css.singleTask)
@@ -80,9 +73,9 @@ const SingleTask: FC<{
 
 const TaskComponent: FC<{
   taskIds: number[];
-  selectedTaskId: number | undefined;
-  setSelectedTaskId: any;
-}> = ({ taskIds, selectedTaskId, setSelectedTaskId }) => {
+  selectedTask: Task | undefined;
+  setSelectedTask: any;
+}> = ({ taskIds, selectedTask, setSelectedTask }) => {
   return (
     <div className={classes(css.taskContainer)}>
       {taskIds.map((taskId) => {
@@ -90,8 +83,8 @@ const TaskComponent: FC<{
           <div key={taskId}>
             <SingleTask
               taskId={taskId}
-              selected={selectedTaskId === taskId}
-              setSelectedTask={setSelectedTaskId}
+              selected={selectedTask?.id === taskId}
+              setSelectedTask={setSelectedTask}
             />
           </div>
         );
@@ -116,9 +109,7 @@ export const TaskMapPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>(
-    undefined,
-  );
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
 
   const groups = taskRelations.map(({ synergies }, idx) => ({
     id: `${idx}`,
@@ -131,8 +122,8 @@ export const TaskMapPage = () => {
       label: (
         <TaskComponent
           taskIds={synergies}
-          selectedTaskId={selectedTaskId}
-          setSelectedTaskId={setSelectedTaskId}
+          selectedTask={selectedTask}
+          setSelectedTask={setSelectedTask}
         />
       ),
     },
@@ -192,7 +183,9 @@ export const TaskMapPage = () => {
         draggable={false}
         onConnect={onConnect}
       />
-      <PlaceHolderComp taskId={selectedTaskId} />
+      <div className={classes(css.taskOverviewContainer)}>
+        {selectedTask && <TaskOverview task={selectedTask} />}
+      </div>
     </>
   );
 };
