@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { SyntheticEvent, useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
@@ -9,6 +9,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { paths } from '../routers/paths';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
@@ -43,7 +44,6 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
-  const currentLocation = useLocation();
   const dispatch = useDispatch<StoreDispatchType>();
   const { name, roadmapId } = task;
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -121,7 +121,7 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
-      to={`${currentLocation.pathname}/${task.id}`}
+      to={`${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/task/${task.id}`}
     >
       <div style={style} className={classes(css.taskTableRow)}>
         <div className={classes(css.taskTitle)}>{name}</div>
