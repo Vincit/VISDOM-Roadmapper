@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from 'react';
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import classNames from 'classnames';
 
@@ -20,17 +20,26 @@ export const Dropdown: FC<{
   const classes = classNames.bind(css);
   const [open, setOpen] = useState(false);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setOpen(false);
-    document.removeEventListener('click', closeMenu);
-  };
+  }, [setOpen]);
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener('click', closeMenu);
+    } else {
+      document.removeEventListener('click', closeMenu);
+    }
+    return () => {
+      document.removeEventListener('click', closeMenu);
+    };
+  }, [open, closeMenu]);
 
   const showMenu = (e: MouseEvent) => {
     if (!open) {
       e.preventDefault();
       e.stopPropagation();
       setOpen(true);
-      document.addEventListener('click', closeMenu);
     }
   };
 
