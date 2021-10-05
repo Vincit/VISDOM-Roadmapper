@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { Trans } from 'react-i18next';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
 import { ReactComponent as PreviousTask } from '../icons/expand_less.svg';
 import { ReactComponent as NextTask } from '../icons/expand_more.svg';
-import { taskSelector } from '../redux/roadmaps/selectors';
+import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { paths } from '../routers/paths';
 import { TaskOverview } from '../components/TaskOverview';
 import css from './TaskOverviewPage.module.scss';
@@ -19,11 +19,22 @@ export const TaskOverviewPage = () => {
     taskId: string | undefined;
   }>();
   const history = useHistory();
-  const task = useSelector(taskSelector(Number(taskId)));
+  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const taskIdx = tasks.findIndex(({ id }) => Number(taskId) === id);
+  const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
 
   const siblingTasks = [
-    { id: useSelector(taskSelector(Number(taskId) - 1))?.id, type: 'previous' },
-    { id: useSelector(taskSelector(Number(taskId) + 1))?.id, type: 'next' },
+    {
+      id: taskIdx > 0 ? tasks[taskIdx - 1].id : undefined,
+      type: 'previous',
+    },
+    {
+      id:
+        taskIdx >= 0 && taskIdx + 1 < tasks.length
+          ? tasks[taskIdx + 1].id
+          : undefined,
+      type: 'next',
+    },
   ];
 
   const changeTask = (toTaskId: number) =>
@@ -45,7 +56,7 @@ export const TaskOverviewPage = () => {
           <div className={classes(css.buttons)}>
             {siblingTasks.map(({ id, type }) => (
               <IconButton
-                key={id}
+                key={type}
                 className={classes({ [css.disabled]: !id })}
                 disabled={!id}
                 onClick={() => changeTask(id!)}
