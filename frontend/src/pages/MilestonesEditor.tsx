@@ -29,7 +29,7 @@ import {
   weightedTaskPriority,
   hasMissingRatings,
 } from '../utils/TaskUtils';
-import { sortKeyNumeric, sort } from '../utils/SortUtils';
+import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
 import css from './MilestonesEditor.module.scss';
 
@@ -99,6 +99,7 @@ export const MilestonesEditor = () => {
     });
     newVersionLists[ROADMAP_LIST_ID] = sort(
       sortKeyNumeric(weightedTaskPriority(currentRoadmap)),
+      SortingOrders.DESCENDING,
     )(Array.from(unversioned.values()));
 
     setVersionLists(newVersionLists);
