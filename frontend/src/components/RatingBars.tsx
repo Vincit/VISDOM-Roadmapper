@@ -7,24 +7,25 @@ import css from './RatingBars.module.scss';
 
 const classes = classNames.bind(css);
 
-interface RatingBarProps {
+type RatingBarProps = {
   onChange?: (value: number) => void;
   dimension: TaskRatingDimension;
   initialValue: number;
-  readonly?: boolean;
-}
+} & ({ readonly: true } | { name: string });
 
 export const TaskRatingBar: FC<RatingBarProps> = ({
   dimension,
   onChange,
   initialValue,
-  readonly,
+  ...rest
 }) => {
   const [hover, setHover] = useState(0);
+  const readonly = 'readonly' in rest;
 
   return (
     <div className={classes(css.ratingBar)}>
       <MaterialRating
+        name={'name' in rest ? rest.name : undefined}
         readOnly={readonly}
         value={initialValue}
         max={10}
