@@ -186,71 +186,68 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            <Trans i18nKey="Rate task" />
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          <div className={classes(css.taskHeader)}>
-            <h6 className={classes(css.taskTitle)}>{task.name}</h6>
-            <p className={classes(css.dimText)}>{task.description}</p>
-          </div>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          <Trans i18nKey="Rate task" />
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        <div className={classes(css.taskHeader)}>
+          <h6 className={classes(css.taskTitle)}>{task.name}</h6>
+          <p className={classes(css.dimText)}>{task.description}</p>
+        </div>
 
-          <div>
-            {ratings.map((rating, idx) => {
-              const { value = 0, comment = undefined } = rating;
-              return (
-                <div
-                  className={classes(css.rating)}
-                  key={`${rating.createdByUser}-${rating.forCustomer}`}
-                >
-                  {rating.customer && (
-                    <CustomerHeader
-                      customer={rating.customer}
-                      ratings={task.ratings}
-                    />
-                  )}
-                  <TaskRatingWidget
-                    onRatingChange={onBusinessRatingChange(
-                      idx,
-                      rating.customer?.id,
-                    )}
-                    initialRating={{ value, comment }}
-                    ratingDimension={dimension}
+        <div>
+          {ratings.map((rating, idx) => {
+            const { value = 0, comment = undefined } = rating;
+            const key = `${rating.createdByUser}-${rating.forCustomer}`;
+            return (
+              <div className={classes(css.rating)} key={key}>
+                {rating.customer && (
+                  <CustomerHeader
+                    customer={rating.customer}
+                    ratings={task.ratings}
                   />
-                </div>
-              );
-            })}
-          </div>
+                )}
+                <TaskRatingWidget
+                  name={key}
+                  onRatingChange={onBusinessRatingChange(
+                    idx,
+                    rating.customer?.id,
+                  )}
+                  initialRating={{ value, comment }}
+                  ratingDimension={dimension}
+                />
+              </div>
+            );
+          })}
+        </div>
 
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button
-                className="button-large"
-                type="submit"
-                disabled={!businessRatingModified}
-              >
-                <Trans i18nKey="Submit" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button
+              className="button-large"
+              type="submit"
+              disabled={!businessRatingModified}
+            >
+              <Trans i18nKey="Submit" />
+            </button>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

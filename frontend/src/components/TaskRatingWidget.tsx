@@ -29,12 +29,14 @@ interface TaskRatingWidgetProps {
     comment: string | undefined;
   }) => void;
   ratingDimension: TaskRatingDimension;
+  name: string;
 }
 
 export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
   initialRating,
   onRatingChange,
   ratingDimension,
+  name,
 }) => {
   const { t } = useTranslation();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -76,6 +78,7 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
     shouldShow && (
       <div className={classes(css.ratingBarWrapper)}>
         <TaskRatingBar
+          name={name}
           dimension={ratingDimension}
           initialValue={rating.value}
           onChange={ratingChanged}
