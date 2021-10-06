@@ -21,45 +21,43 @@ const TableRatedTaskRow: TaskRow = ({ task, style }) => {
   const currentLocation = useLocation();
   const names = classes(css.hoverRow).split(/ +/);
   return (
-    <div
-      ref={ref}
-      style={style}
-      className={classes(css.taskTableRow, {
-        [css.completedRow]: task.completed,
-      })}
+    <Link
+      className={classes(css.navBarLink)}
+      to={`${currentLocation.pathname}/${task.id}`}
     >
-      <div className={classes(css.ratedTitle)}>
-        {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
-        {task.name}
+      <div
+        ref={ref}
+        style={style}
+        className={classes(css.taskTableRow, {
+          [css.completedRow]: task.completed,
+        })}
+        onMouseEnter={() => ref.current?.classList.add(...names)}
+        onMouseLeave={() => ref.current?.classList.remove(...names)}
+      >
+        <div className={classes(css.ratedTitle)}>
+          {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
+          {task.name}
+        </div>
+        <div>{numFormat.format(value.avg)}</div>
+        <div>{numFormat.format(work.avg)}</div>
+        <div>{numFormat.format(value.total)}</div>
+        <div>{numFormat.format(work.total)}</div>
+        <div>
+          {task.completed ? (
+            <span className={classes(css.statusComplete)}>
+              <Trans i18nKey="Completed" />
+            </span>
+          ) : (
+            <span className={classes(css.statusUnordered)}>
+              <Trans i18nKey="Unordered" />
+            </span>
+          )}
+        </div>
+        <div className={classes(css.ratedButtons)}>
+          <ArrowForwardIcon className={classes(css.arrowIcon)} />
+        </div>
       </div>
-      <div>{numFormat.format(value.avg)}</div>
-      <div>{numFormat.format(work.avg)}</div>
-      <div>{numFormat.format(value.total)}</div>
-      <div>{numFormat.format(work.total)}</div>
-      <div>
-        {task.completed ? (
-          <span className={classes(css.statusComplete)}>
-            <Trans i18nKey="Completed" />
-          </span>
-        ) : (
-          <span className={classes(css.statusUnordered)}>
-            <Trans i18nKey="Unordered" />
-          </span>
-        )}
-      </div>
-      <div className={classes(css.ratedButtons)}>
-        <Link
-          className={classes(css.navBarLink)}
-          to={`${currentLocation.pathname}/${task.id}`}
-        >
-          <ArrowForwardIcon
-            onMouseEnter={() => ref.current?.classList.add(...names)}
-            onMouseLeave={() => ref.current?.classList.remove(...names)}
-            className={classes(css.arrowIcon)}
-          />
-        </Link>
-      </div>
-    </div>
+    </Link>
   );
 };
 
