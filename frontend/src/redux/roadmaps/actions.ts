@@ -16,6 +16,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
+  TaskRelationRequest,
   IntegrationConfigurationRequest,
   IntegrationConfiguration,
   AddTaskToVersionRequest,
@@ -540,12 +541,11 @@ export const deleteInvitation = createAsyncThunk<
 
 export const addTaskRelation = createAsyncThunk<
   boolean,
-  { from: number; to: number; type: number; roadmapId: number },
+  TaskRelationRequest,
   { rejectValue: AxiosError }
 >('addTaskRelation', async (relationRequest, thunkAPI) => {
-  const { from, to, type, roadmapId } = relationRequest;
   try {
-    return await api.addTaskRelation(from, to, type, roadmapId);
+    return await api.addTaskRelation(relationRequest);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
