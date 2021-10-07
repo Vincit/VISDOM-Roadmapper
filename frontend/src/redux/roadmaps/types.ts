@@ -126,6 +126,10 @@ export interface TaskRelation {
   type: TaskRelationType;
 }
 
+export interface TaskRelationRequest extends TaskRelation {
+  roadmapId: number;
+}
+
 export interface GetRoadmapBoardsRequest {
   roadmapId: number;
 }

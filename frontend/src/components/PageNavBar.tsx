@@ -17,11 +17,11 @@ export const PageNavBar: FC<{
   const { pathname } = useLocation();
   return (
     <div className={classes(css.navbar)}>
-      {headers.map((header: any) => (
+      {headers.map((header) => (
         <Link
           key={header.text}
           className={classes(css.navbarButton, {
-            [css.highlight]: !!pathname.startsWith(url + header.url),
+            [css.highlight]: pathname.startsWith(url + header.url),
           })}
           to={url + header.url}
         >
