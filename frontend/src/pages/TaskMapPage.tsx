@@ -8,14 +8,14 @@ import {
   chosenRoadmapSelector,
   taskSelector,
 } from '../redux/roadmaps/selectors';
+import { roadmapsActions } from '../redux/roadmaps';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { TaskRatingsText } from '../components/TaskRatingsText';
 import { groupTaskRelations } from '../utils/TaskRelationUtils';
 import { TaskOverview } from '../components/TaskOverview';
-
+import { TaskRelationType } from '../../../shared/types/customTypes';
 import css from './TaskMapPage.module.scss';
-import { roadmapsActions } from '../redux/roadmaps';
 
 const classes = classNames.bind(css);
 
@@ -37,38 +37,35 @@ const SingleTask: FC<{
     taskSelector(taskId),
     shallowEqual,
   );
-  if (task)
-    return (
-      <button
-        type="button"
-        onClick={
-          selected
-            ? () => setSelectedTask(undefined)
-            : () => setSelectedTask(task)
-        }
-        className={
-          selected ? classes(css.selectedTask) : classes(css.singleTask)
-        }
-      >
-        <Handle
-          className={classes(css.leftHandle)}
-          id={`to-${task!.id}`}
-          type="target"
-          position={Position.Left}
-        />
-        {task!.name}
-        <div className={classes(css.taskRatingTexts)}>
-          <TaskRatingsText task={task!} selected={selected} />
-        </div>
-        <Handle
-          className={classes(css.rightHandle)}
-          id={`from-${task!.id}`}
-          type="source"
-          position={Position.Right}
-        />
-      </button>
-    );
-  return <></>;
+  if (!task) return null;
+  return (
+    <button
+      type="button"
+      onClick={
+        selected
+          ? () => setSelectedTask(undefined)
+          : () => setSelectedTask(task)
+      }
+      className={classes(css.singleTask, { [css.selectedTask]: selected })}
+    >
+      <Handle
+        className={classes(css.leftHandle)}
+        id={`to-${task!.id}`}
+        type="target"
+        position={Position.Left}
+      />
+      {task!.name}
+      <div className={classes(css.taskRatingTexts)}>
+        <TaskRatingsText task={task!} selected={selected} largeIcons />
+      </div>
+      <Handle
+        className={classes(css.rightHandle)}
+        id={`from-${task!.id}`}
+        type="source"
+        position={Position.Right}
+      />
+    </button>
+  );
 };
 
 const TaskComponent: FC<{
@@ -95,10 +92,6 @@ const TaskComponent: FC<{
 
 const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
   return <div>{data.label}</div>;
-};
-
-const nodeTypes = {
-  special: CustomNodeComponent,
 };
 
 export const TaskMapPage = () => {
@@ -146,21 +139,14 @@ export const TaskMapPage = () => {
     }),
   );
 
-  const elements = [...groups, ...edges];
-
   const onConnect = async (data: any) => {
     const { sourceHandle, targetHandle } = data;
     const roadmapId = currentRoadmap?.id;
-    const type = 0; // Type 0 = dependency
+    const type = TaskRelationType.Dependency;
 
     // Handles are in form 'from-{id}' and 'to-{id}', splitting required
-    const from = sourceHandle.includes('from')
-      ? Number(sourceHandle.split('-')[1])
-      : Number(targetHandle.split('-')[1]);
-
-    const to = targetHandle.includes('to')
-      ? Number(targetHandle.split('-')[1])
-      : Number(sourceHandle.split('-')[1]);
+    const from = Number(sourceHandle.split('-')[1]);
+    const to = Number(targetHandle.split('-')[1]);
 
     if (!roadmapId) return;
     await dispatch(
@@ -178,8 +164,10 @@ export const TaskMapPage = () => {
     <>
       <ReactFlow
         className={classes(css.flowContainer)}
-        elements={elements}
-        nodeTypes={nodeTypes}
+        elements={[...groups, ...edges]}
+        nodeTypes={{
+          special: CustomNodeComponent,
+        }}
         draggable={false}
         onConnect={onConnect}
       />
