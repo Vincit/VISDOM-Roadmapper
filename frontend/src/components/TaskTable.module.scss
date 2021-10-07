@@ -87,6 +87,7 @@
 }
 
 .arrowIcon {
+  margin-left: 25px;
   height: 24px;
   width: 24px;
   color: $COLOR_BLACK40;
@@ -96,6 +97,11 @@
   background-color: #ddedf6; // No color found in shared.scss
   border-radius: 12px;
   .ratedButtons {
+    .arrowIcon {
+      color: $COLOR_EMERALD;
+    }
+  }
+  .buttonContainer {
     .arrowIcon {
       color: $COLOR_EMERALD;
     }

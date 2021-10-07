@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { SyntheticEvent, useState, useEffect } from 'react';
+import { SyntheticEvent, useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Trans } from 'react-i18next';
@@ -41,7 +43,10 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
+  const currentLocation = useLocation();
   const dispatch = useDispatch<StoreDispatchType>();
+  const ref = useRef<HTMLDivElement | null>(null);
+  const names = classes(css.hoverRow).split(/ +/);
   const { name, roadmapId } = task;
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -116,87 +121,99 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
   };
 
   return (
-    <div style={style} className={classes(css.taskTableRow)}>
-      <div className={classes(css.taskTitle)}>{name}</div>
-      <div>{numFormat.format(value)}</div>
-      <div>{numFormat.format(work)}</div>
-      <div>
-        <div className={classes(css.missingContainer)}>
-          {missingRatings?.map((customer) => (
-            <Tooltip
-              classes={{
-                arrow: classes(css.tooltipArrow),
-                tooltip: classes(css.tooltip),
-              }}
-              key={customer.id}
-              title={customer.name}
-              placement="top"
-              arrow
-            >
-              <div className={classes(css.dotContainer)}>
-                <Dot fill={customer.color} />
+    <Link
+      className={classes(css.navBarLink)}
+      to={`${currentLocation.pathname}/${task.id}`}
+    >
+      <div
+        ref={ref}
+        style={style}
+        className={classes(css.taskTableRow)}
+        onMouseEnter={() => ref.current?.classList.add(...names)}
+        onMouseLeave={() => ref.current?.classList.remove(...names)}
+      >
+        <div className={classes(css.taskTitle)}>{name}</div>
+        <div>{numFormat.format(value)}</div>
+        <div>{numFormat.format(work)}</div>
+        <div>
+          <div className={classes(css.missingContainer)}>
+            {missingRatings?.map((customer) => (
+              <Tooltip
+                classes={{
+                  arrow: classes(css.tooltipArrow),
+                  tooltip: classes(css.tooltip),
+                }}
+                key={customer.id}
+                title={customer.name}
+                placement="top"
+                arrow
+              >
+                <div className={classes(css.dotContainer)}>
+                  <Dot fill={customer.color} />
+                </div>
+              </Tooltip>
+            ))}
+            {missingDevRatings && (
+              <div>
+                {missingDevRatings.map(({ email }) => (
+                  <Tooltip
+                    classes={{
+                      arrow: classes(css.tooltipArrow),
+                      tooltip: classes(css.tooltip),
+                    }}
+                    key={email}
+                    title={email}
+                    placement="top"
+                    arrow
+                  >
+                    <BuildIcon className={classes(css.developerIcon)} />
+                  </Tooltip>
+                ))}
               </div>
-            </Tooltip>
-          ))}
-          {missingDevRatings && (
-            <div>
-              {missingDevRatings.map(({ email }) => (
-                <Tooltip
-                  classes={{
-                    arrow: classes(css.tooltipArrow),
-                    tooltip: classes(css.tooltip),
-                  }}
-                  key={email}
-                  title={email}
-                  placement="top"
-                  arrow
-                >
-                  <BuildIcon className={classes(css.developerIcon)} />
-                </Tooltip>
-              ))}
-            </div>
-          )}
-          {userRatingMissing && type === RoleType.Customer && (
-            <Tooltip
-              classes={{
-                arrow: classes(css.tooltipArrow),
-                tooltip: classes(css.tooltip),
-              }}
-              key={userInfo?.email}
-              title={userInfo?.email || ''}
-              placement="top"
-              arrow
-            >
-              <PermIdentityIcon className={classes(css.userIcon)} />
-            </Tooltip>
-          )}
+            )}
+            {userRatingMissing && type === RoleType.Customer && (
+              <Tooltip
+                classes={{
+                  arrow: classes(css.tooltipArrow),
+                  tooltip: classes(css.tooltip),
+                }}
+                key={userInfo?.email}
+                title={userInfo?.email || ''}
+                placement="top"
+                arrow
+              >
+                <PermIdentityIcon className={classes(css.userIcon)} />
+              </Tooltip>
+            )}
+          </div>
         </div>
-      </div>
-      <div className={classes(css.buttonContainer)}>
-        {type === RoleType.Admin && (
-          <button
-            style={{ marginRight: '10px' }}
-            className={classes(css['button-small-outlined'])}
-            type="button"
-            onClick={openModal(ModalTypes.NOTIFY_USERS_MODAL)}
-          >
-            <Trans i18nKey="Notify" />
-          </button>
-        )}
-        {userInfo &&
-          (type === RoleType.Developer ||
-            representsCustomers(userInfo, roadmapId)) && (
+        <div className={classes(css.buttonContainer)}>
+          {type === RoleType.Admin && (
             <button
-              className={classes(css['button-small-filled'])}
+              style={{ marginRight: '10px' }}
+              className={classes(css['button-small-outlined'])}
               type="button"
-              disabled={!awaitsUserRatings(userInfo, roadmapId)(task)}
-              onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
+              onClick={openModal(ModalTypes.NOTIFY_USERS_MODAL)}
             >
-              <Trans i18nKey="Rate" />
+              <Trans i18nKey="Notify" />
             </button>
           )}
+          {userInfo &&
+            (type === RoleType.Developer ||
+              representsCustomers(userInfo, roadmapId)) && (
+              <button
+                className={classes(css['button-small-filled'])}
+                type="button"
+                disabled={!awaitsUserRatings(userInfo, roadmapId)(task)}
+                onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
+              >
+                <Trans i18nKey="Rate" />
+              </button>
+            )}
+          <ArrowForwardIcon className={classes(css.arrowIcon)} />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
