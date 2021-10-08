@@ -102,7 +102,7 @@ const PeopleList: FC<{
     <div className={classes(css.people)}>
       {people.map((person, idx) => (
         <span key={person.id}>
-          {isCustomer(person) ? person.name : person.username}
+          {isCustomer(person) ? person.name : person.email}
           {idx !== people.length - 1 && ', '}
         </span>
       ))}

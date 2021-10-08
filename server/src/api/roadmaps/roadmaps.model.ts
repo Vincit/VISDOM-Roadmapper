@@ -50,12 +50,7 @@ export default class Roadmap extends Model {
         relation: Model.ManyToManyRelation,
         modelClass: User,
         filter: (query: QueryBuilder<Model, Model[]>) =>
-          query.select(
-            'users.id',
-            'users.username',
-            'users.email',
-            'roles.type',
-          ),
+          query.select('users.id', 'users.email', 'roles.type'),
         join: {
           from: 'roadmaps.id',
           through: {

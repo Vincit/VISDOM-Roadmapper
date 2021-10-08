@@ -8,7 +8,6 @@ import Customer from '../customer/customer.model';
 const Password = objectionPassword();
 export default class User extends Password(Model) {
   id!: number;
-  username!: string;
   email!: string;
   emailVerified!: boolean;
   password!: string;
@@ -24,16 +23,10 @@ export default class User extends Password(Model) {
 
   static jsonSchema = {
     type: 'object',
-    required: ['username', 'email', 'password'],
+    required: ['email', 'password'],
 
     properties: {
       id: { type: 'integer' },
-      username: {
-        type: 'string',
-        pattern: '^[^@]*$',
-        minLength: 1,
-        maxLength: 255,
-      },
       email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
       emailVerified: { type: 'boolean' },
       password: { type: 'string', minLength: 1, maxLength: 72 },
@@ -106,21 +99,6 @@ export default class User extends Password(Model) {
   }
 
   static modifiers: Modifiers = {
-    //Searches for users with any of given name filters present as a substring
-    searchByUsernamePartial(query, name) {
-      query.where((query) => {
-        for (const namePart of name.trim().split(/\s+/)) {
-          query.orWhereRaw('lower(username) like lower(?)', [
-            '%' + namePart + '%',
-          ]);
-        }
-      });
-    },
-    searchByUsernameExact(query, name) {
-      query.where((query) => {
-        query.orWhereRaw('lower(username) = lower(?)', [name]);
-      });
-    },
     findByEmail(query, email) {
       query.where((query) => {
         query.orWhereRaw('lower(email) = lower(?)', [email]);

@@ -27,7 +27,6 @@ export const RegisterPage = () => {
   const query = new URLSearchParams(useLocation().search);
   const { t } = useTranslation();
   const [formValues, setFormValues] = useState({
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -41,12 +40,6 @@ export const RegisterPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const fields: { [K in FormFieldName]: FieldProps<HTMLInputElement> } = {
-    username: {
-      label: t('Your name'),
-      placeholder: t('Your name'),
-      maxLength: 255,
-      error: errorState(useState('')),
-    },
     email: {
       label: t('Your email'),
       placeholder: t('Example email', { localPart: 'email' }),
@@ -125,7 +118,6 @@ export const RegisterPage = () => {
 
     const res = await dispatch(
       userActions.register({
-        username: formValues.username,
         email: formValues.email,
         password: formValues.password,
       }),

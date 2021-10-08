@@ -109,10 +109,9 @@ export const TaskRatingsInfoModal: Modal<ModalTypes.TASK_RATINGS_INFO_MODAL> = (
           <div className={css.teamRatingDiv} key={rating.id}>
             <div className={css.ratingDiv}>
               <div className={css.teamRatingUsername}>
-                @
                 {
                   roadmapUsers?.find((user) => user.id === rating.createdByUser)
-                    ?.username
+                    ?.email
                 }
               </div>
               <div style={{ display: 'inline-block' }}>

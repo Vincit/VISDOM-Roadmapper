@@ -9,7 +9,7 @@ import {
 import { ForbiddenError } from './checkPermissions';
 import { InvalidTokenError } from '../api/integration';
 
-// clean up column name e.g. "lower(username::text)" => "username"
+// clean up column name e.g. "lower(email::text)" => "email"
 export const cleanColumnName = (column: string) =>
   /^\w+\((?<name>[^:)]+).*\)$/.exec(column)?.groups?.name || column;
 

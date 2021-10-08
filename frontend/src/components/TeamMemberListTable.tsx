@@ -53,8 +53,8 @@ export const TeamMemberList: FC<{
   useEffect(() => {
     // Filter, search, sort team members
     const members = teamMembers?.filter(
-      ({ type, username }) =>
-        type !== RoleType.Customer && username.toLowerCase().includes(search),
+      ({ type, email }) =>
+        type !== RoleType.Customer && email.toLowerCase().includes(search),
     );
     setSortedMembers(sort(members || []));
   }, [teamMembers, sort, search]);
@@ -81,7 +81,6 @@ export const TeamMemberList: FC<{
 
   const teamMemberTableHeaders: TeamMemberTableHeader[] = [
     { label: 'Role', sorting: UserSortingTypes.SORT_ROLE, width: '1em' },
-    { label: 'Name', sorting: UserSortingTypes.SORT_NAME },
     { label: 'Contact information', sorting: UserSortingTypes.SORT_EMAIL },
     { label: 'Unrated tasks', sorting: UserSortingTypes.SORT_UNRATED },
   ];

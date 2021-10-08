@@ -1,4 +1,4 @@
-import { loggedInAgent } from './setuptests';
+import { loggedInAgent, agentData } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import Customer from '../src/api/customer/customer.model';
 import User from '../src/api/users/users.model';
@@ -11,9 +11,8 @@ export const withoutPermission = async <T>(
   permission: Permission,
   work: () => Promise<T>,
 ) => {
-  const userId = (
-    await User.query().where({ username: 'AdminPerson1' }).first()
-  ).id;
+  const userId = (await User.query().where({ email: agentData.email }).first())
+    .id;
 
   const role = await Role.query().findById([userId, roadmapId]);
   const original = role.type;

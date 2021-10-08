@@ -4,7 +4,6 @@ import { unratedTasksAmount } from './TaskUtils';
 import { SortBy, sortKeyLocale, sortKeyNumeric } from './SortUtils';
 
 export enum UserSortingTypes {
-  SORT_NAME,
   SORT_EMAIL,
   SORT_ROLE,
   SORT_UNRATED,
@@ -14,8 +13,6 @@ export const userSort = (roadmap?: Roadmap) => (
   type: UserSortingTypes | undefined,
 ): SortBy<RoadmapUser> => {
   switch (type) {
-    case UserSortingTypes.SORT_NAME:
-      return sortKeyLocale('username');
     case UserSortingTypes.SORT_EMAIL:
       return sortKeyLocale('email');
     case UserSortingTypes.SORT_ROLE:

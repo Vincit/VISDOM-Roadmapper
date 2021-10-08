@@ -98,7 +98,7 @@ export const SelectRepresentatives: FC<{
       {representatives.map((rep, idx) => (
         <div key={rep.id} className={classes(css.representative)}>
           <Checkbox
-            label={rep.username}
+            label={rep.email}
             checked={rep.checked}
             onChange={(checked) => onRepresentativeChange(idx, checked)}
           />

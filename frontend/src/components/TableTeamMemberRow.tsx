@@ -25,7 +25,7 @@ interface TableRowProps {
 }
 
 export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
-  const { id, username, email, type } = member;
+  const { id, email, type } = member;
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -50,7 +50,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
         modalType: ModalTypes.REMOVE_PEOPLE_MODAL,
         modalProps: {
           userId: id,
-          userName: username,
+          name: email,
           type: 'team',
         },
       }),
@@ -80,15 +80,12 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
         </div>
       </td>
       <td className="styledTd">
-        {username}
-        {id === userInfo?.id && (
-          <span className={classes(css.userText)}> (You)</span>
-        )}
-      </td>
-      <td className="styledTd">
         <a className="green" href={`mailto:${email}`}>
           {email}
         </a>
+        {id === userInfo?.id && (
+          <span className={classes(css.userText)}> (You)</span>
+        )}
       </td>
       <td className="styledTd">
         <b>{unratedAmount || ' '}</b>
@@ -106,7 +103,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
                 onClick={deleteUserClicked}
                 href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
                   userId: id,
-                  userName: username,
+                  name: email,
                   type: 'team',
                 })}
               />

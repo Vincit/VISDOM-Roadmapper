@@ -9,7 +9,7 @@ import { Role } from '../roles/roles.model';
 
 export const getUsers: RouteHandlerFnc = async (ctx) => {
   const query = User.query();
-  query.select('id', 'username', 'type');
+  query.select('id', 'email', 'type');
   ctx.body = await query;
 };
 
@@ -23,7 +23,6 @@ export const postUsers: RouteHandlerFnc = async (ctx) => {
 export const patchUsers: RouteHandlerFnc = async (ctx) => {
   const {
     id,
-    username,
     email,
     emailVerified,
     defaultRoadmapId,
@@ -39,7 +38,6 @@ export const patchUsers: RouteHandlerFnc = async (ctx) => {
         ? previous.emailVerified
         : false;
     return await previous.$query(trx).patchAndFetch({
-      username,
       email,
       emailVerified,
       defaultRoadmapId,
@@ -119,7 +117,7 @@ export const deleteToken: RouteHandlerFnc = async (ctx) => {
 export const loginUser: RouteHandlerFnc = async (ctx) => {
   return passport.authenticate('local', (_err, user) => {
     if (user === false) {
-      ctx.body = { message: 'Incorrect username or password.' };
+      ctx.body = { message: 'Incorrect email or password.' };
       ctx.status = 401;
       return;
     } else {

@@ -28,7 +28,7 @@ export const LoginPage = () => {
     shallowEqual,
   );
   const [formValues, setFormValues] = useState({
-    username: '',
+    email: '',
     password: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
@@ -41,17 +41,12 @@ export const LoginPage = () => {
 
     if (form.checkValidity()) {
       setIsLoading(true);
-      dispatch(
-        userActions.login({
-          username: formValues.username,
-          password: formValues.password,
-        }),
-      ).then((res) => {
+      dispatch(userActions.login(formValues)).then((res) => {
         setIsLoading(false);
         if (userActions.login.rejected.match(res)) {
           if (res.payload) {
             if (res.payload.response?.status === 401) {
-              setErrorMessage(t('Invalid username or password'));
+              setErrorMessage(t('Invalid email or password'));
             } else {
               setErrorMessage(res.payload.message);
             }
@@ -61,8 +56,8 @@ export const LoginPage = () => {
     }
   };
 
-  const onUsernameChange = (value: string) => {
-    setFormValues({ ...formValues, username: value });
+  const onEmailChange = (value: string) => {
+    setFormValues({ ...formValues, email: value });
   };
 
   const onPasswordChange = (value: string) => {
@@ -85,8 +80,8 @@ export const LoginPage = () => {
               required
               id="name"
               placeholder={t('Email')}
-              value={formValues.username}
-              onChange={(e) => onUsernameChange(e.currentTarget.value)}
+              value={formValues.email}
+              onChange={(e) => onEmailChange(e.currentTarget.value)}
             />
 
             <Input

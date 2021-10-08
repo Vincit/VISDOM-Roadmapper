@@ -66,7 +66,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
             {selectedRole === RoleType.Admin && <StarSharpIcon />}
             {selectedRole === RoleType.Developer && <BuildSharpIcon />}
             {selectedRole === RoleType.Business && <BusinessIcon />}
-            {member.username}
+            {member.email}
           </div>
           <div className={classes(css.section)}>
             <SelectMemberRole

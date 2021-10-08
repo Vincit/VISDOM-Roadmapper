@@ -44,7 +44,7 @@ export const CreateProjectPage = requireVerifiedEmail(({ userInfo }) => {
     <>
       <div className={classes(css.container)}>
         <ModalHeader>
-          <h2> {t('Greet user', { username: userInfo.username })} </h2>
+          <h2> {t('Greet user', { name: userInfo.email /* XXX */ })} </h2>
         </ModalHeader>
         <ModalContent>
           <div className={classes(css.formSubtitle)}>

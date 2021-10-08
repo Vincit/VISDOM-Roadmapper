@@ -101,7 +101,7 @@ export const DashboardPage = () => {
         <h2>
           <Trans i18nKey="Welcome user">
             <span style={{ fontWeight: 'normal' }}>Welcome, </span>
-            {{ name: userInfo?.username }}
+            {{ name: userInfo?.email /* XXX */ }}
           </Trans>
         </h2>
         <RoadmapOverview />

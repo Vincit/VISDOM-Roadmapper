@@ -170,7 +170,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
         {missingUsers?.map((user, idx) => (
           <Checkbox
             key={user.id}
-            label={user.username}
+            label={user.email}
             checked={user.checked}
             onChange={(checked) => checkUser(checked, idx)}
           />

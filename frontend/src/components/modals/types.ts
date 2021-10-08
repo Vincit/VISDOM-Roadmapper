@@ -36,7 +36,7 @@ type OwnProps = {
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: { taskId: number };
   [ModalTypes.REMOVE_PEOPLE_MODAL]: {
     userId: number;
-    userName: string;
+    name: string;
     type: 'customer' | 'team';
   };
   [ModalTypes.EDIT_CUSTOMER_MODAL]: { customer: Customer };

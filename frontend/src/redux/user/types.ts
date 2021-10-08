@@ -2,7 +2,6 @@ import { Customer } from '../roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 
 export interface UserInfo {
-  username: string;
   email: string;
   emailVerified: boolean;
   id: number;
@@ -26,12 +25,11 @@ export interface GetUserInfoError {
 }
 
 export interface UserLoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface UserRegisterRequest {
-  username: string;
   email: string;
   password: string;
 }
