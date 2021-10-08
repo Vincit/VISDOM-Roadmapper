@@ -12,6 +12,7 @@ import {
 import Customer from '../api/customer/customer.model';
 import {
   getUser,
+  testUsers,
   randomTaskratingValue,
   insertRoles,
 } from '../utils/testdataUtils';
@@ -40,19 +41,9 @@ const clearData = async () => {
 };
 
 const createTestUsers = async () => {
-  const users = [
-    { username: 'BusinessPerson1', email: 'biz@business.com' },
-    { username: 'BusinessPerson2', email: 'biz2@business.com' },
-    { username: 'DeveloperPerson1', email: 'dev@coders.com' },
-    { username: 'DeveloperPerson2', email: 'dev2@coders.com' },
-    { username: 'CustomerPerson1', email: 'customer@webuystuff.com' },
-    { username: 'CustomerPerson2', email: 'customer2@webuystuff.com' },
-    { username: 'AdminPerson1', email: 'admin@admins.com' },
-    { username: 'AdminPerson2', email: 'admin2@admins.com' },
-  ];
   await Promise.all(
-    users.map((user) =>
-      User.query().insert({ ...user, password: 'test', emailVerified: true }),
+    Object.values(testUsers).map(({ email }) =>
+      User.query().insert({ email, password: 'test', emailVerified: true }),
     ),
   );
 };
@@ -80,11 +71,10 @@ const createTestRoles = async () => {
     ['DeveloperPerson2', RoleType.Developer],
     ['CustomerPerson1', RoleType.Customer],
     ['CustomerPerson2', RoleType.Customer],
-    ['CustomerPerson3', RoleType.Customer],
     ['AdminPerson1', RoleType.Admin],
     ['AdminPerson2', RoleType.Admin],
-  ]);
-  const users = await User.query().select('id', 'username');
+  ] as const);
+  const users = await User.query().select('id', 'email');
   const roadmaps = await Roadmap.query().select('id');
   insertRoles(roadmaps[0].id, users, roles);
   insertRoles(roadmaps[1].id, users, roles);
@@ -92,10 +82,11 @@ const createTestRoles = async () => {
   const roles2 = new Map([
     ['DeveloperPerson1', RoleType.Developer],
     ['AdminPerson1', RoleType.Admin],
-  ]);
+  ] as const);
   const users2 = users.filter(
-    ({ username }) =>
-      username === 'AdminPerson1' || username === 'DeveloperPerson1',
+    ({ email }) =>
+      email === testUsers.AdminPerson1.email ||
+      email === testUsers.DeveloperPerson1.email,
   );
   insertRoles(roadmaps[2].id, users2, roles2);
 };

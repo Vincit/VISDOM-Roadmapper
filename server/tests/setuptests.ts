@@ -1,12 +1,14 @@
 import { knex, server } from '../src/server';
 import chaiHttp from 'chai-http';
 import chai from 'chai';
+import { testUsers } from '../src/utils/testdataUtils';
+
 chai.use(chaiHttp);
 
 export const agentData = {
-  username: 'AdminPerson1',
+  ...testUsers.AdminPerson1,
   password: 'test',
-};
+} as const;
 
 before(async () => {
   app = await server;

@@ -140,14 +140,14 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
           ))}
           {missingDevRatings && (
             <div>
-              {missingDevRatings.map(({ username }) => (
+              {missingDevRatings.map(({ email }) => (
                 <Tooltip
                   classes={{
                     arrow: classes(css.tooltipArrow),
                     tooltip: classes(css.tooltip),
                   }}
-                  key={username}
-                  title={username}
+                  key={email}
+                  title={email}
                   placement="top"
                   arrow
                 >
@@ -162,8 +162,8 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
                 arrow: classes(css.tooltipArrow),
                 tooltip: classes(css.tooltip),
               }}
-              key={userInfo?.username}
-              title={userInfo?.username || ''}
+              key={userInfo?.email}
+              title={userInfo?.email || ''}
               placement="top"
               arrow
             >

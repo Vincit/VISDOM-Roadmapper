@@ -17,7 +17,7 @@ import '../../shared.scss';
 export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   closeModal,
   userId,
-  userName,
+  name,
   type,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -72,12 +72,12 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
             <AlertIcon />
             {type === 'customer' ? (
               <h6>
-                Are you sure you want to remove <b>{userName}</b>?
+                Are you sure you want to remove <b>{name}</b>?
               </h6>
             ) : (
               <>
                 <h6>
-                  Are you sure you want to remove <b>{userName}</b> from the
+                  Are you sure you want to remove <b>{name}</b> from the
                   project?
                 </h6>
                 <h6>

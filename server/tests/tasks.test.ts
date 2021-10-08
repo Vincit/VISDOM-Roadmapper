@@ -7,6 +7,7 @@ import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
 import { Permission } from '../../shared/types/customTypes';
 import { withoutPermission } from './testUtils';
+import { getUser } from '../src/utils/testdataUtils';
 
 describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
   describe('GET /roadmaps/:roadmapId/tasks/', function () {
@@ -56,9 +57,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(added).to.exist;
       expect(added.description).to.equal('testdesc');
       expect(added.roadmapId).to.equal(firstRoadmapId);
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
+      const userId = (await getUser('AdminPerson1')).id;
       expect(added.createdByUser).to.equal(userId);
     });
     it('Should not add new task with incorrect permissions', async function () {

@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
-import { app, loggedInAgent } from './setuptests';
+import { app, loggedInAgent, agentData } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
@@ -26,7 +26,6 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
         `/roadmaps/${firstRoadmapId}/users/`,
       );
       const newUser = await registerNewUser({
-        username: 'test',
         email: 'test@email.com',
         password: 'test',
       });
@@ -46,7 +45,6 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
         `/roadmaps/${firstRoadmapId}/users/`,
       );
       const newUser = await registerNewUser({
-        username: 'test',
         email: 'test@email.com',
         password: 'test',
       });
@@ -70,7 +68,7 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
     it('Should patch user roles', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
+        await User.query().where({ email: agentData.email }).first()
       ).id;
       const res = await loggedInAgent
         .patch(`/roadmaps/${firstRoadmapId}/users/${userId}/roles`)
@@ -87,7 +85,7 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
     it('Should not patch user roles with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
+        await User.query().where({ email: agentData.email }).first()
       ).id;
       const res = await withoutPermission(
         firstRoadmapId,
@@ -110,7 +108,7 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
     it('Should delete user roles', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
+        await User.query().where({ email: agentData.email }).first()
       ).id;
       const res = await loggedInAgent.delete(
         `/roadmaps/${firstRoadmapId}/users/${userId}/roles`,
@@ -126,7 +124,7 @@ describe('Test /roadmaps/:roadmapId/roles/ api', function () {
     it('Should not delete user roles with incorrect permissions', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
+        await User.query().where({ email: agentData.email }).first()
       ).id;
       const res = await withoutPermission(
         firstRoadmapId,

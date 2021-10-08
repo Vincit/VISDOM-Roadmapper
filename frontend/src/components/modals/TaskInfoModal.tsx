@@ -64,10 +64,7 @@ export const TaskInfoModal: Modal<ModalTypes.TASK_INFO_MODAL> = ({
           <p className={css.labelText}>
             <Trans i18nKey="Created by" />
           </p>
-          {
-            roadmapUsers?.find((user) => user.id === task.createdByUser)
-              ?.username
-          }
+          {roadmapUsers?.find((user) => user.id === task.createdByUser)?.email}
         </div>
         <div className={css.detailsDiv}>
           <p className={css.labelText}>

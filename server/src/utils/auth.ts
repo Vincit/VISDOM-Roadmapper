@@ -10,12 +10,9 @@ const fetchUserById = async (id: number) => {
     .first();
 };
 
-const fetchUserByNameOrEmail = (nameOrEmail: string) => {
-  const modifier = /@/.test(nameOrEmail)
-    ? 'findByEmail'
-    : 'searchByUsernameExact';
+const fetchUserByEmail = (email: string) => {
   return User.query()
-    .modify(modifier, nameOrEmail)
+    .modify('findByEmail', email)
     .withGraphFetched('[representativeFor, roles]')
     .first();
 };
@@ -61,20 +58,23 @@ const addAuthToPassport = () => {
 
   const LocalStrategy = passportLocal.Strategy;
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
-      try {
-        const user = await fetchUserByNameOrEmail(username);
-        if (!user) return done(null, false);
+    new LocalStrategy(
+      { usernameField: 'email' },
+      async (email, password, done) => {
+        try {
+          const user = await fetchUserByEmail(email);
+          if (!user) return done(null, false);
 
-        if (await user.verifyPassword(password)) {
-          return done(null, user);
-        } else {
-          return done(null, false);
+          if (await user.verifyPassword(password)) {
+            return done(null, user);
+          } else {
+            return done(null, false);
+          }
+        } catch (err) {
+          done(err, false);
         }
-      } catch (err) {
-        done(err, false);
-      }
-    }),
+      },
+    ),
   );
 };
 

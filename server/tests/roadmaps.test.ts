@@ -12,7 +12,7 @@ describe('Test /roadmaps/ api', function () {
     it('Should return all roadmaps', async function () {
       const res = await loggedInAgent.get('/roadmaps/');
       const fetchedAgent = await User.query()
-        .findOne('username', agentData.username)
+        .findOne('email', agentData.email)
         .withGraphFetched('roadmaps');
 
       expect(res.status).to.equal(200);
@@ -23,7 +23,7 @@ describe('Test /roadmaps/ api', function () {
     it('Should return all roadmaps, eager loaded', async function () {
       const res = await loggedInAgent.get('/roadmaps?eager=1');
       const fetchedAgent = await User.query()
-        .findOne('username', agentData.username)
+        .findOne('email', agentData.email)
         .withGraphFetched('roadmaps');
 
       expect(res.status).to.equal(200);
@@ -66,7 +66,7 @@ describe('Test /roadmaps/ api', function () {
       const after = await loggedInAgent.get('/roadmaps/');
 
       const fetchedAgent = await User.query()
-        .findOne('username', agentData.username)
+        .findOne('email', agentData.email)
         .withGraphFetched('roadmaps');
 
       const addedRoadmapDb = fetchedAgent.roadmaps.find(
@@ -153,17 +153,15 @@ describe('Test /roadmaps/ api', function () {
   });
 
   describe('GET /roadmaps/:roadmapId/users/', function () {
-    it("Should return roadmaps's users id's, names", async function () {
+    it("Should return roadmaps's users id's, emails", async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const res = await loggedInAgent.get(`/roadmaps/${firstRoadmapId}/users/`);
       expect(res.status).to.equal(200);
       assert(res.body.length > 1);
-      expect(Object.keys(res.body[0]).length).to.equal(4);
-      assert.property(res.body[0], 'username');
-      assert.property(res.body[0], 'email');
-      assert.property(res.body[0], 'id');
-      assert.property(res.body[0], 'type');
-      assert(res.body[0].username.length > 0);
+      expect(Object.keys(res.body[0]).sort()).to.deep.equal(
+        ['email', 'id', 'type'].sort(),
+      );
+      assert(res.body[0].email.length > 0);
     });
     it("Should not return roadmaps's users with incorrect permissions", async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;

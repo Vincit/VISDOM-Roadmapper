@@ -3,23 +3,20 @@ import chaiHttp from 'chai-http';
 import { loggedInAgent } from './setuptests';
 import User from '../src/api/users/users.model';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
+import { getUser } from '../src/utils/testdataUtils';
 chai.use(chaiHttp);
 
 describe('Test /users/ api', function () {
   describe('DELETE /users/', function () {
     it('Should delete user', async function () {
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
+      const userId = (await getUser('AdminPerson1')).id;
       const delResponse = await loggedInAgent.delete('/users/' + userId);
       expect(delResponse.status).to.equal(200);
       const res = await loggedInAgent.get('/users/whoami');
       expect(res.status).to.equal(401);
     });
     it('Should not delete user if it is not the current one', async function () {
-      const userId = (
-        await User.query().where({ username: 'DeveloperPerson1' }).first()
-      ).id;
+      const userId = (await getUser('DeveloperPerson1')).id;
       const delResponse = await loggedInAgent.delete('/users/' + userId);
       expect(delResponse.status).to.equal(403);
     });
@@ -27,35 +24,30 @@ describe('Test /users/ api', function () {
 
   describe('PATCH /users/', function () {
     it('Should patch user', async function () {
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
+      const userId = (await getUser('AdminPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ username: 'patched' });
+        .send({ email: 'patched@example.com' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
 
       const res2 = await loggedInAgent.get('/users/whoami');
-      expect(res2.body.username).to.equal('patched');
+      expect(res2.body.email).to.equal('patched@example.com');
+      expect(res2.body.emailVerified).to.equal(false);
     });
     it('Should not patch user if it is not the current one', async function () {
-      const userId = (
-        await User.query().where({ username: 'DeveloperPerson1' }).first()
-      ).id;
+      const userId = (await getUser('DeveloperPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ username: 'patched' });
+        .send({ email: 'patched@example.com' });
       expect(patchResponse.status).to.equal(403);
     });
     it('Should update defaultRoadmapId from null to existing roadmap id', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
+      const userId = (await getUser('AdminPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
@@ -72,9 +64,7 @@ describe('Test /users/ api', function () {
         await Roadmap.query().limit(2)
       ).map(({ id }) => id);
 
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
+      const userId = (await getUser('AdminPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
@@ -99,9 +89,7 @@ describe('Test /users/ api', function () {
     });
     it('Should set defaultRoadmapId to null', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
-      const userId = (
-        await User.query().where({ username: 'AdminPerson1' }).first()
-      ).id;
+      const userId = (await getUser('AdminPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
@@ -133,7 +121,6 @@ describe('Test /users/ api', function () {
         .post('/users/register')
         .type('json')
         .send({
-          username: 'test',
           email: 'test@email.com',
           password: 'test',
         });
@@ -141,38 +128,22 @@ describe('Test /users/ api', function () {
       const after = (await User.query()).length;
       assert(after === before + 1, 'Length must increase');
     });
-    it('Should disallow @ in username', async function () {
-      const before = (await User.query()).length;
+    it('Should disallow registering with existing email case insensitively', async function () {
       const res = await loggedInAgent
         .post('/users/register')
         .type('json')
         .send({
-          username: 'test@name',
-          email: 'test@email.com',
-          password: 'test',
-        });
-      expect(res.status).to.equal(400);
-      const after = (await User.query()).length;
-      assert(after === before, 'Length must not change');
-    });
-    it('Should disallow registering with existing username case insensitively', async function () {
-      const names = ['test', 'TEST', 'TeSt', 'tEsT'];
-      const res = await loggedInAgent
-        .post('/users/register')
-        .type('json')
-        .send({
-          username: names[0],
           email: 'test@email.com',
           password: 'test',
         });
       expect(res.status).to.equal(200);
+      const names = ['TEST', 'TeSt', 'tEsT'];
       for (const name of names) {
         const res = await loggedInAgent
           .post('/users/register')
           .type('json')
           .send({
-            username: name,
-            email: 'another@email.com',
+            email: `${name}@email.com`,
             password: 'test',
           });
         expect(res.status).to.equal(400);
@@ -182,29 +153,23 @@ describe('Test /users/ api', function () {
 
   describe('POST /users/login', function () {
     describe('Login with correct credentials', function () {
-      [
-        { type: 'username', value: 'BusinessPerson1' },
-        { type: 'email', value: 'biz@business.com' },
-      ].forEach(({ type, value }) => {
-        it(`Should login using ${type}`, async function () {
-          // We dont wanna be logged in before this test so logout manually
-          await loggedInAgent.get('/users/logout');
+      it('Should login using email', async function () {
+        // We dont wanna be logged in before this test so logout manually
+        await loggedInAgent.get('/users/logout');
 
-          const res = await loggedInAgent
-            .post('/users/login')
-            .type('json')
-            .send({ username: value, password: 'test' });
-          expect(res.status).to.equal(200);
-          expect(res).to.have.cookie('koa.sess');
-        });
+        const res = await loggedInAgent
+          .post('/users/login')
+          .type('json')
+          .send({ email: 'biz@business.com', password: 'test' });
+        expect(res.status).to.equal(200);
+        expect(res).to.have.cookie('koa.sess');
       });
 
       it('Should be case insensitive', async function () {
         const cases = [
-          'BusinessPerson1',
-          'bUSINESSpERSON1',
-          'businessperson1',
-          'BUSINESSPERSON1',
+          'biz@business.com',
+          'BIZ@BUSINESS.COM',
+          'Biz@busINESS.com',
         ];
         for (const value of cases) {
           // We dont wanna be logged in before this test so logout manually
@@ -213,7 +178,7 @@ describe('Test /users/ api', function () {
           const res = await loggedInAgent
             .post('/users/login')
             .type('json')
-            .send({ username: value, password: 'test' });
+            .send({ email: value, password: 'test' });
           expect(res.status).to.equal(200);
           expect(res).to.have.cookie('koa.sess');
         }
@@ -227,7 +192,7 @@ describe('Test /users/ api', function () {
       const res = await loggedInAgent
         .post('/users/login')
         .type('json')
-        .send({ username: 'BusinessPerson1', password: 'wrongpass' });
+        .send({ email: 'biz@business.com', password: 'wrongpass' });
       expect(res.status).to.equal(401);
     });
   });
@@ -252,7 +217,6 @@ describe('Test /users/ api', function () {
       const res2 = await loggedInAgent.get('/users/whoami');
       expect(res2.status).to.equal(200);
       expect(res2.body).to.have.property('id');
-      expect(res2.body).to.have.property('username');
       expect(res2.body).to.have.property('email');
       expect(res2.body).to.have.property('roles');
     });

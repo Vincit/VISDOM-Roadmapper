@@ -151,7 +151,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
               .filter((rep) => rep.checked)
               .map((rep) => (
                 <div key={rep.id} className={classes(css.rep)}>
-                  {rep.username}
+                  {rep.email}
                   <div className={classes(css[RoleType[rep.type]])}>
                     {rep.type === RoleType.Admin ? (
                       <StarSharpIcon fontSize="small" />

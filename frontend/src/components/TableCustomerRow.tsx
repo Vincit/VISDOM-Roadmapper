@@ -48,7 +48,7 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
         modalType: ModalTypes.REMOVE_PEOPLE_MODAL,
         modalProps: {
           userId: id,
-          userName: name,
+          name,
           type: 'customer',
         },
       }),
@@ -96,7 +96,7 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
                 onClick={deleteUserClicked}
                 href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
                   userId: id,
-                  userName: name,
+                  name,
                   type: 'customer',
                 })}
               />
