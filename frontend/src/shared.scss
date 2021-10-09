@@ -510,6 +510,12 @@ textarea {
   cursor: help;
 }
 
+.hide-text-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .listHeader {
   @extend .layout-row;
   margin-left: 16px;

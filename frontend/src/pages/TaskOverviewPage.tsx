@@ -9,6 +9,9 @@ import { ReactComponent as NextTask } from '../icons/expand_more.svg';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { paths } from '../routers/paths';
 import { TaskOverview } from '../components/TaskOverview';
+import { RatingTableWork } from '../components/RatingTableWork';
+import { RatingTableValue } from '../components/RatingTableValue';
+import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
 import css from './TaskOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -22,6 +25,10 @@ export const TaskOverviewPage = () => {
   const tasks = useSelector(allTasksSelector(), shallowEqual);
   const taskIdx = tasks.findIndex(({ id }) => Number(taskId) === id);
   const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
+  const { value, work } = valueAndWorkSummary(task!);
+  const { value: valueRatings, work: workRatings } = getRatingsByType(
+    task?.ratings || [],
+  );
 
   const siblingTasks = [
     {
@@ -66,9 +73,21 @@ export const TaskOverviewPage = () => {
             ))}
           </div>
         </div>
-        <div className={classes(css.content)}>
-          {task && <TaskOverview task={task} />}
-        </div>
+        {task && (
+          <>
+            <div className={classes(css.content)}>
+              <TaskOverview task={task} />
+            </div>
+            <div className={classes(css.ratings)}>
+              {valueRatings.length > 0 && (
+                <RatingTableValue ratings={valueRatings} avg={value.avg} />
+              )}
+              {workRatings.length > 0 && (
+                <RatingTableWork ratings={workRatings} avg={work.avg} />
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

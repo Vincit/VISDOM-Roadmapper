@@ -1,0 +1,80 @@
+@import '../shared.scss';
+
+.ratingContainer {
+  min-width: 550px;
+  hr {
+    width: 100%;
+  }
+}
+
+.titleContainer {
+  @extend .layout-row;
+  line-height: 150%;
+  margin: 16px 0 26px 26px;
+  align-items: center;
+  text-align: start;
+}
+
+.subtitleContainer {
+  @extend .layout-row;
+  color: $COLOR_AZURE;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.ratingRow {
+  width: 100%;
+  padding: 0px 20px;
+}
+
+.topRow {
+  @extend .layout-row;
+  align-items: center;
+  gap: 10px;
+
+  path {
+    fill: $COLOR_AZURE;
+  }
+}
+
+.valueRating {
+  @extend .layout-row;
+  align-items: center;
+
+  .rightSide {
+    @extend .layout-column;
+    flex: 1;
+  }
+  .bottomRow {
+    @extend .topRow;
+    color: $COLOR_BLACK40;
+  }
+}
+
+.value {
+  @extend .typography-h3;
+  @extend .layout-row;
+  margin-left: auto;
+  justify-content: end;
+  align-items: center;
+  gap: 12.5px;
+}
+
+.name {
+  max-width: 40%;
+  text-align: start;
+  @extend .hide-text-ellipsis;
+}
+
+.comment {
+  background-color: white;
+  color: $COLOR_BLACK60;
+  padding: 15px 20px;
+  margin-top: 15px;
+  border-radius: 10px;
+  text-align: start;
+}
+
+.measureComment {
+  visibility: hidden;
+}

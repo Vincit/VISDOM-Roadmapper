@@ -13,6 +13,7 @@ import {
 } from '../../../shared/types/customTypes';
 import { SortBy, sortKeyNumeric, sortKeyLocale } from './SortUtils';
 import { getType, isUserInfo } from './UserUtils';
+import { partition } from './array';
 
 export enum FilterTypes {
   SHOW_ALL,
@@ -302,3 +303,11 @@ export const missingCustomer = (task: Task) => (customer: Customer) =>
   !customer.representatives?.every((rep) =>
     ratedByCustomer(customer, rep)(task),
   );
+
+export const getRatingsByType = (ratings: Taskrating[]) => {
+  const [value, work] = partition(
+    ratings,
+    ({ dimension }) => dimension === TaskRatingDimension.BusinessValue,
+  );
+  return { value, work };
+};

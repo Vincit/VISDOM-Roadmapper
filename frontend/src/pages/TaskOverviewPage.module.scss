@@ -42,3 +42,9 @@
   @extend .layout-row;
   width: 100%;
 }
+
+.ratings {
+  @extend .content;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}

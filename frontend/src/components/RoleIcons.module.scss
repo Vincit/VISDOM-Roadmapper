@@ -1,6 +1,7 @@
 @import './../shared.scss';
 
 .icon {
+  display: inherit;
   path {
     fill: var(--icon--color, $COLOR_BLACK40);
   }

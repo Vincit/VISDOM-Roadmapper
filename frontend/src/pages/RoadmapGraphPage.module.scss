@@ -138,9 +138,7 @@ $GRAPH_ITEM_MARGIN: 11px;
   text-align: start;
   @extend .typography-body;
   color: $COLOR_BLACK100;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  @extend .hide-text-ellipsis;
   &.selected {
     color: $COLOR_AZURE;
   }

@@ -49,8 +49,7 @@
 
     .email {
       width: 290px;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      @extend .hide-text-ellipsis;
     }
   }
 
