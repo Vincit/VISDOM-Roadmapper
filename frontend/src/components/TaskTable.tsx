@@ -102,7 +102,7 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
           <Trans i18nKey={title} /> ({sorted.length})
         </h2>
         <InfoTooltip title={t('tooltipMessage')}>
-          <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+          <InfoIcon className={classes(css.tooltipIcon)} />
         </InfoTooltip>
       </div>
       <div

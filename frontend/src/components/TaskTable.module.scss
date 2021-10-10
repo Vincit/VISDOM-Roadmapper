@@ -1,15 +1,11 @@
 @import '../shared.scss';
 
 .titleContainer {
-  display: flex;
-  line-height: 150%;
-  margin: 16px 0 26px 26px;
+  @extend .listHeader;
   align-items: center;
+  gap: 12px;
   .title {
     text-align: start;
-  }
-  .infoIcon {
-    margin-left: 12px;
   }
 }
 

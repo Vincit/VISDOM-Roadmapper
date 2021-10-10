@@ -160,6 +160,7 @@ export const english = {
     "Who's responsible for the client value ratings?":
       "Who's responsible for the client value ratings?",
     'Search for people': 'Search for people',
+    'Search for clients': 'Search for clients',
     'Team members': 'Team members',
     'Add members': 'Add members',
     'The email should be unique': 'The email should be unique.',

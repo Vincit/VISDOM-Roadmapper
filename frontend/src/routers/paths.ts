@@ -17,6 +17,7 @@ export const paths = {
   roadmapRelative: {
     home: '/',
     dashboard: '/dashboard',
+    clients: '/clients',
     people: '/people',
     taskList: '/tasks',
     taskOverview: '/tasks/:taskId([0-9]+)',

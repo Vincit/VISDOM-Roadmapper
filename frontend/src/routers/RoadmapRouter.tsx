@@ -13,6 +13,7 @@ import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
 import { PeopleListPage } from '../pages/PeopleListPage';
 import { TaskOverviewPage } from '../pages/TaskOverviewPage';
+import { ClientsListPage } from '../pages/ClientsListPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { UserInfo } from '../redux/user/types';
@@ -46,6 +47,10 @@ const routes = [
   {
     path: paths.roadmapRelative.taskList,
     component: TaskListPage,
+  },
+  {
+    path: paths.roadmapRelative.clients,
+    component: ClientsListPage,
   },
   {
     path: paths.roadmapRelative.planner,

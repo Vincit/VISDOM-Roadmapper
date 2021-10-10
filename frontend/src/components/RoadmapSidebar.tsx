@@ -32,6 +32,7 @@ export const RoadmapSidebar: FC = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+  const role = getType(userInfo?.roles, currentRoadmap?.id);
 
   if (!url.startsWith('/roadmap')) return null;
 
@@ -60,7 +61,20 @@ export const RoadmapSidebar: FC = () => {
           <ListIcon />
           <Trans i18nKey="Tasks" />
         </Link>
-        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+        {(role === RoleType.Admin || role === RoleType.Business) && (
+          <Link
+            to={url + paths.roadmapRelative.clients}
+            className={classes(css.navButton, {
+              [css.selected]: pathname.startsWith(
+                url + paths.roadmapRelative.clients,
+              ),
+            })}
+          >
+            <ListIcon />
+            <Trans i18nKey="Clients" />
+          </Link>
+        )}
+        {role === RoleType.Admin && (
           <>
             <Link
               to={url + paths.roadmapRelative.people}

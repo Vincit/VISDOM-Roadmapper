@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useState, useMemo } from 'react';
+import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -11,11 +11,12 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { modalsActions } from '../redux/modals';
-import { ModalTypes } from './modals/types';
 import { SortingArrow } from './SortingArrow';
 import { useSorting } from '../utils/SortUtils';
+import { userInfoSelector } from '../redux/user/selectors';
+import { UserInfo } from '../redux/user/types';
 import { CustomerSortingTypes, customerSort } from '../utils/SortCustomerUtils';
+import { RoleType } from '../../../shared/types/customTypes';
 import css from '../pages/PeopleListPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -28,7 +29,8 @@ interface CustomerTableHeader {
 
 export const CustomerList: FC<{
   search: string;
-}> = ({ search }) => {
+  role: RoleType;
+}> = ({ search, role }) => {
   const [sortedCustomers, setSortedCustomers] = useState<Customer[]>([]);
   const customers = useSelector<RootState, Customer[] | undefined>(
     allCustomersSelector(),
@@ -36,6 +38,10 @@ export const CustomerList: FC<{
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
+    shallowEqual,
+  );
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();
@@ -55,11 +61,13 @@ export const CustomerList: FC<{
 
   useEffect(() => {
     // Filter, search, sort customers
-    const searched = customers?.filter(({ name }) =>
+    const selected =
+      role === RoleType.Admin ? customers : userInfo?.representativeFor;
+    const searched = selected?.filter(({ name }) =>
       name.toLowerCase().includes(search),
     );
     setSortedCustomers(sort(searched || []));
-  }, [customers, sort, search]);
+  }, [customers, sort, search, userInfo, role]);
 
   const onSortingChange = (sorter: CustomerSortingTypes) => {
     if (sorter === sorting.type.get()) {
@@ -68,17 +76,6 @@ export const CustomerList: FC<{
       sorting.order.reset();
       sorting.type.set(sorter);
     }
-  };
-
-  const addUserClicked = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.ADD_CUSTOMER_MODAL,
-        modalProps: {},
-      }),
-    );
   };
 
   const customerTableHeaders: CustomerTableHeader[] = [
@@ -122,15 +119,10 @@ export const CustomerList: FC<{
 
   return (
     <>
-      <div className={classes(css.header)}>
-        <h2>Clients</h2>
-        <button
-          className={classes(css['button-small-filled'])}
-          type="button"
-          onClick={addUserClicked}
-        >
-          + <Trans i18nKey="Add new client" />
-        </button>
+      <div className={classes(css.listHeader)}>
+        <h2>
+          <Trans i18nKey="Clients" />
+        </h2>
       </div>
       {sortedCustomers.length > 0 ? (
         CustomersTable()

@@ -178,7 +178,7 @@ form {
   padding-right: 15px;
   background-color: white;
   border-radius: 52px;
-  margin-bottom: 15px;
+  margin-bottom: 45px;
 }
 
 .styledTable {
@@ -508,4 +508,10 @@ textarea {
     fill: $COLOR_FOREST;
   }
   cursor: help;
+}
+
+.listHeader {
+  @extend .layout-row;
+  margin-left: 16px;
+  margin-bottom: 31px;
 }

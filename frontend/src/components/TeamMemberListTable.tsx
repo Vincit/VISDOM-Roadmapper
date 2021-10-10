@@ -1,7 +1,6 @@
-import { FC, MouseEvent, useEffect, useState, useMemo } from 'react';
+import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import classNames from 'classnames';
 import { TableTeamMemberRow } from './TableTeamMemberRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -11,15 +10,10 @@ import {
 } from '../redux/roadmaps/selectors';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { modalsActions } from '../redux/modals';
-import { ModalTypes } from './modals/types';
 import { SortingArrow } from './SortingArrow';
 import { useSorting } from '../utils/SortUtils';
 import { UserSortingTypes, userSort } from '../utils/SortRoadmapUserUtils';
 import { RoleType } from '../../../shared/types/customTypes';
-import css from '../pages/PeopleListPage.module.scss';
-
-const classes = classNames.bind(css);
 
 interface TeamMemberTableHeader {
   label: string;
@@ -68,17 +62,6 @@ export const TeamMemberList: FC<{
     }
   };
 
-  const addTeamMemberClicked = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.ADD_TEAM_MEMBER_MODAL,
-        modalProps: {},
-      }),
-    );
-  };
-
   const teamMemberTableHeaders: TeamMemberTableHeader[] = [
     { label: 'Role', sorting: UserSortingTypes.SORT_ROLE, width: '1em' },
     { label: 'Contact information', sorting: UserSortingTypes.SORT_EMAIL },
@@ -117,15 +100,8 @@ export const TeamMemberList: FC<{
 
   return (
     <>
-      <div className={classes(css.header)}>
+      <div className="listHeader">
         <h2>Team members</h2>
-        <button
-          className={classes(css['button-small-filled'])}
-          type="button"
-          onClick={addTeamMemberClicked}
-        >
-          + <Trans i18nKey="Add new team member" />
-        </button>
       </div>
       {sortedMembers.length > 0 ? (
         <TeamMemberTable />
