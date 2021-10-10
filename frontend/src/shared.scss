@@ -521,3 +521,10 @@ textarea {
   margin-left: 16px;
   margin-bottom: 31px;
 }
+
+.overviewContainer {
+  @extend .layout-column;
+  gap: 60px;
+  margin-left: 24px;
+  margin-right: 40px;
+}

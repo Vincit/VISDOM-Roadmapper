@@ -1,43 +1,5 @@
 @import '../shared.scss';
 
-.overviewContainer {
-  @extend .layout-column;
-  gap: 60px;
-  margin-left: 24px;
-  margin-right: 40px;
-}
-
-.section {
-  @extend .layout-column;
-  align-items: flex-start;
-  gap: 52px;
-}
-
-.header {
-  @extend .layout-row;
-  @extend .typography-h2;
-  align-items: center;
-  width: 100%;
-  gap: 24px;
-
-  .taskName {
-    font-weight: normal;
-  }
-  .arrowIcon {
-    height: 24px;
-    width: 24px;
-    color: $COLOR_BLACK100;
-  }
-}
-
-.buttons {
-  margin-left: auto;
-
-  .disabled path:first-child {
-    fill: $COLOR_BLACK40;
-  }
-}
-
 .content {
   @extend .layout-row;
   width: 100%;

@@ -13,6 +13,7 @@ export const english = {
     'Task name': 'Task name',
     Description: 'Description',
     Tasks: 'Tasks',
+    Task: 'Task',
     'Search for tasks': 'Search for tasks',
     'No tasks found': 'No tasks found',
     Login: 'Login',
@@ -212,6 +213,6 @@ export const english = {
     unratedTaskMessage: 'Waiting for ratings',
     'Optional message': 'Optional message',
     'Unselect default project': 'Unselect default project',
-    'Task overview': 'Task overview',
+    'Overview header': '{{overviewType}} overview:',
   },
 };

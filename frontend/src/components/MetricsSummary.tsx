@@ -4,11 +4,17 @@ import css from './MetricsSummary.module.scss';
 
 const classes = classNames.bind(css);
 
-export const MetricsSummary: FC<{
+export interface MetricsProps {
   label: string;
   value: string | number;
   children?: any;
-}> = ({ label, value, children }) => (
+}
+
+export const MetricsSummary: FC<MetricsProps> = ({
+  label,
+  value,
+  children,
+}) => (
   <div className={classes(css.dataEntryWrapper)}>
     {label}
     <div className={classes(css.dash)} />

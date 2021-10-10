@@ -1,88 +1,103 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual } from 'react-redux';
-import { Trans } from 'react-i18next';
-import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { IconButton } from '@material-ui/core';
-import { ReactComponent as PreviousTask } from '../icons/expand_less.svg';
-import { ReactComponent as NextTask } from '../icons/expand_more.svg';
+import { useParams, useHistory, Redirect } from 'react-router-dom';
+import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
+import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
-import { TaskOverview } from '../components/TaskOverview';
 import { RatingTableWork } from '../components/RatingTableWork';
 import { RatingTableValue } from '../components/RatingTableValue';
-import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
+import { Overview, ArrowType } from '../components/Overview';
+import colors from '../colors.module.scss';
 import css from './TaskOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
 
-const TaskOverviewContent: FC<{
+const numFormat = new Intl.NumberFormat(undefined, {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1,
+});
+
+const TaskOverview: FC<{
   tasks: Task[];
   task: Task;
   taskIdx: number;
 }> = ({ tasks, task, taskIdx }) => {
+  const history = useHistory();
+  const { t } = useTranslation();
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
-  const history = useHistory();
   const { value, work } = valueAndWorkSummary(task!);
   const { value: valueRatings, work: workRatings } = getRatingsByType(
     task?.ratings || [],
   );
+  const tasksListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}`;
 
   const siblingTasks = [
     {
       id: taskIdx > 0 ? tasks[taskIdx - 1].id : undefined,
-      type: 'previous',
+      type: ArrowType.Previous,
     },
     {
       id: taskIdx + 1 < tasks.length ? tasks[taskIdx + 1].id : undefined,
-      type: 'next',
+      type: ArrowType.Next,
     },
   ];
 
-  const changeTask = (toTaskId: number) =>
-    history.push(
-      `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}/${toTaskId}`,
-    );
+  const metrics = [
+    {
+      label: t('Avg Value'),
+      value: numFormat.format(value.avg),
+      children: <BusinessIcon color={colors.black100} />,
+    },
+    {
+      label: t('Avg Work'),
+      value: numFormat.format(work.avg),
+      children: <WorkRoundIcon color={colors.black100} />,
+    },
+  ];
+
+  const taskData = [
+    [
+      { label: t('Title'), value: task.name, format: 'bold' },
+      { label: t('Description'), value: task.description },
+    ],
+    [
+      {
+        label: t('Created on'),
+        value: new Date(task.createdAt).toLocaleDateString(),
+        format: 'bold',
+      },
+      {
+        label: t('Status'),
+        value: task.completed ? 'Completed' : 'Unordered',
+        format: task.completed ? 'completed' : 'unordered',
+      },
+    ],
+  ];
 
   return (
-    <div className={classes(css.overviewContainer)}>
-      <div className={classes(css.section)}>
-        <div className={classes(css.header)}>
-          <Link
-            to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}`}
-          >
-            <ArrowBackIcon className={classes(css.arrowIcon)} />
-          </Link>
-          <Trans i18nKey="Task overview" />
-          <div className={classes(css.taskName)}>{task.name}</div>
-          <div className={classes(css.buttons)}>
-            {siblingTasks.map(({ id, type }) => (
-              <IconButton
-                key={type}
-                className={classes({ [css.disabled]: !id })}
-                disabled={!id}
-                onClick={() => changeTask(id!)}
-              >
-                {type === 'previous' ? <PreviousTask /> : <NextTask />}
-              </IconButton>
-            ))}
-          </div>
-        </div>
-        <div className={classes(css.content)}>
-          <TaskOverview task={task} />
-        </div>
-        <div className={classes(css.ratings)}>
-          {valueRatings.length > 0 && (
-            <RatingTableValue ratings={valueRatings} avg={value.avg} />
-          )}
-          {workRatings.length > 0 && (
-            <RatingTableWork ratings={workRatings} avg={work.avg} />
-          )}
-        </div>
+    <div className="overviewContainer">
+      <Overview
+        backHref={tasksListPage}
+        overviewType={t('Task')}
+        name={task.name}
+        previousAndNext={siblingTasks}
+        onOverviewChange={(id) => history.push(`${tasksListPage}/${id}`)}
+        metrics={metrics}
+        data={taskData}
+      />
+      <div className={classes(css.ratings)}>
+        {valueRatings.length > 0 && (
+          <RatingTableValue ratings={valueRatings} avg={value.avg} />
+        )}
+        {workRatings.length > 0 && (
+          <RatingTableWork ratings={workRatings} avg={work.avg} />
+        )}
       </div>
     </div>
   );
@@ -97,5 +112,5 @@ export const TaskOverviewPage = () => {
   const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
 
   if (!task) return <Redirect to={paths.notFound} />;
-  return <TaskOverviewContent tasks={tasks} task={task} taskIdx={taskIdx} />;
+  return <TaskOverview tasks={tasks} task={task} taskIdx={taskIdx} />;
 };
