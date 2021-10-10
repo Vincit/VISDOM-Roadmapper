@@ -1,6 +1,8 @@
 import { FC, MouseEvent, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import { Link, useLocation } from 'react-router-dom';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
@@ -24,6 +26,7 @@ interface TableRowProps {
 
 export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
   const { id, name, email, color, weight } = customer;
+  const currentLocation = useLocation();
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -103,6 +106,14 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
             </div>
           </div>
         )}
+      </td>
+      <td className="styledTd nowrap textAlignEnd">
+        <Link
+          className={classes(css.navBarLink)}
+          to={`${currentLocation.pathname}/${id}`}
+        >
+          <ArrowForwardIcon className={classes(css.arrowIcon)} />
+        </Link>
       </td>
     </tr>
   );

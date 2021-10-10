@@ -18,6 +18,7 @@ export const paths = {
     home: '/',
     dashboard: '/dashboard',
     clients: '/clients',
+    clientOverview: '/clients/:clientId([0-9]+)',
     people: '/people',
     taskList: '/tasks',
     taskOverview: '/tasks/:taskId([0-9]+)',

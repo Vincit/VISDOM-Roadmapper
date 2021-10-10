@@ -214,5 +214,10 @@ export const english = {
     'Optional message': 'Optional message',
     'Unselect default project': 'Unselect default project',
     'Overview header': '{{overviewType}} overview:',
+    Client: 'Client',
+    Contact: 'Contact',
+    'Client value': 'Client value',
+    'Tasks rated': 'Tasks rated',
+    'Unrated tasks': 'Unrated tasks',
   },
 };

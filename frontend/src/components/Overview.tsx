@@ -30,7 +30,7 @@ interface OverviewData {
 type OverviewProps = {
   backHref: string;
   overviewType: string;
-  name: string;
+  name: any;
   previousAndNext: PreviousAndNext[];
   onOverviewChange: (id: number) => void;
   metrics: MetricsProps[];
