@@ -11,7 +11,7 @@ import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { Task, TaskRequest } from '../redux/roadmaps/types';
 import colors from '../colors.module.scss';
 import css from './TaskOverview.module.scss';
-import { EditButton, ModalCloseButton, ConfirmButton } from './forms/SvgButton';
+import { EditButton, CloseButton, ConfirmButton } from './forms/SvgButton';
 import '../shared.scss';
 import { LoadingSpinner } from './LoadingSpinner';
 
@@ -156,12 +156,12 @@ export const TaskOverview: FC<{
                 {row.editable &&
                   (editedField === row.keyName ? (
                     <div className={classes(css.dataColumn)}>
-                      <ModalCloseButton onClick={() => closeEditField()} />
+                      <CloseButton onClick={() => closeEditField()} />
                       <ConfirmButton onClick={handleConfirm} />
                     </div>
                   ) : (
                     <EditButton
-                      fontSize="small"
+                      fontSize="medium"
                       onClick={() => openEditField(row.keyName, row.value)}
                     />
                   ))}

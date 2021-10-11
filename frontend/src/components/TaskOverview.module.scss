@@ -27,6 +27,7 @@
 .dataRow {
   @extend .layout-row;
   gap: 10px;
+  min-height: 50px;
 }
 
 .label {
@@ -34,14 +35,13 @@
   color: $COLOR_AZURE;
   width: 100px;
   text-align: start;
+  line-height: 50px;
 }
 
 .value {
   @extend .layout-row;
   align-items: center;
-  min-width: 100px;
-  max-width: 280px;
-
+  width: 250px;
   &.bold {
     font-weight: bold;
   }
@@ -57,4 +57,5 @@
 .input {
   background-color: $COLOR_CLOUD;
   border: 1px solid $COLOR_BLACK40;
+  width: 250px;
 }

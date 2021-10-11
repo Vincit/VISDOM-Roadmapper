@@ -65,4 +65,5 @@ export const DeleteButton = svgButton(DeleteIcon, {
 export const ModalCloseButton = svgButton(CloseIcon, {
   className: classes(css.closeButton),
 });
+export const CloseButton = svgButton(CloseIcon, {});
 export const ConfirmButton = svgButton(CheckIcon, {});
