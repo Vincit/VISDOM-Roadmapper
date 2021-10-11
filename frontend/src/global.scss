@@ -10,7 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   overflow-y: auto;
 }
 
@@ -30,7 +30,7 @@ h3 {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   text-align: center;
   overflow-y: auto;
 }
