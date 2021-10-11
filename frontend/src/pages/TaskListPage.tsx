@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Search } from 'react-bootstrap-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -17,12 +16,13 @@ import { RoleType } from '../../../shared/types/customTypes';
 import { FilterTypes, isUnrated } from '../utils/TaskUtils';
 import { partition } from '../utils/array';
 import { titleCase } from '../utils/string';
-import css from './TaskListPage.module.scss';
+import { TopBar } from '../components/TopBar';
 import {
   chosenRoadmapSelector,
   allTasksSelector,
 } from '../redux/roadmaps/selectors';
 import { getType } from '../utils/UserUtils';
+import css from './TaskListPage.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -49,10 +49,6 @@ export const TaskListPage = () => {
     if (userInfo && currentRoadmap)
       setTasks(partition(tasks, isUnrated(userInfo, currentRoadmap)));
   }, [currentRoadmap, tasks, userInfo]);
-
-  const onSearchChange = (value: string) => {
-    setSearchString(value.toLowerCase());
-  };
 
   const toggleCheckedClicked = () => {
     setChecked(!checked);
@@ -97,19 +93,14 @@ export const TaskListPage = () => {
     return null;
   };
 
-  const renderTopbar = () => {
-    return (
-      <div className={classes(css.topBar)}>
-        <div className={classes(css.searchBarContainer)}>
-          <>
-            <input
-              className={classes(css.search)}
-              placeholder={t('Search for tasks')}
-              onChange={(e) => onSearchChange(e.currentTarget.value)}
-            />
-            <Search />
-          </>
-        </div>
+  return (
+    <>
+      <TopBar
+        searchType={t('tasks')}
+        addType={t('task')}
+        onSearchChange={(value) => setSearchString(value)}
+        onAddClick={onAddNewTaskClick}
+      >
         <div className={classes(css.addNewButtonContainer)}>
           <Checkbox
             label="Show completed tasks"
@@ -120,23 +111,10 @@ export const TaskListPage = () => {
             <>
               {renderImportButton('trello')}
               {renderImportButton('jira')}
-              <button
-                className={classes(css['button-small-filled'])}
-                type="submit"
-                onClick={onAddNewTaskClick}
-              >
-                + <Trans i18nKey="Add new task" />
-              </button>
             </>
           )}
         </div>
-      </div>
-    );
-  };
-
-  return (
-    <>
-      {renderTopbar()}
+      </TopBar>
       <div className={classes(css.unratedTableContainer)}>
         <TaskTableUnrated
           tasks={unrated}

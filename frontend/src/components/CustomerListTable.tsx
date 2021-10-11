@@ -1,7 +1,6 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import classNames from 'classnames';
 import { TableCustomerRow } from './TableCustomerRow';
 import { StoreDispatchType } from '../redux/index';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -17,9 +16,6 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { CustomerSortingTypes, customerSort } from '../utils/SortCustomerUtils';
 import { RoleType } from '../../../shared/types/customTypes';
-import css from '../pages/PeopleListPage.module.scss';
-
-const classes = classNames.bind(css);
 
 interface CustomerTableHeader {
   label: string;
@@ -87,18 +83,18 @@ export const CustomerList: FC<{
   ];
 
   const CustomersTable = () => (
-    <table className={classes(css.styledTable)}>
+    <table className="styledTable">
       <thead>
         <tr>
           {customerTableHeaders.map((header) => {
             return (
               <th
-                className={classes(css.styledTh, css.clickable)}
+                className="styledTh clickable"
                 key={header.label}
                 onClick={() => onSortingChange(header.sorting)}
                 style={{ width: header.width }}
               >
-                <span className={classes(css.headerSpan)}>
+                <span className="headerSpan">
                   <Trans i18nKey={header.label} />
                   {sorting.type.get() === header.sorting && (
                     <SortingArrow order={sorting.order.get()} />
@@ -119,7 +115,7 @@ export const CustomerList: FC<{
 
   return (
     <>
-      <div className={classes(css.listHeader)}>
+      <div className="listHeader">
         <h2>
           <Trans i18nKey="Clients" />
         </h2>
