@@ -118,6 +118,7 @@ export const StepForm: FC<{
                 currentStep={step}
                 step={i + 1}
                 maxStep={steps.length}
+                // eslint-disable-next-line
                 key={i + 1}
                 description={description}
                 onClick={() => setStep(i + 1)}

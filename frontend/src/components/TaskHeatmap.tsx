@@ -69,11 +69,13 @@ export const TaskHeatmap = () => {
       <div className={classes(css.graphicsFlexbox)}>
         <div className={css.graphicsContainer}>
           {frequencies.map((row, i) => (
+            // eslint-disable-next-line
             <div className={classes(css.row)} key={i}>
               {row.map((value, ii) => (
                 <div
                   className={classes(css.tile)}
                   style={{ backgroundColor: color(value) }}
+                  // eslint-disable-next-line
                   key={ii}
                 />
               ))}

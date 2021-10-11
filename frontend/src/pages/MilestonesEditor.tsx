@@ -24,11 +24,7 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap, Task, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import {
-  not,
-  weightedTaskPriority,
-  hasMissingRatings,
-} from '../utils/TaskUtils';
+import { weightedTaskPriority } from '../utils/TaskUtils';
 import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
 import css from './MilestonesEditor.module.scss';
