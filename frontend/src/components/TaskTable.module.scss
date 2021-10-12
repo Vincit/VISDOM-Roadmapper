@@ -94,16 +94,14 @@
 }
 
 .hoverRow {
-  background-color: #ddedf6; // No color found in shared.scss
-  border-radius: 12px;
-  .ratedButtons {
-    .arrowIcon {
-      color: $COLOR_EMERALD;
-    }
-  }
-  .buttonContainer {
-    .arrowIcon {
-      color: $COLOR_EMERALD;
+  &:hover,
+  &:focus {
+    & > div {
+      background-color: #ddedf6; // No color found in shared.scss
+      border-radius: 12px;
+      .arrowIcon {
+        color: $COLOR_EMERALD;
+      }
     }
   }
 }

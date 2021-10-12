@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -17,22 +16,17 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableRatedTaskRow: TaskRow = ({ task, style }) => {
   const { value, work } = valueAndWorkSummary(task);
-  const ref = useRef<HTMLDivElement | null>(null);
   const currentLocation = useLocation();
-  const names = classes(css.hoverRow).split(/ +/);
   return (
     <Link
-      className={classes(css.navBarLink)}
+      className={classes(css.navBarLink, css.hoverRow)}
       to={`${currentLocation.pathname}/${task.id}`}
     >
       <div
-        ref={ref}
         style={style}
         className={classes(css.taskTableRow, {
           [css.completedRow]: task.completed,
         })}
-        onMouseEnter={() => ref.current?.classList.add(...names)}
-        onMouseLeave={() => ref.current?.classList.remove(...names)}
       >
         <div className={classes(css.ratedTitle)}>
           {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}

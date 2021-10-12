@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { SyntheticEvent, useState, useEffect, useRef } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -45,8 +45,6 @@ const numFormat = new Intl.NumberFormat(undefined, {
 const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
   const currentLocation = useLocation();
   const dispatch = useDispatch<StoreDispatchType>();
-  const ref = useRef<HTMLDivElement | null>(null);
-  const names = classes(css.hoverRow).split(/ +/);
   const { name, roadmapId } = task;
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -122,16 +120,10 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
 
   return (
     <Link
-      className={classes(css.navBarLink)}
+      className={classes(css.navBarLink, css.hoverRow)}
       to={`${currentLocation.pathname}/${task.id}`}
     >
-      <div
-        ref={ref}
-        style={style}
-        className={classes(css.taskTableRow)}
-        onMouseEnter={() => ref.current?.classList.add(...names)}
-        onMouseLeave={() => ref.current?.classList.remove(...names)}
-      >
+      <div style={style} className={classes(css.taskTableRow)}>
         <div className={classes(css.taskTitle)}>{name}</div>
         <div>{numFormat.format(value)}</div>
         <div>{numFormat.format(work)}</div>
