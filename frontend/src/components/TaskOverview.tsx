@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from 'src/redux';
+import { Alert } from 'react-bootstrap';
 import TextareaAutosize from 'react-textarea-autosize';
 import { roadmapsActions } from '../redux/roadmaps/index';
 import { MetricsSummary } from './MetricsSummary';
@@ -31,6 +32,7 @@ export const TaskOverview: FC<{
   const [editedField, setEditedField] = useState('');
   const [editText, setEditText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const openEditField = (fieldName: string, fieldValue: string) => {
     setEditedField(fieldName);
@@ -40,6 +42,7 @@ export const TaskOverview: FC<{
   const closeEditField = () => {
     setEditedField('');
     setEditText('');
+    setErrorMessage('');
   };
 
   const handleTextChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
@@ -58,7 +61,7 @@ export const TaskOverview: FC<{
         setIsLoading(false);
         if (roadmapsActions.patchTask.rejected.match(res)) {
           if (res.payload) {
-            // setErrorMessage(res.payload.message);
+            setErrorMessage(res.payload.message);
           }
         } else {
           closeEditField();
@@ -134,30 +137,44 @@ export const TaskOverview: FC<{
                 </div>
 
                 {editedField === row.keyName
-                  ? isLoading && <LoadingSpinner />
+                  ? isLoading && (
+                      <div>
+                        <LoadingSpinner />
+                      </div>
+                    )
                   : null}
                 {editedField === row.keyName ? (
-                  !isLoading && (
-                    <>
-                      <TextareaAutosize
-                        className={classes(css.input)}
-                        value={editText}
-                        onChange={(e) => handleTextChange(e)}
-                        autoComplete="off"
-                        rows={1}
-                      />
-                    </>
+                  !isLoading &&
+                  errorMessage === '' && (
+                    <TextareaAutosize
+                      className={classes(css.input)}
+                      value={editText}
+                      onChange={(e) => handleTextChange(e)}
+                      autoComplete="off"
+                      rows={1}
+                    />
                   )
                 ) : (
                   <div className={classes(css.value, css[row.format ?? ''])}>
                     {row.value}
                   </div>
                 )}
+                {editedField === row.keyName && (
+                  <Alert
+                    show={errorMessage.length > 0}
+                    variant="danger"
+                    onClose={() => setErrorMessage('')}
+                  >
+                    {errorMessage}
+                  </Alert>
+                )}
                 {row.editable &&
                   (editedField === row.keyName ? (
                     <div className={classes(css.dataColumn)}>
                       <CloseButton onClick={() => closeEditField()} />
-                      <ConfirmButton onClick={handleConfirm} />
+                      {errorMessage === '' && (
+                        <ConfirmButton onClick={handleConfirm} />
+                      )}
                     </div>
                   ) : (
                     <EditButton
