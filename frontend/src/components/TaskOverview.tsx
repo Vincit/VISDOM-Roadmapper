@@ -136,52 +136,51 @@ export const TaskOverview: FC<{
                   <Trans i18nKey={row.label} />
                 </div>
 
-                {editedField === row.keyName
-                  ? isLoading && (
-                      <div>
+                {editedField === row.keyName ? (
+                  <>
+                    {isLoading && (
+                      <div className={classes(css.spinnerDiv)}>
                         <LoadingSpinner />
                       </div>
-                    )
-                  : null}
-                {editedField === row.keyName ? (
-                  !isLoading &&
-                  errorMessage === '' && (
-                    <TextareaAutosize
-                      className={classes(css.input)}
-                      value={editText}
-                      onChange={(e) => handleTextChange(e)}
-                      autoComplete="off"
-                      rows={1}
-                    />
-                  )
+                    )}
+                    {!isLoading && errorMessage === '' && (
+                      <TextareaAutosize
+                        className={classes(css.input)}
+                        value={editText}
+                        onChange={(e) => handleTextChange(e)}
+                        autoComplete="off"
+                        rows={1}
+                      />
+                    )}
+                    <Alert
+                      show={errorMessage.length > 0}
+                      variant="danger"
+                      onClose={() => setErrorMessage('')}
+                    >
+                      {errorMessage}
+                    </Alert>
+                    {row.editable && (
+                      <div className={classes(css.dataColumn)}>
+                        <CloseButton onClick={() => closeEditField()} />
+                        {errorMessage === '' && (
+                          <ConfirmButton onClick={handleConfirm} />
+                        )}
+                      </div>
+                    )}
+                  </>
                 ) : (
-                  <div className={classes(css.value, css[row.format ?? ''])}>
-                    {row.value}
-                  </div>
-                )}
-                {editedField === row.keyName && (
-                  <Alert
-                    show={errorMessage.length > 0}
-                    variant="danger"
-                    onClose={() => setErrorMessage('')}
-                  >
-                    {errorMessage}
-                  </Alert>
-                )}
-                {row.editable &&
-                  (editedField === row.keyName ? (
-                    <div className={classes(css.dataColumn)}>
-                      <CloseButton onClick={() => closeEditField()} />
-                      {errorMessage === '' && (
-                        <ConfirmButton onClick={handleConfirm} />
-                      )}
+                  <>
+                    <div className={classes(css.value, css[row.format ?? ''])}>
+                      {row.value}
                     </div>
-                  ) : (
-                    <EditButton
-                      fontSize="medium"
-                      onClick={() => openEditField(row.keyName, row.value)}
-                    />
-                  ))}
+                    {row.editable && (
+                      <EditButton
+                        fontSize="medium"
+                        onClick={() => openEditField(row.keyName, row.value)}
+                      />
+                    )}
+                  </>
+                )}
               </div>
             ))}
           </div>
