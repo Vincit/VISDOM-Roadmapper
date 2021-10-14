@@ -592,3 +592,7 @@ textarea {
     color: $COLOR_BLACK40;
   }
 }
+
+.react-flow__edges {
+  z-index: 3 !important;
+}
