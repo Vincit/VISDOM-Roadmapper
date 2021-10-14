@@ -72,6 +72,19 @@ export const TaskOverview: FC<{
     }
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    switch (event.key) {
+      case 'Enter':
+        handleConfirm();
+        break;
+      case 'Escape':
+        closeEditField();
+        break;
+      default:
+        break;
+    }
+  };
+
   const metrics = [
     {
       label: 'Avg Value',
@@ -152,6 +165,7 @@ export const TaskOverview: FC<{
                         onChange={(e) => handleTextChange(e)}
                         autoComplete="off"
                         rows={1}
+                        onKeyDown={handleKeyDown}
                       />
                     )}
                     {errorMessage !== '' && (
