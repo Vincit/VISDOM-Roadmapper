@@ -15,7 +15,11 @@ import classNames from 'classnames';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { weightedTaskPriority, valueAndWorkSummary } from '../utils/TaskUtils';
+import {
+  weightedTaskPriority,
+  valueAndWorkSummary,
+  hasRatingsOnEachDimension,
+} from '../utils/TaskUtils';
 import { sort, SortingOrders, sortKeyNumeric } from '../utils/SortUtils';
 import css from './PlannerChart.module.scss';
 
@@ -56,7 +60,7 @@ export const PlannerChart: FC<{
       tasks: sort(
         sortKeyNumeric(weightedTaskPriority(currentRoadmap)),
         SortingOrders.DESCENDING,
-      )(currentRoadmap.tasks),
+      )(currentRoadmap.tasks.filter(hasRatingsOnEachDimension)),
     });
   }
   const versionDataPoints = () => {
