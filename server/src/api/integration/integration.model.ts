@@ -1,4 +1,4 @@
-import { Model } from 'objection';
+import { Model, Pojo } from 'objection';
 
 import { IntegrationConfig } from '../integration';
 
@@ -31,4 +31,11 @@ export default class Integration extends Model implements IntegrationConfig {
       roadmapId: { type: 'integer' },
     },
   };
+
+  $formatJson(json: Pojo): Pojo {
+    json = super.$formatJson(json);
+    // Make sure the privatekey is not sent in the response
+    json.privatekey = '';
+    return json;
+  }
 }
