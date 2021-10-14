@@ -543,59 +543,56 @@ describe('Test /customers/ api', function () {
       const getResStart = await getCustomers(firstRoadmapId);
       expect(getResStart.status).to.equal(200);
 
+      const customersBefore = getResStart.body.map(({ name }: any) => name);
       const validCustomer = {
         name: 'Test-customer',
         email: 'email@test.com',
         color: '#A1FF4D',
       };
       const postRes = await postCustomer(firstRoadmapId, validCustomer);
-      const customersAfterPost = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
       expect(postRes.status).to.equal(200);
-      expect(customersAfterPost.length).to.equal(getResStart.body.length + 1);
-      expect(customersAfterPost[customersAfterPost.length - 1].name).to.equal(
-        'Test-customer',
+
+      const customersAfterPost = (
+        await Customer.query().where('roadmapId', firstRoadmapId)
+      ).map(({ name }) => name);
+      expect(customersAfterPost.sort()).to.eql(
+        [...customersBefore, 'Test-customer'].sort(),
       );
 
       const postedCustomer = await Customer.query()
         .where('name', 'Test-customer')
         .first();
-
       const patchRes = await updateCustomer(postedCustomer, {
         name: 'Modified-customer',
       });
-      const updatedCustomer = await Customer.query()
-        .where('id', postedCustomer.id)
-        .first();
-      const customersAfterUpdate = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
       expect(patchRes.status).to.equal(200);
+
+      const updatedCustomer = await Customer.query().findById(
+        postedCustomer.id,
+      );
       expect(updatedCustomer.name).to.equal('Modified-customer');
-      expect(
-        customersAfterUpdate[customersAfterUpdate.length - 1].name,
-      ).to.not.equal('Test-customer');
+
+      const customersAfterUpdate = (
+        await Customer.query().where('roadmapId', firstRoadmapId)
+      ).map(({ name }) => name);
+      expect(customersAfterUpdate).to.not.include('Test-customer');
 
       const deleteRes = await deleteCustomer(updatedCustomer);
-      const customersAfterDelete = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
       expect(deleteRes.status).to.equal(200);
+
+      const customersAfterDelete = (
+        await Customer.query().where('roadmapId', firstRoadmapId)
+      ).map(({ name }) => name);
       expect(customersAfterDelete.length).to.equal(
         customersAfterPost.length - 1,
       );
-      expect(
-        customersAfterDelete[customersAfterDelete.length - 1].name,
-      ).to.not.equal('Modified-customer');
+      expect(customersAfterDelete).to.not.include('Modified-customer');
 
       const getResFinal = await getCustomers(firstRoadmapId);
-
       expect(getResFinal.status).to.equal(200);
-      expect(getResFinal.body).to.eql(getResStart.body);
+
+      const customersAfter = getResFinal.body.map(({ name }: any) => name);
+      expect(customersAfter.sort()).to.eql(customersBefore.sort());
     });
   });
 });
