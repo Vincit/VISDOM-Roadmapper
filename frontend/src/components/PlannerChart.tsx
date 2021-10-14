@@ -28,6 +28,12 @@ enum DataKeys {
   SavedData = 'Saved graph',
 }
 
+type DataPoint = {
+  workSum: number;
+  valueSum: number;
+  [name: string]: number | undefined;
+};
+
 export const PlannerChart: FC<{
   versions: { name: string; tasks: Task[] }[];
   hideButtons?: boolean;
@@ -36,7 +42,9 @@ export const PlannerChart: FC<{
     chosenRoadmapSelector,
     shallowEqual,
   )!;
-  const [savedData, setSavedData] = useState<any[] | undefined>(undefined);
+  const [savedData, setSavedData] = useState<DataPoint[] | undefined>(
+    undefined,
+  );
 
   const graphTaskLists = [...versions];
   const versionKeyNames = graphTaskLists.map((ver) => ver.name);
@@ -52,19 +60,17 @@ export const PlannerChart: FC<{
     });
   }
   const versionDataPoints = () => {
-    let dataPoints: any[] = [];
     let workSum = 0;
     let valueSum = 0;
-    let previousLineEnd: any = {
+    let previousLineEnd = {
       workSum: 0,
       valueSum: 0,
     };
-    graphTaskLists.forEach((version) => {
+    return graphTaskLists.reduce<DataPoint[]>((acc, version) => {
       const { name } = version;
       const tasks = [...version.tasks];
 
-      dataPoints = [
-        ...dataPoints,
+      const more = [
         Object.assign(previousLineEnd, { [name]: previousLineEnd.valueSum }),
         ...tasks.map((task) => {
           const { value, work } = valueAndWorkSummary(task);
@@ -90,9 +96,8 @@ export const PlannerChart: FC<{
         workSum,
         valueSum,
       };
-    });
-
-    return dataPoints;
+      return [...acc, ...more];
+    }, []);
   };
 
   const dataPoints = [...versionDataPoints(), ...(savedData || [])];
@@ -103,26 +108,24 @@ export const PlannerChart: FC<{
       return;
     }
 
-    const savedDataPts = [...dataPoints]
+    const savedDataPts = dataPoints
       .filter(
         (data) =>
-          !Object.keys(data).includes(DataKeys.OptimalRoadmap) &&
-          !Object.keys(data).includes(DataKeys.SavedData),
+          !(DataKeys.OptimalRoadmap in data) && !(DataKeys.SavedData in data),
       )
-      .map((data) => {
-        return {
-          workSum: data.workSum,
-          valueSum: data.valueSum,
-          [DataKeys.SavedData]: data.valueSum,
-        };
-      });
+      .map((data) => ({
+        workSum: data.workSum,
+        valueSum: data.valueSum,
+        [DataKeys.SavedData]: data.valueSum,
+      }));
     setSavedData(savedDataPts);
   };
 
   // Calculating X and Y axis min and max values and tick count
-  const workSumMax = dataPoints.reduce((prevMax, dataPt) => {
-    return Math.max(prevMax, dataPt.workSum);
-  }, 0);
+  const workSumMax = dataPoints.reduce(
+    (prevMax, dataPt) => Math.max(prevMax, dataPt.workSum),
+    0,
+  );
   const valueSumMax = dataPoints.reduce(
     (prevMax, dataPt) => Math.max(prevMax, dataPt.valueSum),
     0,
