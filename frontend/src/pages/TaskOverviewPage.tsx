@@ -1,12 +1,14 @@
+import { FC } from 'react';
 import classNames from 'classnames';
 import { useSelector, shallowEqual } from 'react-redux';
 import { Trans } from 'react-i18next';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { Link, useParams, useHistory, Redirect } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
 import { ReactComponent as PreviousTask } from '../icons/expand_less.svg';
 import { ReactComponent as NextTask } from '../icons/expand_more.svg';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
+import { Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { TaskOverview } from '../components/TaskOverview';
 import { RatingTableWork } from '../components/RatingTableWork';
@@ -16,15 +18,15 @@ import css from './TaskOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
 
-export const TaskOverviewPage = () => {
-  const { roadmapId, taskId } = useParams<{
+const TaskOverviewContent: FC<{
+  tasks: Task[];
+  task: Task;
+  taskIdx: number;
+}> = ({ tasks, task, taskIdx }) => {
+  const { roadmapId } = useParams<{
     roadmapId: string | undefined;
-    taskId: string | undefined;
   }>();
   const history = useHistory();
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
-  const taskIdx = tasks.findIndex(({ id }) => Number(taskId) === id);
-  const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
   const { value, work } = valueAndWorkSummary(task!);
   const { value: valueRatings, work: workRatings } = getRatingsByType(
     task?.ratings || [],
@@ -36,10 +38,7 @@ export const TaskOverviewPage = () => {
       type: 'previous',
     },
     {
-      id:
-        taskIdx >= 0 && taskIdx + 1 < tasks.length
-          ? tasks[taskIdx + 1].id
-          : undefined,
+      id: taskIdx + 1 < tasks.length ? tasks[taskIdx + 1].id : undefined,
       type: 'next',
     },
   ];
@@ -59,7 +58,7 @@ export const TaskOverviewPage = () => {
             <ArrowBackIcon className={classes(css.arrowIcon)} />
           </Link>
           <Trans i18nKey="Task overview" />
-          <div className={classes(css.taskName)}>{task?.name}</div>
+          <div className={classes(css.taskName)}>{task.name}</div>
           <div className={classes(css.buttons)}>
             {siblingTasks.map(({ id, type }) => (
               <IconButton
@@ -73,22 +72,30 @@ export const TaskOverviewPage = () => {
             ))}
           </div>
         </div>
-        {task && (
-          <>
-            <div className={classes(css.content)}>
-              <TaskOverview key={taskId} task={task} />
-            </div>
-            <div className={classes(css.ratings)}>
-              {valueRatings.length > 0 && (
-                <RatingTableValue ratings={valueRatings} avg={value.avg} />
-              )}
-              {workRatings.length > 0 && (
-                <RatingTableWork ratings={workRatings} avg={work.avg} />
-              )}
-            </div>
-          </>
-        )}
+        <div className={classes(css.content)}>
+          <TaskOverview task={task} />
+        </div>
+        <div className={classes(css.ratings)}>
+          {valueRatings.length > 0 && (
+            <RatingTableValue ratings={valueRatings} avg={value.avg} />
+          )}
+          {workRatings.length > 0 && (
+            <RatingTableWork ratings={workRatings} avg={work.avg} />
+          )}
+        </div>
       </div>
     </div>
   );
+};
+
+export const TaskOverviewPage = () => {
+  const { taskId } = useParams<{
+    taskId: string | undefined;
+  }>();
+  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const taskIdx = tasks.findIndex(({ id }) => Number(taskId) === id);
+  const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
+
+  if (!task) return <Redirect to={paths.notFound} />;
+  return <TaskOverviewContent tasks={tasks} task={task} taskIdx={taskIdx} />;
 };
