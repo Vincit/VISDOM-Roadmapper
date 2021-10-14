@@ -24,7 +24,10 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap, Task, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { weightedTaskPriority } from '../utils/TaskUtils';
+import {
+  weightedTaskPriority,
+  hasRatingsOnEachDimension,
+} from '../utils/TaskUtils';
 import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
 import css from './MilestonesEditor.module.scss';
@@ -84,7 +87,9 @@ export const MilestonesEditor = () => {
     if (disableUpdates) return;
     if (roadmapsVersionsLocal === undefined) return;
     const newVersionLists: VersionListsObject = {};
-    const unversioned = new Map(tasks.map((task) => [task.id, task]));
+    const unversioned = new Map(
+      tasks.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
+    );
     roadmapsVersionsLocal.forEach((v) => {
       newVersionLists[v.id] = v.tasks;
       v.tasks.forEach((task) => unversioned.delete(task.id));

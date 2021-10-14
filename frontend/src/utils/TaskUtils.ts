@@ -259,6 +259,12 @@ export const hasMissingRatings = ({ users = [], customers = [] }: Roadmap) => {
   return (task: Task) => !shouldHaveRated.every(hasUserRating(task));
 };
 
+export const hasRatingsOnEachDimension = (task: Task) =>
+  [
+    TaskRatingDimension.BusinessValue,
+    TaskRatingDimension.RequiredWork,
+  ].every((dim) => task.ratings.some((rating) => rating.dimension === dim));
+
 /*
   For Customers consider missing representative ratings
   For Admin and Business -users consider missing represented ratings
