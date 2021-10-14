@@ -67,6 +67,8 @@ export const TaskOverview: FC<{
           closeEditField();
         }
       });
+    } else {
+      setErrorMessage("Field can't be empty.");
     }
   };
 
@@ -152,13 +154,17 @@ export const TaskOverview: FC<{
                         rows={1}
                       />
                     )}
-                    <Alert
-                      show={errorMessage.length > 0}
-                      variant="danger"
-                      onClose={() => setErrorMessage('')}
-                    >
-                      {errorMessage}
-                    </Alert>
+                    {errorMessage !== '' && (
+                      <div className={classes(css.alertDiv)}>
+                        <Alert
+                          show={errorMessage.length > 0}
+                          variant="danger"
+                          onClose={() => setErrorMessage('')}
+                        >
+                          {errorMessage}
+                        </Alert>
+                      </div>
+                    )}
                     {row.editable && (
                       <div className={classes(css.dataColumn)}>
                         <CloseButton onClick={() => closeEditField()} />
