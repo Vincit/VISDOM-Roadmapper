@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import ReactFlow, { Handle } from 'react-flow-renderer';
+import ReactFlow, { Handle, Controls } from 'react-flow-renderer';
 import classNames from 'classnames';
 import { RootState } from '../redux/types';
 import {
@@ -16,6 +16,8 @@ import { groupTaskRelations } from '../utils/TaskRelationUtils';
 import { getTaskOverviewData } from './TaskOverviewPage';
 import { OverviewContent } from '../components/Overview';
 import { TaskRelationType } from '../../../shared/types/customTypes';
+import { CustomEdge } from '../components/TaskMapEdge';
+import { ConnectionLine } from '../components/TaskMapConnection';
 import css from './TaskMapPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -136,7 +138,7 @@ export const TaskMapPage = () => {
     type: 'special',
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
-    draggable: false,
+    draggable: true, // To do: Put to false when automatic node-positions is done
     position: { x: 550 * idx, y: 80 },
     data: {
       label: (
@@ -162,7 +164,7 @@ export const TaskMapPage = () => {
         sourceHandle: `from-${from}`,
         target: String(targetGroupIdx),
         targetHandle: `to-${to}`,
-        style: { stroke: 'green' },
+        type: 'custom',
       };
     }),
   );
@@ -192,13 +194,19 @@ export const TaskMapPage = () => {
     <>
       <ReactFlow
         className={classes(css.flowContainer)}
+        connectionLineComponent={ConnectionLine}
         elements={[...groups, ...edges]}
         nodeTypes={{
           special: CustomNodeComponent,
         }}
-        draggable={false}
         onConnect={onConnect}
-      />
+        edgeTypes={{
+          custom: CustomEdge,
+        }}
+        elementsSelectable={false}
+      >
+        <Controls showInteractive={false} showZoom={false} />
+      </ReactFlow>
       <div className={classes(css.taskOverviewContainer)}>
         {selectedTask && (
           <OverviewContent {...getTaskOverviewData(selectedTask, false)} />

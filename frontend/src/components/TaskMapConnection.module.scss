@@ -1,0 +1,14 @@
+@import '../shared.scss';
+
+.firstStop {
+  stop-color: $COLOR_FOREST;
+}
+.secondStop {
+  stop-color: $COLOR_ORANGE;
+}
+
+.connectionCircle {
+  fill: $COLOR_ORANGE;
+  stroke: $COLOR_ORANGE;
+  stroke-width: 1.5;
+}
