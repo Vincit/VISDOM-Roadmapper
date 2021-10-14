@@ -1,0 +1,19 @@
+@import '../shared.scss';
+
+.firstStop {
+  stop-color: $COLOR_FOREST;
+}
+.secondStop {
+  stop-color: $COLOR_ORANGE;
+}
+
+.invisiblePath {
+  stroke: $COLOR_AZURE;
+  pointer-events: all;
+  stroke-width: 15;
+  opacity: 0;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.1;
+  }
+}
