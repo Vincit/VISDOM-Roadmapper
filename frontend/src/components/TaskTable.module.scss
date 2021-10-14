@@ -14,6 +14,7 @@
 }
 
 .taskTableRow {
+  color: $COLOR_BLACK100;
   display: grid;
   &.clickable {
     cursor: pointer;
@@ -86,17 +87,23 @@
 }
 
 .arrowIcon {
+  margin-left: 25px;
   height: 24px;
   width: 24px;
   color: $COLOR_BLACK40;
-  &:hover {
-    color: $COLOR_EMERALD;
-  }
 }
 
 .hoverRow {
-  background-color: #ddedf6; // No color found in shared.scss
-  border-radius: 12px;
+  &:hover,
+  &:focus {
+    & > div {
+      background-color: #ddedf6; // No color found in shared.scss
+      border-radius: 12px;
+      .arrowIcon {
+        color: $COLOR_EMERALD;
+      }
+    }
+  }
 }
 
 .completedRow {
