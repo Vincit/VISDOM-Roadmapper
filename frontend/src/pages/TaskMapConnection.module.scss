@@ -1,0 +1,13 @@
+@import '../shared.scss';
+
+.connectionPath {
+  fill: none;
+  stroke: $COLOR_FOREST;
+  stroke-width: 2;
+}
+
+.connectionCircle {
+  fill: $COLOR_FOREST;
+  stroke: $COLOR_FOREST;
+  stroke-width: 1.5;
+}

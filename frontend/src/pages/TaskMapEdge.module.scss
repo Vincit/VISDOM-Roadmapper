@@ -1,0 +1,14 @@
+@import '../shared.scss';
+
+.edgePath {
+  stroke: $COLOR_FOREST;
+  stroke-width: 2;
+  opacity: 1;
+}
+
+.invisiblePath {
+  pointer-events: all;
+  stroke-width: 7;
+  opacity: 0;
+  cursor: pointer;
+}

@@ -1,5 +1,9 @@
 @import './typography.scss';
 
+.react-flow__edges {
+  z-index: 3 !important;
+}
+
 html {
   font-family: Work Sans, Arial, Helvetica, sans-serif;
   font-size: 14px;
