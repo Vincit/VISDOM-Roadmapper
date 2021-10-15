@@ -154,13 +154,13 @@ export const TaskOverview: FC<{
                 {editedField === row.keyName ? (
                   <>
                     {isLoading && (
-                      <div className={classes(css.spinnerDiv)}>
+                      <div className={classes(css.flexGrow)}>
                         <LoadingSpinner />
                       </div>
                     )}
                     {!isLoading && errorMessage === '' && (
                       <TextareaAutosize
-                        className={classes(css.input)}
+                        className={classes(css.input, css[row.format ?? ''])}
                         value={editText}
                         onChange={(e) => handleTextChange(e)}
                         autoComplete="off"
@@ -169,7 +169,7 @@ export const TaskOverview: FC<{
                       />
                     )}
                     {errorMessage !== '' && (
-                      <div className={classes(css.alertDiv)}>
+                      <div className={classes(css.flexGrow)}>
                         <Alert
                           show={errorMessage.length > 0}
                           variant="danger"
@@ -180,7 +180,7 @@ export const TaskOverview: FC<{
                       </div>
                     )}
                     {row.editable && (
-                      <div className={classes(css.dataColumn)}>
+                      <div className={classes(css.buttonsDiv)}>
                         <CloseButton onClick={() => closeEditField()} />
                         {errorMessage === '' && (
                           <ConfirmButton onClick={handleConfirm} />
@@ -194,10 +194,12 @@ export const TaskOverview: FC<{
                       {row.value}
                     </div>
                     {row.editable && (
-                      <EditButton
-                        fontSize="medium"
-                        onClick={() => openEditField(row.keyName, row.value)}
-                      />
+                      <div className={classes(css.editButtonDiv)}>
+                        <EditButton
+                          fontSize="medium"
+                          onClick={() => openEditField(row.keyName, row.value)}
+                        />
+                      </div>
                     )}
                   </>
                 )}

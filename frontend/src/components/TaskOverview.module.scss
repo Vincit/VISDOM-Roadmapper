@@ -16,34 +16,52 @@
   justify-content: space-evenly;
   align-items: stretch;
   flex: 1;
+  gap: 10px;
 }
 
 .dataColumn {
   @extend .layout-column;
-  align-items: flex-start;
+  align-items: center;
   gap: 5px;
+  flex: 1;
 }
 
 .dataRow {
   @extend .layout-row;
   gap: 10px;
   min-height: 50px;
+  width: 100%;
+  justify-content: center;
 }
 
 .label {
   @extend .typography-body-bold;
   color: $COLOR_AZURE;
-  width: 100px;
+  min-width: 100px;
   text-align: start;
   line-height: 50px;
 }
 
+.flexGrow {
+  align-self: center;
+  max-width: 300px;
+  min-width: 100px;
+  flex-grow: 1;
+  div {
+    margin: 0px;
+  }
+}
+
 .value {
+  @extend .typography-body;
   @extend .layout-row;
+  @extend .flexGrow;
   align-items: center;
-  width: 250px;
+
+  padding-left: 21px;
+  padding-bottom: 2px;
   &.bold {
-    font-weight: bold;
+    @extend .typography-body-bold;
   }
   &.unordered {
     @extend .typography-pre-title;
@@ -55,17 +73,21 @@
 }
 
 .input {
+  font-weight: unset;
   background-color: $COLOR_CLOUD;
   border: 1px solid $COLOR_BLACK40;
-  width: 250px;
+  @extend .flexGrow;
+  &.bold {
+    @extend .typography-body-bold;
+  }
 }
 
-.spinnerDiv {
-  width: 250px;
-  margin-top: 10px;
+.buttonsDiv {
+  @extend .layout-column;
+  gap: 5px;
 }
 
-.alertDiv {
-  width: 250px;
-  height: 50px;
+.editButtonDiv {
+  margin-top: auto;
+  margin-bottom: auto;
 }
