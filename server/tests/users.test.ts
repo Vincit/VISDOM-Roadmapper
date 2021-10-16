@@ -160,16 +160,16 @@ describe('Test /users/ api', function () {
         const res = await loggedInAgent
           .post('/users/login')
           .type('json')
-          .send({ email: 'biz@business.com', password: 'test' });
+          .send({ email: 'business.person1@test.com', password: 'test' });
         expect(res.status).to.equal(200);
         expect(res).to.have.cookie('koa.sess');
       });
 
       it('Should be case insensitive', async function () {
         const cases = [
-          'biz@business.com',
-          'BIZ@BUSINESS.COM',
-          'Biz@busINESS.com',
+          'business.person1@test.com',
+          'BUSINESS.PERSON1@TEST.COM',
+          'Business.person1@TEST.com',
         ];
         for (const value of cases) {
           // We dont wanna be logged in before this test so logout manually
@@ -192,7 +192,7 @@ describe('Test /users/ api', function () {
       const res = await loggedInAgent
         .post('/users/login')
         .type('json')
-        .send({ email: 'biz@business.com', password: 'wrongpass' });
+        .send({ email: 'business.person1@test.com', password: 'wrongpass' });
       expect(res.status).to.equal(401);
     });
   });
