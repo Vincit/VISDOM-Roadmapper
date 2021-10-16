@@ -1,7 +1,7 @@
-import { FC, MouseEvent, useState, useEffect } from 'react';
+import { FC, MouseEvent, useState, useEffect, CSSProperties } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
@@ -22,11 +22,13 @@ const classes = classNames.bind(css);
 
 interface TableRowProps {
   customer: Customer;
+  style?: CSSProperties;
 }
 
-export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
+export const TableCustomerRow: FC<TableRowProps> = ({ customer, style }) => {
   const { id, name, email, color, weight } = customer;
   const currentLocation = useLocation();
+  const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -72,28 +74,40 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
   };
 
   return (
-    <tr className={classes(css.styledTr)}>
-      <td className={classes(css.styledTd)}>
-        <Dot fill={color} />
-      </td>
-      <td className="styledTd">{name}</td>
-      <td className="styledTd">
-        <a className="green" href={`mailto:${email}`}>
-          {email}
-        </a>
-      </td>
-      <td className="styledTd">{weight}</td>
-      <td className="styledTd">
-        <b>{unratedAmount || ' '}</b>
-      </td>
-      <td className="styledTd nowrap textAlignEnd">
-        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
-          <div className={classes(css.editCustomer)}>
-            <div>
+    <div
+      className={classes(css.hoverRow)}
+      onClick={() => history.push(`${currentLocation.pathname}/${id}`)}
+      onKeyPress={() => history.push(`${currentLocation.pathname}/${id}`)}
+      tabIndex={0}
+      role="button"
+    >
+      <div className={classes(css.virtualizedTableRow)} style={style}>
+        <div>
+          <Dot fill={color} />
+        </div>
+        <div>{name}</div>
+        <div>
+          <a
+            className="green"
+            href={`mailto:${email}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {email}
+          </a>
+        </div>
+        <div>{weight}</div>
+        <div>
+          <b>{unratedAmount || ' '}</b>
+        </div>
+        <div className={classes(css.buttons)}>
+          {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+            <div className={classes(css.adminButtons)}>
               <EditButton
                 fontSize="medium"
                 onClick={editUserClicked}
-                href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, { customer })}
+                href={modalLink(ModalTypes.EDIT_CUSTOMER_MODAL, {
+                  customer,
+                })}
               />
               <DeleteButton
                 onClick={deleteUserClicked}
@@ -104,17 +118,10 @@ export const TableCustomerRow: FC<TableRowProps> = ({ customer }) => {
                 })}
               />
             </div>
-          </div>
-        )}
-      </td>
-      <td className="styledTd nowrap textAlignEnd">
-        <Link
-          className={classes(css.navBarLink)}
-          to={`${currentLocation.pathname}/${id}`}
-        >
+          )}
           <ArrowForwardIcon className={classes(css.arrowIcon)} />
-        </Link>
-      </td>
-    </tr>
+        </div>
+      </div>
+    </div>
   );
 };

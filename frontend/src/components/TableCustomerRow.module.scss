@@ -1,19 +1,11 @@
 @import './../shared.scss';
 
-.editCustomer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  :not(:first-child) {
-    margin-left: 20px;
-  }
+.buttons {
+  @extend .layout-row;
+  margin-left: auto;
 }
 
-.arrowIcon {
-  height: 24px;
-  width: 24px;
-  color: $COLOR_BLACK40;
-  &:hover {
-    color: $COLOR_EMERALD;
-  }
+.adminButtons {
+  @extend .layout-row;
+  gap: 10px;
 }

@@ -9,62 +9,6 @@
   }
 }
 
-.taskTableRow {
-  color: $COLOR_BLACK100;
-  display: grid;
-  &.clickable {
-    cursor: pointer;
-    user-select: none;
-  }
-  & > * {
-    max-width: 100%;
-    max-height: 100%;
-    margin: auto 0px;
-    padding: 16px;
-    cursor: inherit;
-    text-align: left;
-    white-space: inherit;
-    overflow: hidden;
-
-    &.clickable {
-      cursor: pointer;
-    }
-    &.nowrap {
-      white-space: nowrap;
-    }
-    &.textAlignEnd {
-      text-align: end;
-    }
-    &.textAlignCenter {
-      text-align: center;
-    }
-  }
-}
-
-.taskTableHeader {
-  @extend .typography-body-bold;
-  padding: 16px;
-  vertical-align: middle;
-  text-align: left;
-  text-transform: none;
-
-  &.clickable {
-    cursor: pointer;
-    user-select: none;
-  }
-  &.textAlignEnd {
-    text-align: end;
-  }
-  &.textAlignCenter {
-    text-align: center;
-  }
-  svg {
-    margin-left: 0.4em;
-    width: 1.2em;
-    height: 1.2em;
-  }
-}
-
 // Bottom and top left radius for clean looking hover
 .ratedTitle {
   padding-left: 25px;
@@ -87,19 +31,6 @@
   height: 24px;
   width: 24px;
   color: $COLOR_BLACK40;
-}
-
-.hoverRow {
-  &:hover,
-  &:focus {
-    & > div {
-      background-color: #ddedf6; // No color found in shared.scss
-      border-radius: 12px;
-      .arrowIcon {
-        color: $COLOR_EMERALD;
-      }
-    }
-  }
 }
 
 .completedRow {

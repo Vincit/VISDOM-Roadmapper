@@ -123,7 +123,7 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
       className={classes(css.navBarLink, css.hoverRow)}
       to={`${currentLocation.pathname}/${task.id}`}
     >
-      <div style={style} className={classes(css.taskTableRow)}>
+      <div style={style} className={classes(css.virtualizedTableRow)}>
         <div className={classes(css.taskTitle)}>{name}</div>
         <div>{numFormat.format(value)}</div>
         <div>{numFormat.format(work)}</div>

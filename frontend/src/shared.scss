@@ -528,3 +528,78 @@ textarea {
   margin-left: 24px;
   margin-right: 40px;
 }
+
+.virtualizedTableHeader {
+  @extend .typography-body-bold;
+  padding: 16px;
+  vertical-align: middle;
+  text-align: left;
+  text-transform: none;
+
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+  svg {
+    margin-left: 0.4em;
+    width: 1.2em;
+    height: 1.2em;
+  }
+}
+
+.virtualizedTableRow {
+  color: $COLOR_BLACK100;
+  display: grid;
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+  & > * {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto 0px;
+    padding: 16px;
+    cursor: inherit;
+    text-align: left;
+    white-space: inherit;
+    overflow: hidden;
+
+    &.clickable {
+      cursor: pointer;
+    }
+    &.nowrap {
+      white-space: nowrap;
+    }
+    &.textAlignEnd {
+      text-align: end;
+    }
+    &.textAlignCenter {
+      text-align: center;
+    }
+  }
+}
+
+.hoverRow {
+  &:hover,
+  &:focus {
+    & > div {
+      background-color: #ddedf6; // No color found in shared.scss
+      border-radius: 12px;
+      .arrowIcon {
+        color: $COLOR_EMERALD;
+      }
+    }
+  }
+  .arrowIcon {
+    margin-left: 25px;
+    height: 24px;
+    width: 24px;
+    color: $COLOR_BLACK40;
+  }
+}

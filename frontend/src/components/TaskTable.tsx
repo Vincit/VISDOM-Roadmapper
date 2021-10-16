@@ -107,12 +107,12 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
       </div>
       <div
         style={{ marginRight: scrollBarWidth, gridTemplateColumns }}
-        className={classes(css.taskTableRow)}
+        className={classes(css.virtualizedTableRow)}
       >
         {header.map(({ label, textAlign, sorting: sorter }) => (
           <div
             key={label}
-            className={classes(css.taskTableHeader, {
+            className={classes(css.virtualizedTableHeader, {
               [css.clickable]: sorter !== undefined,
               textAlignEnd: textAlign === 'end',
               textAlignCenter: textAlign === 'center',

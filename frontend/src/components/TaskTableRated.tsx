@@ -24,7 +24,7 @@ const TableRatedTaskRow: TaskRow = ({ task, style }) => {
     >
       <div
         style={style}
-        className={classes(css.taskTableRow, {
+        className={classes(css.virtualizedTableRow, {
           [css.completedRow]: task.completed,
         })}
       >
