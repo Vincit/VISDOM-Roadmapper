@@ -5,6 +5,7 @@ import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
 
 import colors from '../../colors.module.scss';
@@ -64,3 +65,5 @@ export const DeleteButton = svgButton(DeleteIcon, {
 export const ModalCloseButton = svgButton(CloseIcon, {
   className: classes(css.closeButton),
 });
+export const CloseButton = svgButton(CloseIcon, {});
+export const ConfirmButton = svgButton(CheckIcon, {});

@@ -1,12 +1,20 @@
-import { FC } from 'react';
+import React, { FC, useState } from 'react';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { StoreDispatchType } from 'src/redux';
+import { Alert } from 'react-bootstrap';
+import TextareaAutosize from 'react-textarea-autosize';
+import { roadmapsActions } from '../redux/roadmaps/index';
 import { MetricsSummary } from './MetricsSummary';
 import { valueAndWorkSummary } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
-import { Task } from '../redux/roadmaps/types';
+import { Task, TaskRequest } from '../redux/roadmaps/types';
 import colors from '../colors.module.scss';
 import css from './TaskOverview.module.scss';
+import { EditButton, CloseButton, ConfirmButton } from './forms/SvgButton';
+import '../shared.scss';
+import { LoadingSpinner } from './LoadingSpinner';
 
 const classes = classNames.bind(css);
 
@@ -20,6 +28,62 @@ export const TaskOverview: FC<{
 }> = ({ task }) => {
   const { t } = useTranslation();
   const { value, work } = valueAndWorkSummary(task);
+  const dispatch = useDispatch<StoreDispatchType>();
+  const [editedField, setEditedField] = useState('');
+  const [editText, setEditText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const openEditField = (fieldName: string, fieldValue: string) => {
+    setEditedField(fieldName);
+    setEditText(fieldValue);
+  };
+
+  const closeEditField = () => {
+    setEditedField('');
+    setEditText('');
+    setErrorMessage('');
+  };
+
+  const handleTextChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+    setEditText(event.currentTarget.value);
+  };
+
+  const handleConfirm = () => {
+    if (editedField !== '' && editText !== '') {
+      setIsLoading(true);
+      const req: TaskRequest = {
+        id: task.id,
+        [editedField]: editText,
+      };
+
+      dispatch(roadmapsActions.patchTask(req)).then((res) => {
+        setIsLoading(false);
+        if (roadmapsActions.patchTask.rejected.match(res)) {
+          if (res.payload) {
+            setErrorMessage(res.payload.message);
+          }
+        } else {
+          closeEditField();
+        }
+      });
+    } else {
+      setErrorMessage("Field can't be empty.");
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    switch (event.key) {
+      case 'Enter':
+        handleConfirm();
+        break;
+      case 'Escape':
+        closeEditField();
+        break;
+      default:
+        break;
+    }
+  };
 
   const metrics = [
     {
@@ -36,19 +100,34 @@ export const TaskOverview: FC<{
 
   const taskData = [
     [
-      { label: 'Title', value: task.name, format: 'bold' },
-      { label: 'Description', value: task.description },
+      {
+        label: 'Title',
+        keyName: 'name',
+        value: task.name,
+        format: 'bold',
+        editable: true,
+      },
+      {
+        label: 'Description',
+        keyName: 'description',
+        value: task.description,
+        editable: true,
+      },
     ],
     [
       {
         label: 'Created on',
+        keyName: 'createdAt',
         value: new Date(task.createdAt).toLocaleDateString(),
         format: 'bold',
+        editable: false,
       },
       {
         label: 'Status',
+        keyName: 'completed',
         value: task.completed ? 'Completed' : 'Unordered',
         format: task.completed ? 'completed' : 'unordered',
+        editable: false,
       },
     ],
   ];
@@ -71,9 +150,59 @@ export const TaskOverview: FC<{
                 <div className={classes(css.label)}>
                   <Trans i18nKey={row.label} />
                 </div>
-                <div className={classes(css.value, css[row.format ?? ''])}>
-                  {row.value}
-                </div>
+
+                {editedField === row.keyName ? (
+                  <>
+                    {isLoading && (
+                      <div className={classes(css.flexGrow)}>
+                        <LoadingSpinner />
+                      </div>
+                    )}
+                    {!isLoading && errorMessage === '' && (
+                      <TextareaAutosize
+                        className={classes(css.input, css[row.format ?? ''])}
+                        value={editText}
+                        onChange={(e) => handleTextChange(e)}
+                        autoComplete="off"
+                        rows={1}
+                        onKeyDown={handleKeyDown}
+                      />
+                    )}
+                    {errorMessage !== '' && (
+                      <div className={classes(css.flexGrow)}>
+                        <Alert
+                          show={errorMessage.length > 0}
+                          variant="danger"
+                          onClose={() => setErrorMessage('')}
+                        >
+                          {errorMessage}
+                        </Alert>
+                      </div>
+                    )}
+                    {row.editable && (
+                      <div className={classes(css.buttonsDiv)}>
+                        <CloseButton onClick={() => closeEditField()} />
+                        {errorMessage === '' && (
+                          <ConfirmButton onClick={handleConfirm} />
+                        )}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className={classes(css.value, css[row.format ?? ''])}>
+                      {row.value}
+                    </div>
+                    {row.editable && (
+                      <div className={classes(css.editButtonDiv)}>
+                        <EditButton
+                          fontSize="medium"
+                          onClick={() => openEditField(row.keyName, row.value)}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             ))}
           </div>

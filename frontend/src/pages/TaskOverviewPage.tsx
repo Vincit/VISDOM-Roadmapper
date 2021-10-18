@@ -76,7 +76,7 @@ export const TaskOverviewPage = () => {
         {task && (
           <>
             <div className={classes(css.content)}>
-              <TaskOverview task={task} />
+              <TaskOverview key={taskId} task={task} />
             </div>
             <div className={classes(css.ratings)}>
               {valueRatings.length > 0 && (
