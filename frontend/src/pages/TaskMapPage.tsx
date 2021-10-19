@@ -47,7 +47,10 @@ const SingleTask: FC<{
           ? () => setSelectedTask(undefined)
           : () => setSelectedTask(task)
       }
-      className={classes(css.singleTask, { [css.selectedTask]: selected })}
+      className={classes(css.singleTask, {
+        [css.selectedTask]: selected,
+        [css.completedTask]: task.completed && !selected,
+      })}
     >
       <Handle
         className={classes(css.leftHandle)}
@@ -57,7 +60,12 @@ const SingleTask: FC<{
       />
       {task!.name}
       <div className={classes(css.taskRatingTexts)}>
-        <TaskRatingsText task={task!} selected={selected} largeIcons />
+        <TaskRatingsText
+          task={task!}
+          selected={selected}
+          completed={task.completed}
+          largeIcons
+        />
       </div>
       <Handle
         className={classes(css.rightHandle)}
