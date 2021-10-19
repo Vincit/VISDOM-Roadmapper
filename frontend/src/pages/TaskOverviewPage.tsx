@@ -1,12 +1,14 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
+import { roadmapsActions } from '../redux/roadmaps';
+import { StoreDispatchType } from '../redux/index';
 import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
-import { Task } from '../redux/roadmaps/types';
+import { Task, TaskRequest } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableWork } from '../components/RatingTableWork';
 import { RatingTableValue } from '../components/RatingTableValue';
@@ -28,6 +30,7 @@ const TaskOverview: FC<{
 }> = ({ tasks, task, taskIdx }) => {
   const history = useHistory();
   const { t } = useTranslation();
+  const dispatch = useDispatch<StoreDispatchType>();
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
@@ -63,22 +66,49 @@ const TaskOverview: FC<{
 
   const taskData = [
     [
-      { label: t('Title'), value: task.name, format: 'bold' },
-      { label: t('Description'), value: task.description },
+      {
+        label: t('Title'),
+        keyName: 'name',
+        value: task.name,
+        format: 'bold',
+        editable: true,
+      },
+      {
+        label: t('Description'),
+        keyName: 'description',
+        value: task.description,
+        editable: true,
+      },
     ],
     [
       {
         label: t('Created on'),
+        keyName: 'createdAt',
         value: new Date(task.createdAt).toLocaleDateString(),
         format: 'bold',
+        editable: false,
       },
       {
         label: t('Status'),
+        keyName: 'completed',
         value: task.completed ? 'Completed' : 'Unordered',
         format: task.completed ? 'completed' : 'unordered',
+        editable: false,
       },
     ],
   ];
+
+  const handleEdit = async (editedField: string, edited: string) => {
+    const req: TaskRequest = {
+      id: task.id,
+      [editedField]: edited,
+    };
+
+    const res = await dispatch(roadmapsActions.patchTask(req));
+    if (roadmapsActions.patchTask.rejected.match(res) && res.payload)
+      return res.payload.message;
+    return '';
+  };
 
   return (
     <div className="overviewContainer">
@@ -90,6 +120,7 @@ const TaskOverview: FC<{
         onOverviewChange={(id) => history.push(`${tasksListPage}/${id}`)}
         metrics={metrics}
         data={taskData}
+        onDataEdit={handleEdit}
       />
       <div className={classes(css.ratings)}>
         {valueRatings.length > 0 && (

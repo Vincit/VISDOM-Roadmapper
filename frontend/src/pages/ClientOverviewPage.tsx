@@ -76,23 +76,29 @@ const ClientOverview: FC<{
     [
       {
         label: t('Client'),
+        keyName: 'clientDotName',
         value: clientDotName,
         format: 'clientGap',
+        editable: false,
       },
       {
         label: t('Contact'),
+        keyName: 'email',
         value: (
           <a className="green" href={`mailto:${client.email}`}>
             {client.email}
           </a>
         ),
+        editable: false,
       },
     ],
     [
       {
         label: t('Client value'),
+        keyName: 'weight',
         value: client.weight,
         format: 'bold',
+        editable: false,
       },
     ],
   ];
