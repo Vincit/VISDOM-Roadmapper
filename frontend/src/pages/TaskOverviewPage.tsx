@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
+// useTranslation is a hook and thus can't be used in a function
+import i18n from 'i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -23,6 +25,56 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
+export const getTaskOverviewData = (task: Task, editable: boolean) => {
+  const { value, work } = valueAndWorkSummary(task);
+  const metrics = [
+    {
+      label: i18n.t('Avg Value'),
+      value: numFormat.format(value.avg),
+      children: <BusinessIcon color={colors.black100} />,
+    },
+    {
+      label: i18n.t('Avg Work'),
+      value: numFormat.format(work.avg),
+      children: <WorkRoundIcon color={colors.black100} />,
+    },
+  ];
+  const data = [
+    [
+      {
+        label: i18n.t('Title'),
+        keyName: 'name',
+        value: task.name,
+        format: 'bold',
+        editable,
+      },
+      {
+        label: i18n.t('Description'),
+        keyName: 'description',
+        value: task.description,
+        editable,
+      },
+    ],
+    [
+      {
+        label: i18n.t('Created on'),
+        keyName: 'createdAt',
+        value: new Date(task.createdAt).toLocaleDateString(),
+        format: 'bold',
+        editable: false,
+      },
+      {
+        label: i18n.t('Status'),
+        keyName: 'completed',
+        value: task.completed ? 'Completed' : 'Unordered',
+        format: task.completed ? 'completed' : 'unordered',
+        editable: false,
+      },
+    ],
+  ];
+  return { metrics, data };
+};
+
 const TaskOverview: FC<{
   tasks: Task[];
   task: Task;
@@ -34,7 +86,7 @@ const TaskOverview: FC<{
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
-  const { value, work } = valueAndWorkSummary(task!);
+  const { value, work } = valueAndWorkSummary(task);
   const { value: valueRatings, work: workRatings } = getRatingsByType(
     task?.ratings || [],
   );
@@ -49,53 +101,6 @@ const TaskOverview: FC<{
       id: taskIdx + 1 < tasks.length ? tasks[taskIdx + 1].id : undefined,
       type: ArrowType.Next,
     },
-  ];
-
-  const metrics = [
-    {
-      label: t('Avg Value'),
-      value: numFormat.format(value.avg),
-      children: <BusinessIcon color={colors.black100} />,
-    },
-    {
-      label: t('Avg Work'),
-      value: numFormat.format(work.avg),
-      children: <WorkRoundIcon color={colors.black100} />,
-    },
-  ];
-
-  const taskData = [
-    [
-      {
-        label: t('Title'),
-        keyName: 'name',
-        value: task.name,
-        format: 'bold',
-        editable: true,
-      },
-      {
-        label: t('Description'),
-        keyName: 'description',
-        value: task.description,
-        editable: true,
-      },
-    ],
-    [
-      {
-        label: t('Created on'),
-        keyName: 'createdAt',
-        value: new Date(task.createdAt).toLocaleDateString(),
-        format: 'bold',
-        editable: false,
-      },
-      {
-        label: t('Status'),
-        keyName: 'completed',
-        value: task.completed ? 'Completed' : 'Unordered',
-        format: task.completed ? 'completed' : 'unordered',
-        editable: false,
-      },
-    ],
   ];
 
   const handleEdit = async (editedField: string, edited: string) => {
@@ -118,8 +123,7 @@ const TaskOverview: FC<{
         name={task.name}
         previousAndNext={siblingTasks}
         onOverviewChange={(id) => history.push(`${tasksPage}/task/${id}`)}
-        metrics={metrics}
-        data={taskData}
+        {...getTaskOverviewData(task, true)}
         onDataEdit={handleEdit}
       />
       <div className={classes(css.ratings)}>
