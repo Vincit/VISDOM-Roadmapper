@@ -13,7 +13,8 @@ import { Roadmap, Task } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { TaskRatingsText } from '../components/TaskRatingsText';
 import { groupTaskRelations } from '../utils/TaskRelationUtils';
-import { TaskOverview } from '../components/TaskOverview';
+import { getTaskOverviewData } from './TaskOverviewPage';
+import { OverviewContent } from '../components/Overview';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 import css from './TaskMapPage.module.scss';
 
@@ -180,7 +181,9 @@ export const TaskMapPage = () => {
         onConnect={onConnect}
       />
       <div className={classes(css.taskOverviewContainer)}>
-        {selectedTask && <TaskOverview task={selectedTask} />}
+        {selectedTask && (
+          <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
+        )}
       </div>
     </>
   );

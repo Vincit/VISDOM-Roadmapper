@@ -30,19 +30,65 @@ interface OverviewData {
   editable: boolean;
 }
 
-type OverviewProps = {
-  backHref: string;
-  overviewType: string;
-  name: any;
-  previousAndNext: PreviousAndNext[];
-  onOverviewChange: (id: number) => void;
+interface OverviewContentProps {
   metrics: MetricsProps[];
   data: OverviewData[][];
   onDataEditConfirm?: (
     newValue: string,
     fieldId: string,
   ) => Promise<string | void>;
-};
+}
+
+interface OverviewProps extends OverviewContentProps {
+  backHref: string;
+  overviewType: string;
+  name: any;
+  previousAndNext: PreviousAndNext[];
+  onOverviewChange: (id: number) => void;
+}
+
+/**
+ * Renders a <OverviewContent /> component displaying metrics and overviewable data.
+ * */
+export const OverviewContent: FC<OverviewContentProps> = ({
+  metrics,
+  data,
+  onDataEditConfirm,
+}) => (
+  <div className={classes(css.content)}>
+    <div className={classes(css.metrics)}>
+      {metrics.map(({ label, value, children }) => (
+        <MetricsSummary key={label} label={label} value={value}>
+          {children}
+        </MetricsSummary>
+      ))}
+    </div>
+    <div className={classes(css.data)}>
+      {data.map((column, idx) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div className={classes(css.column)} key={idx}>
+          {column.map(({ label, keyName, value, format, editable }) => (
+            <div className={classes(css.row)} key={label}>
+              <div className={classes(css.label)}>{label}</div>
+              {editable ? (
+                <EditableTextWithButtons
+                  onOk={onDataEditConfirm!}
+                  value={value}
+                  fieldId={keyName}
+                  format={format}
+                />
+              ) : (
+                <>
+                  <div className={classes(css.value)}>{value}</div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 /**
  * Renders a <Overview /> component, which can be used in task, client etc. overviews.
@@ -100,39 +146,11 @@ export const Overview: FC<OverviewProps> = ({
           ))}
         </div>
       </div>
-      <div className={classes(css.content)}>
-        <div className={classes(css.metrics)}>
-          {metrics.map(({ label, value, children }) => (
-            <MetricsSummary key={label} label={label} value={value}>
-              {children}
-            </MetricsSummary>
-          ))}
-        </div>
-        <div className={classes(css.data)}>
-          {data.map((column, idx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <div className={classes(css.column)} key={idx}>
-              {column.map(({ label, keyName, value, format, editable }) => (
-                <div className={classes(css.row)} key={label}>
-                  <div className={classes(css.label)}>{label}</div>
-                  {editable ? (
-                    <EditableTextWithButtons
-                      onOk={onDataEditConfirm!}
-                      value={value}
-                      fieldId={keyName}
-                      format={format}
-                    />
-                  ) : (
-                    <>
-                      <div className={classes(css.value)}>{value}</div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <OverviewContent
+        metrics={metrics}
+        data={data}
+        onDataEditConfirm={onDataEditConfirm}
+      />
     </div>
   );
 };
