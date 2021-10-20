@@ -6,7 +6,7 @@ import css from './InfoTooltip.module.scss';
 const classes = classNames.bind(css);
 
 export const InfoTooltip: React.FC<{
-  title: string;
+  title: React.ReactNode;
   children?: any;
 }> = ({ title, children }) => {
   return (
@@ -15,7 +15,7 @@ export const InfoTooltip: React.FC<{
         arrow: classes(css.tooltipArrow),
         tooltip: classes(css.tooltip),
       }}
-      title={title}
+      title={title ?? ''}
       placement="top"
       arrow
       interactive

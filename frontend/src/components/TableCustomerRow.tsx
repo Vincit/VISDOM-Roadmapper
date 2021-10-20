@@ -21,11 +21,14 @@ import { Dot } from './Dot';
 const classes = classNames.bind(css);
 
 interface TableRowProps {
-  customer: Customer;
+  item: Customer;
   style?: CSSProperties;
 }
 
-export const TableCustomerRow: FC<TableRowProps> = ({ customer, style }) => {
+export const TableCustomerRow: FC<TableRowProps> = ({
+  item: customer,
+  style,
+}) => {
   const { id, name, email, color, weight } = customer;
   const currentLocation = useLocation();
   const history = useHistory();

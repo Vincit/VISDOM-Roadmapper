@@ -1,87 +1,59 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { FC, CSSProperties, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { shallowEqual, useSelector } from 'react-redux';
+import { Trans } from 'react-i18next';
 import { FixedSizeList } from 'react-window';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
-import { Task } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
-import { InfoTooltip } from './InfoTooltip';
 import { SortingArrow } from './SortingArrow';
-import { useSorting } from '../utils/SortUtils';
-import {
-  taskFilter,
-  FilterTypes,
-  SortingTypes,
-  taskSort,
-} from '../utils/TaskUtils';
+import { useSorting, SortBy } from '../utils/SortUtils';
 import css from './TaskTable.module.scss';
 
 const classes = classNames.bind(css);
 
-interface TableHeader {
+interface TableHeader<Sorting> {
   label: string;
-  sorting?: SortingTypes;
+  sorting?: Sorting;
   textAlign?: 'end' | 'left' | 'center';
   width?: string;
 }
 
-export type TaskRow = FC<{
-  task: Task;
+export type TableRow<ItemType> = FC<{
+  item: ItemType;
   style?: CSSProperties;
 }>;
 
-interface TaskTableDef {
-  header: TableHeader[];
-  title: string;
-  Row: TaskRow;
-}
+type TableDef<ItemType, Sorting> = {
+  header: TableHeader<Sorting>[];
+  Title: string | FC<{ count: number }>;
+  Row: TableRow<ItemType>;
+  getSort: (t: Sorting | undefined) => SortBy<ItemType>;
+};
 
-type TaskTableProps = {
-  tasks: Task[];
-  searchString?: string;
-  searchFilter?: FilterTypes;
+type TableProps<ItemType> = {
+  items: ItemType[];
+  filterPredicate?: (item: ItemType) => boolean;
   rowHeight?: number;
   height?: number;
 };
 
-export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
-  header,
-  Row,
-  title,
-}) => ({ tasks, searchString, searchFilter, rowHeight = 80, height = 600 }) => {
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-
-  const { t } = useTranslation();
-  const [sort, sorting] = useSorting(taskSort);
+export const table: <ItemType, Sorting>(
+  def: TableDef<ItemType, Sorting>,
+) => FC<TableProps<ItemType>> = ({ header, Row, Title, getSort }) => ({
+  items,
+  filterPredicate,
+  rowHeight = 80,
+  height = 600,
+}) => {
+  const [sort, sorting] = useSorting(getSort);
 
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
 
-  const predicate = taskFilter(searchFilter, userInfo);
-
-  // Filter, search, sort tasks
-  const filtered = predicate ? tasks.filter(predicate) : tasks;
-
-  const searched = !searchString
-    ? filtered
-    : filtered.filter(
-        (task) =>
-          task.name.toLowerCase().includes(searchString) ||
-          task.description.toLowerCase().includes(searchString),
-      );
-
-  const sorted = sort(searched);
+  // Filter, sort tasks
+  const sorted = sort(filterPredicate ? items.filter(filterPredicate) : items);
 
   if (sorted.length === 0) return null;
 
-  const onSortingChange = (sorter?: SortingTypes) => {
+  const onSortingChange = (sorter?: typeof header[0]['sorting']) => {
     if (sorter === undefined) return;
     if (sorter === sorting.type.get()) {
       sorting.order.toggle();
@@ -98,12 +70,7 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
   return (
     <div>
       <div className={classes(css.titleContainer)}>
-        <h2 className={classes(css.title)}>
-          <Trans i18nKey={title} /> ({sorted.length})
-        </h2>
-        <InfoTooltip title={t('tooltipMessage')}>
-          <InfoIcon className={classes(css.tooltipIcon)} />
-        </InfoTooltip>
+        {typeof Title === 'string' ? Title : <Title count={sorted.length} />}
       </div>
       <div
         style={{ marginRight: scrollBarWidth, gridTemplateColumns }}
@@ -137,7 +104,7 @@ export const taskTable: (def: TaskTableDef) => FC<TaskTableProps> = ({
         }}
       >
         {({ index, style }) => (
-          <Row style={{ gridTemplateColumns, ...style }} task={sorted[index]} />
+          <Row style={{ gridTemplateColumns, ...style }} item={sorted[index]} />
         )}
       </FixedSizeList>
     </div>

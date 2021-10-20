@@ -9,10 +9,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { InfoTooltip } from './InfoTooltip';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
-import { Customer, RoadmapUser } from '../redux/roadmaps/types';
+import { Customer, RoadmapUser, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -32,8 +34,9 @@ import {
   SortingTypes,
   ratedByUser,
   ratedByCustomer,
+  taskSort,
 } from '../utils/TaskUtils';
-import { taskTable, TaskRow } from './TaskTable';
+import { table, TableRow } from './Table';
 
 const classes = classNames.bind(css);
 
@@ -42,7 +45,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
+const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const currentLocation = useLocation();
   const dispatch = useDispatch<StoreDispatchType>();
   const { name, roadmapId } = task;
@@ -209,9 +212,19 @@ const TableUnratedTaskRow: TaskRow = ({ task, style }) => {
   );
 };
 
-export const TaskTableUnrated = taskTable({
-  title: 'unratedTaskMessage',
+export const TaskTableUnrated = table({
+  Title: ({ count }) => (
+    <>
+      <h2 className={classes(css.title)}>
+        <Trans i18nKey="unratedTaskMessage" /> ({count})
+      </h2>
+      <InfoTooltip title={<Trans i18nKey="tooltipMessage" />}>
+        <InfoIcon className={classes(css.tooltipIcon)} />
+      </InfoTooltip>
+    </>
+  ),
   Row: TableUnratedTaskRow,
+  getSort: taskSort,
   header: [
     { label: 'Task title', width: '2fr', sorting: SortingTypes.SORT_NAME },
     {

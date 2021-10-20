@@ -118,7 +118,7 @@ export const DashboardPage = () => {
       )}
       {unratedTasks.length > 0 && (
         <div className={classes(css.taskTableWrapper)}>
-          <TaskTableUnrated tasks={unratedTasks} />
+          <TaskTableUnrated items={unratedTasks} />
         </div>
       )}
     </>

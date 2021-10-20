@@ -13,7 +13,7 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { FilterTypes, isUnrated } from '../utils/TaskUtils';
+import { FilterTypes, isUnrated, taskFilter } from '../utils/TaskUtils';
 import { partition } from '../utils/array';
 import { titleCase } from '../utils/string';
 import { TopBar } from '../components/TopBar';
@@ -93,6 +93,12 @@ export const TaskListPage = () => {
     return null;
   };
 
+  const filter = taskFilter(searchFilter, userInfo);
+  const predicate = (task: Task) =>
+    (!filter || filter(task)) &&
+    (task.name.includes(searchString) ||
+      task.description.includes(searchString));
+
   return (
     <>
       <TopBar
@@ -116,18 +122,10 @@ export const TaskListPage = () => {
         </div>
       </TopBar>
       <div className={classes(css.unratedTableContainer)}>
-        <TaskTableUnrated
-          tasks={unrated}
-          searchString={searchString}
-          searchFilter={searchFilter}
-        />
+        <TaskTableUnrated items={unrated} filterPredicate={predicate} />
       </div>
       <div>
-        <TaskTableRated
-          tasks={rated}
-          searchString={searchString}
-          searchFilter={searchFilter}
-        />
+        <TaskTableRated items={rated} filterPredicate={predicate} />
       </div>
     </>
   );
