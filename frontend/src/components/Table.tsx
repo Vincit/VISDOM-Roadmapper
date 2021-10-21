@@ -6,7 +6,7 @@ import { FixedSizeList } from 'react-window';
 import classNames from 'classnames';
 import { SortingArrow } from './SortingArrow';
 import { useSorting, SortBy } from '../utils/SortUtils';
-import css from './TaskTable.module.scss';
+import css from './Table.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -79,7 +79,7 @@ export const table: <ItemType, Sorting>(
         {header.map(({ label, textAlign, sorting: sorter }) => (
           <div
             key={label}
-            className={classes(css.virtualizedTableHeader, {
+            className={classes(css.tableHeader, {
               [css.clickable]: sorter !== undefined,
               textAlignEnd: textAlign === 'end',
               textAlignCenter: textAlign === 'center',

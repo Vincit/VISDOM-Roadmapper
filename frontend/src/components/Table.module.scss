@@ -1,0 +1,34 @@
+@import '../shared.scss';
+
+.titleContainer {
+  @extend .listHeader;
+  align-items: center;
+  gap: 12px;
+  .title {
+    text-align: start;
+  }
+}
+
+.tableHeader {
+  @extend .typography-body-bold;
+  padding: 16px;
+  vertical-align: middle;
+  text-align: left;
+  text-transform: none;
+
+  &.clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+  &.textAlignEnd {
+    text-align: end;
+  }
+  &.textAlignCenter {
+    text-align: center;
+  }
+  svg {
+    margin-left: 0.4em;
+    width: 1.2em;
+    height: 1.2em;
+  }
+}

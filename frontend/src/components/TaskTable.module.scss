@@ -1,14 +1,5 @@
 @import '../shared.scss';
 
-.titleContainer {
-  @extend .listHeader;
-  align-items: center;
-  gap: 12px;
-  .title {
-    text-align: start;
-  }
-}
-
 // Bottom and top left radius for clean looking hover
 .ratedTitle {
   padding-left: 25px;
@@ -24,13 +15,6 @@
   margin-right: 10px;
   width: 24px;
   height: 24px;
-}
-
-.arrowIcon {
-  margin-left: 25px;
-  height: 24px;
-  width: 24px;
-  color: $COLOR_BLACK40;
 }
 
 .completedRow {
