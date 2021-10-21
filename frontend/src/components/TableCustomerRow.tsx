@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState, useEffect, CSSProperties } from 'react';
+import { MouseEvent, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -15,17 +15,13 @@ import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { getType } from '../utils/UserUtils';
 import { unratedTasksAmount } from '../utils/TaskUtils';
+import { TableRow } from './Table';
 import css from './TableCustomerRow.module.scss';
 import { Dot } from './Dot';
 
 const classes = classNames.bind(css);
 
-interface TableRowProps {
-  item: Customer;
-  style?: CSSProperties;
-}
-
-export const TableCustomerRow: FC<TableRowProps> = ({
+export const TableCustomerRow: TableRow<Customer> = ({
   item: customer,
   style,
 }) => {
