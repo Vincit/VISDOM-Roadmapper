@@ -1,0 +1,79 @@
+@import '../shared.scss';
+
+$GRAPH_ITEM_MARGIN: 11px;
+
+.graphOuter {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 500px;
+  min-height: 500px;
+  margin-left: 20px;
+  overflow-x: auto;
+}
+
+.graphLabel {
+  @extend .typography-pre-title;
+  color: $COLOR_BLACK40;
+  &.vertical {
+    width: 100px;
+    transform: rotate(-90deg);
+    position: relative;
+    left: -43px;
+    top: -250px;
+  }
+  &:not(.vertical) {
+    margin-top: 9px;
+  }
+}
+
+.graphInner {
+  border-left: 1px solid $COLOR_BLACK40;
+  border-bottom: 1px solid $COLOR_BLACK40;
+}
+
+.viewContainer {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow-x: auto;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-bottom: 20px;
+  padding-left: 23px;
+}
+
+.viewItems {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+  overflow-x: visible;
+}
+
+.graphItem {
+  @extend .shadow-roadmapblock;
+  display: flex;
+  flex-direction: column;
+  overflow-x: visible;
+  border-radius: 8px;
+  margin-right: $GRAPH_ITEM_MARGIN;
+  padding: 8px;
+  background-color: white;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    border: 1px solid $COLOR_SKY;
+    transform: scale(0.99, 0.99);
+  }
+  &:active {
+    transform: scale(0.97, 0.97);
+  }
+  &.selected {
+    background: $COLOR_CLOUD;
+  }
+  user-select: none;
+}
