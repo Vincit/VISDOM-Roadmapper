@@ -1,0 +1,49 @@
+.flexGrow {
+  align-self: center;
+  max-width: 300px;
+  min-width: 100px;
+  flex-grow: 1;
+  div {
+    margin: 0px;
+  }
+}
+
+.value {
+  @extend .typography-body;
+  @extend .layout-row;
+  @extend .flexGrow;
+  align-items: center;
+
+  padding-left: 21px;
+  padding-bottom: 2px;
+  &.bold {
+    @extend .typography-body-bold;
+  }
+  &.unordered {
+    @extend .typography-pre-title;
+  }
+  &.completed {
+    @extend .unordered;
+    color: $COLOR_FOREST;
+  }
+}
+
+.input {
+  font-weight: unset;
+  background-color: $COLOR_CLOUD;
+  border: 1px solid $COLOR_BLACK40;
+  @extend .flexGrow;
+  &.bold {
+    @extend .typography-body-bold;
+  }
+}
+
+.buttonsDiv {
+  @extend .layout-column;
+  gap: 5px;
+}
+
+.editButtonDiv {
+  margin-top: auto;
+  margin-bottom: auto;
+}
