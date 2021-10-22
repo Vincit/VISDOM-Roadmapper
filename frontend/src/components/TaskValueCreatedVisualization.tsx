@@ -19,14 +19,14 @@ interface VersionWorkAndTotalValue extends Version {
 
 export const TaskValueCreatedVisualization: FC<{
   version: VersionWorkAndTotalValue;
-}> = ({ version }) => {
+  width: number;
+}> = ({ version, width }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
   );
   const [data, setData] = useState<CustomerStakes[]>([]);
-  const w = Math.max(100, 60 * (version.work / 5));
 
   useEffect(() => {
     if (!currentRoadmap) {
@@ -57,7 +57,7 @@ export const TaskValueCreatedVisualization: FC<{
     <div
       className={classes(css.customerStakes)}
       style={{
-        ['--version-width' as any]: `${w}px`,
+        ['--version-width' as any]: `${width}px`,
         ['--largest-dot-size' as any]: largestValue(data),
         ['--max-diameter-multiplier' as any]: Math.min(
           2,
