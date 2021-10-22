@@ -108,23 +108,3 @@
     }
   }
 }
-
-.input {
-  font-weight: unset;
-  background-color: $COLOR_CLOUD;
-  border: 1px solid $COLOR_BLACK40;
-  @extend .flexGrow;
-  &.bold {
-    @extend .typography-body-bold;
-  }
-}
-
-.buttonsDiv {
-  @extend .layout-column;
-  gap: 5px;
-}
-
-.editButtonDiv {
-  margin-top: auto;
-  margin-bottom: auto;
-}

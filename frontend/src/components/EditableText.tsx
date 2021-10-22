@@ -1,37 +1,47 @@
 import { TextareaAutosize } from '@material-ui/core';
 import classNames from 'classnames';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState, KeyboardEvent, FormEvent } from 'react';
 import { Alert } from 'react-bootstrap';
 import { CloseButton, ConfirmButton, EditButton } from './forms/SvgButton';
 import { LoadingSpinner } from './LoadingSpinner';
-import css from './TaskOverview.module.scss';
+import css from './EditableText.module.scss';
 
 const classes = classNames.bind(css);
 
 interface WithButtonsProps {
-  onOk: (newValue: string) => string | undefined;
+  onOk: (newValue: string, fieldId: string) => Promise<string | void>;
   value: string;
-  isLoading: boolean;
+  fieldId: string;
+  format: string | undefined;
 }
 
 const withButtons = (Component: typeof EditableText) => ({
-  ...props
+  onOk,
+  value,
+  fieldId,
+  format,
 }: WithButtonsProps) => {
   const [editOpen, setEditOpen] = useState(false);
   const [editText, setEditText] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { onOk, ...passThroughProps } = props;
-
-  const handleTextChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+  const handleTextChange = (event: FormEvent<HTMLTextAreaElement>) => {
     setEditText(event.currentTarget.value);
   };
 
   const handleConfirm = () => {
-    const returnedError = onOk(editText);
-    if (returnedError) setErrorMessage(returnedError);
-    setEditText('');
-    setEditOpen(false);
+    if (editText !== '') {
+      setIsLoading(true);
+      onOk(editText, fieldId).then((returnedError) => {
+        if (returnedError) setErrorMessage(returnedError);
+        setEditText('');
+        setEditOpen(false);
+        setIsLoading(false);
+      });
+    } else {
+      setErrorMessage("Field can't be empty.");
+    }
   };
 
   const handleCancel = () => {
@@ -40,7 +50,7 @@ const withButtons = (Component: typeof EditableText) => ({
     setEditOpen(false);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     switch (event.key) {
       case 'Enter':
         handleConfirm();
@@ -61,7 +71,9 @@ const withButtons = (Component: typeof EditableText) => ({
         onTextChange={handleTextChange}
         onKeyDown={handleKeyDown}
         errorMessage={errorMessage}
-        {...passThroughProps}
+        isLoading={isLoading}
+        value={value}
+        format={format}
       />
       {editOpen ? (
         <div className={classes(css.buttonsDiv)}>
@@ -73,6 +85,7 @@ const withButtons = (Component: typeof EditableText) => ({
           <EditButton
             fontSize="medium"
             onClick={() => {
+              setEditText(value);
               setEditOpen(true);
             }}
           />
@@ -85,52 +98,50 @@ const withButtons = (Component: typeof EditableText) => ({
 export const EditableText: FC<{
   editOpen: boolean;
   editText: string;
-  onTextChange: (event: React.FormEvent<HTMLTextAreaElement>) => void;
-  onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  onTextChange: (event: FormEvent<HTMLTextAreaElement>) => void;
+  onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   errorMessage: string;
   value: string;
   isLoading: boolean;
+  format: string | undefined;
 }> = ({
   editOpen,
   editText,
   onTextChange,
+  onKeyDown,
   value,
   errorMessage,
   isLoading,
-  onKeyDown,
+  format,
 }) => {
-  return (
+  return editOpen ? (
     <>
-      {editOpen ? (
-        <>
-          {isLoading && (
-            <div className={classes(css.flexGrow)}>
-              <LoadingSpinner />
-            </div>
-          )}
-          {!isLoading && errorMessage === '' && (
-            <TextareaAutosize
-              className={classes(css.input)}
-              value={editText}
-              onChange={onTextChange}
-              autoComplete="off"
-              rows={1}
-              onKeyDown={onKeyDown}
-            />
-          )}
-          {errorMessage !== '' && (
-            <div className={classes(css.flexGrow)}>
-              <Alert show={errorMessage.length > 0} variant="danger">
-                {errorMessage}
-              </Alert>
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <div className={classes(css.value)}>{value}</div>
-        </>
+      {isLoading && (
+        <div className={classes(css.flexGrow)}>
+          <LoadingSpinner />
+        </div>
       )}
+      {!isLoading && errorMessage === '' && (
+        <TextareaAutosize
+          className={classes(css.input, css[format ?? ''])}
+          value={editText}
+          onChange={onTextChange}
+          autoComplete="off"
+          minRows={1}
+          onKeyDown={onKeyDown}
+        />
+      )}
+      {errorMessage !== '' && (
+        <div className={classes(css.flexGrow)}>
+          <Alert show={errorMessage.length > 0} variant="danger">
+            {errorMessage}
+          </Alert>
+        </div>
+      )}
+    </>
+  ) : (
+    <>
+      <div className={classes(css.value, css[format ?? ''])}>{value}</div>
     </>
   );
 };

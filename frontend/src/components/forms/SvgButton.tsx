@@ -66,6 +66,10 @@ export const DeleteButton = svgButton(DeleteIcon, {
 export const ModalCloseButton = svgButton(CloseIcon, {
   className: classes(css.closeButton),
 });
-export const CloseButton = svgButton(CloseIcon, {});
-export const ConfirmButton = svgButton(CheckIcon, {});
+export const CloseButton = svgButton(CloseIcon, {
+  hoverColor: colors.raspberry,
+});
+export const ConfirmButton = svgButton(CheckIcon, {
+  hoverColor: colors.emerald,
+});
 export const MailButton = svgButton(MailIcon, { hoverColor: colors.azure });

@@ -9,6 +9,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { EditButton, CloseButton, ConfirmButton } from './forms/SvgButton';
 import { LoadingSpinner } from './LoadingSpinner';
 import { MetricsSummary, MetricsProps } from './MetricsSummary';
+import { EditableTextWithButtons } from './EditableText';
 import { ReactComponent as PreviousArrow } from '../icons/expand_less.svg';
 import { ReactComponent as NextArrow } from '../icons/expand_more.svg';
 import css from './Overview.module.scss';
@@ -41,7 +42,10 @@ type OverviewProps = {
   onOverviewChange: (id: number) => void;
   metrics: MetricsProps[];
   data: OverviewData[][];
-  onDataEdit?: (editedField: string, edited: string) => Promise<string>;
+  onDataEditConfirm?: (
+    newValue: string,
+    fieldId: string,
+  ) => Promise<string | void>;
 };
 
 /**
@@ -62,9 +66,10 @@ type OverviewProps = {
  * columns. 'Format' property adds a css class to the value string/component.
  * 'Editable' true value indicates the data value can be changed. In this case, the
  * 'keyName' needs to be the edited value's key.
- * @param {function} props.onDataEdit If prop.data consist of editable values, this
+ * @param {function} props.onDataEditConfirm If prop.data consist of editable values, this
  * function needs to be provided. It should patch the overviewable object with the
- * updated value and return a string (error str on patch fail, otherwise an empty one)
+ * updated value and return a void Promise if successful. In case of an error, return a
+ * Promise containing an error string.
  */
 export const Overview: FC<OverviewProps> = ({
   backHref,
@@ -74,53 +79,9 @@ export const Overview: FC<OverviewProps> = ({
   onOverviewChange,
   metrics,
   data,
-  onDataEdit,
+  onDataEditConfirm,
 }) => {
   const { t } = useTranslation();
-  const [editedField, setEditedField] = useState('');
-  const [editText, setEditText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const openEditField = (fieldName: string, fieldValue: string) => {
-    setEditedField(fieldName);
-    setEditText(fieldValue);
-  };
-
-  const closeEditField = () => {
-    setEditedField('');
-    setEditText('');
-    setErrorMessage('');
-  };
-
-  const handleTextChange = (event: FormEvent<HTMLTextAreaElement>) => {
-    setEditText(event.currentTarget.value);
-  };
-
-  const handleConfirm = async () => {
-    if (editedField === '' || editText === '') {
-      setErrorMessage("Field can't be empty.");
-      return;
-    }
-    setIsLoading(true);
-    const error = await onDataEdit!(editedField, editText);
-    setIsLoading(false);
-    if (error === '') closeEditField();
-    else setErrorMessage(error);
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    switch (event.key) {
-      case 'Enter':
-        handleConfirm();
-        break;
-      case 'Escape':
-        closeEditField();
-        break;
-      default:
-        break;
-    }
-  };
 
   return (
     <div className={classes(css.section)}>
@@ -158,56 +119,16 @@ export const Overview: FC<OverviewProps> = ({
               {column.map(({ label, keyName, value, format, editable }) => (
                 <div className={classes(css.row)} key={label}>
                   <div className={classes(css.label)}>{label}</div>
-                  {editedField === keyName ? (
-                    <>
-                      {isLoading && (
-                        <div className={classes(css.flexGrow)}>
-                          <LoadingSpinner />
-                        </div>
-                      )}
-                      {!isLoading && errorMessage === '' && (
-                        <TextareaAutosize
-                          className={classes(css.input, css[format ?? ''])}
-                          value={editText}
-                          onChange={(e) => handleTextChange(e)}
-                          autoComplete="off"
-                          rows={1}
-                          onKeyDown={handleKeyDown}
-                        />
-                      )}
-                      {errorMessage !== '' && (
-                        <div className={classes(css.flexGrow)}>
-                          <Alert
-                            show={errorMessage.length > 0}
-                            variant="danger"
-                            onClose={() => setErrorMessage('')}
-                          >
-                            {errorMessage}
-                          </Alert>
-                        </div>
-                      )}
-                      {editable && (
-                        <div className={classes(css.buttonsDiv)}>
-                          <CloseButton onClick={() => closeEditField()} />
-                          {errorMessage === '' && (
-                            <ConfirmButton onClick={handleConfirm} />
-                          )}
-                        </div>
-                      )}
-                    </>
+                  {editable ? (
+                    <EditableTextWithButtons
+                      onOk={onDataEditConfirm!}
+                      value={value}
+                      fieldId={keyName}
+                      format={format}
+                    />
                   ) : (
                     <>
-                      <div className={classes(css.value, css[format ?? ''])}>
-                        {value}
-                      </div>
-                      {editable && (
-                        <div className={classes(css.editButtonDiv)}>
-                          <EditButton
-                            fontSize="medium"
-                            onClick={() => openEditField(keyName, value)}
-                          />
-                        </div>
-                      )}
+                      <div className={classes(css.value)}>{value}</div>
                     </>
                   )}
                 </div>
