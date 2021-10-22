@@ -152,9 +152,11 @@ export const getUserRoles: RouteHandlerFnc = async (ctx) => {
 export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
   const { ...others } = ctx.request.body;
+
   const invitation = await Invitation.query().findById(ctx.params.invitationId);
 
-  if (Object.keys(others).length || !invitation) return void (ctx.status = 400);
+  if (Object.keys(others).length || !invitation || !invitation.valid)
+    return void (ctx.status = 400);
   if (invitation.email !== ctx.state.user.email) return void (ctx.status = 403);
 
   const role = await Invitation.transaction(async (trx) => {

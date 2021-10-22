@@ -4,29 +4,36 @@ import { Context } from 'koa';
 import { IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import {
-  addInvitations,
-  patchInvitations,
-  deleteInvitations,
+  getInvitations,
+  postInvitation,
+  patchInvitation,
+  deleteInvitation,
 } from './invitations.controller';
 
 const invitationsRouter = new KoaRouter<IKoaState, Context>();
 
+invitationsRouter.get(
+  '/invitations',
+  requirePermission(Permission.RoadmapInvite),
+  getInvitations,
+);
+
 invitationsRouter.post(
   '/invitations',
   requirePermission(Permission.RoadmapInvite),
-  addInvitations,
+  postInvitation,
 );
 
 invitationsRouter.patch(
   '/invitations/:invitationId',
   requirePermission(Permission.RoadmapInvite),
-  patchInvitations,
+  patchInvitation,
 );
 
 invitationsRouter.delete(
   '/invitations/:invitationId',
   requirePermission(Permission.RoadmapInvite),
-  deleteInvitations,
+  deleteInvitation,
 );
 
 export default invitationsRouter;

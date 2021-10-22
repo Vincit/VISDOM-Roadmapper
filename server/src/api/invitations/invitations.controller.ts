@@ -3,11 +3,20 @@ import Invitation from './invitations.model';
 import User from '../users/users.model';
 import uuid from 'uuid';
 import { sendEmail } from '../../utils/sendEmail';
+import { daysAgo } from '../../utils/date';
 
 // should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
 const BASE_URL = process.env.FRONTEND_BASE_URL!;
 
-export const addInvitations: RouteHandlerFnc = async (ctx) => {
+export const getInvitations: RouteHandlerFnc = async (ctx) => {
+  ctx.body = await Invitation.query()
+    .where({
+      roadmapId: Number(ctx.params.roadmapId),
+    })
+    .where('updatedAt', '>=', daysAgo(30));
+};
+
+export const postInvitation: RouteHandlerFnc = async (ctx) => {
   const { type, email, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
@@ -20,24 +29,15 @@ export const addInvitations: RouteHandlerFnc = async (ctx) => {
 
   if (existingRole) throw new Error('Invitee is already a team member');
 
-  const previousInvitation = await Invitation.query()
-    .where({ email, roadmapId })
-    .first();
-
-  if (previousInvitation) {
-    const updated = await Invitation.query().patchAndFetchById(
-      previousInvitation.id,
-      { type },
-    );
-    return void (ctx.body = updated);
-  }
-
-  const created = await Invitation.query().insertAndFetch({
-    id: uuid.v4(),
-    roadmapId,
-    type,
-    email,
-  });
+  const created = await Invitation.query()
+    .insertAndFetch({
+      id: uuid.v4(),
+      roadmapId,
+      type,
+      email,
+    })
+    .onConflict(['roadmapId', 'email'])
+    .merge();
   await sendEmail(
     email,
     'Invitation to roadmap',
@@ -46,7 +46,7 @@ export const addInvitations: RouteHandlerFnc = async (ctx) => {
   return void (ctx.body = created);
 };
 
-export const patchInvitations: RouteHandlerFnc = async (ctx) => {
+export const patchInvitation: RouteHandlerFnc = async (ctx) => {
   const { id, type, email, roadmapId, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
@@ -62,7 +62,7 @@ export const patchInvitations: RouteHandlerFnc = async (ctx) => {
   }
 };
 
-export const deleteInvitations: RouteHandlerFnc = async (ctx) => {
+export const deleteInvitation: RouteHandlerFnc = async (ctx) => {
   const numDeleted = await Invitation.query()
     .where({
       id: ctx.params.invitationId,
