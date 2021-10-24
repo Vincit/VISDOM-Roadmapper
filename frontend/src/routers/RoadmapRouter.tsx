@@ -11,7 +11,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TaskListPage } from '../pages/TaskListPage';
-import { PeopleListPage } from '../pages/PeopleListPage';
+import { TeamListPage } from '../pages/TeamListPage';
 import { TaskOverviewPage } from '../pages/TaskOverviewPage';
 import { ClientsListPage } from '../pages/ClientsListPage';
 import { ClientOverviewPage } from '../pages/ClientOverviewPage';
@@ -38,8 +38,8 @@ const routes = [
     component: DashboardPage,
   },
   {
-    path: paths.roadmapRelative.people,
-    component: PeopleListPage,
+    path: paths.roadmapRelative.team,
+    component: TeamListPage,
   },
   {
     path: paths.roadmapRelative.taskOverview,

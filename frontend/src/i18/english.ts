@@ -14,7 +14,6 @@ export const english = {
     Description: 'Description',
     Tasks: 'Tasks',
     Task: 'Task',
-    'Search for tasks': 'Search for tasks',
     'No tasks found': 'No tasks found',
     Login: 'Login',
     Password: 'Password',
@@ -163,9 +162,8 @@ export const english = {
     'Pick a color': 'Pick a color',
     "Who's responsible for the client value ratings?":
       "Who's responsible for the client value ratings?",
-    'Search for people': 'Search for people',
-    'Search for clients': 'Search for clients',
     'Team members': 'Team members',
+    members: 'members',
     'Add members': 'Add members',
     'The email should be unique': 'The email should be unique.',
     'Skip adding members 1/3':
@@ -180,7 +178,7 @@ export const english = {
     'Here’s how to add a team member':
       '<strong>Here’s how to add a team member.</strong> VISDOM delivers an email with impermanent, one-time-usage link, which added members can use to register.',
     'Invitation status info':
-      'The invitation statuses can be checked at <2>People page</2>',
+      'The invitation statuses can be checked at <2>Team page</2>',
     'Hide info': 'Hide info',
     'Member email the link will be sent to':
       'Member email the link will be sent to',

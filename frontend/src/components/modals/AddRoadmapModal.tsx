@@ -247,11 +247,11 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                   type="submit"
                   onClick={() =>
                     history.push(
-                      `${paths.roadmapHome}/${createdRoadmapId}${paths.roadmapRelative.people}`,
+                      `${paths.roadmapHome}/${createdRoadmapId}${paths.roadmapRelative.team}`,
                     )
                   }
                 >
-                  People page
+                  Team page
                 </button>
               </Trans>
             </div>

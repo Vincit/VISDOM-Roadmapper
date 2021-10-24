@@ -7,7 +7,7 @@ import { ModalTypes } from '../components/modals/types';
 import { TeamMemberList } from '../components/TeamMemberListTable';
 import { TopBar } from '../components/TopBar';
 
-export const PeopleListPage = () => {
+export const TeamListPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [searchString, setSearchString] = useState('');
@@ -26,7 +26,7 @@ export const PeopleListPage = () => {
   return (
     <>
       <TopBar
-        searchType={t('people')}
+        searchType={t('members')}
         addType={t('team member')}
         onSearchChange={(value) => setSearchString(value)}
         onAddClick={addTeamMemberClicked}

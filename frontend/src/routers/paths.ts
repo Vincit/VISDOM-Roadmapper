@@ -19,7 +19,7 @@ export const paths = {
     dashboard: '/dashboard',
     clients: '/clients',
     clientOverview: '/clients/:clientId([0-9]+)',
-    people: '/people',
+    team: '/team',
     taskList: '/tasks',
     taskOverview: '/tasks/:taskId([0-9]+)',
     planner: '/planner',

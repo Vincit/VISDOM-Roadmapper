@@ -70,22 +70,22 @@ export const RoadmapSidebar: FC = () => {
               ),
             })}
           >
-            <ListIcon />
+            <PeopleIcon />
             <Trans i18nKey="Clients" />
           </Link>
         )}
         {role === RoleType.Admin && (
           <>
             <Link
-              to={url + paths.roadmapRelative.people}
+              to={url + paths.roadmapRelative.team}
               className={classes(css.navButton, {
                 [css.selected]: pathname.startsWith(
-                  url + paths.roadmapRelative.people,
+                  url + paths.roadmapRelative.team,
                 ),
               })}
             >
-              <PeopleIcon />
-              <Trans i18nKey="People" />
+              <DashboardIcon />
+              <Trans i18nKey="Team" />
             </Link>
             <Link
               to={
