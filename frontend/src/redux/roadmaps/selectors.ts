@@ -78,3 +78,10 @@ export const roadmapsVersionsSelector = (roadmapId?: number) =>
       );
     },
   );
+
+export const allInvitationsSelector = () => {
+  return createSelector(
+    chosenRoadmapSelector,
+    (roadmap) => roadmap?.invitations,
+  );
+};

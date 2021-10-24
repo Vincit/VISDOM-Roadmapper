@@ -14,6 +14,7 @@ import {
   TaskratingRequest,
   TaskRequest,
   Version,
+  Invitation,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -303,4 +304,15 @@ export const DELETE_VERSION_FULFILLED = (
     ({ id }) => id === action.payload.roadmapId,
   )!;
   roadmap.versions = action.payload.response;
+};
+
+export const GET_INVITATIONS_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; invitations: Invitation[] }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.invitations = action.payload.invitations;
 };

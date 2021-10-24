@@ -1,0 +1,19 @@
+@import './../shared.scss';
+
+.memberIcon path {
+  fill: $COLOR_BLACK40;
+}
+
+.validIcon {
+  color: $COLOR_EMERALD;
+  &.notValid {
+    color: $COLOR_RASPBERRY;
+  }
+}
+
+.adminButtons {
+  @extend .layout-row;
+  margin-left: auto;
+  gap: 10px;
+  align-items: center;
+}

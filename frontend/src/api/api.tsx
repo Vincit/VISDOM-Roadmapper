@@ -22,6 +22,7 @@ import {
   GetRoadmapBoardLabelsRequest,
   Version,
   VersionRequest,
+  Invitation,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -319,6 +320,11 @@ const sendNotification = async (
   return response.status === 200;
 };
 
+const getInvitations = async (roadmapId: number) => {
+  const response = await axios.get(`roadmaps/${roadmapId}/invitations/`);
+  return response.data as Invitation[];
+};
+
 const sendInvitation = async (
   email: string,
   type: RoleType,
@@ -395,6 +401,7 @@ export const api = {
   patchIntegrationConfiguration,
   sendNotification,
   patchDefaultRoadmap,
+  getInvitations,
   sendInvitation,
   joinRoadmap,
   verifyEmail,

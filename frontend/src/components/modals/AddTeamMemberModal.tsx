@@ -59,6 +59,7 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
 
       return;
     }
+    dispatch(roadmapsActions.getInvitations());
     closeModal();
   };
 

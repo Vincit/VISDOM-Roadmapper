@@ -22,6 +22,7 @@ import {
   RemoveTaskFromVersionRequest,
   Version,
   VersionRequest,
+  Invitation,
 } from './types';
 import { RoleType } from '../../../../shared/types/customTypes';
 
@@ -517,5 +518,23 @@ export const sendInvitation = createAsyncThunk<
     return await api.sendInvitation(email, type, roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const getInvitations = createAsyncThunk<
+  { roadmapId: number; invitations: Invitation[] },
+  void,
+  { rejectValue: AxiosError }
+>('roadmaps/getInvitations', async (_, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId: currentroadmapId,
+      invitations: await api.getInvitations(currentroadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });

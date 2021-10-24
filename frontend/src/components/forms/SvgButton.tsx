@@ -2,6 +2,7 @@ import { FC, MouseEvent } from 'react';
 import classNames from 'classnames';
 import EditIcon from '@material-ui/icons/Edit';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
+import MailIcon from '@material-ui/icons/MailOutlined';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import CloseIcon from '@material-ui/icons/Close';
@@ -67,3 +68,4 @@ export const ModalCloseButton = svgButton(CloseIcon, {
 });
 export const CloseButton = svgButton(CloseIcon, {});
 export const ConfirmButton = svgButton(CheckIcon, {});
+export const MailButton = svgButton(MailIcon, { hoverColor: colors.azure });

@@ -37,6 +37,9 @@ const sortKeyCompare = <T, K>(
 export const sortKeyNumeric = <T>(key: Key<T, number>) =>
   sortKeyCompare(key, (a, b) => a - b);
 
+export const sortKeyBoolean = <T>(key: Key<T, boolean>) =>
+  sortKeyCompare(key, (a, b) => Number(a) - Number(b));
+
 export const sortKeyLocale = <T>(key: Key<T, string>) =>
   sortKeyCompare(key, (a, b) => a.localeCompare(b));
 

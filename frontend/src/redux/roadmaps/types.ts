@@ -60,6 +60,7 @@ export interface Roadmap {
   description: string;
   tasks: Task[];
   users: RoadmapUser[] | undefined;
+  invitations: Invitation[] | undefined;
   customers: Customer[] | undefined;
   integrations: IntegrationConfiguration[];
   versions: Version[] | undefined;
@@ -190,4 +191,13 @@ export interface AddTaskToVersionRequest {
 export interface RemoveTaskFromVersionRequest {
   task: TaskRequest;
   version: VersionRequest;
+}
+
+export interface Invitation {
+  id: string;
+  roadmapId: number;
+  type: RoleType;
+  email: string;
+  updatedAt: string;
+  valid: boolean;
 }

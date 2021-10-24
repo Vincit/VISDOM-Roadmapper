@@ -28,6 +28,7 @@ import {
   removeTaskFromVersion,
   notifyUsers,
   sendInvitation,
+  getInvitations,
 } from './actions';
 import {
   ADD_ROADMAP_FULFILLED,
@@ -54,6 +55,7 @@ import {
   GET_VERSIONS_FULFILLED,
   PATCH_VERSION_FULFILLED,
   DELETE_VERSION_FULFILLED,
+  GET_INVITATIONS_FULFILLED,
 } from './reducers';
 import { RoadmapsState } from './types';
 
@@ -99,6 +101,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(getVersions.fulfilled, GET_VERSIONS_FULFILLED);
     builder.addCase(patchVersion.fulfilled, PATCH_VERSION_FULFILLED);
     builder.addCase(deleteVersion.fulfilled, DELETE_VERSION_FULFILLED);
+    builder.addCase(getInvitations.fulfilled, GET_INVITATIONS_FULFILLED);
   },
 });
 
@@ -132,4 +135,5 @@ export const roadmapsActions = {
   removeTaskFromVersion,
   notifyUsers,
   sendInvitation,
+  getInvitations,
 };
