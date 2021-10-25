@@ -557,3 +557,21 @@ export const patchInvitation = createAsyncThunk<
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
+
+export const deleteInvitation = createAsyncThunk<
+  { roadmapId: number; invitationId: string },
+  string,
+  { rejectValue: AxiosError }
+>('roadmaps/deleteInvitation', async (invitationId, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId: currentroadmapId,
+      invitationId: await api.deleteInvitation(currentroadmapId, invitationId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});

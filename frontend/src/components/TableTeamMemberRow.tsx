@@ -49,7 +49,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
       modalsActions.showModal({
         modalType: ModalTypes.REMOVE_PEOPLE_MODAL,
         modalProps: {
-          userId: id,
+          id,
           name: email,
           type: 'team',
         },
@@ -102,7 +102,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
               <DeleteButton
                 onClick={deleteUserClicked}
                 href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
-                  userId: id,
+                  id,
                   name: email,
                   type: 'team',
                 })}

@@ -331,3 +331,16 @@ export const PATCH_INVITATION_FULFILLED = (
   );
   if (patched) Object.assign(patched, action.payload.invitation);
 };
+
+export const DELETE_INVITATION_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<{ roadmapId: number; invitationId: string }>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+  const roadmap = state.roadmaps.find(
+    ({ id }) => id === action.payload.roadmapId,
+  )!;
+  roadmap.invitations = roadmap.invitations?.filter(
+    ({ id }) => id !== action.payload.invitationId,
+  );
+};

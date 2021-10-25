@@ -51,7 +51,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
       modalsActions.showModal({
         modalType: ModalTypes.REMOVE_PEOPLE_MODAL,
         modalProps: {
-          userId: id,
+          id,
           name,
           type: 'customer',
         },
@@ -111,7 +111,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
               <DeleteButton
                 onClick={deleteUserClicked}
                 href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
-                  userId: id,
+                  id,
                   name,
                   type: 'customer',
                 })}

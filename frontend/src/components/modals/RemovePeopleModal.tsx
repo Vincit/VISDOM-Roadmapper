@@ -16,7 +16,7 @@ import '../../shared.scss';
 
 export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   closeModal,
-  userId,
+  id,
   name,
   type,
 }) => {
@@ -25,34 +25,42 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   const [errorMessage, setErrorMessage] = useState('');
 
   const deleteCustomer = async () => {
-    const res = await dispatch(roadmapsActions.deleteCustomer({ id: userId }));
-    setIsLoading(false);
-    if (roadmapsActions.deleteCustomer.rejected.match(res)) {
-      if (res.payload?.message) setErrorMessage(res.payload.message);
-      return;
-    }
-    closeModal();
+    const res = await dispatch(
+      roadmapsActions.deleteCustomer({ id: id as number }),
+    );
     await dispatch(userActions.getUserInfo());
+    if (roadmapsActions.deleteCustomer.rejected.match(res))
+      if (res.payload?.message) return res.payload.message;
   };
 
   const deleteTeamMember = async () => {
     const res = await dispatch(
-      roadmapsActions.deleteRoadmapUser({ id: userId }),
+      roadmapsActions.deleteRoadmapUser({ id: id as number }),
     );
+    if (roadmapsActions.deleteRoadmapUser.rejected.match(res))
+      if (res.payload?.message) return res.payload.message;
+  };
+
+  const deleteInvitation = async () => {
+    const res = await dispatch(roadmapsActions.deleteInvitation(id as string));
     setIsLoading(false);
-    if (roadmapsActions.deleteRoadmapUser.rejected.match(res)) {
-      if (res.payload?.message) setErrorMessage(res.payload.message);
-      return;
-    }
-    closeModal();
+    if (roadmapsActions.deleteInvitation.rejected.match(res))
+      if (res.payload?.message) return res.payload.message;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
+
     setIsLoading(true);
-    if (type === 'customer') deleteCustomer();
-    else deleteTeamMember();
+    let error;
+    if (type === 'customer') error = await deleteCustomer();
+    else if (type === 'team') error = await deleteTeamMember();
+    else error = await deleteInvitation();
+    setIsLoading(false);
+
+    if (error) setErrorMessage(error);
+    else closeModal();
   };
 
   return (
@@ -60,31 +68,19 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
       <Form onSubmit={handleSubmit}>
         <ModalHeader closeModal={closeModal}>
           <h3>
-            {type === 'customer' ? (
-              <Trans i18nKey="Remove client" />
-            ) : (
-              <Trans i18nKey="Remove team member" />
-            )}
+            {type === 'customer' && <Trans i18nKey="Remove client" />}
+            {type === 'team' && <Trans i18nKey="Remove team member" />}
+            {type === 'invitation' && <Trans i18nKey="Remove invitation" />}
           </h3>
         </ModalHeader>
         <ModalContent>
           <div className="modalCancelContent">
             <AlertIcon />
-            {type === 'customer' ? (
-              <h6>
-                Are you sure you want to remove <b>{name}</b>?
-              </h6>
-            ) : (
-              <>
-                <h6>
-                  Are you sure you want to remove <b>{name}</b> from the
-                  project?
-                </h6>
-                <h6>
-                  This won’t delete their account; only removes them from this
-                  project.
-                </h6>
-              </>
+            <div>
+              <Trans i18nKey={`Remove ${type} warning`} values={{ name }} />
+            </div>
+            {type !== 'customer' && (
+              <Trans i18nKey="Remove member explanation" />
             )}
           </div>
           <Alert

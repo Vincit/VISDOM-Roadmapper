@@ -349,6 +349,11 @@ const patchInvitation = async (
   return response.data as Invitation;
 };
 
+const deleteInvitation = async (roadmapId: number, id: string) => {
+  await axios.delete(`roadmaps/${roadmapId}/invitations/${id}`);
+  return id;
+};
+
 const patchDefaultRoadmap = async (userId: number, roadmapId?: number) => {
   const response = await axios.patch(`users/${userId}`, {
     defaultRoadmapId: roadmapId ?? null,
@@ -416,6 +421,7 @@ export const api = {
   getInvitations,
   sendInvitation,
   patchInvitation,
+  deleteInvitation,
   joinRoadmap,
   verifyEmail,
   sendEmailVerificationLink,

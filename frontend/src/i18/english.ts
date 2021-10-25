@@ -147,6 +147,7 @@ export const english = {
     'Give them a name': 'Give them a name',
     'Remove client': 'Remove client',
     'Remove team member': 'Remove team member',
+    'Remove invitation': 'Remove invitation',
     'No, go back': 'No, go back',
     'Yes, remove it': 'Yes, remove it',
     'Cancel customer addition warning':
@@ -162,6 +163,14 @@ export const english = {
     'Pick a color': 'Pick a color',
     "Who's responsible for the client value ratings?":
       "Who's responsible for the client value ratings?",
+    'Remove customer warning':
+      'Are you sure you want to remove <strong>{{name}}</strong>?',
+    'Remove team warning':
+      'Are you sure you want to remove <strong>{{name}}</strong> from the project?',
+    'Remove invitation warning':
+      'Are you sure you want to remove project invitation for <strong>{{name}}</strong>?',
+    'Remove member explanation':
+      'This won’t delete their account; only removes them from this project.',
     'Team members': 'Team members',
     members: 'members',
     'Add members': 'Add members',

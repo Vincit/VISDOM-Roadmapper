@@ -21,8 +21,23 @@ export const TableInvitationRow: TableRow<Invitation> = ({
   item: invitation,
   style,
 }) => {
-  const { email, updatedAt, valid, type } = invitation;
+  const { id, email, updatedAt, valid, type } = invitation;
   const dispatch = useDispatch<StoreDispatchType>();
+
+  const deleteInvitationClicked = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.REMOVE_PEOPLE_MODAL,
+        modalProps: {
+          id,
+          name: email,
+          type: 'invitation',
+        },
+      }),
+    );
+  };
 
   const editInvitationClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -66,7 +81,14 @@ export const TableInvitationRow: TableRow<Invitation> = ({
             member: invitation,
           })}
         />
-        <DeleteButton />
+        <DeleteButton
+          onClick={deleteInvitationClicked}
+          href={modalLink(ModalTypes.REMOVE_PEOPLE_MODAL, {
+            id,
+            name: email,
+            type: 'invitation',
+          })}
+        />
       </div>
     </div>
   );
