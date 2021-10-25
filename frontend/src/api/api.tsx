@@ -23,6 +23,7 @@ import {
   Version,
   VersionRequest,
   Invitation,
+  InvitationRequest,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -337,6 +338,17 @@ const sendInvitation = async (
   return response.status === 200;
 };
 
+const patchInvitation = async (
+  roadmapId: number,
+  invitation: InvitationRequest,
+) => {
+  const response = await axios.patch(
+    `roadmaps/${roadmapId}/invitations/${invitation.id}`,
+    invitation,
+  );
+  return response.data as Invitation;
+};
+
 const patchDefaultRoadmap = async (userId: number, roadmapId?: number) => {
   const response = await axios.patch(`users/${userId}`, {
     defaultRoadmapId: roadmapId ?? null,
@@ -403,6 +415,7 @@ export const api = {
   patchDefaultRoadmap,
   getInvitations,
   sendInvitation,
+  patchInvitation,
   joinRoadmap,
   verifyEmail,
   sendEmailVerificationLink,

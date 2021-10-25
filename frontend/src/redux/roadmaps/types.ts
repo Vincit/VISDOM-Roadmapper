@@ -201,3 +201,10 @@ export interface Invitation {
   updatedAt: string;
   valid: boolean;
 }
+
+export interface InvitationRequest {
+  id: string;
+  roadmapId?: number;
+  type?: RoleType;
+  email?: string;
+}

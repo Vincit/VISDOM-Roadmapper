@@ -185,6 +185,7 @@ export const english = {
     'Send link': 'Send link',
     'Sent!': 'Sent!',
     'Modify team members': 'Modify team members',
+    'Modify invitation': 'Modify invitation',
     'Member role': 'Member role',
     'Admin caution':
       '<strong>Caution:</strong> giving Admin role to this member lets them manage the project however they like.',

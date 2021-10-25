@@ -3,6 +3,7 @@ import {
   Customer,
   IntegrationConfiguration,
   RoadmapUser,
+  Invitation,
 } from '../../redux/roadmaps/types';
 
 export enum ModalTypes {
@@ -42,7 +43,9 @@ type OwnProps = {
   [ModalTypes.EDIT_CUSTOMER_MODAL]: { customer: Customer };
   [ModalTypes.ADD_CUSTOMER_MODAL]: {};
   [ModalTypes.ADD_TEAM_MEMBER_MODAL]: {};
-  [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: { member: RoadmapUser };
+  [ModalTypes.EDIT_TEAM_MEMBER_MODAL]: {
+    member: RoadmapUser | Invitation;
+  };
   [ModalTypes.ADD_VERSION_MODAL]: {};
   [ModalTypes.DELETE_VERSION_MODAL]: {
     id: number;

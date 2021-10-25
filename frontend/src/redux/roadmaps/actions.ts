@@ -23,6 +23,7 @@ import {
   Version,
   VersionRequest,
   Invitation,
+  InvitationRequest,
 } from './types';
 import { RoleType } from '../../../../shared/types/customTypes';
 
@@ -533,6 +534,24 @@ export const getInvitations = createAsyncThunk<
     return {
       roadmapId: currentroadmapId,
       invitations: await api.getInvitations(currentroadmapId),
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
+export const patchInvitation = createAsyncThunk<
+  { roadmapId: number; invitation: Invitation },
+  InvitationRequest,
+  { rejectValue: AxiosError }
+>('roadmaps/patchInvitation', async (invitation, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId: currentroadmapId,
+      invitation: await api.patchInvitation(currentroadmapId, invitation),
     };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
