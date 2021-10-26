@@ -23,6 +23,7 @@ import {
   RemoveTaskFromVersionRequest,
   Version,
   VersionRequest,
+  TaskRelation,
 } from './types';
 import { RoleType } from '../../../../shared/types/customTypes';
 
@@ -530,5 +531,20 @@ export const addTaskRelation = createAsyncThunk<
     return await api.addTaskRelation(relationRequest);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const removeTaskRelation = createAsyncThunk<
+  boolean,
+  TaskRelation,
+  { rejectValue: AxiosError }
+>('removeTaskRelation', async (relationRequest, thunkAPI) => {
+  try {
+    const roadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.removeTaskRelation(roadmapId, relationRequest);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
