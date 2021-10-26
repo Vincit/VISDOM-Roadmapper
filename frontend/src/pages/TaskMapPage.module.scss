@@ -55,6 +55,10 @@
   border: 2px solid $COLOR_ORANGE;
 }
 
+.filledLeftHandle {
+  background-color: $COLOR_ORANGE;
+}
+
 .rightHandle {
   position: absolute;
   left: 97%;
@@ -63,6 +67,10 @@
   width: 17px;
   background-color: $COLOR_WHITE;
   border: 2px solid $COLOR_FOREST;
+}
+
+.filledRightHandle {
+  background-color: $COLOR_FOREST;
 }
 
 .taskRatingTexts {
