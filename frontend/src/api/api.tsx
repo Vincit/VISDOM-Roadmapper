@@ -25,6 +25,7 @@ import {
   VersionRequest,
   Invitation,
   InvitationRequest,
+  TaskRelation,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -389,6 +390,17 @@ const addTaskRelation = async (relation: TaskRelationRequest) => {
   return response.status === 200;
 };
 
+const removeTaskRelation = async (
+  roadmapId: number,
+  relation: TaskRelation,
+) => {
+  const response = await axios.delete(
+    `/roadmaps/${roadmapId}/tasks/relations`,
+    { data: relation },
+  );
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -435,4 +447,5 @@ export const api = {
   verifyEmail,
   sendEmailVerificationLink,
   addTaskRelation,
+  removeTaskRelation,
 };
