@@ -9,7 +9,7 @@ import {
   taskSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps';
-import { Roadmap, Task } from '../redux/roadmaps/types';
+import { Roadmap, Task, TaskRelation } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { TaskRatingsText } from '../components/TaskRatingsText';
 import { groupTaskRelations } from '../utils/TaskRelationUtils';
@@ -33,11 +33,18 @@ const SingleTask: FC<{
   taskId: number;
   selected?: boolean;
   setSelectedTask?: any;
-}> = ({ taskId, setSelectedTask, selected }) => {
+  toChecked: boolean;
+}> = ({ taskId, setSelectedTask, selected, toChecked }) => {
   const task = useSelector<RootState, Task | undefined>(
     taskSelector(taskId),
     shallowEqual,
   );
+  const fromRelations = task?.relations.some(
+    (relation) =>
+      relation.type === TaskRelationType.Dependency &&
+      relation.from === task?.id,
+  );
+
   if (!task) return null;
   return (
     <button
@@ -53,7 +60,9 @@ const SingleTask: FC<{
       })}
     >
       <Handle
-        className={classes(css.leftHandle)}
+        className={classes(css.leftHandle, {
+          [css.filledLeftHandle]: toChecked,
+        })}
         id={`to-${task!.id}`}
         type="target"
         position={Position.Left}
@@ -68,7 +77,9 @@ const SingleTask: FC<{
         />
       </div>
       <Handle
-        className={classes(css.rightHandle)}
+        className={classes(css.rightHandle, {
+          [css.filledRightHandle]: fromRelations,
+        })}
         id={`from-${task!.id}`}
         type="source"
         position={Position.Right}
@@ -81,7 +92,14 @@ const TaskComponent: FC<{
   taskIds: number[];
   selectedTask: Task | undefined;
   setSelectedTask: any;
-}> = ({ taskIds, selectedTask, setSelectedTask }) => {
+  allRelations: TaskRelation[][];
+}> = ({ taskIds, selectedTask, setSelectedTask, allRelations }) => {
+  const toDependencies = new Set(
+    allRelations
+      .flat()
+      .filter((relation) => relation.type === TaskRelationType.Dependency)
+      .map(({ to }) => to),
+  );
   return (
     <div className={classes(css.taskContainer)}>
       {taskIds.map((taskId) => {
@@ -91,6 +109,7 @@ const TaskComponent: FC<{
               taskId={taskId}
               selected={selectedTask?.id === taskId}
               setSelectedTask={setSelectedTask}
+              toChecked={toDependencies.has(taskId)}
             />
           </div>
         );
@@ -112,7 +131,6 @@ export const TaskMapPage = () => {
     shallowEqual,
   );
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
-
   const groups = taskRelations.map(({ synergies }, idx) => ({
     id: `${idx}`,
     type: 'special',
@@ -126,6 +144,7 @@ export const TaskMapPage = () => {
           taskIds={synergies}
           selectedTask={selectedTask}
           setSelectedTask={setSelectedTask}
+          allRelations={tasks.map((task) => task.relations)}
         />
       ),
     },
