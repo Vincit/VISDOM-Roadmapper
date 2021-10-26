@@ -32,6 +32,7 @@ import {
   patchInvitation,
   deleteInvitation,
   addTaskRelation,
+  removeTaskRelation,
 } from './actions';
 import {
   ADD_ROADMAP_FULFILLED,
@@ -146,4 +147,5 @@ export const roadmapsActions = {
   patchInvitation,
   deleteInvitation,
   addTaskRelation,
+  removeTaskRelation,
 };
