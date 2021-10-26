@@ -204,6 +204,7 @@ export const TaskMapPage = () => {
           custom: CustomEdge,
         }}
         elementsSelectable={false}
+        onContextMenu={(e) => e.preventDefault()}
       >
         <Controls showInteractive={false} showZoom={false}>
           <InfoTooltip title={t('Taskmap-tooltip')}>
