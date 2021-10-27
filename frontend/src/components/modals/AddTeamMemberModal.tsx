@@ -2,12 +2,10 @@ import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { RoleType } from '../../../../shared/types/customTypes';
-import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
-import { RootState } from '../../redux/types';
 import { ModalTypes, Modal } from './types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalContent } from './modalparts/ModalContent';
@@ -35,9 +33,6 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
     type: RoleType.Developer,
     email: '',
   });
-  const chosenRoadmapId = useSelector<RootState, number | undefined>(
-    chosenRoadmapIdSelector,
-  );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,7 +43,6 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
       roadmapsActions.sendInvitation({
         email: formValues.email,
         type: formValues.type,
-        roadmapId: chosenRoadmapId!,
       }),
     );
     setIsLoading(false);
