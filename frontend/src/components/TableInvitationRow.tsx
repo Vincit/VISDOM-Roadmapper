@@ -52,6 +52,17 @@ export const TableInvitationRow: TableRow<Invitation> = ({
     );
   };
 
+  const sendInvitationClicked = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.SEND_INVITATION_MODAL,
+        modalProps: { invitation },
+      }),
+    );
+  };
+
   return (
     <div className={classes(css.virtualizedTableRow)} style={style}>
       <div className={classes(css.memberIcon)}>
@@ -73,7 +84,10 @@ export const TableInvitationRow: TableRow<Invitation> = ({
         )}
       </div>
       <div className={classes(css.adminButtons)}>
-        <MailButton />
+        <MailButton
+          onClick={sendInvitationClicked}
+          href={modalLink(ModalTypes.SEND_INVITATION_MODAL, { invitation })}
+        />
         <EditButton
           fontSize="medium"
           onClick={editInvitationClicked}

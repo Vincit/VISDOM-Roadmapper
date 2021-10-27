@@ -171,6 +171,8 @@ export const english = {
       'Are you sure you want to remove project invitation for <strong>{{name}}</strong>?',
     'Remove member explanation':
       'This won’t delete their account; only removes them from this project.',
+    'Send invitation explanation':
+      'Do you want to send a new invitation for <strong>{{email}}</strong> to join the project?',
     'Team members': 'Team members',
     members: 'members',
     'Add members': 'Add members',

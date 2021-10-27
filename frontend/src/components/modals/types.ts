@@ -17,6 +17,7 @@ export enum ModalTypes {
   ADD_CUSTOMER_MODAL = 'ADD_CUSTOMER_MODAL',
   ADD_TEAM_MEMBER_MODAL = 'ADD_TEAM_MEMBER_MODAL',
   EDIT_TEAM_MEMBER_MODAL = 'EDIT_TEAM_MEMBER_MODAL',
+  SEND_INVITATION_MODAL = 'SEND_INVITATION_MODAL',
   ADD_VERSION_MODAL = 'ADD_VERSION_MODAL',
   DELETE_VERSION_MODAL = 'DELETE_VERSION_MODAL',
   EDIT_VERSION_MODAL = 'EDIT_VERSION_MODAL',
@@ -39,6 +40,9 @@ type OwnProps = {
     id: number | string;
     name: string;
     type: 'customer' | 'team' | 'invitation';
+  };
+  [ModalTypes.SEND_INVITATION_MODAL]: {
+    invitation: Invitation;
   };
   [ModalTypes.EDIT_CUSTOMER_MODAL]: { customer: Customer };
   [ModalTypes.ADD_CUSTOMER_MODAL]: {};

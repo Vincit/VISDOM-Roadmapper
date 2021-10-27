@@ -27,6 +27,7 @@ import { TaskRatingsInfoModal } from './TaskRatingsInfoModal';
 import { UserAuthTokenModal } from './UserAuthTokenModal';
 import { AddRoadmapModal } from './AddRoadmapModal';
 import { NotifyUsersModal } from './NotifyUsersModal';
+import { SendInvitationModal } from './SendInvitationModal';
 
 const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
@@ -49,6 +50,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_ROADMAP_MODAL]: AddRoadmapModal,
   [ModalTypes.DELETE_ROADMAP_MODAL]: DeleteRoadmapModal,
   [ModalTypes.NOTIFY_USERS_MODAL]: NotifyUsersModal,
+  [ModalTypes.SEND_INVITATION_MODAL]: SendInvitationModal,
 } as const;
 
 // TODO: move this to css file
