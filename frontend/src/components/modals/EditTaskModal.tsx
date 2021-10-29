@@ -77,60 +77,58 @@ export const EditTaskModal: Modal<ModalTypes.EDIT_TASK_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            <Trans i18nKey="Edit task" />
-          </h3>
-        </ModalHeader>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          <Trans i18nKey="Edit task" />
+        </h3>
+      </ModalHeader>
 
-        <ModalContent>
-          <Form.Group>
-            <Input
-              label={t('Task name')}
-              autoComplete="off"
-              required
-              name="name"
-              id="name"
-              placeholder={t('Task name')}
-              value={formValues.name}
-              onChange={(e) => onNameChange(e.currentTarget.value)}
-            />
-          </Form.Group>
+      <ModalContent>
+        <Form.Group>
+          <Input
+            label={t('Task name')}
+            autoComplete="off"
+            required
+            name="name"
+            id="name"
+            placeholder={t('Task name')}
+            value={formValues.name}
+            onChange={(e) => onNameChange(e.currentTarget.value)}
+          />
+        </Form.Group>
 
-          <Form.Group>
-            <TextArea
-              label={t('Description')}
-              required
-              name="description"
-              id="description"
-              placeholder={t('Description')}
-              value={formValues.description}
-              onChange={(e) => onDescriptionChange(e.currentTarget.value)}
-            />
-          </Form.Group>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Save" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+        <Form.Group>
+          <TextArea
+            label={t('Description')}
+            required
+            name="description"
+            id="description"
+            placeholder={t('Description')}
+            value={formValues.description}
+            onChange={(e) => onDescriptionChange(e.currentTarget.value)}
+          />
+        </Form.Group>
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button className="button-large" type="submit">
+              <Trans i18nKey="Save" />
+            </button>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

@@ -44,48 +44,46 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <div className={classes(css.headerDiv)}>
-            <h3>
-              <Trans i18nKey="Change milestone name" />
-            </h3>
-            <SettingsSharpIcon />
-          </div>
-        </ModalHeader>
-        <ModalContent>
-          <div className={classes(css.versionformDiv)}>
-            <Input
-              label={t('Milestone name')}
-              required
-              name="name"
-              id="name"
-              value={newName}
-              onChange={(e) => setNewName(e.currentTarget.value)}
-            />
-          </div>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Confirm" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <div className={classes(css.headerDiv)}>
+          <h3>
+            <Trans i18nKey="Change milestone name" />
+          </h3>
+          <SettingsSharpIcon />
+        </div>
+      </ModalHeader>
+      <ModalContent>
+        <div className={classes(css.versionformDiv)}>
+          <Input
+            label={t('Milestone name')}
+            required
+            name="name"
+            id="name"
+            value={newName}
+            onChange={(e) => setNewName(e.currentTarget.value)}
+          />
+        </div>
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button className="button-large" type="submit">
+              <Trans i18nKey="Confirm" />
+            </button>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

@@ -41,53 +41,51 @@ export const SendInvitationModal: Modal<ModalTypes.SEND_INVITATION_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            <Trans i18nKey="Send invitation" />
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          <div className="modalCancelContent">
-            <MailIcon />
-            <div>
-              <Trans
-                i18nKey="Send invitation explanation"
-                values={{ email: invitation.email }}
-              />
-            </div>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          <Trans i18nKey="Send invitation" />
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        <div className="modalCancelContent">
+          <MailIcon />
+          <div>
+            <Trans
+              i18nKey="Send invitation explanation"
+              values={{ email: invitation.email }}
+            />
           </div>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
+        </div>
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter>
+        <ModalFooterButtonDiv>
+          <button
+            className="button-large cancel"
+            onClick={() => closeModal()}
+            type="button"
           >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter>
-          <ModalFooterButtonDiv>
-            <button
-              className="button-large cancel"
-              onClick={() => closeModal()}
-              type="button"
-            >
-              <Trans i18nKey="No, go back" />
+            <Trans i18nKey="No, go back" />
+          </button>
+        </ModalFooterButtonDiv>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button className="button-large" type="submit">
+              <Trans i18nKey="Yes, send" />
             </button>
-          </ModalFooterButtonDiv>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Yes, send" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

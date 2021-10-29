@@ -103,67 +103,65 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            <Trans i18nKey="Modify client information" />
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          <SelectCustomerInfo
-            name={formValues.name}
-            onNameChange={(value) =>
-              setFormValues({ ...formValues, name: value })
-            }
-            email={formValues.email}
-            onEmailChange={(value) =>
-              setFormValues({ ...formValues, email: value })
-            }
-            colorType={colorType}
-            onColorTypeChange={(value) => setColorType(value)}
-            color={formValues.color}
-            onColorChange={(value) =>
-              setFormValues({ ...formValues, color: value })
-            }
-          />
-          <SelectRepresentatives
-            representatives={representatives}
-            onRepresentativeChange={(idx, checked) => {
-              const copy = [...representatives];
-              copy[idx].checked = checked;
-              setRepresentatives(copy);
-            }}
-          />
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button
-                className="button-large"
-                type="submit"
-                disabled={
-                  !formValues.name ||
-                  !formValues.email ||
-                  !getCheckedIds(representatives).length
-                }
-              >
-                <Trans i18nKey="Confirm" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          <Trans i18nKey="Modify client information" />
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        <SelectCustomerInfo
+          name={formValues.name}
+          onNameChange={(value) =>
+            setFormValues({ ...formValues, name: value })
+          }
+          email={formValues.email}
+          onEmailChange={(value) =>
+            setFormValues({ ...formValues, email: value })
+          }
+          colorType={colorType}
+          onColorTypeChange={(value) => setColorType(value)}
+          color={formValues.color}
+          onColorChange={(value) =>
+            setFormValues({ ...formValues, color: value })
+          }
+        />
+        <SelectRepresentatives
+          representatives={representatives}
+          onRepresentativeChange={(idx, checked) => {
+            const copy = [...representatives];
+            copy[idx].checked = checked;
+            setRepresentatives(copy);
+          }}
+        />
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button
+              className="button-large"
+              type="submit"
+              disabled={
+                !formValues.name ||
+                !formValues.email ||
+                !getCheckedIds(representatives).length
+              }
+            >
+              <Trans i18nKey="Confirm" />
+            </button>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

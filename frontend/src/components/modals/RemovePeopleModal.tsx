@@ -64,55 +64,51 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            {type === 'customer' && <Trans i18nKey="Remove client" />}
-            {type === 'team' && <Trans i18nKey="Remove team member" />}
-            {type === 'invitation' && <Trans i18nKey="Remove invitation" />}
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          <div className="modalCancelContent">
-            <AlertIcon />
-            <div>
-              <Trans i18nKey={`Remove ${type} warning`} values={{ name }} />
-            </div>
-            {type !== 'customer' && (
-              <Trans i18nKey="Remove member explanation" />
-            )}
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          {type === 'customer' && <Trans i18nKey="Remove client" />}
+          {type === 'team' && <Trans i18nKey="Remove team member" />}
+          {type === 'invitation' && <Trans i18nKey="Remove invitation" />}
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        <div className="modalCancelContent">
+          <AlertIcon />
+          <div>
+            <Trans i18nKey={`Remove ${type} warning`} values={{ name }} />
           </div>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
+          {type !== 'customer' && <Trans i18nKey="Remove member explanation" />}
+        </div>
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter>
+        <ModalFooterButtonDiv>
+          <button
+            className="button-large cancel"
+            onClick={() => closeModal()}
+            type="button"
           >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter>
-          <ModalFooterButtonDiv>
-            <button
-              className="button-large cancel"
-              onClick={() => closeModal()}
-              type="button"
-            >
-              <Trans i18nKey="No, go back" />
+            <Trans i18nKey="No, go back" />
+          </button>
+        </ModalFooterButtonDiv>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button className="button-large" type="submit">
+              <Trans i18nKey="Yes, remove it" />
             </button>
-          </ModalFooterButtonDiv>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Yes, remove it" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

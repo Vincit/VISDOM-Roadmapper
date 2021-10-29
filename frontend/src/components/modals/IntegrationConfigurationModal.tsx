@@ -65,61 +65,59 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            {titleCase(name)} <Trans i18nKey="configuration" />
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          {roadmapName ? (
-            <>
-              <label htmlFor="board">Roadmap: {roadmapName}</label>
-              <p>Instructions here</p>
-              {fields.map(({ field, secret }) => (
-                <Form.Group key={field}>
-                  <Input
-                    autoComplete="off"
-                    required
-                    type={secret ? 'password' : undefined}
-                    name={field}
-                    id={field}
-                    placeholder={`${titleCase(name)} ${field}`}
-                    value={(formValues as any)[field]!}
-                    onChange={(e) => onChange(field, e.currentTarget.value)}
-                  />
-                </Form.Group>
-              ))}
-            </>
-          ) : (
-            <p>Roadmap is undefined</p>
-          )}
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          {titleCase(name)} <Trans i18nKey="configuration" />
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        {roadmapName ? (
+          <>
+            <label htmlFor="board">Roadmap: {roadmapName}</label>
+            <p>Instructions here</p>
+            {fields.map(({ field, secret }) => (
+              <Form.Group key={field}>
+                <Input
+                  autoComplete="off"
+                  required
+                  type={secret ? 'password' : undefined}
+                  name={field}
+                  id={field}
+                  placeholder={`${titleCase(name)} ${field}`}
+                  value={(formValues as any)[field]!}
+                  onChange={(e) => onChange(field, e.currentTarget.value)}
+                />
+              </Form.Group>
+            ))}
+          </>
+        ) : (
+          <p>Roadmap is undefined</p>
+        )}
 
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          <button
+            className="button-large"
+            disabled={
+              isLoading ||
+              fields.some(({ field }) => !(formValues as any)[field])
+            }
+            type="submit"
           >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            <button
-              className="button-large"
-              disabled={
-                isLoading ||
-                fields.some(({ field }) => !(formValues as any)[field])
-              }
-              type="submit"
-            >
-              <Trans i18nKey="Save" />
-            </button>
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+            <Trans i18nKey="Save" />
+          </button>
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };

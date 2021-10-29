@@ -53,46 +53,44 @@ export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            <Trans i18nKey="Add milestone" />
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          <Input
-            label={t('Milestone name')}
-            autoComplete="off"
-            required
-            type="text"
-            name="name"
-            id="name"
-            value={versionName}
-            placeholder={t('Milestone name')}
-            onChange={(e) => onNameChange(e.currentTarget.value)}
-          />
-          <Alert
-            show={hasError}
-            variant="danger"
-            dismissible
-            onClose={() => setHasError(false)}
-          >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Add" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          <Trans i18nKey="Add milestone" />
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        <Input
+          label={t('Milestone name')}
+          autoComplete="off"
+          required
+          type="text"
+          name="name"
+          id="name"
+          value={versionName}
+          placeholder={t('Milestone name')}
+          onChange={(e) => onNameChange(e.currentTarget.value)}
+        />
+        <Alert
+          show={hasError}
+          variant="danger"
+          dismissible
+          onClose={() => setHasError(false)}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button className="button-large" type="submit">
+              <Trans i18nKey="Add" />
+            </button>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };
