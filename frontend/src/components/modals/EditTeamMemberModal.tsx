@@ -19,9 +19,8 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { SelectMemberRole } from './modalparts/TeamMemberModalParts';
 import css from './EditTeamMemberModal.module.scss';
 
-export const isInvitation = (
-  member: Invitation | RoadmapUser,
-): member is Invitation => 'updatedAt' in member;
+const isInvitation = (member: Invitation | RoadmapUser): member is Invitation =>
+  'updatedAt' in member;
 
 const classes = classNames.bind(css);
 
@@ -75,52 +74,50 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader closeModal={closeModal}>
-          <h3>
-            {isInvitation(member) ? (
-              <Trans i18nKey="Modify invitation" />
-            ) : (
-              <Trans i18nKey="Modify team members" />
-            )}
-          </h3>
-        </ModalHeader>
-        <ModalContent>
-          <div className={classes(css.section, css.memberSection)}>
-            {selectedRole === RoleType.Admin && <StarSharpIcon />}
-            {selectedRole === RoleType.Developer && <BuildSharpIcon />}
-            {selectedRole === RoleType.Business && <BusinessIcon />}
-            {member.email}
-          </div>
-          <div className={classes(css.section)}>
-            <SelectMemberRole
-              role={selectedRole}
-              onChange={(value) => setSelectedRole(value)}
-              disableRoleIcons
-            />
-          </div>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
-        </ModalContent>
-        <ModalFooter closeModal={closeModal}>
-          <ModalFooterButtonDiv>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Confirm" />
-              </button>
-            )}
-          </ModalFooterButtonDiv>
-        </ModalFooter>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <ModalHeader closeModal={closeModal}>
+        <h3>
+          {isInvitation(member) ? (
+            <Trans i18nKey="Modify invitation" />
+          ) : (
+            <Trans i18nKey="Modify team members" />
+          )}
+        </h3>
+      </ModalHeader>
+      <ModalContent>
+        <div className={classes(css.section, css.memberSection)}>
+          {selectedRole === RoleType.Admin && <StarSharpIcon />}
+          {selectedRole === RoleType.Developer && <BuildSharpIcon />}
+          {selectedRole === RoleType.Business && <BusinessIcon />}
+          {member.email}
+        </div>
+        <div className={classes(css.section)}>
+          <SelectMemberRole
+            role={selectedRole}
+            onChange={(value) => setSelectedRole(value)}
+            disableRoleIcons
+          />
+        </div>
+        <Alert
+          show={errorMessage.length > 0}
+          variant="danger"
+          dismissible
+          onClose={() => setErrorMessage('')}
+        >
+          {errorMessage}
+        </Alert>
+      </ModalContent>
+      <ModalFooter closeModal={closeModal}>
+        <ModalFooterButtonDiv>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button className="button-large" type="submit">
+              <Trans i18nKey="Confirm" />
+            </button>
+          )}
+        </ModalFooterButtonDiv>
+      </ModalFooter>
+    </Form>
   );
 };
