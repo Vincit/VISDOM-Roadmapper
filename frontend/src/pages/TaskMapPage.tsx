@@ -58,7 +58,6 @@ const SingleTask: FC<{
       }
       className={classes(css.singleTask, {
         [css.selectedTask]: selected,
-        [css.completedTask]: task.completed && !selected,
       })}
     >
       <Handle
