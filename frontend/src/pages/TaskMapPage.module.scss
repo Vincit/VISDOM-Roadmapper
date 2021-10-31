@@ -56,7 +56,7 @@
 }
 
 .filledLeftHandle {
-  background-color: $COLOR_ORANGE;
+  background-color: lighten($COLOR_ORANGE, 20%);
 }
 
 .rightHandle {
@@ -70,7 +70,7 @@
 }
 
 .filledRightHandle {
-  background-color: $COLOR_FOREST;
+  background-color: lighten($COLOR_FOREST, 20%);
 }
 
 .taskRatingTexts {
