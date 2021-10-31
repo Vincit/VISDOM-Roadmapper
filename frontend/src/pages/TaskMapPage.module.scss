@@ -32,17 +32,21 @@
   border: 0px;
   padding: 10px 16px;
   position: relative;
+  align-items: center;
+
+  .doneIcon {
+    color: $COLOR_EMERALD;
+    margin-right: 5px;
+  }
 }
 
 .selectedTask {
   @extend .singleTask;
   color: $COLOR_WHITE;
   background-color: $COLOR_AZURE;
-}
-
-.completedTask {
-  @extend .singleTask;
-  color: $COLOR_FOREST;
+  .doneIcon {
+    color: $COLOR_WHITE;
+  }
 }
 
 .leftHandle {
@@ -74,6 +78,5 @@
 }
 
 .taskRatingTexts {
-  position: absolute;
-  left: 57%;
+  margin-left: auto;
 }

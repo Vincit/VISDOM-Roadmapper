@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import ReactFlow, { Handle, Controls } from 'react-flow-renderer';
 import classNames from 'classnames';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { RootState } from '../redux/types';
 import {
   allTasksSelector,
@@ -58,7 +59,6 @@ const SingleTask: FC<{
       }
       className={classes(css.singleTask, {
         [css.selectedTask]: selected,
-        [css.completedTask]: task.completed && !selected,
       })}
     >
       <Handle
@@ -69,14 +69,10 @@ const SingleTask: FC<{
         type="target"
         position={Position.Left}
       />
+      {task!.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
       {task!.name}
       <div className={classes(css.taskRatingTexts)}>
-        <TaskRatingsText
-          task={task!}
-          selected={selected}
-          completed={task.completed}
-          largeIcons
-        />
+        <TaskRatingsText task={task!} selected={selected} largeIcons />
       </div>
       <Handle
         className={classes(css.rightHandle, {
