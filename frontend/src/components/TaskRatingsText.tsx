@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { Task } from '../redux/roadmaps/types';
 import { averageValueAndWork } from '../utils/TaskUtils';
@@ -20,10 +21,14 @@ export const TaskRatingsText: FC<{
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-  let color = completed ? colors.forest : colors.azure;
-  if (selected) color = colors.white;
+  const color = selected ? colors.white : colors.azure;
   return (
     <div className={classes(css.taskRatingRow)}>
+      {completed && (
+        <DoneAllIcon
+          className={classes(css.doneIcon, { [css.white]: selected })}
+        />
+      )}
       <div className={classes(css.taskRating)}>
         <BusinessIcon size={largeIcons ? 'small' : 'xxsmall'} color={color} />
         {numFormat.format(value)}
