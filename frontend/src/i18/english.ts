@@ -271,5 +271,7 @@ export const english = {
     'Project link no access info 2/2':
       'Do you want to log in again with different email to join?',
     'Yes, log in again': 'Yes, log in again',
+    'Taskmap-tooltip':
+      'You can delete relations by right clicking them or hovering over and pressing backspace or delete',
   },
 };
