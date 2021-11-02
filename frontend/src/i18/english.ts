@@ -249,5 +249,7 @@ export const english = {
     'Change address': 'Change address',
     'verify email before your journey':
       'Before your journey in Visdom, we need to verify your email address.',
+    'Taskmap-tooltip':
+      'You can delete relations by right clicking them or hovering over and pressing backspace or delete',
   },
 };
