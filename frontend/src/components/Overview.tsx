@@ -1,13 +1,9 @@
-import { FC, useState, FormEvent, KeyboardEvent } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
-import { Alert } from 'react-bootstrap';
-import TextareaAutosize from 'react-textarea-autosize';
-import { EditButton, CloseButton, ConfirmButton } from './forms/SvgButton';
-import { LoadingSpinner } from './LoadingSpinner';
 import { MetricsSummary, MetricsProps } from './MetricsSummary';
 import { EditableTextWithButtons } from './EditableText';
 import { ReactComponent as PreviousArrow } from '../icons/expand_less.svg';
