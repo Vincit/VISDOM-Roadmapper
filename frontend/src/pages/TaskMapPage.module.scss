@@ -33,12 +33,20 @@
   padding: 10px 16px;
   position: relative;
   align-items: center;
+
+  .doneIcon {
+    color: $COLOR_EMERALD;
+    margin-right: 5px;
+  }
 }
 
 .selectedTask {
   @extend .singleTask;
   color: $COLOR_WHITE;
   background-color: $COLOR_AZURE;
+  .doneIcon {
+    color: $COLOR_WHITE;
+  }
 }
 
 .leftHandle {
