@@ -219,5 +219,7 @@ export const english = {
     'Client value': 'Client value',
     'Tasks rated': 'Tasks rated',
     'Unrated tasks': 'Unrated tasks',
+    'Taskmap-tooltip':
+      'You can delete relations by right clicking them or hovering over and pressing backspace or delete',
   },
 };
