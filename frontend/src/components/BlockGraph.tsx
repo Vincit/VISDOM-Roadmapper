@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { RefObject, ReactNode } from 'react';
 import classNames from 'classnames';
 import css from './BlockGraph.module.scss';
 
@@ -56,6 +56,7 @@ interface BlockViewProps<T> {
     height: number;
   }) => ReactNode;
   className?: string;
+  innerRef?: RefObject<HTMLDivElement>;
 }
 
 type BlockGraphProps<T> = {
@@ -75,9 +76,10 @@ export function BlockView<T>({
   origin = 0,
   children,
   className,
+  innerRef,
 }: BlockViewProps<T>) {
   return (
-    <div className={classes(css.viewContainer, className)}>
+    <div ref={innerRef} className={classes(css.viewContainer, className)}>
       <div className={classes(css.viewItems)}>
         {sizing(items.slice(origin), dimensions, limits).map((props, idx) =>
           children({ ...props, index: origin + idx }),
