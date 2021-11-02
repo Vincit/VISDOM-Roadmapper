@@ -310,5 +310,7 @@ export const english = {
     'oauth-jira-tooltip': 'TBD',
     'oauth-trello-tooltip': 'TBD',
     'Personal auth token tooltip': 'TBD',
+    'Taskmap-tooltip':
+      'You can delete relations by right clicking them or hovering over and pressing backspace or delete',
   },
 };

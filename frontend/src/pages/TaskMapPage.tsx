@@ -3,6 +3,8 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import ReactFlow, { Handle, Controls } from 'react-flow-renderer';
 import classNames from 'classnames';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { useTranslation } from 'react-i18next';
 import { RootState } from '../redux/types';
 import {
   allTasksSelector,
@@ -20,6 +22,7 @@ import { TaskRelationType } from '../../../shared/types/customTypes';
 import { CustomEdge } from '../components/TaskMapEdge';
 import { ConnectionLine } from '../components/TaskMapConnection';
 import css from './TaskMapPage.module.scss';
+import { InfoTooltip } from '../components/InfoTooltip';
 
 const classes = classNames.bind(css);
 
@@ -121,6 +124,7 @@ const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
 };
 
 export const TaskMapPage = () => {
+  const { t } = useTranslation();
   const tasks = useSelector(allTasksSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
   const taskRelations = groupTaskRelations(tasks);
@@ -201,7 +205,13 @@ export const TaskMapPage = () => {
         }}
         elementsSelectable={false}
       >
-        <Controls showInteractive={false} showZoom={false} />
+        <Controls showInteractive={false} showZoom={false}>
+          <InfoTooltip title={t('Taskmap-tooltip')}>
+            <InfoIcon
+              className={classes(css.info, css.tooltipIcon, css.infoIcon)}
+            />
+          </InfoTooltip>
+        </Controls>
       </ReactFlow>
       <div className={classes(css.taskOverviewContainer)}>
         {selectedTask && (
