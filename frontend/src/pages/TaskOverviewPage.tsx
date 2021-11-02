@@ -98,16 +98,18 @@ const TaskOverview: FC<{
     ],
   ];
 
-  const handleEdit = async (editedField: string, edited: string) => {
+  const handleEditConfirm = async (newValue: string, fieldId: string) => {
     const req: TaskRequest = {
       id: task.id,
-      [editedField]: edited,
+      [fieldId]: newValue,
     };
 
     const res = await dispatch(roadmapsActions.patchTask(req));
-    if (roadmapsActions.patchTask.rejected.match(res) && res.payload)
-      return res.payload.message;
-    return '';
+    if (roadmapsActions.patchTask.rejected.match(res)) {
+      if (res.payload) {
+        return res.payload.message;
+      }
+    }
   };
 
   return (
@@ -120,7 +122,7 @@ const TaskOverview: FC<{
         onOverviewChange={(id) => history.push(`${tasksListPage}/${id}`)}
         metrics={metrics}
         data={taskData}
-        onDataEdit={handleEdit}
+        onDataEditConfirm={handleEditConfirm}
       />
       <div className={classes(css.ratings)}>
         {valueRatings.length > 0 && (
