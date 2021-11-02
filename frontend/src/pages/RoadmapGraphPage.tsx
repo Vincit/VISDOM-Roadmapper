@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import classNames from 'classnames';
@@ -44,6 +44,33 @@ export const RoadmapGraphPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
+
+  // TODO: scrolling selected into view from BlockGraph doesn't work with this
+  const a = useRef<HTMLDivElement>(null);
+  const b = useRef<HTMLDivElement>(null);
+  const refs = useRef([a, b]);
+  const scrolling = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = (e: any) => {
+      if (scrolling.current) {
+        scrolling.current = 0;
+        return;
+      }
+
+      scrolling.current = 1;
+      const other = e.target === a.current ? b : a;
+
+      window.requestAnimationFrame(() =>
+        other.current?.scroll({ left: e.target.scrollLeft }),
+      );
+    };
+
+    const elements = [a.current, b.current];
+    elements.forEach((el) => el?.addEventListener('scroll', handleScroll));
+    return () =>
+      elements.forEach((el) => el?.removeEventListener('scroll', handleScroll));
+  }, [refs, scrolling]);
 
   useEffect(() => {
     if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
@@ -99,6 +126,7 @@ export const RoadmapGraphPage = () => {
         id={(ver) => ver.id}
         dimensions={dimensions}
         limits={limits}
+        innerRef={a}
       >
         {({ item: { name, value, work, tasks }, selected }) => (
           <>
@@ -143,6 +171,7 @@ export const RoadmapGraphPage = () => {
             items={versions ?? []}
             dimensions={dimensions}
             limits={limits}
+            innerRef={b}
           >
             {({ item: ver, width }) => (
               <TaskValueCreatedVisualization
