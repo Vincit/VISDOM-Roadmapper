@@ -1,5 +1,7 @@
 @import '../shared.scss';
 
+$ZOOM: var(--zoom, 1);
+
 .flowContainer {
   background-color: $COLOR_WHITE;
   border-radius: 10px;
@@ -14,12 +16,18 @@
   width: 356px;
   background-color: $COLOR_CLOUD;
   border-radius: 10px;
-  // cursor: default;    <- To do: Add back when automatic node positions is ready
+  cursor: default;
 }
 
 .taskOverviewContainer {
   margin-top: 20px;
   margin-left: 10px;
+}
+
+.highlight {
+  box-shadow: 0px 0px 20px rgba($color: $COLOR_AZURE, $alpha: 0.15);
+  background-color: rgba($color: $COLOR_AZURE, $alpha: 0.15);
+  cursor: -webkit-grabbing;
 }
 
 .singleTask {
@@ -38,6 +46,18 @@
     color: $COLOR_EMERALD;
     margin-right: 5px;
   }
+
+  &.dragging {
+    font-size: calc(14px * #{$ZOOM});
+    border-radius: calc(5px * #{$ZOOM});
+    padding: calc(10px * #{$ZOOM}) calc(16px * #{$ZOOM});
+
+    .doneIcon {
+      margin-right: calc(5px * #{$ZOOM});
+      width: calc(1em * #{$ZOOM});
+      height: calc(1em * #{$ZOOM});
+    }
+  }
 }
 
 .selectedTask {
@@ -49,6 +69,12 @@
   }
 }
 
+.draggingHandle {
+  height: calc(17px * #{$ZOOM});
+  width: calc(17px * #{$ZOOM});
+  border-width: calc(2px * #{$ZOOM});
+}
+
 .leftHandle {
   position: absolute;
   left: -3%;
@@ -57,6 +83,10 @@
   width: 17px;
   background-color: $COLOR_WHITE;
   border: 2px solid $COLOR_ORANGE;
+
+  &.dragging {
+    @extend .draggingHandle;
+  }
 }
 
 .filledLeftHandle {
@@ -71,6 +101,10 @@
   width: 17px;
   background-color: $COLOR_WHITE;
   border: 2px solid $COLOR_FOREST;
+
+  &.dragging {
+    @extend .draggingHandle;
+  }
 }
 
 .filledRightHandle {
