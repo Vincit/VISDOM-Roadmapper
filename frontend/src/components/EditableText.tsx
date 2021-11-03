@@ -35,8 +35,10 @@ const withButtons = (Component: typeof EditableText) => ({
       setIsLoading(true);
       onOk(editText, fieldId).then((returnedError) => {
         if (returnedError) setErrorMessage(returnedError);
+        else {
+          setEditOpen(false);
+        }
         setEditText('');
-        setEditOpen(false);
         setIsLoading(false);
       });
     } else {
