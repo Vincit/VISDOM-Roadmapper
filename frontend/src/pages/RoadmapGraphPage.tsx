@@ -128,7 +128,7 @@ export const RoadmapGraphPage = () => {
         limits={limits}
         innerRef={a}
       >
-        {({ item: { name, value, work, tasks }, selected }) => (
+        {({ item: { name, value, work, tasks }, index }) => (
           <>
             <div className={classes(css.versionData)}>
               <div className={classes(css.ratingDiv)}>
@@ -147,7 +147,7 @@ export const RoadmapGraphPage = () => {
             </div>
             <p
               className={classes(css.versionTitle, {
-                [css.selected]: selected,
+                [css.selected]: index === selectedVersion,
               })}
             >
               {name}

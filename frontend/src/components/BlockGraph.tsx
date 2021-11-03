@@ -40,15 +40,24 @@ function sizing<T>(
     limits.minHeight,
     limits.maxHeight,
   );
-  return items.map((item, i) => ({ item, width: w[i], height: h[i] }));
+  return items.map((item, i) => ({
+    item,
+    scaled: {
+      width: w[i],
+      height: h[i],
+    },
+    original: sizes[i],
+  }));
 }
 
 /* eslint-disable react/require-default-props */
 interface BlockViewProps<T> {
   items: T[];
-  origin?: number;
   dimensions: DimensionFn<T>;
   limits: DimensionLimits;
+  x0?: number;
+  xMin?: number;
+  xMax?: number;
   children: (props: {
     item: T;
     index: number;
@@ -66,23 +75,30 @@ type BlockGraphProps<T> = {
   selected: number;
   setSelected: (_: number) => void;
   id: (item: T) => string | number;
-  children: (props: { item: T; selected: boolean }) => ReactNode;
-} & Omit<BlockViewProps<T>, 'children'>;
+} & BlockViewProps<T>;
 
 export function BlockView<T>({
   items,
   dimensions,
   limits,
-  origin = 0,
+  xMin = -Infinity,
+  xMax = Infinity,
+  x0 = 0,
   children,
   className,
   innerRef,
 }: BlockViewProps<T>) {
+  let x = x0;
   return (
     <div ref={innerRef} className={classes(css.viewContainer, className)}>
       <div className={classes(css.viewItems)}>
-        {sizing(items.slice(origin), dimensions, limits).map((props, idx) =>
-          children({ ...props, index: origin + idx }),
+        {sizing(items, dimensions, limits).map(
+          ({ original, scaled, ...props }, index) => {
+            if (x > xMax) return null;
+            x += original.width;
+            if (x < xMin) return null;
+            return children({ ...scaled, ...props, index });
+          },
         )}
       </div>
     </div>
@@ -128,7 +144,7 @@ export function BlockGraph<T>({
               role="button"
               tabIndex={0}
             >
-              {children({ item, selected: index === selected })}
+              {children({ item, index, width, height })}
             </div>
           )}
         </BlockView>
