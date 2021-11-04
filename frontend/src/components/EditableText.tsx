@@ -67,16 +67,6 @@ const withButtons = (Component: typeof EditableText) => ({
 
   return (
     <>
-      <Component
-        editOpen={editOpen}
-        editText={editText}
-        onTextChange={handleTextChange}
-        onKeyDown={handleKeyDown}
-        errorMessage={errorMessage}
-        isLoading={isLoading}
-        value={value}
-        format={format}
-      />
       {editOpen ? (
         <div className={classes(css.buttonsDiv)}>
           <CloseButton onClick={handleCancel} />
@@ -93,6 +83,16 @@ const withButtons = (Component: typeof EditableText) => ({
           />
         </div>
       )}
+      <Component
+        editOpen={editOpen}
+        editText={editText}
+        onTextChange={handleTextChange}
+        onKeyDown={handleKeyDown}
+        errorMessage={errorMessage}
+        isLoading={isLoading}
+        value={value}
+        format={format}
+      />
     </>
   );
 };
