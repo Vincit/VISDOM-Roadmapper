@@ -1,14 +1,17 @@
-import { RefObject, ReactNode } from 'react';
+import { CSSProperties, Ref, ReactNode } from 'react';
 import classNames from 'classnames';
 import css from './BlockGraph.module.scss';
 
 const classes = classNames.bind(css);
 
-const lerp = (values: number[], lo: number, hi: number) => {
+/**
+ * Linear interpolation of `values` to the interval [`low`, `high`)
+ */
+const lerp = (values: number[], low: number, high: number) => {
   const min = Math.min(...values);
   const max = Math.max(...values);
   return values.map(
-    (x) => lo + Math.floor(((x - min) / (max - min)) * (hi - lo)),
+    (x) => low + Math.floor(((x - min) / (max - min)) * (high - low)),
   );
 };
 
@@ -65,7 +68,8 @@ interface BlockViewProps<T> {
     height: number;
   }) => ReactNode;
   className?: string;
-  innerRef?: RefObject<HTMLDivElement>;
+  innerRef?: Ref<HTMLDivElement>;
+  style?: CSSProperties;
 }
 
 type BlockGraphProps<T> = {
@@ -87,10 +91,15 @@ export function BlockView<T>({
   children,
   className,
   innerRef,
+  style,
 }: BlockViewProps<T>) {
   let x = x0;
   return (
-    <div ref={innerRef} className={classes(css.viewContainer, className)}>
+    <div
+      ref={innerRef}
+      className={classes(css.viewContainer, className)}
+      style={style}
+    >
       <div className={classes(css.viewItems)}>
         {sizing(items, dimensions, limits).map(
           ({ original, scaled, ...props }, index) => {

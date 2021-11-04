@@ -48,29 +48,18 @@ export const RoadmapGraphPage = () => {
   // TODO: scrolling selected into view from BlockGraph doesn't work with this
   const a = useRef<HTMLDivElement>(null);
   const b = useRef<HTMLDivElement>(null);
-  const refs = useRef([a, b]);
-  const scrolling = useRef(0);
 
   useEffect(() => {
-    const handleScroll = (e: any) => {
-      if (scrolling.current) {
-        scrolling.current = 0;
-        return;
-      }
+    const ac = a.current;
+    const bc = b.current;
+    if (!ac || !bc) return;
 
-      scrolling.current = 1;
-      const other = e.target === a.current ? b : a;
-
-      window.requestAnimationFrame(() =>
-        other.current?.scroll({ left: e.target.scrollLeft }),
-      );
+    const handleScroll = () => {
+      window.requestAnimationFrame(() => bc.scroll({ left: ac.scrollLeft }));
     };
-
-    const elements = [a.current, b.current];
-    elements.forEach((el) => el?.addEventListener('scroll', handleScroll));
-    return () =>
-      elements.forEach((el) => el?.removeEventListener('scroll', handleScroll));
-  }, [refs, scrolling]);
+    ac.addEventListener('scroll', handleScroll);
+    return () => ac.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
@@ -172,6 +161,7 @@ export const RoadmapGraphPage = () => {
             dimensions={dimensions}
             limits={limits}
             innerRef={b}
+            style={{ overflowX: 'hidden' }}
           >
             {({ item: ver, width }) => (
               <TaskValueCreatedVisualization
