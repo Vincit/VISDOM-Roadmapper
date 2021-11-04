@@ -1,0 +1,86 @@
+@import '../pages/TaskMapPage.module.scss';
+
+.singleTask {
+  @extend .layout-row;
+  width: 309px;
+  height: 41px;
+  background-color: $COLOR_WHITE;
+  margin: 10px;
+  border-radius: 5px;
+  border: 0px;
+  padding: 10px 16px;
+  position: relative;
+  align-items: center;
+
+  .doneIcon {
+    color: $COLOR_EMERALD;
+    margin-right: 5px;
+  }
+
+  &.dragging {
+    font-size: calc(14px * #{$ZOOM});
+    border-radius: calc(5px * #{$ZOOM});
+    padding: calc(10px * #{$ZOOM}) calc(16px * #{$ZOOM});
+
+    .doneIcon {
+      margin-right: calc(5px * #{$ZOOM});
+      width: calc(1em * #{$ZOOM});
+      height: calc(1em * #{$ZOOM});
+    }
+  }
+}
+
+.selectedTask {
+  @extend .singleTask;
+  color: $COLOR_WHITE;
+  background-color: $COLOR_AZURE;
+  .doneIcon {
+    color: $COLOR_WHITE;
+  }
+}
+
+.draggingHandle {
+  height: calc(17px * #{$ZOOM});
+  width: calc(17px * #{$ZOOM});
+  border-width: calc(2px * #{$ZOOM});
+}
+
+.leftHandle {
+  position: absolute;
+  left: -3%;
+  border-radius: 20;
+  height: 17px;
+  width: 17px;
+  background-color: $COLOR_WHITE;
+  border: 2px solid $COLOR_ORANGE;
+
+  &.dragging {
+    @extend .draggingHandle;
+  }
+}
+
+.filledLeftHandle {
+  background-color: lighten($COLOR_ORANGE, 20%);
+}
+
+.rightHandle {
+  position: absolute;
+  left: 97%;
+  border-radius: 20;
+  height: 17px;
+  width: 17px;
+  background-color: $COLOR_WHITE;
+  border: 2px solid $COLOR_FOREST;
+
+  &.dragging {
+    @extend .draggingHandle;
+  }
+}
+
+.filledRightHandle {
+  background-color: lighten($COLOR_FOREST, 20%);
+}
+
+.taskRatingTexts {
+  margin-left: auto;
+}
