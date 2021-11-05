@@ -7,7 +7,7 @@ const classes = classNames.bind(css);
 /**
  * Linear interpolation of `values` to the interval [`low`, `high`)
  */
-const lerp = (values: number[], low: number, high: number) => {
+const mapToRange = (values: number[], low: number, high: number) => {
   const min = Math.min(...values);
   const max = Math.max(...values);
   return values.map(
@@ -33,12 +33,12 @@ function sizing<T>(
   limits: DimensionLimits,
 ) {
   const sizes = items.map(dimensions);
-  const w = lerp(
+  const w = mapToRange(
     sizes.map((x) => x.width),
     limits.minWidth,
     limits.maxWidth,
   );
-  const h = lerp(
+  const h = mapToRange(
     sizes.map((x) => x.height),
     limits.minHeight,
     limits.maxHeight,
