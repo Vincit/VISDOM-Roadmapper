@@ -1,4 +1,4 @@
-import { CSSProperties, Ref, ReactNode } from 'react';
+import { useRef, CSSProperties, Ref, ReactNode } from 'react';
 import classNames from 'classnames';
 import css from './BlockGraph.module.scss';
 
@@ -122,24 +122,34 @@ export function BlockGraph<T>({
   setSelected,
   id,
   children,
+  innerRef,
   ...viewProps
 }: BlockGraphProps<T>) {
+  const ref = useRef<HTMLDivElement | null>(null);
   return (
     <>
       <div className={classes(css.graphOuter)}>
         {title}
-        <BlockView {...viewProps} className={classes(css.graphInner)}>
+        <BlockView
+          innerRef={(e) => {
+            if (e) ref.current = e;
+            if (typeof innerRef === 'function') innerRef(e);
+          }}
+          {...viewProps}
+          className={classes(css.graphInner)}
+        >
           {({ item, index, width, height }) => (
             <div
               ref={
                 index === selected
                   ? (e) => {
-                      if (e)
-                        e.scrollIntoView({
+                      if (e) {
+                        ref.current?.scrollTo({
+                          top: e.offsetTop,
+                          left: e.offsetLeft - ref.current.offsetLeft,
                           behavior: 'smooth',
-                          block: 'nearest',
-                          inline: 'center',
                         });
+                      }
                     }
                   : undefined
               }
