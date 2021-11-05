@@ -45,8 +45,7 @@ export const RoadmapGraphPage = () => {
     shallowEqual,
   );
 
-  // TODO: scrolling selected into view from BlockGraph doesn't work with this
-  const a = useRef<HTMLDivElement>(null);
+  const a = useRef<HTMLDivElement | null>(null);
   const b = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -115,7 +114,9 @@ export const RoadmapGraphPage = () => {
         id={(ver) => ver.id}
         dimensions={dimensions}
         limits={limits}
-        innerRef={a}
+        innerRef={(e) => {
+          a.current = e;
+        }}
       >
         {({ item: { name, value, work, tasks }, index }) => (
           <>
