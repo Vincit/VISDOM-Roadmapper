@@ -12,12 +12,11 @@ import { useTranslation } from 'react-i18next';
 import { RootState } from '../redux/types';
 import {
   allTasksSelector,
-  chosenRoadmapSelector,
   taskSelector,
   taskmapPositionSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps';
-import { Roadmap, Task, TaskRelation } from '../redux/roadmaps/types';
+import { Task, TaskRelation } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import { TaskRatingsText } from '../components/TaskRatingsText';
 import { groupTaskRelations } from '../utils/TaskRelationUtils';
@@ -151,10 +150,6 @@ export const TaskMapPage = () => {
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
   const taskRelations = groupTaskRelations(tasks);
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const groups = taskRelations.map(({ synergies }, idx) => ({
     id: `${idx}`,
@@ -194,22 +189,13 @@ export const TaskMapPage = () => {
 
   const onConnect = async (data: any) => {
     const { sourceHandle, targetHandle } = data;
-    const roadmapId = currentRoadmap?.id;
     const type = TaskRelationType.Dependency;
 
     // Handles are in form 'from-{id}' and 'to-{id}', splitting required
     const from = Number(sourceHandle.split('-')[1]);
     const to = Number(targetHandle.split('-')[1]);
 
-    if (!roadmapId) return;
-    await dispatch(
-      roadmapsActions.addTaskRelation({
-        from,
-        to,
-        type,
-        roadmapId,
-      }),
-    );
+    await dispatch(roadmapsActions.addTaskRelation({ from, to, type }));
     dispatch(roadmapsActions.getRoadmaps());
   };
 
