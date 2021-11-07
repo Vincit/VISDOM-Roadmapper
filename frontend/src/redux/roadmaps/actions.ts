@@ -16,7 +16,7 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
-  TaskRelationRequest,
+  TaskRelation,
   IntegrationConfigurationRequest,
   IntegrationConfiguration,
   AddTaskToVersionRequest,
@@ -25,7 +25,6 @@ import {
   VersionRequest,
   Invitation,
   InvitationRequest,
-  TaskRelation,
 } from './types';
 import { RoleType } from '../../../../shared/types/customTypes';
 
@@ -579,13 +578,16 @@ export const deleteInvitation = createAsyncThunk<
 
 export const addTaskRelation = createAsyncThunk<
   boolean,
-  TaskRelationRequest,
+  TaskRelation,
   { rejectValue: AxiosError }
 >('addTaskRelation', async (relationRequest, thunkAPI) => {
   try {
-    return await api.addTaskRelation(relationRequest);
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.addTaskRelation(currentroadmapId, relationRequest);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 

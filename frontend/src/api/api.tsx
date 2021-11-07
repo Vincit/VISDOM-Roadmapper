@@ -18,7 +18,6 @@ import {
   Taskrating,
   TaskratingRequest,
   TaskRequest,
-  TaskRelationRequest,
   GetRoadmapBoardsRequest,
   GetRoadmapBoardLabelsRequest,
   Version,
@@ -387,11 +386,12 @@ const sendEmailVerificationLink = async (user: UserInfo) => {
   return response.status === 200;
 };
 
-const addTaskRelation = async (relation: TaskRelationRequest) => {
-  const response = await axios.post(
-    `/roadmaps/${relation.roadmapId}/tasks/relations`,
-    { from: relation.from, to: relation.to, type: relation.type },
-  );
+const addTaskRelation = async (roadmapId: number, relation: TaskRelation) => {
+  const response = await axios.post(`/roadmaps/${roadmapId}/tasks/relations`, {
+    from: relation.from,
+    to: relation.to,
+    type: relation.type,
+  });
   return response.status === 200;
 };
 
