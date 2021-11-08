@@ -77,7 +77,7 @@ const ClientOverview: FC<{
       {
         label: t('Client'),
         keyName: 'clientDotName',
-        value: clientDotName,
+        value: client.name,
         format: 'clientGap',
         editable: false,
       },
