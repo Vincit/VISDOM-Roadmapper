@@ -38,7 +38,7 @@
 .content {
   @extend .layout-row;
   width: 100%;
-  gap: 10px;
+  gap: 5%;
 }
 
 .metrics {
@@ -46,35 +46,22 @@
   gap: 20px;
 }
 
-.flexGrow {
-  align-self: center;
-  max-width: 300px;
-  min-width: 100px;
-  flex-grow: 1;
-  div {
-    margin: 0px;
-  }
-}
-
 .data {
   @extend .layout-row;
-  justify-content: space-evenly;
-  align-items: stretch;
   flex: 1;
-  gap: 10px;
-
   .column {
     @extend .layout-column;
     align-items: center;
     gap: 5px;
     flex: 1;
+    max-width: 600px;
+    min-width: 300px;
   }
   .row {
     @extend .layout-row;
     gap: 10px;
     min-height: 50px;
     width: 100%;
-    justify-content: center;
   }
   .label {
     @extend .typography-body-bold;
@@ -86,7 +73,6 @@
   .value {
     @extend .typography-body;
     @extend .layout-row;
-    @extend .flexGrow;
     align-items: center;
     text-align: start;
 

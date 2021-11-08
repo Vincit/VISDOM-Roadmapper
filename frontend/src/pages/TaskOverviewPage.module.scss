@@ -7,6 +7,6 @@
 
 .ratings {
   @extend .content;
-  justify-content: space-between;
+  gap: 10%;
   flex-wrap: wrap;
 }
