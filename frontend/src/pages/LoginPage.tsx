@@ -20,7 +20,8 @@ import { Input } from '../components/forms/FormField';
 const classes = classNames.bind(css);
 
 export const LoginPage = () => {
-  const query = new URLSearchParams(useLocation().search);
+  const urlSearchString = useLocation().search;
+  const queryParams = new URLSearchParams(urlSearchString);
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -66,7 +67,9 @@ export const LoginPage = () => {
 
   return (
     <>
-      {userInfo && <Redirect to={query.get('redirectTo') || paths.home} />}
+      {userInfo && (
+        <Redirect to={queryParams.get('redirectTo') || paths.home} />
+      )}
       <div className={classes(css.formDiv)}>
         <ModalHeader>
           <h2>
@@ -112,7 +115,7 @@ export const LoginPage = () => {
           </form>
           <div className={classes(css.formFooter)}>
             <Trans i18nKey="No account?" />{' '}
-            <Link to={paths.registerPage}>
+            <Link to={`${paths.registerPage}${urlSearchString}`}>
               <Trans i18nKey="Register" />
             </Link>
           </div>
