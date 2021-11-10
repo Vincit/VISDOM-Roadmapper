@@ -24,7 +24,8 @@ const classes = classNames.bind(css);
 
 export const RegisterPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const query = new URLSearchParams(useLocation().search);
+  const urlSearchString = useLocation().search;
+  const queryParams = new URLSearchParams(urlSearchString);
   const { t } = useTranslation();
   const [formValues, setFormValues] = useState({
     email: '',
@@ -149,10 +150,10 @@ export const RegisterPage = () => {
       {userInfo && (
         <Redirect
           to={
-            matchPath(query.get('redirectTo') || '', {
+            matchPath(queryParams.get('redirectTo') || '', {
               path: paths.joinRoadmap,
             })
-              ? query.get('redirectTo')!
+              ? queryParams.get('redirectTo')!
               : paths.home
           }
         />
@@ -210,7 +211,7 @@ export const RegisterPage = () => {
           </form>
           <div className={classes(css.formFooter)}>
             <Trans i18nKey="Already have an account?" />{' '}
-            <Link to={paths.loginPage}>
+            <Link to={`${paths.loginPage}${urlSearchString}`}>
               <Trans i18nKey="Log in" />
             </Link>
           </div>
