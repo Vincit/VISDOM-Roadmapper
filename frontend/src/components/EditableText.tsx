@@ -1,8 +1,14 @@
-import { TextareaAutosize } from '@material-ui/core';
 import classNames from 'classnames';
-import { FC, useState, KeyboardEvent, FormEvent } from 'react';
-import { Alert } from 'react-bootstrap';
+import {
+  FC,
+  useState,
+  useRef,
+  KeyboardEvent,
+  FormEvent,
+  ComponentPropsWithoutRef,
+} from 'react';
 import { CloseButton, ConfirmButton, EditButton } from './forms/SvgButton';
+import { TextAreaAutosize } from './forms/FormField';
 import { LoadingSpinner } from './LoadingSpinner';
 import css from './EditableText.module.scss';
 
@@ -25,24 +31,20 @@ const withButtons = (Component: typeof EditableText) => ({
   const [editText, setEditText] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const field = useRef<HTMLTextAreaElement | null>(null);
 
   const handleTextChange = (event: FormEvent<HTMLTextAreaElement>) => {
     setEditText(event.currentTarget.value);
   };
 
   const handleConfirm = () => {
-    if (editText !== '') {
+    if (field.current?.checkValidity()) {
       setIsLoading(true);
       onOk(editText, fieldId).then((returnedError) => {
         if (returnedError) setErrorMessage(returnedError);
-        else {
-          setEditOpen(false);
-        }
-        setEditText('');
+        else setEditOpen(false);
         setIsLoading(false);
       });
-    } else {
-      setErrorMessage("Field can't be empty.");
     }
   };
 
@@ -55,6 +57,7 @@ const withButtons = (Component: typeof EditableText) => ({
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     switch (event.key) {
       case 'Enter':
+        event.preventDefault();
         handleConfirm();
         break;
       case 'Escape':
@@ -86,65 +89,41 @@ const withButtons = (Component: typeof EditableText) => ({
       <Component
         editOpen={editOpen}
         editText={editText}
-        onTextChange={handleTextChange}
+        onChange={handleTextChange}
         onKeyDown={handleKeyDown}
-        errorMessage={errorMessage}
+        error={{ message: errorMessage, setMessage: setErrorMessage }}
         isLoading={isLoading}
         value={value}
         format={format}
+        required
+        innerRef={(e) => {
+          field.current = e;
+          e.focus();
+        }}
       />
     </>
   );
 };
 
-export const EditableText: FC<{
-  editOpen: boolean;
-  editText: string;
-  onTextChange: (event: FormEvent<HTMLTextAreaElement>) => void;
-  onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
-  errorMessage: string;
-  value: string;
-  isLoading: boolean;
-  format: string | undefined;
-}> = ({
-  editOpen,
-  editText,
-  onTextChange,
-  onKeyDown,
-  value,
-  errorMessage,
-  isLoading,
-  format,
-}) => {
-  return editOpen ? (
-    <>
-      {isLoading && (
-        <div className={classes(css.flexGrow)}>
-          <LoadingSpinner />
-        </div>
-      )}
-      {!isLoading && errorMessage === '' && (
-        <TextareaAutosize
-          className={classes(css.input, css[format ?? ''])}
-          value={editText}
-          onChange={onTextChange}
-          autoComplete="off"
-          minRows={1}
-          onKeyDown={onKeyDown}
-        />
-      )}
-      {errorMessage !== '' && (
-        <div className={classes(css.flexGrow)}>
-          <Alert show={errorMessage.length > 0} variant="danger">
-            {errorMessage}
-          </Alert>
-        </div>
-      )}
-    </>
-  ) : (
-    <>
-      <div className={classes(css.value, css[format ?? ''])}>{value}</div>
-    </>
+export const EditableText: FC<
+  {
+    editOpen: boolean;
+    editText: string;
+    value: string;
+    isLoading: boolean;
+    format: string | undefined;
+  } & ComponentPropsWithoutRef<typeof TextAreaAutosize>
+> = ({ editOpen, editText, value, isLoading, format, ...props }) => {
+  if (!editOpen)
+    return <div className={classes(css.value, css[format ?? ''])}>{value}</div>;
+  if (isLoading) return <LoadingSpinner />;
+  return (
+    <TextAreaAutosize
+      {...props}
+      className={classes(css.input, css[format ?? ''])}
+      value={editText}
+      autoComplete="off"
+    />
   );
 };
 

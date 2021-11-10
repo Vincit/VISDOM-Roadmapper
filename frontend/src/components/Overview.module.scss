@@ -49,6 +49,7 @@
 .data {
   @extend .layout-row;
   flex: 1;
+  gap: 10px;
   .column {
     @extend .layout-column;
     align-items: center;

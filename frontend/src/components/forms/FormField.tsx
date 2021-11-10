@@ -6,6 +6,7 @@ import {
   useRef,
   useEffect,
 } from 'react';
+import { TextareaAutosize } from '@material-ui/core';
 import classNames from 'classnames';
 import css from './FormField.module.scss';
 
@@ -23,6 +24,7 @@ export interface FieldProps<T extends FieldType> extends HTMLProps<T> {
     message: string;
     setMessage: (_: string) => void;
   };
+  innerRef?: (elem: T) => void;
 }
 
 const FieldError = ({ msg }: { msg: string }) =>
@@ -52,14 +54,21 @@ export const errorState = ([message, setMessage]: [
 function field<T extends FieldType>(
   Tag: ComponentType<HTMLProps<T>>,
 ): FC<FieldProps<T>> {
-  return ({ error = errorState(useState('')), label, id, ...props }) => {
+  return ({
+    error = errorState(useState('')),
+    label,
+    innerRef,
+    id,
+    ...props
+  }) => {
     const ref = useRef<T>(null);
     useEffect(() => {
       if (ref.current) {
+        innerRef?.(ref.current);
         if (error.message) ref.current.classList.add('input-invalid');
         ref.current.setCustomValidity(error.message);
       }
-    }, [ref, error.message]);
+    }, [ref, error.message, innerRef]);
     return (
       <div className={classes(css.fieldContainer)}>
         {label && <label htmlFor={id}>{label}</label>}
@@ -93,3 +102,6 @@ function field<T extends FieldType>(
 
 export const Input = field<HTMLInputElement>('input' as any);
 export const TextArea = field<HTMLTextAreaElement>('textarea' as any);
+export const TextAreaAutosize = field<HTMLTextAreaElement>(
+  TextareaAutosize as any,
+);
