@@ -37,8 +37,8 @@ const withButtons = (Component: typeof EditableText) => ({
         if (returnedError) setErrorMessage(returnedError);
         else {
           setEditOpen(false);
+          setEditText('');
         }
-        setEditText('');
         setIsLoading(false);
       });
     } else {
@@ -47,9 +47,11 @@ const withButtons = (Component: typeof EditableText) => ({
   };
 
   const handleCancel = () => {
-    setErrorMessage('');
-    setEditText('');
-    setEditOpen(false);
+    if (errorMessage) setErrorMessage('');
+    else {
+      setEditText('');
+      setEditOpen(false);
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
