@@ -103,7 +103,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
           <b>{unratedAmount || ' '}</b>
         </div>
         <div className={classes(css.buttons)}>
-          {getType(userInfo?.roles, currentRoadmap.id) === RoleType.Admin && (
+          {getType(userInfo, currentRoadmap.id) === RoleType.Admin && (
             <div className={classes(css.adminButtons)}>
               <EditButton
                 fontSize="medium"

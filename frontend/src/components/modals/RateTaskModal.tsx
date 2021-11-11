@@ -87,7 +87,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   );
 
   const dimension =
-    getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Developer
+    getType(userInfo, currentRoadmap?.id) === RoleType.Developer
       ? TaskRatingDimension.RequiredWork
       : TaskRatingDimension.BusinessValue;
 

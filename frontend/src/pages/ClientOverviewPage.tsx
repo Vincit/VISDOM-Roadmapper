@@ -134,7 +134,7 @@ export const ClientOverviewPage = () => {
   )!;
 
   const clients =
-    getType(userInfo.roles, Number(roadmapId)) === RoleType.Admin
+    getType(userInfo, Number(roadmapId)) === RoleType.Admin
       ? customers
       : userInfo.representativeFor!;
   const clientIdx = clients.findIndex(({ id }) => Number(clientId) === id);

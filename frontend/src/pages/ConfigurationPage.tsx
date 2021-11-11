@@ -79,7 +79,7 @@ const RoadmapConfigurationPageComponent = ({
   return (
     <div className={classes(css.configurationPage)}>
       This is the roadmap configuration page.
-      {getType(userInfo.roles, currentRoadmap?.id) === RoleType.Admin && (
+      {getType(userInfo, currentRoadmap?.id) === RoleType.Admin && (
         <>
           {Object.entries(integrations).flatMap(([name, fields]) => [
             <div key={`config-${name}`} className={classes(css.layoutRow)}>

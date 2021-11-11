@@ -25,7 +25,7 @@ export const ClientsListPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const role = getType(userInfo?.roles, currentRoadmap?.id);
+  const role = getType(userInfo, currentRoadmap?.id);
 
   const addCustomerClicked = (e: MouseEvent) => {
     e.preventDefault();

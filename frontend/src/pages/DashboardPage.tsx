@@ -36,7 +36,7 @@ export const DashboardPage = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const type = getType(userInfo?.roles, currentRoadmap?.id);
+  const type = getType(userInfo, currentRoadmap?.id);
   const roadmapsVersions = currentRoadmap?.versions;
   const [chartVersionLists, setChartVersionLists] = useState<
     {

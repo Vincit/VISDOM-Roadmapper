@@ -42,7 +42,7 @@ export const TopBar: FC<{
       </div>
       {children}
       <div className={classes(css.rightSide)}>
-        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+        {getType(userInfo, currentRoadmap?.id) === RoleType.Admin && (
           <button
             className="button-small-filled"
             type="button"
