@@ -1,6 +1,7 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Task from '../tasks/tasks.model';
 import { TaskRelation } from './taskrelation.model';
+import { TaskRelationType } from '../../../../shared/types/customTypes';
 
 export const getRelations: RouteHandlerFnc = async (ctx) => {
   const tasks = (
@@ -29,6 +30,35 @@ export const addRelation: RouteHandlerFnc = async (ctx) => {
   } else {
     ctx.status = 400;
   }
+};
+
+const isNumberArray = (value: any): value is number[] => {
+  if (!Array.isArray(value)) return false;
+  return value.every((num) => typeof num === 'number');
+};
+export const addSynergies: RouteHandlerFnc = async (ctx) => {
+  const { from, to } = ctx.request.body;
+  if (
+    !isNumberArray(to) ||
+    to.includes(from) ||
+    !(await tasksInRoadmap(Number(ctx.params.roadmapId), [from, ...to]))
+  )
+    return void (ctx.status = 400);
+  const newRelations = await TaskRelation.transaction(async (trx) => {
+    // delete all relations associated with 'from' task
+    await TaskRelation.query(trx)
+      .where({ from })
+      .orWhere({ to: from })
+      .delete();
+    const synergies = to.map((to) => ({
+      from,
+      to,
+      type: TaskRelationType.Synergy,
+    }));
+    if (!synergies.length) return undefined;
+    return await TaskRelation.query(trx).insertAndFetch(synergies);
+  });
+  return void (ctx.body = newRelations);
 };
 
 export const deleteRelation: RouteHandlerFnc = async (ctx) => {
