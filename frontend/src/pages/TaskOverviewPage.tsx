@@ -123,6 +123,7 @@ const TaskOverview: FC<{
         metrics={metrics}
         data={taskData}
         onDataEditConfirm={handleEditConfirm}
+        key={task.id}
       />
       <div className={classes(css.ratings)}>
         {valueRatings.length > 0 && (
