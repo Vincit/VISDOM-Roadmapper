@@ -3,6 +3,7 @@ import {
   getRelations,
   deleteRelation,
   addRelation,
+  addSynergies,
 } from './taskrelation.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Context } from 'koa';
@@ -19,6 +20,11 @@ taskrelationRouter.post(
   '/relations',
   requirePermission(Permission.TaskRead | Permission.RoadmapEdit),
   addRelation,
+);
+taskrelationRouter.post(
+  '/relations/synergies',
+  requirePermission(Permission.TaskRead | Permission.RoadmapEdit),
+  addSynergies,
 );
 taskrelationRouter.delete(
   '/relations',
