@@ -105,7 +105,10 @@ const calcTaskPriority = (task: Task) => {
   return value.avg / work.avg;
 };
 
-export const not = <T>(f: (t: T) => boolean) => (t: T) => !f(t);
+type Predicate<T> = (t: T) => boolean;
+const not = <T>(f: Predicate<T>) => (t: T) => !f(t);
+const or = <T>(...fs: Predicate<T>[]) => (t: T) =>
+  fs.reduce((res, f) => res || f(t), false);
 
 export const ratedByUser = (user: RoadmapUser | UserInfo) => (task: Task) =>
   task.ratings.some((rating) => rating.createdByUser === user.id);
@@ -235,16 +238,20 @@ export const weightedTaskPriority = (roadmap: Roadmap) => (task: Task) => {
   return weightedValue / avgWorkRating;
 };
 
-export const awaitsUserRatings = (
-  user: UserInfo,
-  roadmap: number | Roadmap,
+export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
+  user: T,
+  roadmap: T extends UserInfo ? number | Roadmap : Roadmap,
 ) => {
   const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
-  const type = getType(user.roles, roadmapId);
+  const type = isUserInfo(user) ? getType(user.roles, roadmapId) : user.type;
   if (type === RoleType.Admin || type === RoleType.Business) {
-    const customers = user.representativeFor?.filter(
-      (customer) => customer.roadmapId === roadmapId,
-    );
+    const customers = isUserInfo(user)
+      ? user.representativeFor?.filter(
+          (customer) => customer.roadmapId === roadmapId,
+        )
+      : (roadmap as Roadmap).customers?.filter((customer) =>
+          customer.representatives?.some((rep) => rep.id === user.id),
+        );
     return (task: Task) =>
       task.roadmapId === roadmapId &&
       !customers?.every((customer) => ratedByCustomer(customer, user)(task));
@@ -268,6 +275,7 @@ export const hasRatingsOnEachDimension = (task: Task) =>
 /*
   For Customers consider missing representative ratings
   For Admin and Business -users consider missing represented ratings
+  For Admin also consider missing ratings from others
   For others consider their own missing ratings
 */
 export const isUnrated = (
@@ -278,20 +286,11 @@ export const isUnrated = (
     return (task) =>
       !!user.representatives?.some((rep) => !ratedByCustomer(user, rep)(task));
 
-  if (isUserInfo(user)) {
-    return getType(user.roles, roadmap.id) === RoleType.Admin
-      ? hasMissingRatings(roadmap)
-      : awaitsUserRatings(user, roadmap);
-  }
-
-  if (user.type === RoleType.Admin || user.type === RoleType.Business) {
-    const customers = roadmap.customers?.filter((customer) =>
-      customer.representatives?.some((rep) => rep.id === user.id),
-    );
-    return (task) =>
-      !!customers?.some((customer) => !ratedByCustomer(customer, user)(task));
-  }
-  return not(ratedByUser(user));
+  const baseCondition = awaitsUserRatings(user, roadmap);
+  const type = isUserInfo(user) ? getType(user.roles, roadmap.id) : user.type;
+  if (type === RoleType.Admin)
+    return or(baseCondition, hasMissingRatings(roadmap));
+  return baseCondition;
 };
 
 export const unratedTasksAmount = (
