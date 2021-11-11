@@ -378,6 +378,18 @@ const removeTaskRelation = async (
   return response.status === 200;
 };
 
+const addSynergyRelations = async (
+  roadmapId: number,
+  from: number,
+  to: number[],
+) => {
+  const response = await axios.post(
+    `/roadmaps/${roadmapId}/tasks/relations/synergies`,
+    { from, to },
+  );
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -422,4 +434,5 @@ export const api = {
   sendEmailVerificationLink,
   addTaskRelation,
   removeTaskRelation,
+  addSynergyRelations,
 };
