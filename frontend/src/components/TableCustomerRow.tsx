@@ -1,7 +1,7 @@
 import { MouseEvent, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
@@ -18,6 +18,7 @@ import { unratedTasksAmount } from '../utils/TaskUtils';
 import { TableRow } from './Table';
 import css from './TableCustomerRow.module.scss';
 import { Dot } from './Dot';
+import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
 
@@ -26,7 +27,6 @@ export const TableCustomerRow: TableRow<Customer> = ({
   style,
 }) => {
   const { id, name, email, color, weight } = customer;
-  const currentLocation = useLocation();
   const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -43,6 +43,8 @@ export const TableCustomerRow: TableRow<Customer> = ({
     if (currentRoadmap?.tasks)
       setUnratedAmount(unratedTasksAmount(customer, currentRoadmap));
   }, [currentRoadmap, customer]);
+
+  if (!currentRoadmap) return null;
 
   const deleteUserClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -72,11 +74,13 @@ export const TableCustomerRow: TableRow<Customer> = ({
     );
   };
 
+  const linkTarget = `${paths.roadmapHome}/${currentRoadmap.id}${paths.roadmapRelative.clients}/${id}`;
+
   return (
     <div
       className={classes(css.hoverRow)}
-      onClick={() => history.push(`${currentLocation.pathname}/${id}`)}
-      onKeyPress={() => history.push(`${currentLocation.pathname}/${id}`)}
+      onClick={() => history.push(linkTarget)}
+      onKeyPress={() => history.push(linkTarget)}
       tabIndex={0}
       role="button"
     >
@@ -99,7 +103,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
           <b>{unratedAmount || ' '}</b>
         </div>
         <div className={classes(css.buttons)}>
-          {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+          {getType(userInfo?.roles, currentRoadmap.id) === RoleType.Admin && (
             <div className={classes(css.adminButtons)}>
               <EditButton
                 fontSize="medium"

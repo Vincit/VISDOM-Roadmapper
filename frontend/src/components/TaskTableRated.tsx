@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Trans } from 'react-i18next';
@@ -13,6 +13,7 @@ import {
 } from '../utils/TaskUtils';
 import { table, TableRow } from './Table';
 import css from './TaskTable.module.scss';
+import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
 
@@ -23,11 +24,10 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const { value, work } = valueAndWorkSummary(task);
-  const currentLocation = useLocation();
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
-      to={`${currentLocation.pathname}/${task.id}`}
+      to={`${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.taskList}/${task.id}`}
     >
       <div
         style={style}
