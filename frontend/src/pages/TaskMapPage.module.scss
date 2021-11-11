@@ -17,6 +17,10 @@ $ZOOM: var(--zoom, 1);
   background-color: $COLOR_CLOUD;
   border-radius: 10px;
   cursor: default;
+
+  &.loading:not(.highlight) {
+    cursor: wait;
+  }
 }
 
 .taskOverviewContainer {

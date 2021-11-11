@@ -568,3 +568,19 @@ export const removeTaskRelation = createAsyncThunk<
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
+
+export const addSynergyRelations = createAsyncThunk<
+  boolean,
+  { from: number; to: number[] },
+  { rejectValue: AxiosError }
+>('addSynergyRelations', async (relationRequest, thunkAPI) => {
+  try {
+    const { from, to } = relationRequest;
+    const currentRoadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.addSynergyRelations(currentRoadmapId, from, to);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});

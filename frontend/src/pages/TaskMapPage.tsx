@@ -1,7 +1,12 @@
 import { FC, useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import ReactFlow, { Controls, useStoreState } from 'react-flow-renderer';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  DropResult,
+  DraggableLocation,
+} from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { useTranslation } from 'react-i18next';
@@ -10,62 +15,77 @@ import {
   taskmapPositionSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps';
-import { Task, TaskRelation } from '../redux/roadmaps/types';
+import { Task } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
-import { groupTaskRelations } from '../utils/TaskRelationUtils';
+import {
+  groupTaskRelations,
+  GroupedRelation,
+} from '../utils/TaskRelationUtils';
 import { getTaskOverviewData } from './TaskOverviewPage';
 import { OverviewContent } from '../components/Overview';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 import { CustomEdge } from '../components/TaskMapEdge';
 import { ConnectionLine } from '../components/TaskMapConnection';
 import { DraggableSingleTask, Position } from '../components/TaskMapTask';
+import { move } from '../utils/array';
 import css from './TaskMapPage.module.scss';
 import { InfoTooltip } from '../components/InfoTooltip';
 
 const classes = classNames.bind(css);
+
+const copyRelationList = (list: GroupedRelation[]) =>
+  list.map(({ synergies, dependencies }) => ({
+    synergies: [...synergies],
+    dependencies: [...dependencies],
+  })) as GroupedRelation[];
 
 const TaskComponent: FC<{
   listId: number;
   taskIds: number[];
   selectedTask: Task | undefined;
   setSelectedTask: any;
-  allRelations: TaskRelation[][];
-}> = ({ listId, taskIds, selectedTask, setSelectedTask, allRelations }) => {
-  const toDependencies = new Set(
-    allRelations
-      .flat()
-      .filter((relation) => relation.type === TaskRelationType.Dependency)
-      .map(({ to }) => to),
-  );
-  return (
-    <Droppable droppableId={String(listId)} type="TASKS">
-      {(provided, snapshot) => (
-        <div
-          className={classes(css.taskContainer, {
-            [css.highlight]: snapshot.isDraggingOver,
-          })}
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-        >
-          {taskIds.map((taskId, index) => {
-            return (
-              <div key={taskId}>
-                <DraggableSingleTask
-                  taskId={taskId}
-                  selected={selectedTask?.id === taskId}
-                  setSelectedTask={setSelectedTask}
-                  index={index}
-                  toChecked={toDependencies.has(taskId)}
-                />
-              </div>
-            );
-          })}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  );
-};
+  allDependencies: { from: number; to: number }[];
+  disableDragging: boolean;
+}> = ({
+  listId,
+  taskIds,
+  selectedTask,
+  setSelectedTask,
+  allDependencies,
+  disableDragging,
+}) => (
+  <Droppable droppableId={String(listId)} type="TASKS">
+    {(provided, snapshot) => (
+      <div
+        className={classes(css.taskContainer, {
+          [css.highlight]: snapshot.isDraggingOver,
+          [css.loading]: disableDragging,
+        })}
+        ref={provided.innerRef}
+        {...provided.droppableProps}
+      >
+        {taskIds.map((taskId, index) => {
+          return (
+            <div key={taskId}>
+              <DraggableSingleTask
+                taskId={taskId}
+                selected={selectedTask?.id === taskId}
+                setSelectedTask={setSelectedTask}
+                index={index}
+                toChecked={!!allDependencies.find(({ to }) => to === taskId)}
+                fromChecked={
+                  !!allDependencies.find(({ from }) => from === taskId)
+                }
+                disableDragging={disableDragging}
+              />
+            </div>
+          );
+        })}
+        {provided.placeholder}
+      </div>
+    )}
+  </Droppable>
+);
 
 const ReactFlowState = () => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -93,8 +113,9 @@ export const TaskMapPage = () => {
   const tasks = useSelector(allTasksSelector, shallowEqual);
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
-  const taskRelations = groupTaskRelations(tasks);
+  const [taskRelations, setTaskRelations] = useState(groupTaskRelations(tasks));
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
+  const [disableDrag, setDisableDrag] = useState(false);
 
   const groups = taskRelations.map(({ synergies }, idx) => ({
     id: `${idx}`,
@@ -107,10 +128,13 @@ export const TaskMapPage = () => {
       label: (
         <TaskComponent
           listId={idx}
-          taskIds={synergies}
+          taskIds={synergies.sort((a, b) => a - b)} // ordering prevents render bugs
           selectedTask={selectedTask}
           setSelectedTask={setSelectedTask}
-          allRelations={tasks.map((task) => task.relations)}
+          allDependencies={taskRelations.flatMap(
+            ({ dependencies }) => dependencies,
+          )}
+          disableDragging={disableDrag}
         />
       ),
     },
@@ -145,6 +169,82 @@ export const TaskMapPage = () => {
     dispatch(roadmapsActions.getRoadmaps());
   };
 
+  const addSynergyRelations = async (from: number, to: number[]) => {
+    const res = await dispatch(
+      roadmapsActions.addSynergyRelations({ from, to }),
+    );
+    if (roadmapsActions.addSynergyRelations.rejected.match(res))
+      throw new Error();
+  };
+
+  const onDragMoveOutside = async (
+    draggedTaskId: number,
+    copyList: GroupedRelation[],
+  ) => {
+    const newList = copyList
+      // remove dragged task from synergy list and
+      // all dependencies associated with the dragged task
+      .map(({ synergies, dependencies }) => ({
+        synergies: synergies.filter((num) => num !== draggedTaskId),
+        dependencies: dependencies.filter(
+          ({ from, to }) => from !== draggedTaskId && to !== draggedTaskId,
+        ),
+      }))
+      // remove entries where synergy list is empty
+      .filter(({ synergies }) => synergies.length);
+    newList.push({ synergies: [draggedTaskId], dependencies: [] });
+
+    setTaskRelations(newList);
+    await addSynergyRelations(draggedTaskId, []);
+  };
+
+  const onDragMoveToGroup = async (
+    source: DraggableLocation,
+    destination: DraggableLocation,
+    draggedTaskId: number,
+    copyList: GroupedRelation[],
+  ) => {
+    const destinationId = Number(destination.droppableId);
+
+    move()
+      .from(copyList[Number(source.droppableId)].synergies, source.index)
+      .to(copyList[destinationId].synergies, destination.index);
+
+    const newList = copyList
+      // remove entries where synergy list is empty
+      .filter(({ synergies }) => synergies.length)
+      // remove all dependencies associated with the dragged task
+      .map(({ synergies, dependencies }) => ({
+        synergies,
+        dependencies: dependencies.filter(
+          ({ from, to }) => from !== draggedTaskId && to !== draggedTaskId,
+        ),
+      }));
+
+    setTaskRelations(newList);
+    await addSynergyRelations(
+      draggedTaskId,
+      taskRelations[destinationId].synergies,
+    );
+  };
+
+  const onDragEnd = async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    const draggedTaskId = Number(draggableId);
+    const backupList = copyRelationList(taskRelations);
+    const copyList = copyRelationList(taskRelations);
+
+    try {
+      if (!destination) await onDragMoveOutside(draggedTaskId, copyList);
+      else if (source.droppableId !== destination.droppableId)
+        await onDragMoveToGroup(source, destination, draggedTaskId, copyList);
+    } catch (err) {
+      setTaskRelations(backupList);
+    } finally {
+      setDisableDrag(false);
+    }
+  };
+
   return (
     <div
       id="taskmap"
@@ -152,7 +252,10 @@ export const TaskMapPage = () => {
         ['--zoom' as any]: mapPosition?.zoom || 1,
       }}
     >
-      <DragDropContext onDragEnd={() => {}} onDragStart={() => {}}>
+      <DragDropContext
+        onDragEnd={onDragEnd}
+        onDragStart={() => setDisableDrag(true)}
+      >
         <ReactFlow
           className={classes(css.flowContainer)}
           connectionLineComponent={ConnectionLine}
