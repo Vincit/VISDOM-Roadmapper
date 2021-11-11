@@ -14,7 +14,8 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TableWorkRatingRow: RatingRow = ({ rating, style }) => {
-  const user = useSelector(userSelector(rating.createdByUser))!;
+  const user = useSelector(userSelector(rating.createdByUser));
+  if (!user) return null;
 
   return (
     <div style={style} className={classes(css.ratingRow)}>

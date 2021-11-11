@@ -3,9 +3,11 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
+import { Permission } from '../../../shared/types/customTypes';
 import { roadmapsActions } from '../redux/roadmaps';
 import { StoreDispatchType } from '../redux/index';
 import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
+import { hasPermission } from '../utils/UserUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { Task, TaskRequest } from '../redux/roadmaps/types';
@@ -34,9 +36,9 @@ const TaskOverview: FC<{
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
-  const { value, work } = valueAndWorkSummary(task!);
+  const { value, work } = valueAndWorkSummary(task);
   const { value: valueRatings, work: workRatings } = getRatingsByType(
-    task?.ratings || [],
+    task.ratings,
   );
   const tasksListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.taskList}`;
 
@@ -125,14 +127,16 @@ const TaskOverview: FC<{
         onDataEditConfirm={handleEditConfirm}
         key={task.id}
       />
-      <div className={classes(css.ratings)}>
-        {valueRatings.length > 0 && (
-          <RatingTableValue ratings={valueRatings} avg={value.avg} />
-        )}
-        {workRatings.length > 0 && (
-          <RatingTableWork ratings={workRatings} avg={work.avg} />
-        )}
-      </div>
+      {hasPermission(role, Permission.RoadmapReadUsers) && (
+        <div className={classes(css.ratings)}>
+          {valueRatings.length > 0 && (
+            <RatingTableValue ratings={valueRatings} avg={value.avg} />
+          )}
+          {workRatings.length > 0 && (
+            <RatingTableWork ratings={workRatings} avg={work.avg} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
