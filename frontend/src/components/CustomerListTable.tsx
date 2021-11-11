@@ -86,7 +86,7 @@ export const CustomerList: FC<{
             sorting: CustomerSortingTypes.SORT_UNRATED,
             width: '0.5fr',
           },
-          ...(role === RoleType.Admin ? [{ label: '' }] : []),
+          { label: '', width: role === RoleType.Admin ? '1fr' : '0.5fr' },
         ],
       }),
     [currentRoadmap, role],
