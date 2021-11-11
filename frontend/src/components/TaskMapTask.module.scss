@@ -12,6 +12,12 @@
   position: relative;
   align-items: center;
 
+  button {
+    visibility: hidden;
+    padding: 0;
+    border: 0;
+  }
+
   .doneIcon {
     color: $COLOR_EMERALD;
     margin-right: 5px;
@@ -27,6 +33,9 @@
       width: calc(1em * #{$ZOOM});
       height: calc(1em * #{$ZOOM});
     }
+  }
+  &.loading:not(.dragging) {
+    cursor: wait;
   }
 }
 
@@ -46,6 +55,7 @@
 }
 
 .leftHandle {
+  visibility: visible;
   position: absolute;
   left: -3%;
   border-radius: 20;
@@ -64,6 +74,7 @@
 }
 
 .rightHandle {
+  visibility: visible;
   position: absolute;
   left: 97%;
   border-radius: 20;
