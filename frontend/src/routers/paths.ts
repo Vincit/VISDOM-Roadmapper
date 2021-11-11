@@ -15,7 +15,6 @@ export const paths = {
   notFound: '/404',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
   roadmapRelative: {
-    home: '/',
     dashboard: '/dashboard',
     clients: '/clients',
     clientOverview: '/clients/:clientId([0-9]+)',
