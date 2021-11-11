@@ -7,13 +7,8 @@ import {
   TaskRatingDimension,
   RoleType,
 } from '../../../shared/types/customTypes';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { userRoleSelector } from '../redux/user/selectors';
 import { TaskRatingBar } from './RatingBars';
-import { getType } from '../utils/UserUtils';
 import { TextArea } from './forms/FormField';
 import css from './TaskRatingWidget.module.scss';
 
@@ -39,15 +34,7 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
   name,
 }) => {
   const { t } = useTranslation();
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const role = getType(userInfo, currentRoadmap?.id);
+  const role = useSelector(userRoleSelector, shallowEqual);
   const [rating, setRating] = useState(
     initialRating || {
       value: 0,

@@ -5,27 +5,14 @@ import { CustomerList } from '../components/CustomerListTable';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
 import { StoreDispatchType } from '../redux/index';
-import { RootState } from '../redux/types';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
-import { getType } from '../utils/UserUtils';
+import { userRoleSelector } from '../redux/user/selectors';
 import { TopBar } from '../components/TopBar';
 
 export const ClientsListPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [searchString, setSearchString] = useState('');
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const role = getType(userInfo, currentRoadmap?.id);
+  const role = useSelector(userRoleSelector, shallowEqual);
 
   const addCustomerClicked = (e: MouseEvent) => {
     e.preventDefault();

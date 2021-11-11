@@ -11,28 +11,15 @@ import { paths } from '../routers/paths';
 import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import css from './RoadmapSidebar.module.scss';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { userRoleSelector } from '../redux/user/selectors';
 import { RoleType } from '../../../shared/types/customTypes';
-import { getType } from '../utils/UserUtils';
 
 const classes = classNames.bind(css);
 
 export const RoadmapSidebar: FC = () => {
   const { url } = useRouteMatch();
   const { pathname } = useLocation();
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const role = getType(userInfo, currentRoadmap?.id);
+  const role = useSelector(userRoleSelector, shallowEqual);
 
   if (!url.startsWith('/roadmap')) return null;
 

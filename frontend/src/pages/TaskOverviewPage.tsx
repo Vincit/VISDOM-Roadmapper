@@ -10,6 +10,7 @@ import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
 import { hasPermission } from '../utils/UserUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
+import { userRoleSelector } from '../redux/user/selectors';
 import { Task, TaskRequest } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableWork } from '../components/RatingTableWork';
@@ -33,6 +34,7 @@ const TaskOverview: FC<{
   const history = useHistory();
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
+  const role = useSelector(userRoleSelector, shallowEqual);
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
@@ -73,13 +75,13 @@ const TaskOverview: FC<{
         keyName: 'name',
         value: task.name,
         format: 'bold',
-        editable: true,
+        editable: hasPermission(role, Permission.TaskEdit),
       },
       {
         label: t('Description'),
         keyName: 'description',
         value: task.description,
-        editable: true,
+        editable: hasPermission(role, Permission.TaskEdit),
       },
     ],
     [
