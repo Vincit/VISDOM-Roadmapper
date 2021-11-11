@@ -1,7 +1,7 @@
 import { Task } from '../redux/roadmaps/types';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 
-interface GroupedRelation {
+export interface GroupedRelation {
   synergies: number[];
   dependencies: { from: number; to: number }[];
 }

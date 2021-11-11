@@ -11,7 +11,6 @@ import { RootState } from '../redux/types';
 import { taskSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
-import { TaskRelationType } from '../../../shared/types/customTypes';
 import css from './TaskMapTask.module.scss';
 
 const classes = classNames.bind(css);
@@ -24,22 +23,33 @@ export enum Position {
   Bottom = 'bottom',
 }
 
-const SingleTask: FC<{
+interface TaskProps {
   taskId: number;
   selected?: boolean;
   setSelectedTask?: any;
   toChecked: boolean;
-  provided: any;
-  snapshot: any;
-}> = ({ taskId, setSelectedTask, selected, toChecked, provided, snapshot }) => {
+  fromChecked: boolean;
+  disableDragging: boolean;
+}
+
+const SingleTask: FC<
+  TaskProps & {
+    provided: any;
+    snapshot: any;
+  }
+> = ({
+  taskId,
+  setSelectedTask,
+  selected,
+  toChecked,
+  fromChecked,
+  provided,
+  snapshot,
+  disableDragging,
+}) => {
   const task = useSelector<RootState, Task | undefined>(
     taskSelector(taskId),
     shallowEqual,
-  );
-  const fromRelations = task?.relations.some(
-    (relation) =>
-      relation.type === TaskRelationType.Dependency &&
-      relation.from === task?.id,
   );
 
   if (!task) return null;
@@ -53,20 +63,24 @@ const SingleTask: FC<{
       className={classes(css.singleTask, {
         [css.selectedTask]: selected,
         [css.dragging]: snapshot.isDragging,
+        [css.loading]: disableDragging && !snapshot.isDragging,
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
-      <Handle
-        className={classes(css.leftHandle, {
-          [css.filledLeftHandle]: toChecked,
-          [css.dragging]: snapshot.isDragging,
-        })}
-        id={`to-${task!.id}`}
-        type="target"
-        position={Position.Left}
-      />
+      {/* drag-n-drop is blocked for interactive elements such as buttons */}
+      <button type="button">
+        <Handle
+          className={classes(css.leftHandle, {
+            [css.filledLeftHandle]: toChecked,
+            [css.dragging]: snapshot.isDragging,
+          })}
+          id={`to-${task!.id}`}
+          type="target"
+          position={Position.Left}
+        />
+      </button>
       {task!.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
       {task!.name}
       <div className={classes(css.taskRatingTexts)}>
@@ -77,27 +91,40 @@ const SingleTask: FC<{
           dragging={snapshot.isDragging}
         />
       </div>
-      <Handle
-        className={classes(css.rightHandle, {
-          [css.filledRightHandle]: fromRelations,
-          [css.dragging]: snapshot.isDragging,
-        })}
-        id={`from-${task!.id}`}
-        type="source"
-        position={Position.Right}
-      />
+      <button type="button">
+        <Handle
+          className={classes(css.rightHandle, {
+            [css.filledRightHandle]: fromChecked,
+            [css.dragging]: snapshot.isDragging,
+          })}
+          id={`from-${task!.id}`}
+          type="source"
+          position={Position.Right}
+        />
+      </button>
     </div>
   );
 };
 
-export const DraggableSingleTask: FC<{
-  taskId: number;
-  selected?: boolean;
-  setSelectedTask?: any;
-  index: number;
-  toChecked: boolean;
-}> = ({ taskId, setSelectedTask, selected, index, toChecked }) => (
-  <Draggable key={taskId} draggableId={`${taskId}`} index={index}>
+export const DraggableSingleTask: FC<
+  TaskProps & {
+    index: number;
+  }
+> = ({
+  taskId,
+  setSelectedTask,
+  selected,
+  index,
+  toChecked,
+  fromChecked,
+  disableDragging,
+}) => (
+  <Draggable
+    key={taskId}
+    draggableId={`${taskId}`}
+    index={index}
+    isDragDisabled={disableDragging}
+  >
     {(provided, snapshot) => {
       if (snapshot.isDragging)
         return ReactDOM.createPortal(
@@ -108,6 +135,8 @@ export const DraggableSingleTask: FC<{
             snapshot={snapshot}
             provided={provided}
             toChecked={toChecked}
+            fromChecked={fromChecked}
+            disableDragging={disableDragging}
           />,
           document.getElementById('taskmap')!,
         );
@@ -119,6 +148,8 @@ export const DraggableSingleTask: FC<{
           snapshot={snapshot}
           provided={provided}
           toChecked={toChecked}
+          fromChecked={fromChecked}
+          disableDragging={disableDragging}
         />
       );
     }}
