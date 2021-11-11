@@ -113,7 +113,7 @@ export const TaskListPage = () => {
             onChange={toggleCheckedClicked}
             checked={checked}
           />
-          {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin && (
+          {getType(userInfo, currentRoadmap?.id) === RoleType.Admin && (
             <>
               {renderImportButton('trello')}
               {renderImportButton('jira')}

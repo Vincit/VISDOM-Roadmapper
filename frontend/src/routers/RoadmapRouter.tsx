@@ -80,7 +80,7 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const type = getType(userInfo.roles, currentRoadmap?.id);
+  const type = getType(userInfo, currentRoadmap?.id);
   const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [useEffectFinished, setUseEffectFinished] = useState(false);

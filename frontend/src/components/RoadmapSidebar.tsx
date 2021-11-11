@@ -32,7 +32,7 @@ export const RoadmapSidebar: FC = () => {
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const role = getType(userInfo?.roles, currentRoadmap?.id);
+  const role = getType(userInfo, currentRoadmap?.id);
 
   if (!url.startsWith('/roadmap')) return null;
 

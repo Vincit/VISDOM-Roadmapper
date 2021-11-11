@@ -243,7 +243,7 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
   roadmap: T extends UserInfo ? number | Roadmap : Roadmap,
 ) => {
   const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
-  const type = isUserInfo(user) ? getType(user.roles, roadmapId) : user.type;
+  const type = getType(user, roadmapId);
   if (type === RoleType.Admin || type === RoleType.Business) {
     const customers = isUserInfo(user)
       ? user.representativeFor?.filter(
@@ -287,8 +287,7 @@ export const isUnrated = (
       !!user.representatives?.some((rep) => !ratedByCustomer(user, rep)(task));
 
   const baseCondition = awaitsUserRatings(user, roadmap);
-  const type = isUserInfo(user) ? getType(user.roles, roadmap.id) : user.type;
-  if (type === RoleType.Admin)
+  if (getType(user, roadmap.id) === RoleType.Admin)
     return or(baseCondition, hasMissingRatings(roadmap));
   return baseCondition;
 };

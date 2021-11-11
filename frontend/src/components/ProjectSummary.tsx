@@ -122,7 +122,7 @@ export const ProjectSummary: FC<{
     userInfoSelector,
     shallowEqual,
   );
-  const type = getType(userInfo?.roles, roadmap.id);
+  const type = getType(userInfo, roadmap.id);
 
   useEffect(() => {
     if (!roadmap.customers && hasPermission(type, Permission.RoadmapReadUsers))

@@ -64,7 +64,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
 
   useEffect(() => {
     if (
-      getType(userInfo?.roles, task.roadmapId) === RoleType.Admin &&
+      getType(userInfo, task.roadmapId) === RoleType.Admin &&
       customers &&
       allUsers
     ) {

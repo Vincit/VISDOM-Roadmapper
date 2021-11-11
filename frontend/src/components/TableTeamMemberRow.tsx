@@ -91,7 +91,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
         <b>{unratedAmount || ' '}</b>
       </td>
       <td className="styledTd nowrap textAlignEnd">
-        {getType(userInfo?.roles, currentRoadmap?.id) === RoleType.Admin &&
+        {getType(userInfo, currentRoadmap?.id) === RoleType.Admin &&
           id !== userInfo?.id && (
             <div className={classes(css.editMember)}>
               <EditButton

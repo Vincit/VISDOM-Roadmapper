@@ -53,7 +53,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     userInfoSelector,
     shallowEqual,
   );
-  const type = getType(userInfo?.roles, roadmapId);
+  const type = getType(userInfo, roadmapId);
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
     roadmapUsersSelector(),
     shallowEqual,
