@@ -3,6 +3,9 @@ import { RoleType } from '../../../shared/types/customTypes';
 
 export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => (
   <div>
+    <div className="listHeader">
+      <h2>Account</h2>
+    </div>
     <div>
       {userInfo.email} ({userInfo.emailVerified ? 'verified' : 'not verified'})
     </div>
