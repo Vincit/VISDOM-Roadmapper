@@ -8,7 +8,6 @@ export const UserInfoPage = requireLogin(({ userInfo }) => {
   const [sending, setSending] = useState(false);
   return (
     <div>
-      This is the user info page.
       {!userInfo.emailVerified && (
         <div>
           Please verify your email.

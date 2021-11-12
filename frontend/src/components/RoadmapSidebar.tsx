@@ -5,7 +5,7 @@ import ListIcon from '@material-ui/icons/List';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import { Trans } from 'react-i18next';
-import { Link, useLocation, useRouteMatch } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { paths } from '../routers/paths';
 import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
@@ -17,11 +17,12 @@ import { RoleType } from '../../../shared/types/customTypes';
 const classes = classNames.bind(css);
 
 export const RoadmapSidebar: FC = () => {
-  const { url } = useRouteMatch();
   const { pathname } = useLocation();
   const role = useSelector(userRoleSelector, shallowEqual);
 
-  if (!url.startsWith('/roadmap')) return null;
+  if (!currentRoadmap) return null;
+
+  const url = `/roadmap/${currentRoadmap.id}`;
 
   const renderButtons = () => {
     return (
