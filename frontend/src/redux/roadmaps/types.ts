@@ -7,6 +7,7 @@ import {
 export interface RoadmapsState {
   roadmaps: Roadmap[] | undefined;
   selectedRoadmapId?: number;
+  taskmapPosition: TaskmapPosition | undefined;
 }
 
 export interface Customer {
@@ -219,4 +220,10 @@ export interface InvitationRequest {
   roadmapId?: number;
   type?: RoleType;
   email?: string;
+}
+
+export interface TaskmapPosition {
+  zoom: number;
+  x: number;
+  y: number;
 }
