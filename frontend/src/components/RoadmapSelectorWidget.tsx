@@ -66,6 +66,7 @@ export const RoadmapSelectorWidget = () => {
         <Link
           key={roadmap.id}
           className={classes(css.dropItem)}
+          onClick={() => dispatch(roadmapsActions.clearTaskmapPosition())}
           to={`${paths.roadmapHome}/${roadmap.id}${paths.roadmapRelative.dashboard}`}
         >
           {roadmap.name}

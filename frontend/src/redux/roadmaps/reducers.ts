@@ -14,6 +14,7 @@ import {
   TaskratingRequest,
   TaskRequest,
   Version,
+  TaskmapPosition,
 } from './types';
 
 export const GET_ROADMAPS_FULFILLED = (
@@ -303,4 +304,15 @@ export const DELETE_VERSION_FULFILLED = (
     ({ id }) => id === action.payload.roadmapId,
   )!;
   roadmap.versions = action.payload.response;
+};
+
+export const SET_TASKMAP_POSITION: CaseReducer<
+  RoadmapsState,
+  PayloadAction<TaskmapPosition>
+> = (state, action) => {
+  state.taskmapPosition = action.payload;
+};
+
+export const CLEAR_TASKMAP_POSITION: CaseReducer<RoadmapsState> = (state) => {
+  state.taskmapPosition = undefined;
 };

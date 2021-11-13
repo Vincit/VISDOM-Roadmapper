@@ -78,3 +78,6 @@ export const roadmapsVersionsSelector = (roadmapId?: number) =>
       );
     },
   );
+
+export const taskmapPositionSelector = (state: RootState) =>
+  state.roadmaps.taskmapPosition;

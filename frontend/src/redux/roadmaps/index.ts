@@ -56,12 +56,15 @@ import {
   GET_VERSIONS_FULFILLED,
   PATCH_VERSION_FULFILLED,
   DELETE_VERSION_FULFILLED,
+  SET_TASKMAP_POSITION,
+  CLEAR_TASKMAP_POSITION,
 } from './reducers';
 import { RoadmapsState } from './types';
 
 const initialState: RoadmapsState = {
   roadmaps: undefined,
   selectedRoadmapId: undefined,
+  taskmapPosition: undefined,
 };
 
 export const roadmapsSlice = createSlice({
@@ -70,6 +73,8 @@ export const roadmapsSlice = createSlice({
   reducers: {
     selectCurrentRoadmap: SELECT_CURRENT_ROADMAP,
     clearCurrentRoadmap: CLEAR_CURRENT_ROADMAP,
+    setTaskmapPosition: SET_TASKMAP_POSITION,
+    clearTaskmapPosition: CLEAR_TASKMAP_POSITION,
   },
   extraReducers: (builder) => {
     builder.addCase(getRoadmaps.fulfilled, GET_ROADMAPS_FULFILLED);
