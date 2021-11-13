@@ -1,6 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import ReactFlow, { Handle, Controls } from 'react-flow-renderer';
+import ReactFlow, {
+  Handle,
+  Controls,
+  useStoreState,
+} from 'react-flow-renderer';
 import classNames from 'classnames';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
@@ -10,6 +14,7 @@ import {
   allTasksSelector,
   chosenRoadmapSelector,
   taskSelector,
+  taskmapPositionSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps';
 import { Roadmap, Task, TaskRelation } from '../redux/roadmaps/types';
@@ -119,6 +124,23 @@ const TaskComponent: FC<{
   );
 };
 
+const ReactFlowState = () => {
+  const dispatch = useDispatch<StoreDispatchType>();
+  const pos = useStoreState((state) => state.transform);
+
+  useEffect(() => {
+    dispatch(
+      roadmapsActions.setTaskmapPosition({
+        x: pos[0],
+        y: pos[1],
+        zoom: pos[2],
+      }),
+    );
+  }, [dispatch, pos]);
+
+  return null;
+};
+
 const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
   return <div>{data.label}</div>;
 };
@@ -126,6 +148,7 @@ const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
 export const TaskMapPage = () => {
   const { t } = useTranslation();
   const tasks = useSelector(allTasksSelector, shallowEqual);
+  const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
   const taskRelations = groupTaskRelations(tasks);
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
@@ -205,7 +228,10 @@ export const TaskMapPage = () => {
         }}
         elementsSelectable={false}
         onContextMenu={(e) => e.preventDefault()}
+        defaultZoom={mapPosition?.zoom}
+        defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
       >
+        <ReactFlowState />
         <Controls showInteractive={false} showZoom={false}>
           <InfoTooltip title={t('Taskmap-tooltip')}>
             <InfoIcon

@@ -7,6 +7,7 @@ import {
 export interface RoadmapsState {
   roadmaps: Roadmap[] | undefined;
   selectedRoadmapId?: number;
+  taskmapPosition: TaskmapPosition | undefined;
 }
 
 export interface Customer {
@@ -230,4 +231,10 @@ interface InfoModalColumn {
 export interface InfoModalContent {
   subHeader?: string;
   columns: InfoModalColumn[];
+}
+
+export interface TaskmapPosition {
+  zoom: number;
+  x: number;
+  y: number;
 }

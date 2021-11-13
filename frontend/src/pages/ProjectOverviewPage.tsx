@@ -29,6 +29,7 @@ export const ProjectOverviewComponent = () => {
 
   useEffect(() => {
     dispatch(roadmapsActions.clearCurrentRoadmap());
+    dispatch(roadmapsActions.clearTaskmapPosition());
   }, [dispatch]);
 
   const addRoadmapClicked = (e: MouseEvent) => {

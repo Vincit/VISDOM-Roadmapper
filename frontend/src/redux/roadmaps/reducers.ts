@@ -15,6 +15,7 @@ import {
   TaskRequest,
   Version,
   Invitation,
+  TaskmapPosition,
 } from './types';
 import { findTask } from '../../utils/TaskUtils';
 
@@ -326,4 +327,15 @@ export const DELETE_INVITATION_FULFILLED = (
   roadmap.invitations = roadmap.invitations?.filter(
     ({ id }) => id !== action.payload.invitationId,
   );
+};
+
+export const SET_TASKMAP_POSITION: CaseReducer<
+  RoadmapsState,
+  PayloadAction<TaskmapPosition>
+> = (state, action) => {
+  state.taskmapPosition = action.payload;
+};
+
+export const CLEAR_TASKMAP_POSITION: CaseReducer<RoadmapsState> = (state) => {
+  state.taskmapPosition = undefined;
 };
