@@ -63,3 +63,6 @@ export const allInvitationsSelector = createSelector(
   chosenRoadmapSelector,
   (roadmap) => roadmap?.invitations,
 );
+
+export const taskmapPositionSelector = (state: RootState) =>
+  state.roadmaps.taskmapPosition;
