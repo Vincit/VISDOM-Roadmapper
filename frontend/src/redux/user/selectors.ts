@@ -7,7 +7,7 @@ export const userInfoSelector = (state: RootState): UserInfo | undefined =>
   state.user.info;
 
 export const userRoleSelector = createSelector(
-  (state: RootState) => state.user.info?.roles,
+  (state: RootState) => state.user.info,
   (state) => state.roadmaps.selectedRoadmapId,
   getType,
 );
