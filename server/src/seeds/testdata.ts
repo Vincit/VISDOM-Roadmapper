@@ -299,22 +299,18 @@ const createTestTasks = async () => {
   const fstRoadmapTasks = await Task.query().where({
     roadmapId: roadmaps[0].id,
   });
+  const synergyGroup = [
+    fstRoadmapTasks[0].id,
+    fstRoadmapTasks[1].id,
+    fstRoadmapTasks[2].id,
+    fstRoadmapTasks[3].id,
+  ];
   await TaskRelation.query().insert([
-    {
-      from: fstRoadmapTasks[0].id,
-      to: fstRoadmapTasks[1].id,
-      type: TaskRelationType.Synergy,
-    },
-    {
-      from: fstRoadmapTasks[1].id,
-      to: fstRoadmapTasks[2].id,
-      type: TaskRelationType.Synergy,
-    },
-    {
-      from: fstRoadmapTasks[1].id,
-      to: fstRoadmapTasks[3].id,
-      type: TaskRelationType.Synergy,
-    },
+    ...synergyGroup.flatMap((from) =>
+      synergyGroup
+        .filter((to) => from !== to)
+        .map((to) => ({ from, to, type: TaskRelationType.Synergy })),
+    ),
     {
       from: fstRoadmapTasks[1].id,
       to: fstRoadmapTasks[5].id,
