@@ -174,6 +174,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           className="react-select"
           placeholder="No boards available"
           isDisabled={boards.length === 0}
+          menuPortalTarget={document.body}
           onChange={(selected) =>
             selected && setSelectedBoardId(selected.value)
           }
@@ -201,6 +202,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           isMulti
           isClearable
           isDisabled={selectedBoardId === undefined}
+          menuPortalTarget={document.body}
           onChange={(selected) =>
             setSelectedLabels(
               new Map(selectedLabels).set(
