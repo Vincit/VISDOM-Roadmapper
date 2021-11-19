@@ -5,7 +5,7 @@ import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { ReactComponent as RoamappingSvg } from '../assets/images/roadmapping.svg';
 import { ReactComponent as RationaleSvg } from '../assets/images/rationale.svg';
 import { ReactComponent as FeaturesSvg } from '../assets/images/features.svg';
-import { LoginNavBar } from '../components/LoginNavBar';
+import { LandingPageNavBar } from '../components/LoginNavBar';
 import { Footer } from '../components/Footer';
 import { paths } from '../routers/paths';
 import css from './LandingPage.module.scss';
@@ -42,7 +42,7 @@ const cardData = [
 export const LandingPage = () => {
   return (
     <div className={classes(css.background)}>
-      <LoginNavBar type="landing" />
+      <LandingPageNavBar />
       <div>
         <div className={classes(css.gradient)}>
           <VisdomLogo className={classes(css.bigLogo)} />
