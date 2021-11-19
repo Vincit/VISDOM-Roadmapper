@@ -89,7 +89,7 @@ export interface Task {
   createdAt: string;
   completed: boolean;
   ratings: Taskrating[];
-  relations: TaskRelation[];
+  relations?: TaskRelation[];
   createdByUser: number;
 }
 

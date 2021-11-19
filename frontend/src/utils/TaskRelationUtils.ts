@@ -22,7 +22,7 @@ export const groupTaskRelations = (tasks: Task[]) => {
       dependencies: [],
     };
 
-    relations.forEach(({ from, to, type }) => {
+    relations?.forEach(({ from, to, type }) => {
       if (type === TaskRelationType.Synergy) subgroup.synergies.push(to);
       if (type === TaskRelationType.Dependency)
         subgroup.dependencies.push({ from, to });
