@@ -64,7 +64,7 @@ export function requireVerifiedEmail<T>(
     if (props.userInfo.emailVerified) return <Component {...props} />;
     return (
       <Redirect
-        to={`${paths.userInfo}?redirectTo=${encodeURIComponent(
+        to={`${paths.emailVerification}?redirectTo=${encodeURIComponent(
           pathname + search,
         )}`}
       />

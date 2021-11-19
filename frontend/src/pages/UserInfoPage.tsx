@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { UserInfoCard } from '../components/UserInfoCard';
-import { requireLogin } from '../utils/requirelogin';
+import { requireVerifiedEmail } from '../utils/requirelogin';
 import { api } from '../api/api';
 
-export const UserInfoPage = requireLogin(({ userInfo }) => {
+export const UserInfoPage = requireVerifiedEmail(({ userInfo }) => {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   return (
