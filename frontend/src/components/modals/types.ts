@@ -4,12 +4,14 @@ import {
   IntegrationConfiguration,
   RoadmapUser,
   Invitation,
+  Task,
 } from '../../redux/roadmaps/types';
 
 export enum ModalTypes {
   ADD_TASK_MODAL = 'ADD_TASK_MODAL',
   RATE_TASK_MODAL = 'RATE_TASK_MODAL',
   EDIT_TASK_MODAL = 'EDIT_TASK_MODAL',
+  REMOVE_TASK_MODAL = 'REMOVE_TASK_MODAL',
   TASK_INFO_MODAL = 'TASK_INFO_MODAL',
   TASK_RATINGS_INFO_MODAL = 'TASK_RATINGS_INFO_MODAL',
   REMOVE_PEOPLE_MODAL = 'REMOVE_PEOPLE_MODAL',
@@ -34,6 +36,7 @@ type OwnProps = {
   [ModalTypes.ADD_TASK_MODAL]: {};
   [ModalTypes.RATE_TASK_MODAL]: { taskId: number };
   [ModalTypes.EDIT_TASK_MODAL]: { taskId: number };
+  [ModalTypes.REMOVE_TASK_MODAL]: { task: Task };
   [ModalTypes.TASK_INFO_MODAL]: { taskId: number };
   [ModalTypes.TASK_RATINGS_INFO_MODAL]: { taskId: number };
   [ModalTypes.REMOVE_PEOPLE_MODAL]: {

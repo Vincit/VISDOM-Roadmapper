@@ -8,6 +8,8 @@
 
 .ratedButtons {
   @extend .textAlignEnd;
+  display: flex;
+  gap: 10px;
 }
 
 .doneIcon {
@@ -59,4 +61,12 @@
 .buttonContainer {
   @extend .textAlignEnd;
   @extend .nowrap;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.deleteIcon {
+  margin-right: 8px;
+  margin-left: 12px;
 }

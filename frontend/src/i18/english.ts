@@ -229,5 +229,8 @@ export const english = {
     'Client value': 'Client value',
     'Tasks rated': 'Tasks rated',
     'Unrated tasks': 'Unrated tasks',
+    'Remove task': 'Remove task',
+    'Remove task warning':
+      'Are you sure you want to remove <strong>{{name}}</strong>?',
   },
 };

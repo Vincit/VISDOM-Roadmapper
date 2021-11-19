@@ -4,6 +4,8 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Trans } from 'react-i18next';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { MouseEvent } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { InfoTooltip } from './InfoTooltip';
 import { Task } from '../redux/roadmaps/types';
 import {
@@ -14,6 +16,15 @@ import {
 import { table, TableRow } from './Table';
 import css from './TaskTable.module.scss';
 import { paths } from '../routers/paths';
+import { DeleteButton } from './forms/SvgButton';
+import { StoreDispatchType } from '../redux';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from './modals/types';
+import { RoleType } from '../../../shared/types/customTypes';
+import { getType } from '../utils/UserUtils';
+import { RootState } from '../redux/types';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
 
@@ -23,7 +34,28 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
+  const dispatch = useDispatch<StoreDispatchType>();
   const { value, work } = valueAndWorkSummary(task);
+  const { roadmapId } = task;
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  const type = getType(userInfo, roadmapId);
+
+  const handleTaskDelete = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.REMOVE_TASK_MODAL,
+        modalProps: {
+          task,
+        },
+      }),
+    );
+  };
+
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
@@ -55,6 +87,9 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
           )}
         </div>
         <div className={classes(css.ratedButtons)}>
+          {type === RoleType.Admin && (
+            <DeleteButton onClick={handleTaskDelete} />
+          )}
           <ArrowForwardIcon className={classes(css.arrowIcon)} />
         </div>
       </div>
