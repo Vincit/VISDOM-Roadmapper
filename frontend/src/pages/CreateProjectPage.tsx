@@ -42,28 +42,30 @@ export const CreateProjectPage = requireVerifiedEmail(({ userInfo }) => {
 
   return (
     <>
-      <div className={classes(css.container)}>
+      <div className={classes(css.formDiv)}>
         <ModalHeader>
           <h2> {t('Greet user', { name: userInfo.email /* XXX */ })} </h2>
         </ModalHeader>
-        <ModalContent>
+        <ModalContent gap={50}>
           <div className={classes(css.formSubtitle)}>
             <Trans i18nKey="No projects yet" />
           </div>
           <div className={classes(css.body)}>
-            <Trans i18nKey="First project info 1/2" />
-          </div>
-          <div className={classes(css.body)}>
-            <Trans i18nKey="First project info 2/2" />
+            <p>
+              <Trans i18nKey="First project info 1/2" />
+            </p>
+            <p>
+              <Trans i18nKey="First project info 2/2" />
+            </p>
           </div>
           <button
-            className={classes(css.button)}
+            className={classes(css['button-large'])}
             type="submit"
             onClick={addRoadmapClicked}
           >
             <Trans i18nKey="Create a new project" />
           </button>
-          <div className={classes(css.footer)}>
+          <div className={classes(css.formFooter)}>
             <Trans i18nKey="Problems in joining a project?" />{' '}
             <a href="mailto:visdom@vincit.fi">
               <Trans i18nKey="Contact us" />
