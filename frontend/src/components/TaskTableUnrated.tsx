@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { SyntheticEvent, useState, useEffect } from 'react';
+import { SyntheticEvent, useState, useEffect, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -38,6 +38,7 @@ import {
 } from '../utils/TaskUtils';
 import { table, TableRow } from './Table';
 import { paths } from '../routers/paths';
+import { DeleteButton } from './forms/SvgButton';
 
 const classes = classNames.bind(css);
 
@@ -116,6 +117,19 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
         modalType,
         modalProps: {
           taskId: task.id,
+        },
+      }),
+    );
+  };
+
+  const handleTaskDelete = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.REMOVE_TASK_MODAL,
+        modalProps: {
+          task,
         },
       }),
     );
@@ -205,6 +219,11 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
                 <Trans i18nKey="Rate" />
               </button>
             )}
+          {type === RoleType.Admin && (
+            <div className={classes(css.deleteIcon)}>
+              <DeleteButton onClick={handleTaskDelete} />
+            </div>
+          )}
           <ArrowForwardIcon className={classes(css.arrowIcon)} />
         </div>
       </div>
