@@ -1,6 +1,6 @@
 import { FC, ComponentType, useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Redirect, useLocation, matchPath } from 'react-router-dom';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
 import { userActions } from '../redux/user';
@@ -28,9 +28,22 @@ export function requireLogin<T>(
       }
     }, [userInfo, dispatch, loadedUserInfo]);
     const { pathname, search } = useLocation();
+    const joining = !!matchPath(pathname, {
+      path: paths.joinRoadmap,
+      exact: true,
+      strict: true,
+    });
 
     if (!loadedUserInfo) return null;
     if (userInfo) return <Component {...props} userInfo={userInfo} />;
+    if (joining)
+      return (
+        <Redirect
+          to={`${paths.registerPage}?redirectTo=${encodeURIComponent(
+            pathname + search,
+          )}`}
+        />
+      );
     return (
       <Redirect
         to={`${paths.loginPage}?redirectTo=${encodeURIComponent(
