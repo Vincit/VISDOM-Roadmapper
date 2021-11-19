@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { requireLogin } from '../utils/requirelogin';
@@ -28,11 +28,7 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
   }>();
 
   useEffect(() => {
-    if (userInfo.emailVerified) {
-      history.push(paths.getStarted);
-      return;
-    }
-    if (!verificationId) return;
+    if (!verificationId || userInfo.emailVerified) return;
 
     setIsLoading(true);
     dispatch(userActions.verifyEmail({ user: userInfo, verificationId }))
@@ -44,11 +40,40 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
       .finally(() => setIsLoading(false));
   }, [verificationId, userInfo, dispatch, history]);
 
+  if (!userInfo.emailVerified)
+    return (
+      <div>
+        <div>{errorMessage || 'Verifying email'}</div>
+        {isLoading && <LoadingSpinner />}
+      </div>
+    );
   return (
-    <div>
-      <div>{errorMessage || 'Verifying email'}</div>
-      {isLoading && <LoadingSpinner />}
-    </div>
+    <>
+      <div className={classes(css.formDiv)}>
+        <ModalHeader>
+          <h2>Email verified</h2>
+        </ModalHeader>
+        <ModalContent gap={50}>
+          <div className={classes(css.formSubtitle)}>
+            Your email {userInfo.email} has now been verified
+          </div>
+          <MailIconChecked className={classes(css.icon)} />
+          <div className={classes(css.centered)}>
+            <strong>All done!</strong> You can now go explore your projects.
+          </div>
+          <Link
+            className={classes(css['button-large'], css.centered)}
+            to={paths.overview}
+          >
+            Go to my projects
+          </Link>
+          <div className={classes(css.formFooter)}>
+            Explore later? <Link to={paths.logoutPage}>Log out</Link>
+          </div>
+        </ModalContent>
+      </div>
+      <Footer />
+    </>
   );
 });
 

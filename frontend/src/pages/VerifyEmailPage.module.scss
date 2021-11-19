@@ -1,5 +1,10 @@
 @import '../shared.scss';
 
+.centered {
+  line-height: unset;
+  text-align: center;
+}
+
 .icon {
   margin: auto;
 }
