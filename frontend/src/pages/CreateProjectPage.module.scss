@@ -1,29 +1,11 @@
 @import '../shared.scss';
 
-.container {
-  @extend .formDiv;
-  max-height: 522px;
-}
-
 .body {
   @extend .typography-body;
-  margin-bottom: 1.5rem;
-}
-
-.button {
-  @extend .button-large;
-  width: 500px;
-  margin: auto;
-  margin-top: 30px;
-}
-
-.footer {
-  @extend .typography-body;
-  color: $COLOR_BLACK60;
-  margin: 50px auto;
-}
-
-.footer > a {
-  @extend .typography-body-bold;
-  color: $COLOR_EMERALD;
+  p {
+    margin-bottom: 1.5rem;
+  }
+  p:last-child {
+    margin-bottom: 0px;
+  }
 }

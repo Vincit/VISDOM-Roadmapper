@@ -483,16 +483,12 @@ textarea {
 .formSubtitle {
   @extend .typography-subtitle;
   color: $COLOR_BLACK60;
-  line-height: 10px;
-  margin-bottom: 50px;
 }
 
 .formFooter {
   @extend .typography-body;
   color: $COLOR_BLACK60;
-  margin-left: 160px;
-  margin-top: 50px;
-  line-height: 21px;
+  margin: auto;
   a {
     @extend .typography-body-bold;
     color: $COLOR_EMERALD;

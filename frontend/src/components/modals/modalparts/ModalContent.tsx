@@ -3,16 +3,18 @@ import css from './ModalContent.module.scss';
 
 export interface ModalContentProps {
   overflowAuto?: boolean;
+  gap?: string | number;
 }
 
 export const ModalContent: FC<ModalContentProps> = ({
   children,
   overflowAuto,
+  gap,
 }) => {
   return (
     <div
       className={css.container}
-      style={{ overflowY: overflowAuto ? 'auto' : 'inherit' }}
+      style={{ gap, overflowY: overflowAuto ? 'auto' : 'inherit' }}
     >
       {children}
     </div>

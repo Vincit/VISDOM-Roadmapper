@@ -164,7 +164,7 @@ export const RegisterPage = () => {
             <Trans i18nKey="New here?" />
           </h2>
         </ModalHeader>
-        <ModalContent>
+        <ModalContent gap={50}>
           <div className={classes(css.formSubtitle)}>
             <Trans i18nKey="Please fill out some info about you" />
           </div>

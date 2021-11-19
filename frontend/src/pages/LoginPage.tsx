@@ -76,7 +76,7 @@ export const LoginPage = () => {
             <Trans i18nKey="Log in" />
           </h2>
         </ModalHeader>
-        <ModalContent>
+        <ModalContent gap={50}>
           <form onSubmit={handleSubmit}>
             <Input
               label={t('Your email')}
