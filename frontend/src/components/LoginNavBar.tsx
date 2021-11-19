@@ -70,6 +70,20 @@ const navBars: { path: string; component: FC<{ search: string }> }[] = [
       </div>
     ),
   },
+  {
+    path: paths.verifyEmail,
+    component: () => (
+      <div className={classes(css.loginNavBar)}>
+        <Link to={paths.home} className={classes(css.visdomLogo)}>
+          <VisdomLogo />
+        </Link>
+        <span />
+        <Link className={classes(css.loginButton)} to={paths.logoutPage}>
+          <Trans i18nKey="Logout" />
+        </Link>
+      </div>
+    ),
+  },
 ];
 
 export const findLoginNavBar = (pathname: string) =>
