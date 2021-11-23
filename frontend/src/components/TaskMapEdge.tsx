@@ -8,7 +8,7 @@ import css from './TaskMapEdge.module.scss';
 
 const classes = classNames.bind(css);
 
-const DrawPath: FC<any> = ({ id, d, markerEnd }) => {
+const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
   const [selected, setSelected] = useState<string | undefined>(undefined);
   const dispatch = useDispatch<StoreDispatchType>();
 
@@ -30,6 +30,7 @@ const DrawPath: FC<any> = ({ id, d, markerEnd }) => {
 
   useEffect(() => {
     const handleBackspace = (e: KeyboardEvent) => {
+      if (disableInteraction) return;
       if (selected && (e.key === 'Backspace' || e.key === 'Delete')) {
         deleteRelation(selected);
         setSelected(undefined);
@@ -39,9 +40,10 @@ const DrawPath: FC<any> = ({ id, d, markerEnd }) => {
     return () => {
       document.removeEventListener('keydown', handleBackspace);
     };
-  }, [deleteRelation, dispatch, selected]);
+  }, [deleteRelation, disableInteraction, dispatch, selected]);
 
   const handleMouseClick = (e: MouseEvent) => {
+    if (disableInteraction) return;
     // To do: Add functionalities for left click later.
     if (e.button === 2) deleteRelation(id);
   };
@@ -62,7 +64,9 @@ const DrawPath: FC<any> = ({ id, d, markerEnd }) => {
       />
       <path
         id={`${id}-border`}
-        className={`react-flow__edge-path ${classes(css.invisiblePath)}`}
+        className={`react-flow__edge-path ${classes(css.invisiblePath, {
+          [css.disableInteraction]: disableInteraction,
+        })}`}
         d={d}
         markerEnd={markerEnd}
         onAuxClick={handleMouseClick}
@@ -83,6 +87,7 @@ export const CustomEdge: FC<any> = ({
   targetPosition,
   arrowHeadType,
   markerEndId,
+  data,
 }) => {
   const d = getBezierPath({
     sourceX: sourceX - 0.5, // There is a small gap by default, fix by moving it 0.5px to left
@@ -93,5 +98,12 @@ export const CustomEdge: FC<any> = ({
     targetPosition,
   });
   const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
-  return <DrawPath id={id} d={d} markerEnd={markerEnd} />;
+  return (
+    <DrawPath
+      id={id}
+      d={d}
+      markerEnd={markerEnd}
+      disableInteraction={data.disableInteraction}
+    />
+  );
 };

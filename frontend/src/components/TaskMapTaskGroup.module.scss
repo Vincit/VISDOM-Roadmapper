@@ -1,0 +1,21 @@
+@import '../pages/TaskMapPage.module.scss';
+
+.taskGroup {
+  @extend .layout-column;
+  position: relative;
+  padding: 20px 15px;
+  width: 356px;
+  background-color: $COLOR_CLOUD;
+  border-radius: 10px;
+  cursor: default;
+
+  &.loading:not(.highlight) {
+    cursor: wait;
+  }
+
+  &.highlight {
+    box-shadow: 0px 0px 20px rgba($color: $COLOR_AZURE, $alpha: 0.15);
+    background-color: rgba($color: $COLOR_AZURE, $alpha: 0.15);
+    cursor: -webkit-grabbing;
+  }
+}

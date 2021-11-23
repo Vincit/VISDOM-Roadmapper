@@ -220,6 +220,6 @@ export const english = {
     'Tasks rated': 'Tasks rated',
     'Unrated tasks': 'Unrated tasks',
     'Taskmap-tooltip':
-      'You can delete relations by right clicking them or hovering over and pressing backspace or delete',
+      'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
   },
 };
