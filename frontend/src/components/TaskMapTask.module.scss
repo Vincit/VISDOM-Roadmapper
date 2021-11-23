@@ -28,6 +28,10 @@
     border-radius: calc(5px * #{$ZOOM});
     padding: calc(10px * #{$ZOOM}) calc(16px * #{$ZOOM});
 
+    &.draggingOutside {
+      box-shadow: 0px 0px 30px rgba($color: $COLOR_AZURE, $alpha: 0.3);
+    }
+
     .doneIcon {
       margin-right: calc(5px * #{$ZOOM});
       width: calc(1em * #{$ZOOM});

@@ -1,6 +1,4 @@
-/* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import ReactDOM from 'react-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Handle } from 'react-flow-renderer';
@@ -52,17 +50,22 @@ const SingleTask: FC<
     shallowEqual,
   );
 
+  const selectTask = (e: MouseEvent) => {
+    e.stopPropagation();
+    setSelectedTask(selected ? undefined : task);
+  };
+
   if (!task) return null;
   return (
     <div
       role="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        setSelectedTask(selected ? undefined : task);
-      }}
+      tabIndex={0}
+      onClick={selectTask}
+      onKeyPress={selectTask}
       className={classes(css.singleTask, {
         [css.selectedTask]: selected,
         [css.dragging]: snapshot.isDragging,
+        [css.draggingOutside]: !snapshot.draggingOver,
         [css.loading]: disableDragging && !snapshot.isDragging,
       })}
       ref={provided.innerRef}
@@ -76,16 +79,16 @@ const SingleTask: FC<
             [css.filledLeftHandle]: toChecked,
             [css.dragging]: snapshot.isDragging,
           })}
-          id={`to-${task!.id}`}
+          id={`to-${task.id}`}
           type="target"
           position={Position.Left}
         />
       </button>
-      {task!.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
-      {task!.name}
+      {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
+      {task.name}
       <div className={classes(css.taskRatingTexts)}>
         <TaskRatingsText
-          task={task!}
+          task={task}
           selected={selected}
           largeIcons
           dragging={snapshot.isDragging}
@@ -97,7 +100,7 @@ const SingleTask: FC<
             [css.filledRightHandle]: fromChecked,
             [css.dragging]: snapshot.isDragging,
           })}
-          id={`from-${task!.id}`}
+          id={`from-${task.id}`}
           type="source"
           position={Position.Right}
         />
