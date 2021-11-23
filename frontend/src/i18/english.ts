@@ -250,6 +250,6 @@ export const english = {
     'verify email before your journey':
       'Before your journey in Visdom, we need to verify your email address.',
     'Taskmap-tooltip':
-      'You can delete relations by right clicking them or hovering over and pressing backspace or delete',
+      'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
   },
 };

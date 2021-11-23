@@ -16,4 +16,8 @@
   &:hover {
     opacity: 0.1;
   }
+  &.disableInteraction {
+    cursor: -webkit-grabbing;
+    stroke: transparent;
+  }
 }
