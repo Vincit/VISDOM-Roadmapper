@@ -74,10 +74,11 @@ export const registerUser: RouteHandlerFnc = async (ctx) => {
     {},
   );
 
+  const { id, email } = await User.query().insertAndFetch(request);
+  await sendVerificationLink(id, email);
   const user = await User.query()
-    .insertAndFetch(request)
-    .withGraphFetched('[representativeFor, roles]');
-  await sendVerificationLink(user.id, user.email);
+    .findById(id)
+    .withGraphFetched('[representativeFor, roles, emailVerificationLink]');
   await ctx.login(user);
   ctx.body = user;
   ctx.status = 200;

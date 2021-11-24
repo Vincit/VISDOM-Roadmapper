@@ -1,28 +1,22 @@
+import { QueryBuilder } from 'objection';
 import passport from 'koa-passport';
 import * as passportLocal from 'passport-local';
 import TokenStrategy from 'passport-auth-token';
 import User from '../api/users/users.model';
 
-const fetchUserById = async (id: number) => {
-  return await User.query()
-    .findById(id)
-    .withGraphFetched('[representativeFor, roles]')
+const firstWithGraph = <T>(query: QueryBuilder<User, T>) =>
+  query
+    .withGraphFetched('[representativeFor, roles, emailVerificationLink]')
     .first();
-};
 
-const fetchUserByEmail = (email: string) => {
-  return User.query()
-    .modify('findByEmail', email)
-    .withGraphFetched('[representativeFor, roles]')
-    .first();
-};
+const fetchUserById = async (id: number) =>
+  await firstWithGraph(User.query().findById(id));
 
-const fetchUserByToken = async (token: string) => {
-  return await User.query()
-    .where('authToken', token)
-    .withGraphFetched('[representativeFor, roles]')
-    .first();
-};
+const fetchUserByEmail = async (email: string) =>
+  await firstWithGraph(User.query().modify('findByEmail', email));
+
+const fetchUserByToken = async (token: string) =>
+  await firstWithGraph(User.query().where('authToken', token));
 
 const addAuthToPassport = () => {
   passport.serializeUser((user: User, done) => {

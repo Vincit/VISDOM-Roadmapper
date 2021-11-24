@@ -4,6 +4,7 @@ import Token from '../tokens/tokens.model';
 import { Role } from '../roles/roles.model';
 import Roadmap from '../roadmaps/roadmaps.model';
 import Customer from '../customer/customer.model';
+import EmailVerification from '../emailVerification/emailVerification.model';
 
 const Password = objectionPassword();
 export default class User extends Password(Model) {
@@ -18,6 +19,7 @@ export default class User extends Password(Model) {
 
   tokens!: Token[];
   roadmaps!: Roadmap[];
+  emailVerificationLink?: EmailVerification;
 
   static tableName = 'users';
 
@@ -74,6 +76,14 @@ export default class User extends Password(Model) {
             to: 'roles.roadmapId',
           },
           to: 'roadmaps.id',
+        },
+      },
+      emailVerificationLink: {
+        relation: Model.HasOneRelation,
+        modelClass: EmailVerification,
+        join: {
+          from: 'users.id',
+          to: 'emailVerification.userId',
         },
       },
     };
