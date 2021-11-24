@@ -80,7 +80,7 @@ export const TaskMapPage = () => {
       label: (
         <TaskGroup
           listId={idx}
-          taskIds={synergies.sort((a, b) => a - b)} // ordering prevents render bugs
+          taskIds={synergies.sort((a, b) => a - b)} // FIXME: ordering prevents render bugs
           selectedTask={selectedTask}
           setSelectedTask={setSelectedTask}
           allDependencies={taskRelations.flatMap(
@@ -122,19 +122,11 @@ export const TaskMapPage = () => {
     dispatch(roadmapsActions.getRoadmaps());
   };
 
-  const addSynergyRelations = async (from: number, to: number[]) => {
-    const res = await dispatch(
-      roadmapsActions.addSynergyRelations({ from, to }),
-    );
-    if (roadmapsActions.addSynergyRelations.rejected.match(res))
-      throw new Error();
-  };
+  const addSynergyRelations = (from: number, to: number[]) =>
+    dispatch(roadmapsActions.addSynergyRelations({ from, to })).unwrap();
 
-  const onDragMoveOutside = async (
-    draggedTaskId: number,
-    copyList: GroupedRelation[],
-  ) => {
-    const newList = copyList
+  const onDragMoveOutside = async (draggedTaskId: number) => {
+    const newList = taskRelations
       // remove dragged task from synergy list and
       // all dependencies associated with the dragged task
       .map(({ synergies, dependencies }) => ({
@@ -155,9 +147,9 @@ export const TaskMapPage = () => {
     source: DraggableLocation,
     destination: DraggableLocation,
     draggedTaskId: number,
-    copyList: GroupedRelation[],
   ) => {
     const destinationId = Number(destination.droppableId);
+    const copyList = copyRelationList(taskRelations);
 
     move()
       .from(copyList[Number(source.droppableId)].synergies, source.index)
@@ -185,12 +177,11 @@ export const TaskMapPage = () => {
     const { source, destination, draggableId } = result;
     const draggedTaskId = Number(draggableId);
     const backupList = copyRelationList(taskRelations);
-    const copyList = copyRelationList(taskRelations);
 
     try {
-      if (!destination) await onDragMoveOutside(draggedTaskId, copyList);
+      if (!destination) await onDragMoveOutside(draggedTaskId);
       else if (source.droppableId !== destination.droppableId)
-        await onDragMoveToGroup(source, destination, draggedTaskId, copyList);
+        await onDragMoveToGroup(source, destination, draggedTaskId);
     } catch (err) {
       setTaskRelations(backupList);
     } finally {
