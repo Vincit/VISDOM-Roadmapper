@@ -50,6 +50,7 @@ export const english = {
     'Great!': 'Great!',
     'Overview for': 'Overview for',
     Logout: 'Logout',
+    'Log out': 'Log out',
     'Log in': 'Log in',
     'Logging out': 'Logging out',
     'Ratings for': 'Ratings for',
@@ -232,5 +233,21 @@ export const english = {
     'Remove task': 'Remove task',
     'Remove task warning':
       'Are you sure you want to remove <strong>{{name}}</strong>?',
+    'Go to my projects': 'Go to my projects',
+    'Explore later?': 'Explore later?',
+    'Go explore':
+      '<strong>All done!</strong> You can now go explore your projects.',
+    'Your email has now been verified':
+      'Your email {{email}} has now been verified',
+    'Email verified': 'Email verified',
+    'valid email verification link info':
+      'We have sent an email to <strong>{{email}}</strong> on <strong>{{sent}}</strong> for you to verify your email address using the verification link in the email.',
+    'no email verification link info':
+      'We will soon send an email to <strong>{{email}}</strong> for you to verify your email address using the verification link in the email.',
+    'Resend email': 'Resend email',
+    'Wrong email address?': 'Wrong email address?',
+    'Change address': 'Change address',
+    'verify email before your journey':
+      'Before your journey in Visdom, we need to verify your email address.',
   },
 };
