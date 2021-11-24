@@ -141,9 +141,9 @@ export const EmailVerificationPage = requireLogin(({ userInfo }) => {
           </button>
           <div className={classes(css.formFooter)}>
             <Trans i18nKey="Wrong email address?" />{' '}
-            <a href="TODO">
+            <Link to={paths.userInfo}>
               <Trans i18nKey="Change address" />
-            </a>
+            </Link>
           </div>
         </ModalContent>
       </div>
