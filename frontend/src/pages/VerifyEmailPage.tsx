@@ -78,13 +78,21 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
 });
 
 export const EmailVerificationPage = requireLogin(({ userInfo }) => {
+  const dispatch = useDispatch<StoreDispatchType>();
   const [sending, setSending] = useState(false);
   const sendLink = () => {
     setSending(true);
-    api.sendEmailVerificationLink(userInfo).finally(() => setSending(false));
+    api
+      .sendEmailVerificationLink(userInfo)
+      .then((ok) => {
+        if (ok) dispatch(userActions.getUserInfo());
+      })
+      .finally(() => setSending(false));
   };
-  const linkValid = false; // TODO
-  const linkSent = 'dd.MM.YY'; // TODO
+  const linkSent =
+    userInfo.emailVerificationLink &&
+    new Date(userInfo.emailVerificationLink.updatedAt);
+  const linkValid = !!linkSent; // TODO: expiration for the link
   return (
     <>
       <div className={classes(css.formDiv)}>
@@ -99,8 +107,9 @@ export const EmailVerificationPage = requireLogin(({ userInfo }) => {
           {linkValid ? (
             <div>
               We have sent an email to <strong>{userInfo.email}</strong> on{' '}
-              <strong>{linkSent}</strong> for you to verify your email address
-              using the verification link in the email.
+              <strong>{linkSent!.toLocaleDateString()}</strong> for you to
+              verify your email address using the verification link in the
+              email.
             </div>
           ) : (
             <div>

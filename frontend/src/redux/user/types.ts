@@ -8,6 +8,10 @@ export interface UserInfo {
   roles: RoadmapRole[];
   representativeFor?: Customer[];
   defaultRoadmapId: number | null;
+  emailVerificationLink?: {
+    email: string;
+    updatedAt: string;
+  };
 }
 
 export interface RoadmapRole {
