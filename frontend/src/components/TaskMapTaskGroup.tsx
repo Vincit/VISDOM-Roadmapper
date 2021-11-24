@@ -32,23 +32,19 @@ export const TaskGroup: FC<{
         ref={provided.innerRef}
         {...provided.droppableProps}
       >
-        {taskIds.map((taskId, index) => {
-          return (
-            <div key={taskId}>
-              <DraggableSingleTask
-                taskId={taskId}
-                selected={selectedTask?.id === taskId}
-                setSelectedTask={setSelectedTask}
-                index={index}
-                toChecked={!!allDependencies.find(({ to }) => to === taskId)}
-                fromChecked={
-                  !!allDependencies.find(({ from }) => from === taskId)
-                }
-                disableDragging={disableDragging}
-              />
-            </div>
-          );
-        })}
+        {taskIds.map((taskId, index) => (
+          <div key={taskId}>
+            <DraggableSingleTask
+              taskId={taskId}
+              selected={selectedTask?.id === taskId}
+              setSelectedTask={setSelectedTask}
+              index={index}
+              toChecked={allDependencies.some(({ to }) => to === taskId)}
+              fromChecked={allDependencies.some(({ from }) => from === taskId)}
+              disableDragging={disableDragging}
+            />
+          </div>
+        ))}
         {provided.placeholder}
       </div>
     )}

@@ -113,15 +113,7 @@ export const DraggableSingleTask: FC<
   TaskProps & {
     index: number;
   }
-> = ({
-  taskId,
-  setSelectedTask,
-  selected,
-  index,
-  toChecked,
-  fromChecked,
-  disableDragging,
-}) => (
+> = ({ taskId, index, disableDragging, ...rest }) => (
   <Draggable
     key={taskId}
     draggableId={`${taskId}`}
@@ -129,32 +121,18 @@ export const DraggableSingleTask: FC<
     isDragDisabled={disableDragging}
   >
     {(provided, snapshot) => {
-      if (snapshot.isDragging)
-        return ReactDOM.createPortal(
-          <SingleTask
-            taskId={taskId}
-            selected={selected}
-            setSelectedTask={setSelectedTask}
-            snapshot={snapshot}
-            provided={provided}
-            toChecked={toChecked}
-            fromChecked={fromChecked}
-            disableDragging={disableDragging}
-          />,
-          document.getElementById('taskmap')!,
-        );
-      return (
+      const element = (
         <SingleTask
           taskId={taskId}
-          selected={selected}
-          setSelectedTask={setSelectedTask}
-          snapshot={snapshot}
           provided={provided}
-          toChecked={toChecked}
-          fromChecked={fromChecked}
+          snapshot={snapshot}
           disableDragging={disableDragging}
+          {...rest}
         />
       );
+      return snapshot.isDragging
+        ? ReactDOM.createPortal(element, document.getElementById('taskmap')!)
+        : element;
     }}
   </Draggable>
 );

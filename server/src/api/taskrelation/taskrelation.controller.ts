@@ -36,6 +36,7 @@ const isNumberArray = (value: any): value is number[] => {
   if (!Array.isArray(value)) return false;
   return value.every((num) => typeof num === 'number');
 };
+
 export const addSynergies: RouteHandlerFnc = async (ctx) => {
   const { from, to } = ctx.request.body;
   if (
