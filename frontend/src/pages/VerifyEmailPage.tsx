@@ -1,7 +1,7 @@
-/* eslint-disable */
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useParams, useHistory } from 'react-router-dom';
+import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { requireLogin } from '../utils/requirelogin';
@@ -43,7 +43,7 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
   if (!userInfo.emailVerified)
     return (
       <div>
-        <div>{errorMessage || 'Verifying email'}</div>
+        <div>{errorMessage || <Trans i18nKey="Verifying email" />}</div>
         {isLoading && <LoadingSpinner />}
       </div>
     );
@@ -51,24 +51,32 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
     <>
       <div className={classes(css.formDiv)}>
         <ModalHeader>
-          <h2>Email verified</h2>
+          <h2>
+            <Trans i18nKey="Email verified" />
+          </h2>
         </ModalHeader>
         <ModalContent gap={50}>
           <div className={classes(css.formSubtitle)}>
-            Your email {userInfo.email} has now been verified
+            <Trans
+              i18nKey="Your email has now been verified"
+              values={{ email: userInfo.email }}
+            />
           </div>
           <MailIconChecked className={classes(css.icon)} />
           <div className={classes(css.centered)}>
-            <strong>All done!</strong> You can now go explore your projects.
+            <Trans i18nKey="Go explore" />
           </div>
           <Link
             className={classes(css['button-large'], css.centered)}
             to={paths.overview}
           >
-            Go to my projects
+            <Trans i18nKey="Go to my projects" />
           </Link>
           <div className={classes(css.formFooter)}>
-            Explore later? <Link to={paths.logoutPage}>Log out</Link>
+            <Trans i18nKey="Explore later?" />{' '}
+            <Link to={paths.logoutPage}>
+              <Trans i18nKey="Log out" />
+            </Link>
           </div>
         </ModalContent>
       </div>
@@ -97,27 +105,31 @@ export const EmailVerificationPage = requireLogin(({ userInfo }) => {
     <>
       <div className={classes(css.formDiv)}>
         <ModalHeader>
-          <h2>Verify email address</h2>
+          <h2>
+            <Trans i18nKey="Verify email address" />
+          </h2>
         </ModalHeader>
         <ModalContent gap={50}>
           <div className={classes(css.formSubtitle)}>
-            Before your journey in Visdom, we need to verify your email address.
+            <Trans i18nKey="verify email before your journey" />
           </div>
           <MailIcon className={classes(css.icon)} />
-          {linkValid ? (
-            <div>
-              We have sent an email to <strong>{userInfo.email}</strong> on{' '}
-              <strong>{linkSent!.toLocaleDateString()}</strong> for you to
-              verify your email address using the verification link in the
-              email.
-            </div>
-          ) : (
-            <div>
-              We will soon send an email to <strong>{userInfo.email}</strong>{' '}
-              for you to verify your email address using the verification link
-              in the email.
-            </div>
-          )}
+          <div>
+            {linkValid ? (
+              <Trans
+                i18nKey="valid email verification link info"
+                values={{
+                  email: userInfo.email,
+                  sent: linkSent!.toLocaleDateString(),
+                }}
+              />
+            ) : (
+              <Trans
+                i18nKey="no email verification link info"
+                values={{ email: userInfo.email }}
+              />
+            )}
+          </div>
           <button
             className={classes(css['button-large'])}
             type="submit"
@@ -125,10 +137,13 @@ export const EmailVerificationPage = requireLogin(({ userInfo }) => {
             disabled={sending}
             onClick={sendLink}
           >
-            Resend email
+            <Trans i18nKey="Resend email" />
           </button>
           <div className={classes(css.formFooter)}>
-            Wrong email address? <a href="TODO">Change address</a>
+            <Trans i18nKey="Wrong email address?" />{' '}
+            <a href="TODO">
+              <Trans i18nKey="Change address" />
+            </a>
           </div>
         </ModalContent>
       </div>
