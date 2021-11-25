@@ -13,7 +13,6 @@ import { RootState } from '../redux/types';
 import { SortingArrow } from './SortingArrow';
 import { useSorting } from '../utils/SortUtils';
 import { UserSortingTypes, userSort } from '../utils/SortRoadmapUserUtils';
-import { RoleType } from '../../../shared/types/customTypes';
 
 interface TeamMemberTableHeader {
   label: string;
@@ -46,9 +45,8 @@ export const TeamMemberList: FC<{
 
   useEffect(() => {
     // Filter, search, sort team members
-    const members = teamMembers?.filter(
-      ({ type, email }) =>
-        type !== RoleType.Customer && email.toLowerCase().includes(search),
+    const members = teamMembers?.filter(({ email }) =>
+      email.toLowerCase().includes(search),
     );
     setSortedMembers(sort(members || []));
   }, [teamMembers, sort, search]);

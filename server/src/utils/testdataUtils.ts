@@ -10,8 +10,6 @@ export const testUsers = {
   BusinessPerson2: { email: 'business.person2@test.com' },
   DeveloperPerson1: { email: 'developer.person1@test.com' },
   DeveloperPerson2: { email: 'developer.person2@test.com' },
-  CustomerPerson1: { email: 'customer.person1@test.com' },
-  CustomerPerson2: { email: 'customer.person2@test.com' },
   AdminPerson1: { email: 'admin.person1@test.com' },
   AdminPerson2: { email: 'admin.person2@test.com' },
 } as const;

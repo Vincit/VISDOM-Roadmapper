@@ -4,7 +4,6 @@ import { SyntheticEvent, useState, useEffect, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -32,7 +31,6 @@ import {
   missingCustomer,
   missingDeveloper,
   SortingTypes,
-  ratedByUser,
   ratedByCustomer,
   taskSort,
 } from '../utils/TaskUtils';
@@ -69,7 +67,6 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const [missingDevRatings, setMissingDevRatings] = useState<
     RoadmapUser[] | undefined
   >([]);
-  const [userRatingMissing, setUserRatingMissing] = useState<boolean>(true);
 
   const { value, work } = averageValueAndWork([task]);
 
@@ -77,7 +74,6 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     AdminUsers can see missing customer and developer ratings
     BusinessUser can see their missing customer ratings
     DeveloperUser can see missing developer ratings
-    CustomerUser can see their own missing ratings
   */
   useEffect(() => {
     if (type === RoleType.Admin && allCustomers) {
@@ -94,11 +90,6 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
           (customer) => !ratedByCustomer(customer, userInfo)(task),
         ),
       );
-    }
-
-    if (type === RoleType.Customer && userInfo) {
-      // if task doesn't have ratings from the user that is logged in, display icon to them.
-      setUserRatingMissing(!ratedByUser(userInfo)(task));
     }
   }, [task, allCustomers, allUsers, userInfo, type]);
 
@@ -179,20 +170,6 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
                   </Tooltip>
                 ))}
               </div>
-            )}
-            {userRatingMissing && type === RoleType.Customer && (
-              <Tooltip
-                classes={{
-                  arrow: classes(css.tooltipArrow),
-                  tooltip: classes(css.tooltip),
-                }}
-                key={userInfo?.email}
-                title={userInfo?.email || ''}
-                placement="top"
-                arrow
-              >
-                <PermIdentityIcon className={classes(css.userIcon)} />
-              </Tooltip>
             )}
           </div>
         </div>

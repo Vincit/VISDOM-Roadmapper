@@ -75,7 +75,7 @@ export default class TaskRating extends Model {
         user: User,
         role: RoleType,
       ) => {
-        if (role === RoleType.Customer || role === RoleType.Business) {
+        if (role === RoleType.Business) {
           builder
             .where('createdByUser', user.id)
             .orWhere('dimension', TaskRatingDimension.RequiredWork)
@@ -88,9 +88,7 @@ export default class TaskRating extends Model {
     };
   }
   visibleFor(user: User, role: RoleType): boolean {
-    if (role !== RoleType.Customer && role !== RoleType.Business) {
-      return true;
-    }
+    if (role !== RoleType.Business) return true;
     return (
       this.createdByUser === user.id ||
       this.dimension === TaskRatingDimension.RequiredWork ||

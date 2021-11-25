@@ -69,8 +69,6 @@ const createTestRoles = async () => {
     ['BusinessPerson2', RoleType.Business],
     ['DeveloperPerson1', RoleType.Developer],
     ['DeveloperPerson2', RoleType.Developer],
-    ['CustomerPerson1', RoleType.Customer],
-    ['CustomerPerson2', RoleType.Customer],
     ['AdminPerson1', RoleType.Admin],
     ['AdminPerson2', RoleType.Admin],
   ] as const);
