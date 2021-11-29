@@ -49,6 +49,7 @@
     "react-window": "^1.8.6",
     "recharts": "^2.0.10",
     "redux": "^4.1.0",
+    "redux-state-sync": "^3.1.2",
     "sass": "^1.35.2",
     "typeface-anonymous-pro": "^0.0.72",
     "typeface-roboto": "^0.0.75",
@@ -74,6 +75,7 @@
     ]
   },
   "devDependencies": {
+    "@types/redux-state-sync": "^3.1.2",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "eslint": "^7.31.0",

@@ -1,4 +1,9 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore, Action } from '@reduxjs/toolkit';
+import {
+  withReduxStateSync,
+  createStateSyncMiddleware,
+  initStateWithPrevTab,
+} from 'redux-state-sync';
 import { modalsSlice } from './modals';
 import { roadmapsSlice } from './roadmaps';
 import { userSlice, userActions } from './user';
@@ -19,8 +24,19 @@ const rootReducer: typeof appReducer = (state, action) => {
   return appReducer(state, action);
 };
 
+const stateSyncConfig = {
+  // all actions except modal actions will be synchronized
+  predicate: (action: Action) =>
+    !modalsSlice.actions.hideModal.match(action) &&
+    !modalsSlice.actions.showModal.match(action),
+};
+
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: withReduxStateSync(rootReducer),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(createStateSyncMiddleware(stateSyncConfig)),
 });
+
+initStateWithPrevTab(store);
 
 export type StoreDispatchType = typeof store.dispatch;
