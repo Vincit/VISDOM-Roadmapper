@@ -1,13 +1,17 @@
+import classNames from 'classnames';
 import { useState } from 'react';
 import { UserInfoCard } from '../components/UserInfoCard';
 import { requireLogin } from '../utils/requirelogin';
 import { api } from '../api/api';
+import css from './UserInfoPage.module.scss';
+
+const classes = classNames.bind(css);
 
 export const UserInfoPage = requireLogin(({ userInfo }) => {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   return (
-    <div>
+    <div className={classes(css.container)}>
       {!userInfo.emailVerified && (
         <div>
           Please verify your email.

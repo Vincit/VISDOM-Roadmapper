@@ -69,7 +69,7 @@ const withButtons = (Component: typeof EditableText) => ({
   };
 
   return (
-    <>
+    <div className={classes(css.withButtonsContainer)}>
       {editOpen ? (
         <div className={classes(css.buttonsDiv)}>
           <CloseButton onClick={handleCancel} />
@@ -101,7 +101,7 @@ const withButtons = (Component: typeof EditableText) => ({
           e.focus();
         }}
       />
-    </>
+    </div>
   );
 };
 

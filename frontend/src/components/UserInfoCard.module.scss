@@ -1,0 +1,39 @@
+@import '../shared.scss';
+
+.subtitle {
+  @extend .typography-pre-title;
+  color: $COLOR_EMERALD;
+}
+
+.spacer {
+  height: 30px;
+}
+
+.layoutRow {
+  @extend .layout-row;
+  gap: 100px;
+}
+
+.memberIcon path {
+  fill: $COLOR_BLACK40;
+}
+
+.unVerifiedText {
+  color: $COLOR_AZURE;
+  margin: auto 0px;
+}
+
+.deleteButton {
+  @extend .button-small-filled;
+  background: $COLOR_RASPBERRY;
+  &:hover:not(.cancel, :disabled),
+  &:focus:not(.cancel, :disabled) {
+    background: $COLOR_MANDY;
+  }
+  margin: auto 0px;
+}
+
+.textContainer {
+  @extend .layout-row;
+  min-width: 400px;
+}

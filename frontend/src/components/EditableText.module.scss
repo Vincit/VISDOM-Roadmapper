@@ -15,9 +15,8 @@
   @extend .flexGrow;
   align-items: center;
   text-align: start;
-  margin: 14px 0px;
+  margin: 14px 20px 15px 0px;
   padding: 0px 21px;
-  margin-right: 20px;
   overflow: hidden;
 
   &.bold {
@@ -50,4 +49,9 @@
 
 .editButtonDiv {
   margin-top: 14px;
+}
+
+.withButtonsContainer {
+  @extend .layout-row;
+  flex-grow: 1;
 }
