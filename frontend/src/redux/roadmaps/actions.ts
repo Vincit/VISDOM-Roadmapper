@@ -455,9 +455,7 @@ export const addTaskToVersion = createAsyncThunk<
 >(
   'versions/addTaskToVersion',
   async (request: AddTaskToVersionRequest, thunkAPI) => {
-    const versions = roadmapsVersionsSelector()(
-      thunkAPI.getState() as RootState,
-    );
+    const versions = roadmapsVersionsSelector(thunkAPI.getState() as RootState);
     if (versions === undefined) throw new Error('Versions not fetched yet!');
 
     const payload = versionPayload(versions, request.version.id);
@@ -478,9 +476,7 @@ export const removeTaskFromVersion = createAsyncThunk<
 >(
   'versions/removeTaskFromVersion',
   async (request: RemoveTaskFromVersionRequest, thunkAPI) => {
-    const versions = roadmapsVersionsSelector()(
-      thunkAPI.getState() as RootState,
-    );
+    const versions = roadmapsVersionsSelector(thunkAPI.getState() as RootState);
     if (versions === undefined) throw new Error('Versions not fetched yet!');
 
     const payload = versionPayload(versions, request.version.id);

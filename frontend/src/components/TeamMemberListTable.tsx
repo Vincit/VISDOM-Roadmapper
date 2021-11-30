@@ -25,7 +25,7 @@ export const TeamMemberList: FC<{
 }> = ({ search }) => {
   const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
   const teamMembers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
+    roadmapUsersSelector,
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(

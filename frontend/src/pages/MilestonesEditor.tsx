@@ -54,7 +54,7 @@ const ROADMAP_LIST_ID = '-1';
 
 export const MilestonesEditor = () => {
   const { t } = useTranslation();
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const tasks = useSelector(allTasksSelector, shallowEqual);
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
@@ -64,7 +64,7 @@ export const MilestonesEditor = () => {
     undefined | Version[]
   >(undefined);
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();

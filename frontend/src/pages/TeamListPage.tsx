@@ -21,7 +21,7 @@ export const TeamListPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [searchString, setSearchString] = useState('');
   const invitations = useSelector<RootState, Invitation[] | undefined>(
-    allInvitationsSelector(),
+    allInvitationsSelector,
     shallowEqual,
   );
 

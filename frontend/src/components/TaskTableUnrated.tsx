@@ -52,11 +52,11 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   );
   const type = getType(userInfo, roadmapId);
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
+    roadmapUsersSelector,
     shallowEqual,
   );
   const allCustomers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   );
   const [missingRatings, setMissingRatings] = useState<Customer[] | undefined>(

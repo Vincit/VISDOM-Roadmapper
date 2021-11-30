@@ -22,7 +22,7 @@ export const CustomerList: FC<{
 }> = ({ search, role }) => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(

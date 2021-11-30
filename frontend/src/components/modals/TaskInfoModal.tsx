@@ -24,7 +24,7 @@ export const TaskInfoModal: Modal<ModalTypes.TASK_INFO_MODAL> = ({
   const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
+    roadmapUsersSelector,
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(

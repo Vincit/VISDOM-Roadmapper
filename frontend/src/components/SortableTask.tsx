@@ -20,9 +20,9 @@ export const SortableTask: FC<{
   index: number;
   disableDragging: boolean;
 }> = ({ task, index, disableDragging }) => {
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const tasks = useSelector(allTasksSelector, shallowEqual);
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector(),
+    roadmapsVersionsSelector,
     shallowEqual,
   );
   const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<

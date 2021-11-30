@@ -45,11 +45,11 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
     shallowEqual,
   );
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   );
   const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
+    roadmapUsersSelector,
     shallowEqual,
   );
   const [missingUsers, setMissingUsers] = useState<CheckableUser[] | undefined>(
