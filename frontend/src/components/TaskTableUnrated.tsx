@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { SyntheticEvent, useState, useEffect, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
