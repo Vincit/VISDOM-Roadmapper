@@ -21,9 +21,9 @@ export interface Customer {
 export interface CustomerRequest {
   id?: number;
   name?: string;
-  email?: string | null;
+  email?: string;
   weight?: number;
-  color?: string | null;
+  color?: string;
   representatives?: number[];
 }
 
