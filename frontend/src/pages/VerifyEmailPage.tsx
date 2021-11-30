@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
+import { roadmapsSelector } from '../redux/roadmaps/selectors';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { requireLogin } from '../utils/requirelogin';
 import { userActions } from '../redux/user';
@@ -20,6 +21,7 @@ const classes = classNames.bind(css);
 
 export const VerifyEmailPage = requireLogin(({ userInfo }) => {
   const dispatch = useDispatch<StoreDispatchType>();
+  const roadmaps = useSelector(roadmapsSelector, shallowEqual);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -68,7 +70,7 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
           </div>
           <Link
             className={classes(css['button-large'], css.centered)}
-            to={paths.overview}
+            to={roadmaps?.length ? paths.overview : paths.getStarted}
           >
             <Trans i18nKey="Go to my projects" />
           </Link>
