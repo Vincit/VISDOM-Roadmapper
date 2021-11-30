@@ -16,6 +16,13 @@ export const chosenRoadmapSelector = createSelector(
   (roadmap) => roadmap,
 );
 
+export const idRoadmapSelector = (roadmapId: number) =>
+  createSelector(
+    (state: RootState) =>
+      state.roadmaps.roadmaps?.find((roadmap) => roadmap.id === roadmapId),
+    (roadmap) => roadmap,
+  );
+
 export const taskSelector = (id: number) =>
   createSelector(chosenRoadmapSelector, (roadmap) =>
     roadmap?.tasks.find((task) => task.id === id),

@@ -1,5 +1,5 @@
+import { useSelector, shallowEqual } from 'react-redux';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
@@ -15,14 +15,17 @@ import { findLoginNavBar } from './LoginNavBar';
 import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
 import { BusinessIcon } from './RoleIcons';
 import { RoleType } from '../../../shared/types/customTypes';
+import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 
 const classes = classNames.bind(css);
 
 export const NavBar = () => {
   const { search, pathname } = useLocation();
+  const currentRoadmap = useSelector(chosenRoadmapSelector, shallowEqual);
   const userInfo = useSelector(userInfoSelector, shallowEqual);
   const userRole = useSelector(userRoleSelector, shallowEqual);
   const loggedIn = !!userInfo;
+
   const loginNavBar = findLoginNavBar(pathname, loggedIn);
   if (loginNavBar) return loginNavBar({ search });
 
@@ -34,6 +37,11 @@ export const NavBar = () => {
         <div className={classes(css.logo)}>
           <VisdomLogo />
         </div>
+      )}
+      {pathname.startsWith(paths.userInfo) && !currentRoadmap && (
+        <Link to={paths.overview} className={classes(css.logo)}>
+          <VisdomLogo />
+        </Link>
       )}
       <div className={classes(css.navBarRightSide)}>
         <div className={classes(css.navBarText)}>
