@@ -147,7 +147,7 @@ export const TaskOverviewPage = () => {
   const { taskId } = useParams<{
     taskId: string | undefined;
   }>();
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const tasks = useSelector(allTasksSelector, shallowEqual);
   const taskIdx = tasks.findIndex(({ id }) => Number(taskId) === id);
   const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
 

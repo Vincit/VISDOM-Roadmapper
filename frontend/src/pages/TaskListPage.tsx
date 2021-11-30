@@ -28,7 +28,7 @@ const classes = classNames.bind(css);
 
 export const TaskListPage = () => {
   const { t } = useTranslation();
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const tasks = useSelector(allTasksSelector, shallowEqual);
   const [checked, setChecked] = useState(true);
   const [searchString, setSearchString] = useState('');
   const [searchFilter, setSearchFilter] = useState(FilterTypes.SHOW_ALL);

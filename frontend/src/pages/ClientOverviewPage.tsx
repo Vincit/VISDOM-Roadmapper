@@ -125,7 +125,7 @@ export const ClientOverviewPage = () => {
   }>();
 
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   )!;
   const userInfo = useSelector<RootState, UserInfo | undefined>(

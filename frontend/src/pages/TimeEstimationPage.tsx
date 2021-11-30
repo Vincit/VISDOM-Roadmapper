@@ -27,7 +27,7 @@ export const TimeEstimationPage = () => {
   const { t } = useTranslation();
   const durationInput = useRef<HTMLInputElement>(null);
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector(),
+    roadmapsVersionsSelector,
     shallowEqual,
   );
   const roadmap = useSelector<RootState, Roadmap | undefined>(

@@ -33,7 +33,7 @@ export const RoadmapGraphPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
   const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector(),
+    roadmapsVersionsSelector,
     shallowEqual,
   );
   const [selectedVersion, setSelectedVersion] = useState(-1);

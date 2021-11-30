@@ -37,11 +37,11 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   );
   const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector(),
+    roadmapUsersSelector,
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(

@@ -22,7 +22,7 @@ export const PlannerWeightsPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
 
   const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector(),
+    allCustomersSelector,
     shallowEqual,
   );
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
