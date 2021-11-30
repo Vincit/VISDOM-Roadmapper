@@ -172,27 +172,24 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
   }
 };
 
-const ratingValueAndCreator = (roadmap: Roadmap, notWeighted?: boolean) => (
-  rating: Taskrating,
-) => {
+const ratingValueAndCreator = (roadmap: Roadmap) => (rating: Taskrating) => {
   const ratingCreator = roadmap.customers?.find(
     ({ id }) => id === rating.forCustomer,
   );
   const creatorWeight = ratingCreator?.weight ?? 0;
-
   return {
-    value: notWeighted ? rating.value : rating.value * creatorWeight,
+    value: rating.value * creatorWeight,
     customer: ratingCreator,
   };
 };
 
-const taskRatingsCustomerStakes = (roadmap: Roadmap, notWeighted?: boolean) => (
+const taskRatingsCustomerStakes = (roadmap: Roadmap) => (
   result: Map<Customer, number>,
   task: Task,
 ) =>
   task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValueAndCreator(roadmap, notWeighted))
+    .map(ratingValueAndCreator(roadmap))
     .reduce((acc, rating) => {
       if (!rating.customer) return acc;
       const previousVal = acc.get(rating.customer) || 0;
@@ -201,11 +198,8 @@ const taskRatingsCustomerStakes = (roadmap: Roadmap, notWeighted?: boolean) => (
 
 // Calculate total sum of task values in the milestone
 // And map values of how much each user has rated in these tasks
-export const totalCustomerStakes = (
-  tasks: Task[],
-  roadmap: Roadmap,
-  notWeighted?: boolean,
-) => tasks.reduce(taskRatingsCustomerStakes(roadmap, notWeighted), new Map());
+export const totalCustomerStakes = (tasks: Task[], roadmap: Roadmap) =>
+  tasks.reduce(taskRatingsCustomerStakes(roadmap), new Map());
 
 const taskWeightedValueSummary = (task: Task, roadmap: Roadmap) =>
   task.ratings
