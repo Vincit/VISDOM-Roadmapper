@@ -10,10 +10,8 @@ import { ModalTypes, modalLink } from './modals/types';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { userRoleSelector } from '../redux/user/selectors';
 import { RoleType } from '../../../shared/types/customTypes';
-import { getType } from '../utils/UserUtils';
 import { unratedTasksAmount } from '../utils/TaskUtils';
 import { TableRow } from './Table';
 import css from './TableCustomerRow.module.scss';
@@ -29,10 +27,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
   const { id, name, email, color, weight } = customer;
   const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
+  const role = useSelector(userRoleSelector, shallowEqual);
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
@@ -103,7 +98,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
           <b>{unratedAmount || ' '}</b>
         </div>
         <div className={classes(css.buttons)}>
-          {getType(userInfo, currentRoadmap.id) === RoleType.Admin && (
+          {role === RoleType.Admin && (
             <div className={classes(css.adminButtons)}>
               <EditButton
                 fontSize="medium"

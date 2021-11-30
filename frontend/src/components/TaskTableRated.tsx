@@ -21,10 +21,7 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { getType } from '../utils/UserUtils';
-import { RootState } from '../redux/types';
-import { UserInfo } from '../redux/user/types';
-import { userInfoSelector } from '../redux/user/selectors';
+import { userRoleSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
 
@@ -36,12 +33,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { value, work } = valueAndWorkSummary(task);
-  const { roadmapId } = task;
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const type = getType(userInfo, roadmapId);
+  const type = useSelector(userRoleSelector, shallowEqual);
 
   const handleTaskDelete = (e: MouseEvent) => {
     e.preventDefault();
