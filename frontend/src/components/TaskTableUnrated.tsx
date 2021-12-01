@@ -92,12 +92,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   }, [task, allCustomers, allUsers, userInfo, type]);
 
   const openModal = (
-    modalType:
-      | ModalTypes.EDIT_TASK_MODAL
-      | ModalTypes.RATE_TASK_MODAL
-      | ModalTypes.TASK_RATINGS_INFO_MODAL
-      | ModalTypes.TASK_INFO_MODAL
-      | ModalTypes.NOTIFY_USERS_MODAL,
+    modalType: ModalTypes.RATE_TASK_MODAL | ModalTypes.NOTIFY_USERS_MODAL,
   ) => (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();

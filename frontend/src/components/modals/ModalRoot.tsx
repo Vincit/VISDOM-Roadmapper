@@ -12,7 +12,6 @@ import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
 import { DeleteVersionModal, DeleteRoadmapModal } from './DeleteModal';
 import { EditVersionModal } from './EditVersionModal';
-import { EditTaskModal } from './EditTaskModal';
 import { RemoveTaskModal } from './RemoveTaskModal';
 import { ImportTasksModal } from './ImportTasksModal';
 import { OauthModal } from './IntegrationOauthModal';
@@ -23,8 +22,6 @@ import { EditCustomerModal } from './EditCustomerModal';
 import { AddCustomerModal } from './AddCustomerModal';
 import { AddTeamMemberModal } from './AddTeamMemberModal';
 import { EditTeamMemberModal } from './EditTeamMemberModal';
-import { TaskInfoModal } from './TaskInfoModal';
-import { TaskRatingsInfoModal } from './TaskRatingsInfoModal';
 import { UserAuthTokenModal } from './UserAuthTokenModal';
 import { AddRoadmapModal } from './AddRoadmapModal';
 import { NotifyUsersModal } from './NotifyUsersModal';
@@ -33,10 +30,7 @@ import { SendInvitationModal } from './SendInvitationModal';
 const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
   [ModalTypes.RATE_TASK_MODAL]: RateTaskModal,
-  [ModalTypes.EDIT_TASK_MODAL]: EditTaskModal,
   [ModalTypes.REMOVE_TASK_MODAL]: RemoveTaskModal,
-  [ModalTypes.TASK_INFO_MODAL]: TaskInfoModal,
-  [ModalTypes.TASK_RATINGS_INFO_MODAL]: TaskRatingsInfoModal,
   [ModalTypes.REMOVE_PEOPLE_MODAL]: RemovePeopleModal,
   [ModalTypes.EDIT_CUSTOMER_MODAL]: EditCustomerModal,
   [ModalTypes.ADD_CUSTOMER_MODAL]: AddCustomerModal,
