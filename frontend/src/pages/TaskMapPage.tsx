@@ -62,7 +62,7 @@ const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
 
 export const TaskMapPage = () => {
   const { t } = useTranslation();
-  const tasks = useSelector(allTasksSelector(), shallowEqual);
+  const tasks = useSelector(allTasksSelector, shallowEqual);
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
   const [taskRelations, setTaskRelations] = useState(groupTaskRelations(tasks));
