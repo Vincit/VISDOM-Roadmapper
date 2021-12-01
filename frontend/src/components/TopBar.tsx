@@ -14,12 +14,20 @@ export const TopBar: FC<{
   addType: string;
   onSearchChange: (value: string) => void;
   onAddClick: (e: MouseEvent) => void;
-}> = ({ searchType, addType, onSearchChange, onAddClick, children }) => {
+  topMargin?: true;
+}> = ({
+  searchType,
+  addType,
+  onSearchChange,
+  onAddClick,
+  topMargin,
+  children,
+}) => {
   const { t } = useTranslation();
   const role = useSelector(userRoleSelector, shallowEqual);
 
   return (
-    <div className="topBar">
+    <div className={classes(css.topBar, { [css.topMargin]: topMargin })}>
       <div className="searchBarContainer">
         <input
           className="search"
