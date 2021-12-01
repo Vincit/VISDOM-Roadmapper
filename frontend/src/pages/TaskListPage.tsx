@@ -106,6 +106,7 @@ export const TaskListPage = () => {
         addType={t('task')}
         onSearchChange={(value) => setSearchString(value)}
         onAddClick={onAddNewTaskClick}
+        topMargin
       >
         <div className={classes(css.addNewButtonContainer)}>
           <Checkbox

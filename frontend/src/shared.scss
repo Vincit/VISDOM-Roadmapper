@@ -179,6 +179,10 @@ form {
   background-color: white;
   border-radius: 52px;
   margin-bottom: 45px;
+
+  &.topMargin {
+    margin-top: 20px;
+  }
 }
 
 .styledTable {
