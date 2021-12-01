@@ -139,7 +139,7 @@ export const EmailVerificationPage = requireLogin(({ userInfo }) => {
             disabled={sending}
             onClick={sendLink}
           >
-            <Trans i18nKey="Resend email" />
+            {sending ? <LoadingSpinner /> : <Trans i18nKey="Resend email" />}
           </button>
           <div className={classes(css.formFooter)}>
             <Trans i18nKey="Wrong email address?" />{' '}
