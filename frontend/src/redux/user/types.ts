@@ -37,3 +37,10 @@ export interface UserRegisterRequest {
   email: string;
   password: string;
 }
+
+export interface UserPatchRequest {
+  id: number;
+  email?: string;
+  currentPassword: string;
+  password?: string;
+}

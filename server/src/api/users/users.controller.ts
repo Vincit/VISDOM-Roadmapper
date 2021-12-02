@@ -26,13 +26,24 @@ export const patchUsers: RouteHandlerFnc = async (ctx) => {
     email,
     emailVerified,
     defaultRoadmapId,
+    currentPassword,
+    password,
     ...others
   } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
+  let status = 500;
+
   const updated = await User.transaction(async (trx) => {
     const previous = await User.query(trx).findById(ctx.params.id);
-    if (!previous) return null;
+    if (!previous) {
+      status = 404;
+      return null;
+    }
+    if (!(await previous.verifyPassword(currentPassword))) {
+      status = 400;
+      return null;
+    }
     const emailVerified =
       email === undefined || email === previous.email
         ? previous.emailVerified
@@ -41,10 +52,11 @@ export const patchUsers: RouteHandlerFnc = async (ctx) => {
       email,
       emailVerified,
       defaultRoadmapId,
+      password,
     });
   });
   if (!updated) {
-    return void (ctx.status = 404);
+    return void (ctx.status = status);
   } else {
     if (!updated.emailVerified) {
       await sendVerificationLink(updated.id, updated.email);

@@ -29,6 +29,7 @@ import { IntegrationBoard, Integrations } from '../redux/types';
 import {
   UserInfo,
   UserLoginRequest,
+  UserPatchRequest,
   UserRegisterRequest,
 } from '../redux/user/types';
 
@@ -173,6 +174,11 @@ const getCurrentUserInfo = async () => {
 
 const register = async (newUser: UserRegisterRequest) => {
   const response = await axios.post(`/users/register`, newUser);
+  return response.status === 200;
+};
+
+const patchUser = async (userPatch: UserPatchRequest) => {
+  const response = await axios.patch(`/users/${userPatch.id}`, userPatch);
   return response.status === 200;
 };
 
@@ -397,6 +403,7 @@ export const api = {
   login,
   logout,
   register,
+  patchUser,
   getCurrentUserInfo,
   getCurrentUserToken,
   generateCurrentUserToken,
