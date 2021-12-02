@@ -1,6 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import { UserLoginRequest, UserInfo, UserRegisterRequest } from './types';
+import {
+  UserLoginRequest,
+  UserInfo,
+  UserRegisterRequest,
+  UserPatchRequest,
+} from './types';
 import { api } from '../../api/api';
 import { RoadmapRoleResponse, Invitation } from '../roadmaps/types';
 
@@ -55,6 +60,22 @@ export const register = createAsyncThunk<
     return false;
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
+export const patchUser = createAsyncThunk<
+  boolean,
+  UserPatchRequest,
+  { rejectValue: AxiosError }
+>('/user/patchUser', async (userPatch: UserPatchRequest, thunkAPI) => {
+  try {
+    if (await api.patchUser(userPatch)) {
+      await thunkAPI.dispatch(getUserInfo());
+      return true;
+    }
+    return false;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
   }
 });
 
