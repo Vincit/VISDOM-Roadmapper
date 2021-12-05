@@ -150,6 +150,19 @@ export const getUserRoles: RouteHandlerFnc = async (ctx) => {
   ctx.body = roles;
 };
 
+export const getInvitation: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) throw new Error('User is required');
+
+  const invitation = await Invitation.query()
+    .where({ id: ctx.params.invitationId })
+    .withGraphFetched('roadmap')
+    .first();
+
+  if (!invitation || !invitation.valid) return void (ctx.status = 404);
+  if (invitation.email !== ctx.state.user.email) return void (ctx.status = 403);
+  return void (ctx.body = invitation);
+};
+
 export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
   const { ...others } = ctx.request.body;

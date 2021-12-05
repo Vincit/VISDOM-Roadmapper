@@ -1,6 +1,7 @@
-import { Model, Pojo } from 'objection';
+import { Model, Pojo, QueryBuilder } from 'objection';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { daysAgo } from '../../utils/date';
+import Roadmap from '../roadmaps/roadmaps.model';
 
 export default class Invitation extends Model {
   id!: string;
@@ -10,6 +11,7 @@ export default class Invitation extends Model {
   updatedAt!: Date;
 
   valid?: boolean;
+  roadmap?: Roadmap;
 
   static tableName = 'invitations';
 
@@ -35,5 +37,19 @@ export default class Invitation extends Model {
 
     json.valid = json.updatedAt >= daysAgo(2);
     return json;
+  }
+  static get relationMappings() {
+    return {
+      roadmap: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Roadmap,
+        filter: (query: QueryBuilder<Model, Model[]>) =>
+          query.select('roadmaps.name'),
+        join: {
+          from: 'invitations.roadmapId',
+          to: 'roadmaps.id',
+        },
+      },
+    };
   }
 }

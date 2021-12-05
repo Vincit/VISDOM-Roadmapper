@@ -12,6 +12,7 @@ import {
   loginUser,
   getCurrentUser,
   logoutUser,
+  getInvitation,
   joinRoadmap,
   verifyEmail,
   sendNewVerificationLink,
@@ -35,6 +36,7 @@ userRouter.post('/login', loginUser);
 userRouter.get('/logout', logoutUser);
 userRouter.get('/whoami', requireAuth, getCurrentUser);
 userRouter.get('/roles', requireAuth, getUserRoles);
+userRouter.get('/join/:invitationId', requireAuth, getInvitation);
 userRouter.post('/:userId/join/:invitationId', requireAuth, joinRoadmap);
 userRouter.post(
   '/:userId/verifyEmail/:verificationId',
