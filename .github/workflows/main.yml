@@ -34,7 +34,7 @@ jobs:
           POSTGRES_PASSWORD: "testpassword"
           NODE_ENV: "test"
           RDS_PORT: "5432"
-          RDS_HOSTNAME: "localhost"
+          RDS_HOST: "localhost"
           RDS_DB_NAME: "roadmapper-db"
           RDS_USERNAME: "testuser"
           RDS_PASSWORD: "testpassword"

@@ -1,6 +1,6 @@
 NODE_ENV=development
 RDS_PORT=5432
-RDS_HOSTNAME=127.0.0.1
+RDS_HOST=127.0.0.1
 RDS_DB_NAME=roadmapper-db
 RDS_USERNAME=testuser
 RDS_PASSWORD=testpassword

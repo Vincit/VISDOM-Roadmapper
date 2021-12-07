@@ -65,7 +65,7 @@ const createServer = async () => {
   app.use(rootRouter.routes());
   app.use(rootRouter.allowedMethods());
 
-  const port = process.env.SERVER_PORT;
+  const port = Number(process.env.SERVER_PORT);
   const server = app.listen(port, () => {
     console.log(`App listening on port ${port}`);
   });
