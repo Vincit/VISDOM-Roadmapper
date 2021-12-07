@@ -38,9 +38,10 @@ export interface UserRegisterRequest {
   password: string;
 }
 
-export interface UserPatchRequest {
+export interface UserModifyRequest {
   id: number;
   email?: string;
   currentPassword: string;
   password?: string;
+  deleteUser?: boolean;
 }
