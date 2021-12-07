@@ -74,6 +74,11 @@ export const sendNewVerificationLink: RouteHandlerFnc = async (ctx) => {
 };
 
 export const deleteUsers: RouteHandlerFnc = async (ctx) => {
+  const { currentPassword } = ctx.request.body;
+  const user = await User.query().findById(ctx.params.id);
+  if (!(await user.verifyPassword(currentPassword))) {
+    ctx.status = 400;
+  }
   const numDeleted = await User.query().findById(ctx.params.id).delete();
 
   ctx.status = numDeleted == 1 ? 200 : 404;
