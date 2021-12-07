@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /app
+hooks:
+  AfterInstall:
+    - location: scripts/install_dependencies
+      timeout: 180
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_server
+      timeout: 180
+      runas: root

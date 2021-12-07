@@ -1,0 +1,50 @@
+# This is a basic workflow to help you get started with Actions
+
+name: AWS Codedeploy CD
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [sandbox]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Build & Generate backend deployment package
+        run: cd server && yarn && yarn build && cd ..
+
+      - name: Build & Generate frontend deployment package
+        run: echo $REACT_APP_API_BASE_URL && cd frontend && yarn && yarn build && cd ..
+        env:
+          CHOKIDAR_USEPOLLING: true
+          REACT_APP_API_BASE_URL: https://api.test.roadmapper.vincit.fi/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'eu-central-1'
+
+      - name: Sync frontend files to s3 static hosting bucket
+        run:
+          # Assuming the Frontend hosting bucket is already setup
+          # CDK deployment script outputs the bucket name
+          aws s3 sync ./frontend/build/ s3://test.roadmapper.vincit.fi/ --delete
+
+      - name: Execute CodeDeploy backend deployment
+        run:
+          # Assuming the Deployment Group is already setup
+          # CDK deployment script outputs the application and deployment group names
+          aws deploy create-deployment --application-name BackendCodeDeploy --deployment-group-name BackendDeploymentGroup --github-location repository=${{ github.repository }},commitId=${{ github.sha }}

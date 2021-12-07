@@ -1,8 +1,7 @@
 const requiredEnvVars = [
   'NODE_ENV',
   'RDS_PORT',
-  'RDS_HOSTNAME',
-  'RDS_DB_NAME',
+  'RDS_HOST',
   'RDS_USERNAME',
   'RDS_PASSWORD',
   'SERVER_PORT',

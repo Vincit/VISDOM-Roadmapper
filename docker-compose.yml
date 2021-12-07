@@ -21,7 +21,7 @@ services:
     environment:
       - NODE_ENV=development
       - RDS_PORT=5432
-      - RDS_HOSTNAME=roadmapper-database
+      - RDS_HOST=roadmapper-database
       - RDS_DB_NAME=roadmapper-db
       - RDS_USERNAME=testuser
       - RDS_PASSWORD=testpassword
