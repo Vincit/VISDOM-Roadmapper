@@ -29,7 +29,7 @@ import { SendInvitationModal } from './SendInvitationModal';
 import { JoinProjectModal } from './JoinProjectModal';
 import { JoinLinkInvalidModal } from './JoinLinkInvalidModal';
 import { JoinLinkNoAccessModal } from './JoinLinkNoAccessModal';
-import { ChangePasswordModal } from './ChangePasswordModal';
+import { ConfirmPasswordModal } from './ConfirmPasswordModal';
 
 const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
@@ -54,7 +54,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.JOIN_PROJECT_MODAL]: JoinProjectModal,
   [ModalTypes.JOIN_LINK_INVALID_MODAL]: JoinLinkInvalidModal,
   [ModalTypes.JOIN_LINK_NO_ACCESS_MODAL]: JoinLinkNoAccessModal,
-  [ModalTypes.CHANGE_PASSWORD_MODAL]: ChangePasswordModal,
+  [ModalTypes.CONFIRM_PASSWORD_MODAL]: ConfirmPasswordModal,
 } as const;
 
 // TODO: move this to css file

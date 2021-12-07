@@ -29,7 +29,7 @@ import { IntegrationBoard, Integrations } from '../redux/types';
 import {
   UserInfo,
   UserLoginRequest,
-  UserPatchRequest,
+  UserModifyRequest,
   UserRegisterRequest,
 } from '../redux/user/types';
 
@@ -177,8 +177,15 @@ const register = async (newUser: UserRegisterRequest) => {
   return response.status === 200;
 };
 
-const patchUser = async (userPatch: UserPatchRequest) => {
+const patchUser = async (userPatch: UserModifyRequest) => {
   const response = await axios.patch(`/users/${userPatch.id}`, userPatch);
+  return response.status === 200;
+};
+
+const deleteUser = async (userDelete: UserModifyRequest) => {
+  const response = await axios.delete(`/users/${userDelete.id}`, {
+    data: userDelete,
+  });
   return response.status === 200;
 };
 
@@ -404,6 +411,7 @@ export const api = {
   logout,
   register,
   patchUser,
+  deleteUser,
   getCurrentUserInfo,
   getCurrentUserToken,
   generateCurrentUserToken,

@@ -4,7 +4,7 @@ import {
   UserLoginRequest,
   UserInfo,
   UserRegisterRequest,
-  UserPatchRequest,
+  UserModifyRequest,
 } from './types';
 import { api } from '../../api/api';
 import { RoadmapRoleResponse, Invitation } from '../roadmaps/types';
@@ -63,13 +63,17 @@ export const register = createAsyncThunk<
   }
 });
 
-export const patchUser = createAsyncThunk<
+export const modifyUser = createAsyncThunk<
   boolean,
-  UserPatchRequest,
+  UserModifyRequest,
   { rejectValue: AxiosError }
->('/user/patchUser', async (userPatch: UserPatchRequest, thunkAPI) => {
+>('/user/patchUser', async (userPatch: UserModifyRequest, thunkAPI) => {
   try {
-    if (await api.patchUser(userPatch)) {
+    if (userPatch.deleteUser) {
+      if (await api.deleteUser(userPatch)) {
+        return true;
+      }
+    } else if (await api.patchUser(userPatch)) {
       await thunkAPI.dispatch(getUserInfo());
       return true;
     }

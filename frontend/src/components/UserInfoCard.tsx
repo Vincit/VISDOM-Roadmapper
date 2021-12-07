@@ -1,4 +1,4 @@
-import { SyntheticEvent } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
@@ -15,16 +15,14 @@ import { idRoadmapSelector } from '../redux/roadmaps/selectors';
 import { StoreDispatchType } from '../redux';
 import { ModalTypes } from './modals/types';
 import { modalsActions } from '../redux/modals';
+import { api } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
-  const editEmail = (newValue: string, fieldId: string) =>
-    new Promise<string>((resolve) => {
-      resolve(newValue + fieldId);
-    });
-
   const dispatch = useDispatch<StoreDispatchType>();
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
     const { roadmapId, type } = roadmapRole;
@@ -55,17 +53,40 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
     header: [{ label: 'Role', width: 5 }, { label: '' }, { label: 'Project' }],
   });
 
-  const openModal = (modalType: ModalTypes.CHANGE_PASSWORD_MODAL) => (
-    e: SyntheticEvent,
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const emailOnOk = async (newValue: string) => {
     dispatch(
       modalsActions.showModal({
-        modalType,
-        modalProps: {},
+        modalType: ModalTypes.CONFIRM_PASSWORD_MODAL,
+        modalProps: {
+          actionData: { id: userInfo.id, email: newValue },
+        },
       }),
     );
+  };
+  const passwordOnOk = async (newValue: string) => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.CONFIRM_PASSWORD_MODAL,
+        modalProps: {
+          actionData: { id: userInfo.id, password: newValue },
+        },
+      }),
+    );
+  };
+  const removeOnClick = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.CONFIRM_PASSWORD_MODAL,
+        modalProps: {
+          actionData: { id: userInfo.id, deleteUser: true },
+        },
+      }),
+    );
+  };
+  const resendOnClick = async () => {
+    setSending(true);
+    setSent(await api.sendEmailVerificationLink(userInfo));
+    setSending(false);
   };
 
   return (
@@ -75,29 +96,36 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
         <h2>Account</h2>
       </div>
       <div className={classes(css.spacer)} />
+      <p className={classes(css.subtitle)}>Email</p>
       <div className={classes(css.layoutRow)}>
         <div className={classes(css.textContainer)}>
           <EditableTextWithButtons
-            onOk={editEmail}
+            onOk={emailOnOk}
             value={userInfo.email}
-            fieldId="name"
+            fieldId="email"
             format=""
           />
           {!userInfo.emailVerified ? (
             <p className={classes(css.unVerifiedText)}>(unverified)</p>
           ) : null}
         </div>
-        <button className="button-small-outlined" type="button">
+        <button
+          className="button-small-outlined"
+          type="button"
+          onClick={resendOnClick}
+          disabled={sent || sending}
+        >
           Resend verification email
         </button>
-        <button
-          className="button-small-filled"
-          type="button"
-          onClick={openModal(ModalTypes.CHANGE_PASSWORD_MODAL)}
-        >
-          Change password
-        </button>
       </div>
+      <div className={classes(css.spacer)} />
+      <p className={classes(css.subtitle)}>Password</p>
+      <EditableTextWithButtons
+        onOk={passwordOnOk}
+        value="********"
+        fieldId="password"
+        format=""
+      />
       <div className={classes(css.spacer)} />
       <div className={classes(css.spacer)} />
       <ProjectTable items={userInfo.roles} />
@@ -117,7 +145,11 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
             your email address.
           </p>
         </div>
-        <button className={classes(css.deleteButton)} type="button">
+        <button
+          className={classes(css.deleteButton)}
+          type="button"
+          onClick={removeOnClick}
+        >
           Remove account
         </button>
       </div>
