@@ -10,14 +10,20 @@ describe('Test /users/ api', function () {
   describe('DELETE /users/', function () {
     it('Should delete user', async function () {
       const userId = (await getUser('AdminPerson1')).id;
-      const delResponse = await loggedInAgent.delete('/users/' + userId);
+      const delResponse = await loggedInAgent
+        .delete('/users/' + userId)
+        .type('json')
+        .send({ currentPassword: 'test' });
       expect(delResponse.status).to.equal(200);
       const res = await loggedInAgent.get('/users/whoami');
       expect(res.status).to.equal(401);
     });
     it('Should not delete user if it is not the current one', async function () {
       const userId = (await getUser('DeveloperPerson1')).id;
-      const delResponse = await loggedInAgent.delete('/users/' + userId);
+      const delResponse = await loggedInAgent
+        .delete('/users/' + userId)
+        .type('json')
+        .send({ currentPassword: 'test' });
       expect(delResponse.status).to.equal(403);
     });
   });
@@ -28,7 +34,7 @@ describe('Test /users/ api', function () {
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ email: 'patched@example.com' });
+        .send({ email: 'patched@example.com', currentPassword: 'test' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
@@ -42,7 +48,7 @@ describe('Test /users/ api', function () {
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ email: 'patched@example.com' });
+        .send({ email: 'patched@example.com', currentPassword: 'test' });
       expect(patchResponse.status).to.equal(403);
     });
     it('Should update defaultRoadmapId from null to existing roadmap id', async function () {
@@ -51,7 +57,7 @@ describe('Test /users/ api', function () {
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: firstRoadmapId });
+        .send({ defaultRoadmapId: firstRoadmapId, currentPassword: 'test' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
@@ -68,7 +74,7 @@ describe('Test /users/ api', function () {
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: firstRoadmapId });
+        .send({ defaultRoadmapId: firstRoadmapId, currentPassword: 'test' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
@@ -79,7 +85,7 @@ describe('Test /users/ api', function () {
       const patchResponse2 = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: secondRoadmapId });
+        .send({ defaultRoadmapId: secondRoadmapId, currentPassword: 'test' });
 
       expect(patchResponse2.status).to.equal(200);
       expect(patchResponse2.body.id).to.equal(userId);
@@ -93,7 +99,7 @@ describe('Test /users/ api', function () {
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: firstRoadmapId });
+        .send({ defaultRoadmapId: firstRoadmapId, currentPassword: 'test' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
@@ -104,7 +110,7 @@ describe('Test /users/ api', function () {
       const patchToNullRes = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: null });
+        .send({ defaultRoadmapId: null, currentPassword: 'test' });
 
       expect(patchToNullRes.status).to.equal(200);
       expect(patchToNullRes.body.id).to.equal(userId);
