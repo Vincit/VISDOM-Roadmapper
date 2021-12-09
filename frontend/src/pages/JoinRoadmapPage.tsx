@@ -1,50 +1,52 @@
-import { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { AxiosError } from 'axios';
 import { StoreDispatchType } from '../redux';
-import { userActions } from '../redux/user';
-import { UserInfo } from '../redux/user/types';
-import { paths } from '../routers/paths';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { roadmapsActions } from '../redux/roadmaps';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../components/modals/types';
 import { requireLogin } from '../utils/requirelogin';
+import { ProjectOverviewComponent } from './ProjectOverviewPage';
 
-export const JoinRoadmapPageComponent = ({
-  userInfo,
-}: {
-  userInfo: UserInfo;
-}) => {
+const JoinRoadmapComponent = () => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const { invitationLink } = useParams<{
     invitationLink: string | undefined;
   }>();
 
   useEffect(() => {
-    if (!invitationLink) return;
+    if (invitationLink) {
+      dispatch(roadmapsActions.getInvitation(invitationLink))
+        .unwrap()
+        .then((invitation) =>
+          dispatch(
+            modalsActions.showModal({
+              modalType: ModalTypes.JOIN_PROJECT_MODAL,
+              modalProps: { invitation },
+            }),
+          ),
+        )
+        .catch((err: AxiosError<any>) => {
+          if (err.request.status === 403)
+            dispatch(
+              modalsActions.showModal({
+                modalType: ModalTypes.JOIN_LINK_NO_ACCESS_MODAL,
+                modalProps: { invitationLink },
+              }),
+            );
+          else
+            dispatch(
+              modalsActions.showModal({
+                modalType: ModalTypes.JOIN_LINK_INVALID_MODAL,
+                modalProps: {},
+              }),
+            );
+        });
+    }
+  }, [dispatch, invitationLink]);
 
-    setIsLoading(true);
-    dispatch(userActions.joinRoadmap({ user: userInfo, invitationLink })).then(
-      (res) => {
-        setIsLoading(false);
-        if (userActions.joinRoadmap.rejected.match(res)) {
-          if (res.payload) setErrorMessage(res.payload.message);
-          return;
-        }
-        history.push(
-          `${paths.roadmapHome}/${res.payload.roadmapId}${paths.roadmapRelative.dashboard}`,
-        );
-      },
-    );
-  }, [dispatch, history, invitationLink, userInfo]);
-
-  return (
-    <div>
-      {errorMessage ? <div>{errorMessage}</div> : <div>Joining roadmap</div>}
-      {isLoading && <LoadingSpinner />}
-    </div>
-  );
+  return <ProjectOverviewComponent />;
 };
 
-export const JoinRoadmapPage = requireLogin(JoinRoadmapPageComponent);
+export const JoinRoadmapPage = requireLogin(JoinRoadmapComponent);

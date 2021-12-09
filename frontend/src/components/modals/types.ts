@@ -27,6 +27,9 @@ export enum ModalTypes {
   ADD_ROADMAP_MODAL = 'ADD_ROADMAP_MODAL',
   DELETE_ROADMAP_MODAL = 'DELETE_ROADMAP_MODAL',
   NOTIFY_USERS_MODAL = 'NOTIFY_USERS_MODAL',
+  JOIN_PROJECT_MODAL = 'JOIN_PROJECT_MODAL',
+  JOIN_LINK_INVALID_MODAL = 'JOIN_LINK_INVALID_MODAL',
+  JOIN_LINK_NO_ACCESS_MODAL = 'JOIN_LINK_NO_ACCESS_MODAL',
 }
 
 type OwnProps = {
@@ -74,6 +77,9 @@ type OwnProps = {
     id: number;
   };
   [ModalTypes.NOTIFY_USERS_MODAL]: { taskId: number };
+  [ModalTypes.JOIN_PROJECT_MODAL]: { invitation: Invitation };
+  [ModalTypes.JOIN_LINK_INVALID_MODAL]: {};
+  [ModalTypes.JOIN_LINK_NO_ACCESS_MODAL]: { invitationLink: string };
 };
 
 type Props = {

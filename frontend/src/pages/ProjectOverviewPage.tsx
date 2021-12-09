@@ -16,7 +16,7 @@ import css from './ProjectOverviewPage.module.scss';
 
 const classes = classNames.bind(css);
 
-const ProjectOverviewComponent = () => {
+export const ProjectOverviewComponent = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
     roadmapsSelector,

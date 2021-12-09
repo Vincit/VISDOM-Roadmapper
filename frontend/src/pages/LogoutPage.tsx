@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation, matchPath } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
@@ -16,6 +16,12 @@ export const LogoutPage = () => {
     userInfoSelector,
     shallowEqual,
   );
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+
+  const joining = !!matchPath(queryParams.get('redirectTo') || '', {
+    path: paths.joinRoadmap,
+  });
 
   useEffect(() => {
     if (userInfo) {
@@ -23,18 +29,15 @@ export const LogoutPage = () => {
     }
   }, [dispatch, userInfo]);
 
+  if (!userInfo && joining)
+    return <Redirect to={`${paths.loginPage}${search}`} />;
+  if (!userInfo) return <Redirect to={paths.home} />;
   return (
     <>
-      {!userInfo ? (
-        <Redirect to={paths.home} />
-      ) : (
-        <>
-          <p>
-            <Trans i18nKey="Logging out" />
-          </p>
-          <LoadingSpinner />
-        </>
-      )}
+      <p>
+        <Trans i18nKey="Logging out" />
+      </p>
+      <LoadingSpinner />
     </>
   );
 };

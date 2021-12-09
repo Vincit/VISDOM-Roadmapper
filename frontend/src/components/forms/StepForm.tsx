@@ -16,7 +16,7 @@ const classes = classNames.bind(css);
 
 interface Step {
   component: FC;
-  description: string;
+  description?: string;
   disabled?: () => boolean;
   noCancelConfirmation?: () => boolean;
 }
@@ -113,17 +113,20 @@ export const StepForm: FC<{
       <>
         {steps.length > 1 && (
           <div className={classes(css.steps)}>
-            {steps.map(({ description }, i) => (
-              <StepIndicator
-                currentStep={step}
-                step={i + 1}
-                maxStep={steps.length}
-                // eslint-disable-next-line
-                key={i + 1}
-                description={description}
-                onClick={() => setStep(i + 1)}
-              />
-            ))}
+            {steps.map(({ description }, i) => {
+              if (!description) return null;
+              return (
+                <StepIndicator
+                  currentStep={step}
+                  step={i + 1}
+                  maxStep={steps.length}
+                  // eslint-disable-next-line
+                  key={i + 1}
+                  description={description}
+                  onClick={() => setStep(i + 1)}
+                />
+              );
+            })}
           </div>
         )}
         {steps[step - 1].component({})}

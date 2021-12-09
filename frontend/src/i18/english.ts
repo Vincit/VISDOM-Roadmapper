@@ -249,5 +249,27 @@ export const english = {
     'Change address': 'Change address',
     'verify email before your journey':
       'Before your journey in Visdom, we need to verify your email address.',
+    'Join project': 'Join project',
+    'Join project info 1/2':
+      'You have been invited to join <strong>{{name}}</strong> as <strong>{{type}}</strong>',
+    'Join project info 2/2': 'Join project now?',
+    'Cancel joining project': 'Cancel joining project',
+    'Cancel join project warning':
+      'Are you sure you want to cancel joining this project?',
+    'New project added': 'New project added',
+    'New project added description':
+      'Awesome! <strong>{{name}}</strong> has been added in your projects.',
+    'No, thanks': 'No, thanks',
+    'Project link invalid': 'Project link invalid',
+    'Project link invalid info 1/2': 'Oops! Project link has gone bad.',
+    'Project link invalid info 2/2':
+      'Please request a new link from the person who invited you.',
+    'OK!': 'OK!',
+    'Log in with another account': 'Log in with another account',
+    'Project link no access info 1/2':
+      'You cannot join project with current account.',
+    'Project link no access info 2/2':
+      'Do you want to log in again with different email to join?',
+    'Yes, log in again': 'Yes, log in again',
   },
 };

@@ -21,7 +21,8 @@ export const NavBar = () => {
   return (
     <div className={classes(css.navBarDiv)}>
       <CornerPiece />
-      {pathname.startsWith(paths.overview) && (
+      {(pathname.startsWith(paths.overview) ||
+        pathname.startsWith('/join')) && (
         <div className={classes(css.logo)}>
           <VisdomLogo />
         </div>
