@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 cd /app/server
 
 AWS_SECRET1_ID="staging/backendEnvVariables"
@@ -11,14 +13,12 @@ yum install -y python3-pip jq
 pip3 install awscli --upgrade
 
 # Export the secret to .env
-rm $ENVFILE
-touch $ENVFILE
-aws secretsmanager get-secret-value --secret-id $AWS_SECRET1_ID --region $AWS_REGION | \
-  jq -r '.SecretString' | \
-  jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" >> $ENVFILE
-aws secretsmanager get-secret-value --secret-id $AWS_RDS_SECRET_ID --region $AWS_REGION | \
-  jq -r '.SecretString' | \
-  jq -r "to_entries|map(\"RDS_\(.key|ascii_upcase)=\(.value|tostring)\")|.[]" >> $ENVFILE
+{
+  aws secretsmanager get-secret-value --secret-id $AWS_SECRET1_ID --region $AWS_REGION | \
+    jq -r '.SecretString | fromjson | to_entries[] | "\(.key)=\(.value)"'
+  aws secretsmanager get-secret-value --secret-id $AWS_RDS_SECRET_ID --region $AWS_REGION | \
+    jq -r '.SecretString | fromjson | to_entries[] | "RDS_\(.key|ascii_upcase)=\(.value)"'
+} > $ENVFILE
 
 pm2 delete all
 pm2 start yarn --name backend -- start-prod
