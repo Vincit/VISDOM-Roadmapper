@@ -539,6 +539,18 @@ export const getInvitations = createAsyncThunk<
   }
 });
 
+export const getInvitation = createAsyncThunk<
+  Invitation,
+  string,
+  { rejectValue: AxiosError }
+>('roadmaps/getInvitation', async (invitationId, thunkAPI) => {
+  try {
+    return await api.getInvitation(invitationId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
 export const patchInvitation = createAsyncThunk<
   { roadmapId: number; invitation: Invitation },
   InvitationRequest,

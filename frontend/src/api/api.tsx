@@ -326,6 +326,11 @@ const getInvitations = async (roadmapId: number) => {
   return response.data as Invitation[];
 };
 
+const getInvitation = async (invitationId: string) => {
+  const response = await axios.get(`users/join/${invitationId}`);
+  return response.data as Invitation;
+};
+
 const sendInvitation = async (
   email: string,
   type: RoleType,
@@ -419,6 +424,7 @@ export const api = {
   sendNotification,
   patchDefaultRoadmap,
   getInvitations,
+  getInvitation,
   sendInvitation,
   patchInvitation,
   deleteInvitation,

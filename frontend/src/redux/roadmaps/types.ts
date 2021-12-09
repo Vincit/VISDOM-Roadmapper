@@ -200,6 +200,7 @@ export interface Invitation {
   email: string;
   updatedAt: string;
   valid: boolean;
+  roadmap?: { name: string };
 }
 
 export interface InvitationRequest {
