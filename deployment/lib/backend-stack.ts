@@ -10,6 +10,8 @@ import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as fs from "fs";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
 import * as rds from "@aws-cdk/aws-rds";
+import * as eventbridge from "@aws-cdk/aws-events";
+import * as eventtargets from "@aws-cdk/aws-events-targets";
 
 export interface BackendStackProps extends cdk.StackProps {
   domainName: string;
@@ -61,6 +63,17 @@ export class BackendStack extends cdk.Stack {
       iam.ManagedPolicy.fromAwsManagedPolicyName(
         "service-role/AWSCodeDeployRole"
       )
+    );
+
+    // Create a service role for AWS EventBridge to use
+    const eventBridgeRole = new iam.Role(this, "eventBridgeRole", {
+      assumedBy: new iam.ServicePrincipal("events.amazonaws.com"),
+    });
+    eventBridgeRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName("AutoScalingFullAccess")
+    );
+    eventBridgeRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2FullAccess")
     );
 
     // Security group for the load balancer
@@ -243,6 +256,46 @@ export class BackendStack extends cdk.Stack {
       maxAllocatedStorage: 500,
     });
     db.secret!.grantRead(ec2Role);
+
+    // EventBridge to handle rebooting instances when secrets are modified
+    const secretModifiedRule = new eventbridge.Rule(
+      this,
+      "SecretModifiedRefreshInstances",
+      {
+        eventPattern: {
+          source: ["aws.secretsmanager"],
+          detailType: ["AWS API Call via CloudTrail"],
+          detail: {
+            eventSource: ["secretsmanager.amazonaws.com"],
+            eventName: [
+              "UpdateSecret",
+              "RotateSecret",
+              "DeleteSecret",
+              "PutSecretValue",
+            ],
+            requestParameters: {
+              secretId: [db.secret!.secretArn, envVars.secretArn],
+            },
+          },
+        },
+      }
+    );
+
+    // startInstanceRefresh when secret is modified
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/AutoScaling.html#startInstanceRefresh-property
+    secretModifiedRule.addTarget(
+      new eventtargets.AwsApi({
+        action: "startInstanceRefresh",
+        service: "AutoScaling",
+        parameters: {
+          AutoScalingGroupName: asg.autoScalingGroupName,
+          Preferences: {
+            MinHealthyPercentage: 0,
+            InstanceWarmup: 180,
+          },
+        },
+      })
+    );
 
     // Output useful stuff to file
     new cdk.CfnOutput(this, "CDApplicationName", {
