@@ -107,13 +107,13 @@ export const RoadmapSidebar: FC = () => {
   };
 
   return (
-    <div className={classes('layout-column')}>
+    <div className={classes(css.container)}>
       <div className={classes(css.navButton, css.logo)}>
         <Link to={paths.overview} className={classes(css.visdomLogo)}>
           <VisdomLogo />
         </Link>
       </div>
-      {renderButtons()}
+      <div className={classes(css.buttonsContainer)}>{renderButtons()}</div>
     </div>
   );
 };

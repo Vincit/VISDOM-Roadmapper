@@ -1,5 +1,16 @@
 @import './../shared.scss';
 
+.container {
+  @extend .layout-column;
+  height: 100vh;
+}
+
+.buttonsContainer {
+  @extend .layout-column;
+  overflow-y: scroll;
+  height: 100%;
+}
+
 .navButton {
   display: flex;
   flex-direction: column;
