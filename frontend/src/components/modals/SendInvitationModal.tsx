@@ -37,6 +37,7 @@ export const SendInvitationModal: Modal<ModalTypes.SEND_INVITATION_MODAL> = ({
       if (res.payload?.message) setErrorMessage(res.payload.message);
       return;
     }
+    dispatch(roadmapsActions.getInvitations());
     closeModal();
   };
 
