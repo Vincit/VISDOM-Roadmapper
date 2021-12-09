@@ -27,7 +27,6 @@ jobs:
       - name: Build & Generate frontend deployment package
         run: echo $REACT_APP_API_BASE_URL && cd frontend && yarn && yarn build && cd ..
         env:
-          CHOKIDAR_USEPOLLING: true
           REACT_APP_API_BASE_URL: https://api.test.roadmapper.vincit.fi/
 
       - name: Configure AWS credentials
