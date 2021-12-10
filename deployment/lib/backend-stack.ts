@@ -12,6 +12,8 @@ import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
 import * as rds from "@aws-cdk/aws-rds";
 import * as eventbridge from "@aws-cdk/aws-events";
 import * as eventtargets from "@aws-cdk/aws-events-targets";
+import { HealthCheck } from "@aws-cdk/aws-autoscaling";
+import { Duration } from "@aws-cdk/core";
 
 export interface BackendStackProps extends cdk.StackProps {
   domainName: string;
@@ -124,6 +126,10 @@ export class BackendStack extends cdk.Stack {
       minCapacity: 1,
       role: ec2Role,
       securityGroup: instanceSg,
+      newInstancesProtectedFromScaleIn: true,
+      healthCheck: HealthCheck.elb({
+        grace: Duration.seconds(120),
+      }),
     });
 
     asg.scaleOnCpuUtilization("ScaleOnCpu", {
