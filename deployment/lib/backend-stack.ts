@@ -120,10 +120,15 @@ export class BackendStack extends cdk.Stack {
         ec2.InstanceClass.T3,
         ec2.InstanceSize.MICRO
       ),
-      maxCapacity: 1,
+      maxCapacity: 2,
       minCapacity: 1,
       role: ec2Role,
       securityGroup: instanceSg,
+    });
+
+    asg.scaleOnCpuUtilization("ScaleOnCpu", {
+      cooldown: cdk.Duration.seconds(180),
+      targetUtilizationPercent: 50,
     });
 
     // Add user_data.sh to run when new instances are created
