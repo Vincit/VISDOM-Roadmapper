@@ -246,7 +246,7 @@ export class BackendStack extends cdk.Stack {
     // RDS Database
     const db = new rds.DatabaseInstance(this, "BackendPostgresDb", {
       engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.VER_11_9,
+        version: rds.PostgresEngineVersion.VER_11,
       }),
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.BURSTABLE3,
