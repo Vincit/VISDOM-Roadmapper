@@ -1,6 +1,4 @@
 #!/bin/bash
 cd /app/server
-npm install -g pm2
-npm install -g yarn
 yarn install --frozen-lockfile
 yarn run build
