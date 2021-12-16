@@ -1,3 +1,4 @@
+import dagre from 'dagre';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 
@@ -5,6 +6,12 @@ export interface GroupedRelation {
   synergies: number[];
   dependencies: { from: number; to: number }[];
 }
+
+type MeasuredRelation = GroupedRelation & {
+  id: string;
+  width: number;
+  height: number;
+};
 
 const existingSynergyIdxs = (subgroup: number[], groups: GroupedRelation[]) => {
   const idxs: number[] = [];
@@ -46,4 +53,24 @@ export const groupTaskRelations = (tasks: Task[]) => {
   });
 
   return groups;
+};
+
+export const getAutolayout = (relations: MeasuredRelation[]) => {
+  const graph = new dagre.graphlib.Graph();
+  graph.setDefaultEdgeLabel(() => ({}));
+  graph.setGraph({ rankdir: 'LR' });
+
+  relations.forEach(({ id, width, height, dependencies }) => {
+    graph.setNode(id, { width, height });
+
+    dependencies.forEach(({ to }) => {
+      const targetGroup = relations.find(({ synergies }) =>
+        synergies.includes(to),
+      );
+      if (!targetGroup) return;
+      graph.setEdge(id, targetGroup.id);
+    });
+  });
+  dagre.layout(graph);
+  return graph;
 };

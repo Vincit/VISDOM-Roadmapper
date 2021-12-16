@@ -8,7 +8,7 @@ import css from './TaskMapTaskGroup.module.scss';
 const classes = classNames.bind(css);
 
 export const TaskGroup: FC<{
-  listId: number;
+  listId: string;
   taskIds: number[];
   selectedTask: Task | undefined;
   setSelectedTask: any;
@@ -22,7 +22,7 @@ export const TaskGroup: FC<{
   allDependencies,
   disableDragging,
 }) => (
-  <Droppable droppableId={String(listId)} type="TASKS">
+  <Droppable droppableId={listId} type="TASKS">
     {(provided, snapshot) => (
       <div
         className={classes(css.taskGroup, {
