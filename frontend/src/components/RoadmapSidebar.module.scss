@@ -7,8 +7,10 @@
 
 .buttonsContainer {
   @extend .layout-column;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
+
+  @extend .hide-scrollbar;
 }
 
 .navButton {

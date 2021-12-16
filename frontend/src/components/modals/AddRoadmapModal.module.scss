@@ -13,12 +13,11 @@
   min-height: 390px;
   padding: 20px;
 
-  // hide member list scrollbar
-  @extend .hide-scrollbar;
-
   .members {
     overflow: auto;
     height: 300px;
+    // hide member list scrollbar
+    @extend .hide-scrollbar;
   }
 
   .addMemberButton {
