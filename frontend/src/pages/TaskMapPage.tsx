@@ -19,6 +19,7 @@ import { StoreDispatchType } from '../redux';
 import {
   groupTaskRelations,
   GroupedRelation,
+  getAutolayout,
 } from '../utils/TaskRelationUtils';
 import { getTaskOverviewData } from './TaskOverviewPage';
 import { OverviewContent } from '../components/Overview';
@@ -68,47 +69,77 @@ export const TaskMapPage = () => {
   const [taskRelations, setTaskRelations] = useState(groupTaskRelations(tasks));
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [disableDrag, setDisableDrag] = useState(false);
+  const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
+  const [flowElements, setFlowElements] = useState<any>([]);
 
-  const groups = taskRelations.map(({ synergies }, idx) => ({
-    id: `${idx}`,
-    type: 'special',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    draggable: false,
-    position: { x: 550 * idx, y: 80 },
-    data: {
-      label: (
-        <TaskGroup
-          listId={idx}
-          taskIds={synergies.sort((a, b) => a - b)} // FIXME: ordering prevents render bugs
-          selectedTask={selectedTask}
-          setSelectedTask={setSelectedTask}
-          allDependencies={taskRelations.flatMap(
-            ({ dependencies }) => dependencies,
-          )}
-          disableDragging={disableDrag}
-        />
-      ),
-    },
-  }));
+  useEffect(() => {
+    if (!divRef || taskRelations.length === 0) return;
 
-  const edges = taskRelations.flatMap(({ dependencies }, idx) =>
-    dependencies.map(({ from, to }) => {
-      const targetGroupIdx = taskRelations.findIndex(({ synergies }) =>
-        synergies.includes(to),
-      );
+    const measuredRelations = taskRelations.map((relation, idx) => {
+      // calculate taskgroup height
+      let height = 40;
 
+      relation.synergies.forEach((taskId) => {
+        const task = tasks.find(({ id }) => id === taskId);
+        if (!task) return;
+        height += 40;
+        // calculate text height
+        divRef.textContent = task.name;
+        height += divRef.offsetHeight;
+        divRef.textContent = '';
+      });
+      return { id: `${idx}`, width: 436, height, ...relation };
+    });
+
+    const graph = getAutolayout(measuredRelations);
+
+    const groups = measuredRelations.map(({ id, synergies }) => {
+      const node = graph.node(id);
       return {
-        id: `from-${from}-to-${to}`,
-        source: String(idx),
-        sourceHandle: `from-${from}`,
-        target: String(targetGroupIdx),
-        targetHandle: `to-${to}`,
-        type: 'custom',
-        data: { disableInteraction: disableDrag },
+        id,
+        type: 'special',
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+        draggable: false,
+        // dagre coordinates are in the center, calculate top left corner
+        position: { x: node.x - node.width / 2, y: node.y - node.height / 2 },
+        data: {
+          label: (
+            <TaskGroup
+              listId={id}
+              taskIds={synergies}
+              selectedTask={selectedTask}
+              setSelectedTask={setSelectedTask}
+              allDependencies={taskRelations.flatMap(
+                ({ dependencies }) => dependencies,
+              )}
+              disableDragging={disableDrag}
+            />
+          ),
+        },
       };
-    }),
-  );
+    });
+
+    const edges = measuredRelations.flatMap(({ dependencies }, idx) =>
+      dependencies.map(({ from, to }) => {
+        const targetGroup = measuredRelations.find(({ synergies }) =>
+          synergies.includes(to),
+        );
+
+        return {
+          id: `from-${from}-to-${to}`,
+          source: String(idx),
+          sourceHandle: `from-${from}`,
+          target: targetGroup!.id,
+          targetHandle: `to-${to}`,
+          type: 'custom',
+          data: { disableInteraction: disableDrag },
+        };
+      }),
+    );
+
+    setFlowElements([...groups, ...edges]);
+  }, [disableDrag, divRef, selectedTask, taskRelations, tasks]);
 
   const onConnect = async (data: any) => {
     const { sourceHandle, targetHandle } = data;
@@ -190,47 +221,50 @@ export const TaskMapPage = () => {
   };
 
   return (
-    <div
-      id="taskmap"
-      style={{
-        ['--zoom' as any]: mapPosition?.zoom || 1,
-      }}
-    >
-      <DragDropContext
-        onDragEnd={onDragEnd}
-        onDragStart={() => setDisableDrag(true)}
+    <>
+      <div
+        id="taskmap"
+        style={{
+          ['--zoom' as any]: mapPosition?.zoom || 1,
+        }}
       >
-        <ReactFlow
-          className={classes(css.flowContainer)}
-          connectionLineComponent={ConnectionLine}
-          elements={[...groups, ...edges]}
-          nodeTypes={{
-            special: CustomNodeComponent,
-          }}
-          draggable={false}
-          onConnect={onConnect}
-          edgeTypes={{
-            custom: CustomEdge,
-          }}
-          onContextMenu={(e) => e.preventDefault()}
-          defaultZoom={mapPosition?.zoom}
-          defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
+        <DragDropContext
+          onDragEnd={onDragEnd}
+          onDragStart={() => setDisableDrag(true)}
         >
-          <ReactFlowState />
-          <Controls showInteractive={false} showZoom={false}>
-            <InfoTooltip title={t('Taskmap-tooltip')}>
-              <InfoIcon
-                className={classes(css.info, css.tooltipIcon, css.infoIcon)}
-              />
-            </InfoTooltip>
-          </Controls>
-        </ReactFlow>
-        <div className={classes(css.taskOverviewContainer)}>
-          {selectedTask && (
-            <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
-          )}
-        </div>
-      </DragDropContext>
-    </div>
+          <ReactFlow
+            className={classes(css.flowContainer)}
+            connectionLineComponent={ConnectionLine}
+            elements={flowElements}
+            nodeTypes={{
+              special: CustomNodeComponent,
+            }}
+            draggable={false}
+            onConnect={onConnect}
+            edgeTypes={{
+              custom: CustomEdge,
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            defaultZoom={mapPosition?.zoom}
+            defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
+          >
+            <ReactFlowState />
+            <Controls showInteractive={false} showZoom={false}>
+              <InfoTooltip title={t('Taskmap-tooltip')}>
+                <InfoIcon
+                  className={classes(css.info, css.tooltipIcon, css.infoIcon)}
+                />
+              </InfoTooltip>
+            </Controls>
+          </ReactFlow>
+          <div className={classes(css.taskOverviewContainer)}>
+            {selectedTask && (
+              <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
+            )}
+          </div>
+        </DragDropContext>
+      </div>
+      <div ref={setDivRef} className={classes(css.measureTaskName)} />
+    </>
   );
 };
