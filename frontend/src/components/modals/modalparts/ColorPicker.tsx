@@ -8,6 +8,7 @@ import {
 
 import classNames from 'classnames';
 import css from './ColorPicker.module.scss';
+import { Dot } from '../../Dot';
 
 const classes = classNames.bind(css);
 
@@ -56,6 +57,7 @@ export const ColorPicker = CustomPicker((props: any) => {
           value={hex}
           onChange={(value) => props.setColor(value)}
         />
+        <Dot diameter={24} fill={hex} />
       </div>
     </div>
   );
