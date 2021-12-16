@@ -53,7 +53,7 @@ export const JoinProjectModal: Modal<ModalTypes.JOIN_PROJECT_MODAL> = ({
               i18nKey="Join project info 1/2"
               values={{
                 name: invitation.roadmap!.name,
-                type: RoleType[invitation.type],
+                type: t(RoleType[invitation.type]).toLocaleLowerCase(),
               }}
             />
           </div>
