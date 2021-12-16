@@ -13,13 +13,17 @@ export const LOGOUT_FULFILLED = (state: UserState) => {
   state.info = undefined;
 };
 
+export const GET_INVITATION_FULFILLED = (state: UserState) => {
+  if (!state.info) throw new Error('UserInfo has not been fetched yet');
+  state.info.emailVerified = true;
+};
+
 export const JOIN_ROADMAP_FULFILLED = (
   state: UserState,
   action: PayloadAction<RoadmapRoleResponse>,
 ) => {
   if (!state.info) throw new Error('UserInfo has not been fetched yet');
   state.info.roles.push(action.payload);
-  state.info.emailVerified = true;
 };
 
 export const VERIFY_EMAIL_FULFILLED = (

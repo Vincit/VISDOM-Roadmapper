@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { UserLoginRequest, UserInfo, UserRegisterRequest } from './types';
 import { api } from '../../api/api';
-import { RoadmapRoleResponse } from '../roadmaps/types';
+import { RoadmapRoleResponse, Invitation } from '../roadmaps/types';
 
 export const getUserInfo = createAsyncThunk<
   UserInfo,
@@ -68,6 +68,18 @@ export const patchDefaultRoadmap = createAsyncThunk<
     return await api.patchDefaultRoadmap(userId, roadmapId);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const getInvitation = createAsyncThunk<
+  Invitation,
+  string,
+  { rejectValue: AxiosError }
+>('roadmaps/getInvitation', async (invitationId, thunkAPI) => {
+  try {
+    return await api.getInvitation(invitationId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 

@@ -29,7 +29,6 @@ import {
   notifyUsers,
   sendInvitation,
   getInvitations,
-  getInvitation,
   patchInvitation,
   deleteInvitation,
 } from './actions';
@@ -143,7 +142,6 @@ export const roadmapsActions = {
   notifyUsers,
   sendInvitation,
   getInvitations,
-  getInvitation,
   patchInvitation,
   deleteInvitation,
 };
