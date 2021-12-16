@@ -9,7 +9,7 @@
 .header {
   @extend .layout-row;
   @extend .typography-h2;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   gap: 24px;
 
@@ -28,7 +28,9 @@
 }
 
 .buttons {
+  @extend .layout-row;
   margin-left: auto;
+  flex-wrap: nowrap;
 
   .disabled path:first-child {
     fill: $COLOR_BLACK40;
