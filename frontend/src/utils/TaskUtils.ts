@@ -238,7 +238,7 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
 ) => {
   const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
   const type = getType(user, roadmapId);
-  if (type === RoleType.Admin || type === RoleType.Business) {
+  if (type === RoleType.Admin || type === RoleType['Sales representative']) {
     const customers = isUserInfo(user)
       ? user.representativeFor?.filter(
           (customer) => customer.roadmapId === roadmapId,

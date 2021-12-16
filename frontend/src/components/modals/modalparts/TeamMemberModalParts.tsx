@@ -25,7 +25,11 @@ export const SelectMemberRole: FC<{
       <Trans i18nKey="Member role" />
     </label>
     <div id="role" className={classes(css.roleSelection)}>
-      {[RoleType.Developer, RoleType.Business, RoleType.Admin].map((type) => (
+      {[
+        RoleType.Developer,
+        RoleType['Sales representative'],
+        RoleType.Admin,
+      ].map((type) => (
         <div
           key={type}
           className={classes(css.role, { [css.checked]: role === type })}
@@ -42,7 +46,9 @@ export const SelectMemberRole: FC<{
               {type === RoleType.Developer && (
                 <BuildSharpIcon fontSize="small" />
               )}
-              {type === RoleType.Business && <BusinessIcon size="small" />}
+              {type === RoleType['Sales representative'] && (
+                <BusinessIcon size="small" />
+              )}
             </div>
           )}
         </div>
@@ -86,7 +92,9 @@ export const DisplayInvitedMember: FC<{
         {member.type === RoleType.Developer && (
           <BuildSharpIcon fontSize="small" />
         )}
-        {member.type === RoleType.Business && <BusinessIcon size="small" />}
+        {member.type === RoleType['Sales representative'] && (
+          <BusinessIcon size="small" />
+        )}
       </div>
       <div className={classes(css.email)}>{member.email}</div>
     </div>

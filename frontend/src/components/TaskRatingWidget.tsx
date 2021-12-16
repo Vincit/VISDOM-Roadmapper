@@ -59,7 +59,7 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
   const shouldShow =
     ratingDimension === TaskRatingDimension.BusinessValue
       ? role !== RoleType.Developer
-      : role !== RoleType.Business;
+      : role !== RoleType['Sales representative'];
 
   const renderRatingBars = () =>
     shouldShow && (

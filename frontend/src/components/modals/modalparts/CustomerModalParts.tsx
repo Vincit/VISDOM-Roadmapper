@@ -108,7 +108,9 @@ export const SelectRepresentatives: FC<{
             })}
           >
             {rep.type === RoleType.Admin && <StarSharpIcon fontSize="small" />}
-            {rep.type === RoleType.Business && <BusinessIcon size="xsmall" />}
+            {rep.type === RoleType['Sales representative'] && (
+              <BusinessIcon size="xsmall" />
+            )}
           </div>
         </div>
       ))}

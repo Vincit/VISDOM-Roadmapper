@@ -82,7 +82,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
       setMissingDevRatings(allUsers.filter(missingDeveloper(task)));
     }
 
-    if (type === RoleType.Business) {
+    if (type === RoleType['Sales representative']) {
       setMissingRatings(
         userInfo?.representativeFor?.filter(
           (customer) => !ratedByCustomer(customer, userInfo)(task),

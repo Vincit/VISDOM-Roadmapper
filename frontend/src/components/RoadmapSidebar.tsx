@@ -48,7 +48,8 @@ export const RoadmapSidebar: FC = () => {
           <ListIcon />
           <Trans i18nKey="Tasks" />
         </Link>
-        {(role === RoleType.Admin || role === RoleType.Business) && (
+        {(role === RoleType.Admin ||
+          role === RoleType['Sales representative']) && (
           <Link
             to={url + paths.roadmapRelative.clients}
             className={classes(css.navButton, {

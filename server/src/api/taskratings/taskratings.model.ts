@@ -75,7 +75,7 @@ export default class TaskRating extends Model {
         user: User,
         role: RoleType,
       ) => {
-        if (role === RoleType.Business) {
+        if (role === RoleType['Sales representative']) {
           builder
             .where('createdByUser', user.id)
             .orWhere('dimension', TaskRatingDimension.RequiredWork)

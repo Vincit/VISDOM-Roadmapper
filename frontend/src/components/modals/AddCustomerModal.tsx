@@ -64,7 +64,8 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
       roadmapUsers
         .filter(
           (user) =>
-            user.type === RoleType.Admin || user.type === RoleType.Business,
+            user.type === RoleType.Admin ||
+            user.type === RoleType['Sales representative'],
         )
         .map((obj) => ({ ...obj, checked: false })),
     );

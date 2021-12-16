@@ -65,8 +65,8 @@ const createTestRoadmaps = async () => {
 
 const createTestRoles = async () => {
   const roles = new Map([
-    ['BusinessPerson1', RoleType.Business],
-    ['BusinessPerson2', RoleType.Business],
+    ['BusinessPerson1', RoleType['Sales representative']],
+    ['BusinessPerson2', RoleType['Sales representative']],
     ['DeveloperPerson1', RoleType.Developer],
     ['DeveloperPerson2', RoleType.Developer],
     ['AdminPerson1', RoleType.Admin],

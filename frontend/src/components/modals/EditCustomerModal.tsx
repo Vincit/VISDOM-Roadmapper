@@ -64,7 +64,8 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
       roadmapUsers
         .filter(
           (user) =>
-            user.type === RoleType.Admin || user.type === RoleType.Business,
+            user.type === RoleType.Admin ||
+            user.type === RoleType['Sales representative'],
         )
         .map((obj) =>
           customer.representatives?.find((rep) => rep.id === obj.id)

@@ -76,7 +76,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
         <div className={classes(css.memberIcon)}>
           {type === RoleType.Admin && <StarSharpIcon />}
           {type === RoleType.Developer && <BuildSharpIcon />}
-          {type === RoleType.Business && <BusinessIcon />}
+          {type === RoleType['Sales representative'] && <BusinessIcon />}
         </div>
       </td>
       <td className="styledTd">
