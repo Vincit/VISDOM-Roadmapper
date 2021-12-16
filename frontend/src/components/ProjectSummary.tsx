@@ -45,49 +45,49 @@ const ProjectMenu: FC<{
   };
 
   return (
-    <>
-      {open && (
-        <Popover
-          classes={{
-            paper: classes(css.projectMenu),
-          }}
-          id={open ? 'project-menu' : undefined}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={onClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
+    <Popover
+      classes={{
+        paper: classes(css.projectMenu),
+      }}
+      id={open ? 'project-menu' : undefined}
+      anchorEl={anchorEl}
+      open={open}
+      onClose={onClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+    >
+      <div className={classes(css.content)}>
+        <button
+          className={classes(css.linkButton, css.green)}
+          tabIndex={0}
+          type="button"
+          onClick={() => handleSelect(user.defaultRoadmapId === roadmapId)}
         >
-          <div className={classes(css.content)}>
-            <button
-              className={classes(css.linkButton, css.green)}
-              tabIndex={0}
-              type="button"
-              onClick={() => handleSelect(user.defaultRoadmapId === roadmapId)}
-            >
-              {user.defaultRoadmapId === roadmapId ? (
-                <Trans i18nKey="Unselect default project" />
-              ) : (
-                <Trans i18nKey="Set as a default project" />
-              )}
-            </button>
-            <Link
-              className={classes(css.green)}
-              to={modalLink(ModalTypes.DELETE_ROADMAP_MODAL, { id: roadmapId })}
-              onClick={() => onClose()}
-            >
-              <Trans i18nKey="Delete project ellipsis" />
-            </Link>
-          </div>
-        </Popover>
-      )}
-    </>
+          {user.defaultRoadmapId === roadmapId ? (
+            <Trans i18nKey="Unselect default project" />
+          ) : (
+            <Trans i18nKey="Set as a default project" />
+          )}
+        </button>
+        {hasPermission(getType(user, roadmapId), Permission.RoadmapDelete) && (
+          <Link
+            className={classes(css.green)}
+            to={modalLink(ModalTypes.DELETE_ROADMAP_MODAL, {
+              id: roadmapId,
+            })}
+            onClick={() => onClose()}
+          >
+            <Trans i18nKey="Delete project ellipsis" />
+          </Link>
+        )}
+      </div>
+    </Popover>
   );
 };
 
