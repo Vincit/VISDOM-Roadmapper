@@ -45,6 +45,7 @@ const SingleTask: FC<
   snapshot,
   disableDragging,
 }) => {
+  const { isDragging } = snapshot;
   const task = useSelector<RootState, Task | undefined>(
     taskSelector(taskId),
     shallowEqual,
@@ -64,9 +65,9 @@ const SingleTask: FC<
       onKeyPress={selectTask}
       className={classes(css.singleTask, {
         [css.selectedTask]: selected,
-        [css.dragging]: snapshot.isDragging,
+        [css.dragging]: isDragging,
         [css.draggingOutside]: !snapshot.draggingOver,
-        [css.loading]: disableDragging && !snapshot.isDragging,
+        [css.loading]: disableDragging && !isDragging,
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
@@ -77,7 +78,7 @@ const SingleTask: FC<
         <Handle
           className={classes(css.leftHandle, {
             [css.filledLeftHandle]: toChecked,
-            [css.dragging]: snapshot.isDragging,
+            [css.dragging]: isDragging,
           })}
           id={`to-${task.id}`}
           type="target"
@@ -85,20 +86,26 @@ const SingleTask: FC<
         />
       </button>
       {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
-      {task.name}
+      <div
+        className={classes(css.taskName, {
+          [css.dragging]: isDragging,
+        })}
+      >
+        {task.name}
+      </div>
       <div className={classes(css.taskRatingTexts)}>
         <TaskRatingsText
           task={task}
           selected={selected}
           largeIcons
-          dragging={snapshot.isDragging}
+          dragging={isDragging}
         />
       </div>
       <button type="button">
         <Handle
           className={classes(css.rightHandle, {
             [css.filledRightHandle]: fromChecked,
-            [css.dragging]: snapshot.isDragging,
+            [css.dragging]: isDragging,
           })}
           id={`from-${task.id}`}
           type="source"
