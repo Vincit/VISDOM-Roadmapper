@@ -2,8 +2,9 @@
 
 .singleTask {
   @extend .layout-row;
-  width: 309px;
-  height: 41px;
+  width: 360px;
+  min-height: 40px;
+  max-height: 90px;
   background-color: $COLOR_WHITE;
   margin: 10px;
   border-radius: 5px;
@@ -27,6 +28,9 @@
     font-size: calc(14px * #{$ZOOM});
     border-radius: calc(5px * #{$ZOOM});
     padding: calc(10px * #{$ZOOM}) calc(16px * #{$ZOOM});
+    width: calc(360px * #{$ZOOM});
+    min-height: calc(40px * #{$ZOOM});
+    max-height: calc(90px * #{$ZOOM});
 
     &.draggingOutside {
       box-shadow: 0px 0px 30px rgba($color: $COLOR_AZURE, $alpha: 0.3);
@@ -98,4 +102,21 @@
 
 .taskRatingTexts {
   margin-left: auto;
+}
+
+.taskName {
+  width: 210px;
+  max-height: 40px;
+  text-align: left;
+  overflow: hidden;
+  word-wrap: break-word;
+
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+
+  &.dragging {
+    width: calc(210px * #{$ZOOM});
+    max-height: calc(40px * #{$ZOOM});
+  }
 }
