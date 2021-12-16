@@ -202,7 +202,7 @@ export const english = {
     'Admin caution':
       '<strong>Caution:</strong> giving Admin role to this member lets them manage the project however they like.',
     Developer: 'Developer',
-    Businessperson: 'Businessperson',
+    Business: 'Sales representative',
     Admin: 'Admin',
     Unordered: 'Unordered',
     'Are you sure to continue': 'Are you sure you want to continue?',
@@ -251,7 +251,7 @@ export const english = {
       'Before your journey in Visdom, we need to verify your email address.',
     'Join project': 'Join project',
     'Join project info 1/2':
-      'You have been invited to join <strong>{{name}}</strong> as <strong>{{type}}</strong>',
+      'You have been invited to join <strong>{{name}}</strong> as <strong>{{type}}.</strong>',
     'Join project info 2/2': 'Join project now?',
     'Cancel joining project': 'Cancel joining project',
     'Cancel join project warning':
