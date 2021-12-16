@@ -85,7 +85,7 @@ export const Overview: FC<OverviewProps> = ({
         <Link to={backHref}>
           <ArrowBackIcon className={classes(css.arrowIcon)} />
         </Link>
-        {t('Overview header', { overviewType })}
+        <span>{t('Overview header', { overviewType })}</span>
         <div className={classes(css.name)}>{name}</div>
         <div className={classes(css.buttons)}>
           {previousAndNext.map(({ id, type }) => (

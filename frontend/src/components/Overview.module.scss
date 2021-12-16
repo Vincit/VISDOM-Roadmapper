@@ -13,6 +13,10 @@
   width: 100%;
   gap: 24px;
 
+  & > *:not(.buttons) {
+    margin-top: 12px; // the default padding of the buttons
+  }
+
   .name {
     @extend .layout-row;
     align-items: center;
