@@ -5,6 +5,7 @@ import {
   RoadmapUser,
   Invitation,
   Task,
+  InfoModalContent,
 } from '../../redux/roadmaps/types';
 import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
@@ -32,6 +33,7 @@ export enum ModalTypes {
   JOIN_LINK_INVALID_MODAL = 'JOIN_LINK_INVALID_MODAL',
   JOIN_LINK_NO_ACCESS_MODAL = 'JOIN_LINK_NO_ACCESS_MODAL',
   CONFIRM_PASSWORD_MODAL = 'CONFIRM_PASSWORD_MODAL',
+  INFO_MODAL = 'INFO_MODAL',
 }
 
 type OwnProps = {
@@ -91,6 +93,7 @@ type OwnProps = {
         actionData: Omit<UserDeleteRequest, 'currentPassword'>;
         deleteUser: true;
       };
+  [ModalTypes.INFO_MODAL]: { header: string; content: InfoModalContent };
 };
 
 type Props = {
