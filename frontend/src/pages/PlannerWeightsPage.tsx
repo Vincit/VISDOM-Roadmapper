@@ -3,6 +3,7 @@ import { Alert } from 'react-bootstrap';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { Slider } from '../components/forms/Slider';
 import {
   allCustomersSelector,
@@ -14,6 +15,7 @@ import { Dot } from '../components/Dot';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { percent } from '../utils/string';
+import { InfoTooltip } from '../components/InfoTooltip';
 import css from './PlannerWeightsPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -74,6 +76,9 @@ export const PlannerWeightsPage = () => {
       <header className={classes(css.weightsHeader)}>
         <h2 className={classes(css.title)}>
           <Trans i18nKey="Set different weighing for clients" />
+          <InfoTooltip title={<Trans i18nKey="Planner weights tooltip" />}>
+            <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+          </InfoTooltip>
         </h2>
       </header>
       <Alert

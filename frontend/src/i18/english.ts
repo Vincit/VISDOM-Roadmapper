@@ -284,5 +284,15 @@ export const english = {
     'you can remove your account 2/2':
       'Note: Don’t remove your account if you just want to change your email address.',
     'Remove account': 'Remove account',
+    'Task list tooltip':
+      'Tasks are rated by client value and work amount. Rated tasks are used for planning and estimating future milestones by the PO.',
+    'Planner workValue tooltip':
+      'Roadmap shows a visual comparison of milestones’ total amount of work and average value',
+    'Planner customerStakes tooltip':
+      'Weighted values are calculated using the average value of tasks for a client with the weight scaling in the client weights tab.',
+    'Planner milestones tooltip':
+      'Milestones create your project’s <1>roadmap.</1>',
+    'Planner weights tooltip':
+      'Client weights affect the scaling of milestone`s total values in the roadmap graph. Weight of 0% will ignore the ratings of the client in question.',
   },
 };
