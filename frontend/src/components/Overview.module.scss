@@ -18,10 +18,10 @@
   }
 
   .name {
-    @extend .layout-row;
-    align-items: center;
-    gap: 20px;
     font-weight: normal;
+    max-width: 70%;
+    display: inline-block;
+    overflow-wrap: break-word;
   }
 }
 
