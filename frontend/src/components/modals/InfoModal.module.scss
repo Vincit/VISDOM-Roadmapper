@@ -1,0 +1,32 @@
+@import '../../shared.scss';
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.helpContainer {
+  @extend .center;
+  margin: 40px 0;
+}
+
+.helpIcon {
+  fill: $COLOR_EMERALD;
+  width: 56px;
+  height: 56px;
+}
+
+.modalContent {
+  margin-bottom: 12px;
+}
+
+.subHeader {
+  margin-bottom: 22px;
+}
+
+.modalFooter {
+  @extend .center;
+  margin-top: 35px;
+  margin-bottom: 20px;
+}

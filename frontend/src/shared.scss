@@ -507,6 +507,16 @@ textarea {
   cursor: help;
 }
 
+.tooltipClickable {
+  path {
+    transition: 150ms ease-out;
+  }
+  &:hover path {
+    fill: $COLOR_EMERALD;
+  }
+  cursor: pointer;
+}
+
 .hide-text-ellipsis {
   text-overflow: ellipsis;
   overflow: hidden;

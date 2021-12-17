@@ -209,3 +209,13 @@ export interface InvitationRequest {
   type?: RoleType;
   email?: string;
 }
+
+interface InfoModalColumn {
+  header: string;
+  text: string;
+}
+
+export interface InfoModalContent {
+  subHeader?: string;
+  columns: InfoModalColumn[];
+}

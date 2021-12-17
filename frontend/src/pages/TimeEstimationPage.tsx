@@ -3,7 +3,7 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { roadmapsActions } from '../redux/roadmaps';
 import {
   chosenRoadmapSelector,
@@ -20,6 +20,8 @@ import css from './TimeEstimationPage.module.scss';
 
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
 import { Dropdown } from '../components/forms/Dropdown';
+import { modalsActions } from '../redux/modals';
+import { ModalTypes } from '../components/modals/types';
 
 const classes = classNames.bind(css);
 
@@ -110,12 +112,43 @@ export const TimeEstimationPage = () => {
     setCalculatedDaysPerWork(milestoneDuration / work);
   }, [selectedMilestoneId, milestoneDuration, roadmap, roadmapsVersions]);
 
+  const handleTooltipModal = () => {
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.INFO_MODAL,
+        modalProps: {
+          header: t('Estimate milestone durations'),
+          content: {
+            subHeader: t(
+              'Compare milestone durations with different estimates.',
+            ),
+            columns: [
+              {
+                header: t('Realization'),
+                text: t('system calculated average values over time.'),
+              },
+              {
+                header: t('Comparison'),
+                text: t('compare to another milestone'),
+              },
+              {
+                header: t('Custom'),
+                text: t(
+                  'estimate with a custom value for work amount in working days.',
+                ),
+              },
+            ],
+          },
+        },
+      }),
+    );
+  };
+
   const renderMilestoneTimeline = () => {
     return (
       <div className={classes(css.timelineContainer)}>
         <p className={classes(css.graphTitle)}>
           <Trans i18nKey="This is how other milestones look" />
-          <InfoOutlinedIcon className={classes(css.infoIcon)} />
         </p>
         <div className={classes(css.graphInner)}>
           <div className={classes(css.graphItems)}>
@@ -201,6 +234,10 @@ export const TimeEstimationPage = () => {
     <div className={classes(css.plannerPagecontainer, css.timeEstimation)}>
       <p className={classes(css.graphTitle)}>
         <Trans i18nKey="Estimate milestone durations" />
+        <InfoIcon
+          onClick={handleTooltipModal}
+          className={classes(css.tooltipClickable, css.infoIcon)}
+        />
       </p>
       <div className={classes(css.inputContainer)}>
         <div>
