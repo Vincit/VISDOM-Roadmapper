@@ -101,7 +101,7 @@ export const RoadmapGraphPage = () => {
         title={
           <div className={classes(css.titleContainer)}>
             <h2 className={classes(css.graphTitle)}>{t('workValueTitle')}</h2>
-            <InfoTooltip title={t('tooltipMessage')}>
+            <InfoTooltip title={t('Planner workValue tooltip')}>
               <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
             </InfoTooltip>
           </div>
@@ -152,7 +152,7 @@ export const RoadmapGraphPage = () => {
           <h2 className={classes(css.graphTitle)}>
             {t('customerStakesTitle')}
           </h2>
-          <InfoTooltip title={t('tooltipMessage')}>
+          <InfoTooltip title={t('Planner customerStakes tooltip')}>
             <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
           </InfoTooltip>
         </div>

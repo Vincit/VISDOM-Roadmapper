@@ -8,6 +8,8 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { Link } from 'react-router-dom';
 import { roadmapsActions } from '../redux/roadmaps';
 import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
@@ -30,6 +32,7 @@ import {
 } from '../utils/TaskUtils';
 import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
+import { InfoTooltip } from '../components/InfoTooltip';
 import css from './MilestonesEditor.module.scss';
 
 const classes = classNames.bind(css);
@@ -369,6 +372,22 @@ export const MilestonesEditor = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <InfoTooltip
+        title={
+          <div>
+            <Trans i18nKey="Planner milestones tooltip">
+              Milestones create your project’s
+              <Link to={`/roadmap/${currentRoadmap.id}/planner/graph`}>
+                roadmap.
+              </Link>
+            </Trans>
+          </div>
+        }
+      >
+        <div className={classes(css.infoBackground)}>
+          <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+        </div>
+      </InfoTooltip>
       <div className={classes(css.layoutRow, css.overflowYAuto)}>
         <div
           className={classes(css.layoutCol, css.unorderedTasksCol, {

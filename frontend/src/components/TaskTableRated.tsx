@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Trans } from 'react-i18next';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { MouseEvent } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { InfoTooltip } from './InfoTooltip';
 import { Task } from '../redux/roadmaps/types';
 import {
   SortingTypes,
@@ -95,9 +93,6 @@ export const TaskTableRated = table({
       <h2 className={classes(css.title)}>
         <Trans i18nKey="Rated tasks" /> ({count})
       </h2>
-      <InfoTooltip title={<Trans i18nKey="tooltipMessage" />}>
-        <InfoIcon className={classes(css.tooltipIcon)} />
-      </InfoTooltip>
     </>
   ),
   Row: TableRatedTaskRow,

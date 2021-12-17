@@ -200,7 +200,7 @@ export const TaskTableUnrated = table({
       <h2 className={classes(css.title)}>
         <Trans i18nKey="unratedTaskMessage" /> ({count})
       </h2>
-      <InfoTooltip title={<Trans i18nKey="tooltipMessage" />}>
+      <InfoTooltip title={<Trans i18nKey="Task list tooltip" />}>
         <InfoIcon className={classes(css.tooltipIcon)} />
       </InfoTooltip>
     </>
