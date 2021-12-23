@@ -214,19 +214,12 @@ export const TaskTableUnrated = table({
   ),
   Row: TableUnratedTaskRow,
   getSort: taskSort,
+  minUnitWidth: 110,
   header: [
-    { label: 'Task title', width: '2fr', sorting: SortingTypes.SORT_NAME },
-    {
-      label: 'Current average value',
-      width: '0.5fr',
-      sorting: SortingTypes.SORT_AVG_VALUE,
-    },
-    {
-      label: 'Current average work',
-      width: '0.5fr',
-      sorting: SortingTypes.SORT_AVG_WORK,
-    },
+    { label: 'Task title', width: 1.5, sorting: SortingTypes.SORT_NAME },
+    { label: 'Current average value', sorting: SortingTypes.SORT_AVG_VALUE },
+    { label: 'Current average work', sorting: SortingTypes.SORT_AVG_WORK },
     { label: 'Waiting for ratings' },
-    { label: '' },
+    { label: '', width: 2.5 },
   ],
 });

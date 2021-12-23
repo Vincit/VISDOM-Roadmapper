@@ -42,7 +42,7 @@ export const InvitationList: FC<{
           {
             label: 'Role',
             sorting: InvitationSortingTypes.SORT_ROLE,
-            width: '0.5fr',
+            width: 0.5,
           },
           {
             label: 'Contact information',
@@ -55,7 +55,7 @@ export const InvitationList: FC<{
           {
             label: 'Link valid',
             sorting: InvitationSortingTypes.SORT_VALID,
-            width: '0.5fr',
+            width: 0.5,
           },
           {
             label: '',
