@@ -102,10 +102,11 @@ export const TaskTableRated = table({
   ),
   Row: TableRatedTaskRow,
   getSort: taskSort,
+  minUnitWidth: 100,
   header: [
     {
       label: 'Task title',
-      width: '2fr',
+      width: 2,
       sorting: SortingTypes.SORT_NAME,
       textAlign: 'center',
     },
@@ -114,6 +115,6 @@ export const TaskTableRated = table({
     { label: 'Total value', sorting: SortingTypes.SORT_TOTAL_VALUE },
     { label: 'Total work', sorting: SortingTypes.SORT_TOTAL_WORK },
     { label: 'Status', sorting: SortingTypes.SORT_STATUS },
-    { label: '', width: '0.5fr' },
+    { label: '' },
   ],
 });

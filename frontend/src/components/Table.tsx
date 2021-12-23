@@ -14,7 +14,7 @@ interface TableHeader<Sorting> {
   label: string;
   sorting?: Sorting;
   textAlign?: 'end' | 'left' | 'center';
-  width?: string;
+  width?: number;
 }
 
 export type TableRow<ItemType> = FC<{
@@ -27,6 +27,7 @@ type TableDef<ItemType, Sorting> = {
   Title: string | FC<{ count: number }>;
   Row: TableRow<ItemType>;
   getSort: (t: Sorting | undefined) => SortBy<ItemType>;
+  minUnitWidth?: number;
 };
 
 type TableProps<ItemType> = {
@@ -38,12 +39,13 @@ type TableProps<ItemType> = {
 
 export const table: <ItemType, Sorting>(
   def: TableDef<ItemType, Sorting>,
-) => FC<TableProps<ItemType>> = ({ header, Row, Title, getSort }) => ({
-  items,
-  filterPredicate,
-  rowHeight = 80,
-  height = 600,
-}) => {
+) => FC<TableProps<ItemType>> = ({
+  header,
+  Row,
+  Title,
+  getSort,
+  minUnitWidth,
+}) => ({ items, filterPredicate, rowHeight = 80, height = 600 }) => {
   const [sort, sorting] = useSorting(getSort);
 
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
@@ -63,50 +65,61 @@ export const table: <ItemType, Sorting>(
     }
   };
 
-  const gridTemplateColumns = header
-    .map(({ width }) => width || '1fr')
-    .join(' ');
+  const columnWidths = header.map(({ width }) => width || 1);
+  const units = columnWidths.reduce((acc, w) => acc + w, 0);
+  const gridTemplateColumns = columnWidths.map((w) => `${w}fr`).join(' ');
 
   return (
     <div>
       <div className={classes(css.titleContainer)}>
         {typeof Title === 'string' ? Title : <Title count={sorted.length} />}
       </div>
-      <div
-        style={{ marginRight: scrollBarWidth, gridTemplateColumns }}
-        className={classes(css.virtualizedTableRow)}
-      >
-        {header.map(({ label, textAlign, sorting: sorter }) => (
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        <div style={{ minWidth: minUnitWidth && minUnitWidth * units }}>
           <div
-            key={label}
-            className={classes(css.tableHeader, {
-              [css.clickable]: sorter !== undefined,
-              textAlignEnd: textAlign === 'end',
-              textAlignCenter: textAlign === 'center',
-            })}
-            onClick={() => onSortingChange(sorter)}
+            style={{
+              width: '100%',
+              marginRight: scrollBarWidth,
+              gridTemplateColumns,
+            }}
+            className={classes(css.virtualizedTableRow)}
           >
-            <Trans i18nKey={label} />
-            {sorter !== undefined && sorting.type.get() === sorter && (
-              <SortingArrow order={sorting.order.get()} />
-            )}
+            {header.map(({ label, textAlign, sorting: sorter }) => (
+              <div
+                key={label}
+                className={classes(css.tableHeader, {
+                  [css.clickable]: sorter !== undefined,
+                  textAlignEnd: textAlign === 'end',
+                  textAlignCenter: textAlign === 'center',
+                })}
+                onClick={() => onSortingChange(sorter)}
+              >
+                <Trans i18nKey={label} />
+                {sorter !== undefined && sorting.type.get() === sorter && (
+                  <SortingArrow order={sorting.order.get()} />
+                )}
+              </div>
+            ))}
           </div>
-        ))}
+          <hr style={{ width: '100%' }} />
+          <FixedSizeList
+            itemSize={rowHeight}
+            itemCount={sorted.length}
+            height={Math.min(height, rowHeight * sorted.length)}
+            width="100%"
+            outerRef={(div) => {
+              setScrollBarWidth(div ? div.offsetWidth - div.clientWidth : 0);
+            }}
+          >
+            {({ index, style }) => (
+              <Row
+                style={{ gridTemplateColumns, ...style }}
+                item={sorted[index]}
+              />
+            )}
+          </FixedSizeList>
+        </div>
       </div>
-      <hr style={{ width: '100%' }} />
-      <FixedSizeList
-        itemSize={rowHeight}
-        itemCount={sorted.length}
-        height={Math.min(height, rowHeight * sorted.length)}
-        width="100%"
-        outerRef={(div) => {
-          setScrollBarWidth(div ? div.offsetWidth - div.clientWidth : 0);
-        }}
-      >
-        {({ index, style }) => (
-          <Row style={{ gridTemplateColumns, ...style }} item={sorted[index]} />
-        )}
-      </FixedSizeList>
     </div>
   );
 };

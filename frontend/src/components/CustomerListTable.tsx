@@ -69,7 +69,7 @@ export const CustomerList: FC<{
           {
             label: 'Color',
             sorting: CustomerSortingTypes.SORT_COLOR,
-            width: '0.5fr',
+            width: 0.5,
           },
           { label: 'Name', sorting: CustomerSortingTypes.SORT_NAME },
           {
@@ -79,14 +79,14 @@ export const CustomerList: FC<{
           {
             label: 'Value',
             sorting: CustomerSortingTypes.SORT_VALUE,
-            width: '0.5fr',
+            width: 0.5,
           },
           {
             label: 'Unrated tasks',
             sorting: CustomerSortingTypes.SORT_UNRATED,
-            width: '0.5fr',
+            width: 0.5,
           },
-          { label: '', width: role === RoleType.Admin ? '1fr' : '0.5fr' },
+          { label: '', width: role === RoleType.Admin ? 1 : 0.5 },
         ],
       }),
     [currentRoadmap, role],
