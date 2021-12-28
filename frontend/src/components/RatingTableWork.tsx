@@ -3,6 +3,7 @@ import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
+import { EditButton } from './forms/SvgButton';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
 
@@ -13,17 +14,24 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const TableWorkRatingRow: RatingRow = ({ rating, style }) => {
+const TableWorkRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   const user = useSelector(userSelector(rating.createdByUser));
   if (!user) return null;
 
   return (
     <div style={style} className={classes(css.ratingRow)}>
       <div className={classes(css.topRow)}>
-        <BuildSharpIcon fontSize="small" />
+        <div className={classes(css.roleIcon)}>
+          <BuildSharpIcon fontSize="small" />
+        </div>
         <div className={classes(css.name)}>{user.email}</div>
-        <div className={classes(css.value)}>
-          {numFormat.format(rating.value)}
+        <div className={classes(css.leftSide)}>
+          {user.id === userId && (
+            <EditButton fontSize="medium" onClick={onEdit} />
+          )}
+          <div className={classes(css.value)}>
+            {numFormat.format(rating.value)}
+          </div>
         </div>
       </div>
       {rating.comment.length > 0 && (

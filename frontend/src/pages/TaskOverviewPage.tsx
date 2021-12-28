@@ -137,10 +137,18 @@ const TaskOverview: FC<{
       {hasEditPermission && (
         <div className={classes(css.ratings)}>
           {valueRatings.length > 0 && (
-            <RatingTableValue ratings={valueRatings} avg={value.avg} />
+            <RatingTableValue
+              ratings={valueRatings}
+              avg={value.avg}
+              taskId={task.id}
+            />
           )}
           {workRatings.length > 0 && (
-            <RatingTableWork ratings={workRatings} avg={work.avg} />
+            <RatingTableWork
+              ratings={workRatings}
+              avg={work.avg}
+              taskId={task.id}
+            />
           )}
         </div>
       )}

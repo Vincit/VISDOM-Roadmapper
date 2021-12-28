@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { userSelector, customerSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
+import { EditButton } from './forms/SvgButton';
 import { Dot } from './Dot';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
@@ -13,7 +14,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const TableValueRatingRow: RatingRow = ({ rating, style }) => {
+const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   const user = useSelector(userSelector(rating.createdByUser));
   const customer = useSelector(customerSelector(rating.forCustomer));
   if (!user || !customer) return null;
@@ -28,8 +29,13 @@ const TableValueRatingRow: RatingRow = ({ rating, style }) => {
           </div>
           <div className={classes(css.bottomRow, css.name)}>{user.email}</div>
         </div>
-        <div className={classes(css.value)}>
-          {numFormat.format(rating.value)}
+        <div className={classes(css.leftSide)}>
+          {user.id === userId && (
+            <EditButton fontSize="medium" onClick={onEdit} />
+          )}
+          <div className={classes(css.value)}>
+            {numFormat.format(rating.value)}
+          </div>
         </div>
       </div>
       {rating.comment.length > 0 && (

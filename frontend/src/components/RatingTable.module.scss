@@ -32,7 +32,7 @@
   align-items: center;
   gap: 10px;
 
-  path {
+  .roleIcon path {
     fill: $COLOR_AZURE;
   }
 }
@@ -51,13 +51,17 @@
   }
 }
 
-.value {
+.leftSide {
   @extend .typography-h3;
   @extend .layout-row;
   margin-left: auto;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
-  gap: 12.5px;
+  width: 70px;
+
+  .value {
+    margin-left: auto;
+  }
 }
 
 .name {
