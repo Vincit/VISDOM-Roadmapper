@@ -71,6 +71,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
           modalType: ModalTypes.RATE_TASK_MODAL,
           modalProps: {
             taskId: res.payload.id,
+            edit: false,
           },
         }),
       );

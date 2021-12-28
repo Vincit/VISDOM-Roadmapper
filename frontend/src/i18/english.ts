@@ -34,6 +34,7 @@ export const english = {
     Completed: 'Completed',
     'Not completed': 'Not completed',
     'Rate task': 'Rate task',
+    'Edit ratings': 'Edit ratings',
     'Add a comment': 'Add a comment...',
     Roadmap: 'Roadmap',
     'Roadmap View': 'Roadmap View',

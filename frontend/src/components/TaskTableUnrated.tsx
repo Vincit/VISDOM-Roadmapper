@@ -91,16 +91,28 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     }
   }, [task, allCustomers, allUsers, userInfo, type]);
 
-  const openModal = (
-    modalType: ModalTypes.RATE_TASK_MODAL | ModalTypes.NOTIFY_USERS_MODAL,
-  ) => (e: SyntheticEvent) => {
+  const openNotifyModal = (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
       modalsActions.showModal({
-        modalType,
+        modalType: ModalTypes.NOTIFY_USERS_MODAL,
         modalProps: {
           taskId: task.id,
+        },
+      }),
+    );
+  };
+
+  const openRateModal = (e: SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.RATE_TASK_MODAL,
+        modalProps: {
+          taskId: task.id,
+          edit: false,
         },
       }),
     );
@@ -172,7 +184,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
               style={{ marginRight: '10px' }}
               className={classes(css['button-small-outlined'])}
               type="button"
-              onClick={openModal(ModalTypes.NOTIFY_USERS_MODAL)}
+              onClick={openNotifyModal}
             >
               <Trans i18nKey="Notify" />
             </button>
@@ -184,7 +196,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
                 className={classes(css['button-small-filled'])}
                 type="button"
                 disabled={!awaitsUserRatings(userInfo, roadmapId)(task)}
-                onClick={openModal(ModalTypes.RATE_TASK_MODAL)}
+                onClick={openRateModal}
               >
                 <Trans i18nKey="Rate" />
               </button>

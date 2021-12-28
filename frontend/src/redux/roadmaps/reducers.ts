@@ -183,6 +183,45 @@ export const ADD_TASKRATING_FULFILLED = (
   }
 };
 
+export const ADD_TASKRATINGS_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Taskrating[]>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+
+  action.payload.forEach((taskRating) => {
+    let parentTask: Task | undefined;
+    state.roadmaps!.forEach((roadmap) => {
+      if (parentTask !== undefined) return;
+      parentTask = roadmap.tasks.find(
+        (task) => task.id === taskRating.parentTask,
+      );
+    });
+
+    if (parentTask) parentTask.ratings.push(taskRating);
+  });
+};
+
+export const PATCH_TASKRATINGS_FULFILLED = (
+  state: RoadmapsState,
+  action: PayloadAction<Taskrating[]>,
+) => {
+  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
+
+  action.payload.forEach((rating) => {
+    let parentTask: Task | undefined;
+    state.roadmaps!.forEach((roadmap) => {
+      if (parentTask !== undefined) return;
+      parentTask = roadmap.tasks.find((task) => task.id === rating.parentTask);
+    });
+
+    if (parentTask) {
+      const oldRating = parentTask.ratings.find(({ id }) => id === rating.id);
+      Object.assign(oldRating, rating);
+    }
+  });
+};
+
 export const PATCH_TASKRATING_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<Taskrating>,

@@ -4,6 +4,7 @@ import {
   addRoadmap,
   addTask,
   addTaskrating,
+  addTaskratings,
   deleteRoadmap,
   deleteTask,
   deleteTaskrating,
@@ -17,6 +18,7 @@ import {
   getRoadmaps,
   importIntegrationBoard,
   patchTask,
+  patchTaskratings,
   patchTaskrating,
   addIntegrationConfiguration,
   patchIntegrationConfiguration,
@@ -35,6 +37,7 @@ import {
 import {
   ADD_ROADMAP_FULFILLED,
   ADD_TASKRATING_FULFILLED,
+  ADD_TASKRATINGS_FULFILLED,
   ADD_TASK_FULFILLED,
   DELETE_ROADMAP_FULFILLED,
   DELETE_TASKRATING_FULFILLED,
@@ -47,6 +50,7 @@ import {
   DELETE_ROADMAP_USER_FULFILLED,
   GET_ROADMAP_USERS_FULFILLED,
   GET_ROADMAPS_FULFILLED,
+  PATCH_TASKRATINGS_FULFILLED,
   PATCH_TASKRATING_FULFILLED,
   PATCH_TASK_FULFILLED,
   SELECT_CURRENT_ROADMAP,
@@ -82,6 +86,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(addTask.fulfilled, ADD_TASK_FULFILLED);
     builder.addCase(deleteTask.fulfilled, DELETE_TASK_FULFILLED);
     builder.addCase(addTaskrating.fulfilled, ADD_TASKRATING_FULFILLED);
+    builder.addCase(addTaskratings.fulfilled, ADD_TASKRATINGS_FULFILLED);
     builder.addCase(deleteTaskrating.fulfilled, DELETE_TASKRATING_FULFILLED);
     builder.addCase(patchTask.fulfilled, PATCH_TASK_FULFILLED);
     builder.addCase(getCustomers.fulfilled, GET_CUSTOMERS_FULFILLED);
@@ -91,6 +96,7 @@ export const roadmapsSlice = createSlice({
     builder.addCase(deleteCustomer.fulfilled, DELETE_CUSTOMER_FULFILLED);
     builder.addCase(deleteRoadmapUser.fulfilled, DELETE_ROADMAP_USER_FULFILLED);
     builder.addCase(getRoadmapUsers.fulfilled, GET_ROADMAP_USERS_FULFILLED);
+    builder.addCase(patchTaskratings.fulfilled, PATCH_TASKRATINGS_FULFILLED);
     builder.addCase(patchTaskrating.fulfilled, PATCH_TASKRATING_FULFILLED);
     builder.addCase(importIntegrationBoard.fulfilled, GET_ROADMAPS_FULFILLED);
     builder.addCase(
@@ -115,6 +121,7 @@ export const roadmapsActions = {
   ...roadmapsSlice.actions,
   deleteTaskrating,
   addTaskrating,
+  addTaskratings,
   deleteTask,
   addTask,
   deleteRoadmap,
@@ -128,6 +135,7 @@ export const roadmapsActions = {
   patchRoadmapUser,
   getRoadmapUsers,
   patchTask,
+  patchTaskratings,
   patchTaskrating,
   addOrPatchTaskrating,
   importIntegrationBoard,

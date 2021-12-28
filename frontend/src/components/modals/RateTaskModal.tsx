@@ -72,6 +72,7 @@ const CustomerHeader: FC<{
 export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   closeModal,
   taskId,
+  edit,
 }) => {
   const task = useSelector(taskSelector(taskId))!;
   const dispatch = useDispatch<StoreDispatchType>();
@@ -137,7 +138,9 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     .filter(
       (rating) =>
         !rating.customer || rating.customer.roadmapId === task.roadmapId,
-    );
+    )
+    // show only new or existing ratings depending on edit value
+    .filter(({ value }) => (edit ? value : !value));
 
   const [businessValueRatings, setBusinessValueRatings] = useState(ratings);
   const [businessRatingModified, setBusinessRatingModified] = useState(false);
@@ -153,26 +156,33 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     setBusinessRatingModified(modified);
   }, [businessValueRatings, ratings]);
 
+  const editRatings = async (edited: TaskratingRequest[]) => {
+    const res = await dispatch(
+      roadmapsActions.patchTaskratings({ ratings: edited, taskId }),
+    );
+    if (roadmapsActions.patchTaskratings.rejected.match(res))
+      if (res.payload?.message) return res.payload.message;
+  };
+
+  const addRatings = async (added: TaskratingRequest[]) => {
+    const res = await dispatch(
+      roadmapsActions.addTaskratings({ ratings: added, taskId }),
+    );
+    if (roadmapsActions.addTaskratings.rejected.match(res))
+      if (res.payload?.message) return res.payload.message;
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
     setIsLoading(true);
-    const promises = businessValueRatings.flatMap(({ changed, ...rating }) =>
-      changed && rating.value !== undefined
-        ? [dispatch(roadmapsActions.addOrPatchTaskrating(rating))]
-        : [],
-    );
-    const results = await Promise.all(promises);
+    const changed = businessValueRatings.filter((rating) => rating.changed);
+    const error = edit ? await editRatings(changed) : await addRatings(changed);
     setIsLoading(false);
-    const hadError = results.some((res) => {
-      if (roadmapsActions.addOrPatchTaskrating.rejected.match(res)) {
-        if (res.payload?.message) setErrorMessage(res.payload.message);
-        return true;
-      }
-      return false;
-    });
-    if (!hadError) closeModal();
+
+    if (error) setErrorMessage(error);
+    else closeModal();
   };
 
   const onBusinessRatingChange = (
@@ -189,7 +199,11 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     <Form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
-          <Trans i18nKey="Rate task" />
+          {edit ? (
+            <Trans i18nKey="Edit ratings" />
+          ) : (
+            <Trans i18nKey="Rate task" />
+          )}
         </h3>
       </ModalHeader>
       <ModalContent>
