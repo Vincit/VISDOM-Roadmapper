@@ -13,6 +13,7 @@
   margin: 16px 0 26px 26px;
   align-items: center;
   text-align: start;
+  gap: 24px;
 }
 
 .subtitleContainer {
@@ -51,7 +52,7 @@
   }
 }
 
-.value {
+.leftSide {
   @extend .typography-h3;
   @extend .layout-row;
   margin-left: auto;

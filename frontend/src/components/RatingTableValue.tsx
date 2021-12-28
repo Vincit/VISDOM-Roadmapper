@@ -28,7 +28,7 @@ const TableValueRatingRow: RatingRow = ({ rating, style }) => {
           </div>
           <div className={classes(css.bottomRow, css.name)}>{user.email}</div>
         </div>
-        <div className={classes(css.value)}>
+        <div className={classes(css.leftSide)}>
           {numFormat.format(rating.value)}
         </div>
       </div>

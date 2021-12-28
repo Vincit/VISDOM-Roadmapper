@@ -22,7 +22,7 @@ const TableWorkRatingRow: RatingRow = ({ rating, style }) => {
       <div className={classes(css.topRow)}>
         <BuildSharpIcon fontSize="small" />
         <div className={classes(css.name)}>{user.email}</div>
-        <div className={classes(css.value)}>
+        <div className={classes(css.leftSide)}>
           {numFormat.format(rating.value)}
         </div>
       </div>
