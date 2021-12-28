@@ -1,9 +1,11 @@
 import KoaRouter from '@koa/router';
 import {
   getTaskratings,
-  deleteTaskratings,
-  postTasksRatings,
+  deleteTaskrating,
+  postTaskRatings,
+  postTaskRating,
   patchTaskratings,
+  patchTaskrating,
 } from './taskratings.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Context } from 'koa';
@@ -17,19 +19,29 @@ taskratingRouter.get(
   getTaskratings,
 );
 taskratingRouter.post(
+  '/taskrating',
+  requirePermission(Permission.TaskRate),
+  postTaskRating,
+);
+taskratingRouter.post(
   '/taskratings',
   requirePermission(Permission.TaskRate),
-  postTasksRatings,
+  postTaskRatings,
+);
+taskratingRouter.patch(
+  '/taskratings',
+  requirePermission(Permission.TaskRatingEdit),
+  patchTaskratings,
 );
 taskratingRouter.patch(
   '/taskratings/:ratingId',
   requirePermission(Permission.TaskRatingEdit),
-  patchTaskratings,
+  patchTaskrating,
 );
 taskratingRouter.delete(
   '/taskratings/:ratingId',
   requirePermission(Permission.TaskRatingEdit),
-  deleteTaskratings,
+  deleteTaskrating,
 );
 
 export default taskratingRouter;

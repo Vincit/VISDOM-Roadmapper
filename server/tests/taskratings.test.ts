@@ -43,7 +43,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(res.status).to.equal(403);
     });
   });
-  describe('POST /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
+  describe('POST /roadmap/:roadmapId/tasks/:taskId/taskrating/', function () {
     it('Should add new taskrating', async function () {
       const firstRoadmapId = (await Roadmap.query().first()).id;
       const taskId = (
@@ -53,7 +53,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
       const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskrating`)
         .type('json')
         .send({
           dimension: TaskRatingDimension.RequiredWork,
@@ -78,7 +78,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         Permission.TaskRate,
         () =>
           loggedInAgent
-            .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+            .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskrating`)
             .type('json')
             .send({
               dimension: TaskRatingDimension.RequiredWork,
