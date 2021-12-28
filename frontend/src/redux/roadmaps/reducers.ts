@@ -165,24 +165,6 @@ export const DELETE_TASK_FULFILLED = (
   parent.tasks = parent.tasks.filter((task) => task.id !== action.payload.id);
 };
 
-export const ADD_TASKRATING_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<Taskrating>,
-) => {
-  let parentTask: Task | undefined;
-  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  state.roadmaps.forEach((roadmap) => {
-    if (parentTask !== undefined) return;
-    parentTask = roadmap.tasks.find(
-      (task) => task.id === action.payload.parentTask,
-    );
-  });
-
-  if (parentTask) {
-    parentTask.ratings.push(action.payload);
-  }
-};
-
 export const ADD_TASKRATINGS_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<Taskrating[]>,
@@ -220,27 +202,6 @@ export const PATCH_TASKRATINGS_FULFILLED = (
       Object.assign(oldRating, rating);
     }
   });
-};
-
-export const PATCH_TASKRATING_FULFILLED = (
-  state: RoadmapsState,
-  action: PayloadAction<Taskrating>,
-) => {
-  let parentTask: Task | undefined;
-  if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  state.roadmaps.forEach((roadmap) => {
-    if (parentTask !== undefined) return;
-    parentTask = roadmap.tasks.find(
-      (task) => task.id === action.payload.parentTask,
-    );
-  });
-
-  if (parentTask) {
-    const taskrating = parentTask.ratings.find(
-      (rating) => rating.id === action.payload.id,
-    );
-    Object.assign(taskrating, action.payload);
-  }
 };
 
 export const DELETE_TASKRATING_FULFILLED = (

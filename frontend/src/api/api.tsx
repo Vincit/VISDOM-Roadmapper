@@ -80,17 +80,6 @@ const deleteTask = async (task: TaskRequest) => {
   return task;
 };
 
-const addTaskrating = async (
-  taskrating: TaskratingRequest,
-  roadmapId: number,
-) => {
-  const response = await axios.post(
-    `/roadmaps/${roadmapId}/tasks/${taskrating.parentTask}/taskrating`,
-    taskrating,
-  );
-  return response.data as Taskrating;
-};
-
 const addTaskratings = async (
   taskratings: TaskratingRequest[],
   taskId: number,
@@ -124,18 +113,6 @@ const patchTaskratings = async (
     taskratings,
   );
   return response.data as Taskrating[];
-};
-
-const patchTaskrating = async (
-  taskrating: TaskratingRequest,
-  roadmapId: number,
-) => {
-  const response = await axios.patch(
-    `/roadmaps/${roadmapId}/tasks/${taskrating.parentTask}/taskratings/${taskrating.id}`,
-    { value: taskrating.value, comment: taskrating.comment },
-  );
-
-  return response.data as Taskrating;
 };
 
 const getCustomers = async (roadmapId: number) => {
@@ -415,7 +392,6 @@ export const api = {
   deleteRoadmap,
   addTask,
   deleteTask,
-  addTaskrating,
   addTaskratings,
   deleteTaskrating,
   login,
@@ -434,7 +410,6 @@ export const api = {
   patchRoadmapUser,
   getRoadmapUsers,
   patchTaskratings,
-  patchTaskrating,
   getVersions,
   addVersion,
   patchVersion,

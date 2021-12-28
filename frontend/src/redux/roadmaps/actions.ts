@@ -219,21 +219,6 @@ export const deleteTask = createAsyncThunk<
   }
 });
 
-export const addTaskrating = createAsyncThunk<
-  Taskrating,
-  TaskratingRequest,
-  { rejectValue: AxiosError }
->('roadmaps/addTaskrating', async (taskrating, thunkAPI) => {
-  try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return await api.addTaskrating(taskrating, currentroadmapId);
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err as AxiosError<any>);
-  }
-});
-
 export const addTaskratings = createAsyncThunk<
   Taskrating[],
   { ratings: TaskratingRequest[]; taskId: number },
@@ -277,41 +262,6 @@ export const patchTaskratings = createAsyncThunk<
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
-});
-
-export const patchTaskrating = createAsyncThunk<
-  Taskrating,
-  TaskratingRequest,
-  { rejectValue: AxiosError }
->('roadmaps/patchTaskrating', async (taskrating, thunkAPI) => {
-  try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return await api.patchTaskrating(taskrating, currentroadmapId);
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err as AxiosError<any>);
-  }
-});
-
-export const addOrPatchTaskrating = createAsyncThunk<
-  Taskrating,
-  TaskratingRequest,
-  { rejectValue: AxiosError }
->('roadmaps/patchTaskrating', async (taskrating, thunkAPI) => {
-  if (taskrating.id) {
-    const res = await thunkAPI.dispatch(patchTaskrating(taskrating));
-    if (patchTaskrating.rejected.match(res)) {
-      return thunkAPI.rejectWithValue(res.payload!);
-    }
-    return res.payload;
-  }
-
-  const res = await thunkAPI.dispatch(addTaskrating(taskrating));
-  if (addTaskrating.rejected.match(res)) {
-    return thunkAPI.rejectWithValue(res.payload!);
-  }
-  return res.payload;
 });
 
 export const importIntegrationBoard = createAsyncThunk<
