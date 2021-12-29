@@ -8,6 +8,9 @@ import { daysAgo } from '../../utils/date';
 // should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
 const BASE_URL = process.env.FRONTEND_BASE_URL!;
 
+const deleteOldInvitations = () =>
+  Invitation.query().delete().where('updatedAt', '<', daysAgo(30));
+
 export const getInvitations: RouteHandlerFnc = async (ctx) => {
   ctx.body = await Invitation.query()
     .where({
@@ -17,6 +20,8 @@ export const getInvitations: RouteHandlerFnc = async (ctx) => {
 };
 
 export const postInvitation: RouteHandlerFnc = async (ctx) => {
+  await deleteOldInvitations();
+
   const { type, email, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
