@@ -122,7 +122,7 @@ export const patchRoadmapUser = createAsyncThunk<
     )!;
     return await api.patchRoadmapUser(member, currentroadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -140,7 +140,7 @@ export const deleteRoadmapUser = createAsyncThunk<
       response: await api.deleteRoadmapUser(member, roadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -303,7 +303,7 @@ export const importIntegrationBoard = createAsyncThunk<
     await api.importIntegrationBoard(name, request);
     return await api.getRoadmaps();
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -365,7 +365,7 @@ export const getVersions = createAsyncThunk<
       response: await api.getVersions(roadmapId || currentroadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -389,7 +389,7 @@ export const addVersion = createAsyncThunk<
       response: await api.getVersions(roadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -412,7 +412,7 @@ export const patchVersion = createAsyncThunk<
       response: await api.getVersions(roadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -435,7 +435,7 @@ export const deleteVersion = createAsyncThunk<
       response: await api.getVersions(roadmapId),
     };
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -464,7 +464,7 @@ export const addTaskToVersion = createAsyncThunk<
     try {
       return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
@@ -487,7 +487,7 @@ export const removeTaskFromVersion = createAsyncThunk<
     try {
       return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue(err as AxiosError<any>);
     }
   },
 );
@@ -501,7 +501,7 @@ export const notifyUsers = createAsyncThunk<
   try {
     return await api.sendNotification(users, task, message);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 

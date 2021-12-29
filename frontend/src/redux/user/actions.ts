@@ -12,7 +12,7 @@ export const getUserInfo = createAsyncThunk<
   try {
     return await api.getCurrentUserInfo();
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -26,7 +26,7 @@ export const login = createAsyncThunk<
     if (success) await thunkAPI.dispatch(getUserInfo());
     return success;
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -38,7 +38,7 @@ export const logout = createAsyncThunk<
   try {
     return await api.logout();
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -54,7 +54,7 @@ export const register = createAsyncThunk<
     }
     return false;
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -67,7 +67,7 @@ export const patchDefaultRoadmap = createAsyncThunk<
   try {
     return await api.patchDefaultRoadmap(userId, roadmapId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
@@ -92,7 +92,7 @@ export const joinRoadmap = createAsyncThunk<
   try {
     return await api.joinRoadmap(user, invitationLink);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 
