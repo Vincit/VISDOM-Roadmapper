@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+cd /var/app/server
+pm2 delete all

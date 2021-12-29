@@ -1,4 +1,5 @@
 #!/bin/bash
-cd /app/server
+set -e
+cd /var/app/server
 yarn install --frozen-lockfile
 yarn run build

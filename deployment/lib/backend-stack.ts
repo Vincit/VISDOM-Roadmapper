@@ -122,18 +122,17 @@ export class BackendStack extends cdk.Stack {
         ec2.InstanceClass.T3,
         ec2.InstanceSize.MICRO
       ),
-      maxCapacity: 2,
+      maxCapacity: 1,
       minCapacity: 1,
       role: ec2Role,
       securityGroup: instanceSg,
-      newInstancesProtectedFromScaleIn: true,
       healthCheck: HealthCheck.elb({
-        grace: Duration.seconds(120),
+        grace: Duration.seconds(180),
       }),
     });
 
     asg.scaleOnCpuUtilization("ScaleOnCpu", {
-      cooldown: cdk.Duration.seconds(180),
+      cooldown: cdk.Duration.seconds(240),
       targetUtilizationPercent: 50,
     });
 
@@ -222,7 +221,12 @@ export class BackendStack extends cdk.Stack {
           Name: ["CodeDeploy instance"],
         }),
         role: codeDeployRole,
-        deploymentConfig: codedeploy.ServerDeploymentConfig.ONE_AT_A_TIME,
+        deploymentConfig: codedeploy.ServerDeploymentConfig.ALL_AT_ONCE,
+        autoRollback: {
+          failedDeployment: false,
+          stoppedDeployment: false,
+          deploymentInAlarm: false,
+        },
       }
     );
 
@@ -246,7 +250,7 @@ export class BackendStack extends cdk.Stack {
     // RDS Database
     const db = new rds.DatabaseInstance(this, "BackendPostgresDb", {
       engine: rds.DatabaseInstanceEngine.postgres({
-        version: rds.PostgresEngineVersion.VER_11,
+        version: rds.PostgresEngineVersion.VER_11_12,
       }),
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.BURSTABLE3,

@@ -1,16 +1,12 @@
 #!/bin/bash
 set -e
 
-cd /app/server
+cd /var/app/server
 
 AWS_SECRET1_ID="staging/backendEnvVariables"
 AWS_RDS_SECRET_ID="staging/backendRdsCredentials"
 AWS_REGION="eu-central-1"
-ENVFILE="./build/server/.env"
-
-# Ensure your EC2 instance has the most recent version of the AWS CLI
-yum install -y python3-pip jq
-pip3 install awscli --upgrade
+ENVFILE=".env"
 
 # Export the secret to .env
 {
@@ -20,5 +16,7 @@ pip3 install awscli --upgrade
     jq -r '.SecretString | fromjson | to_entries[] | "RDS_\(.key|ascii_upcase)=\(.value)"'
 } > $ENVFILE
 
-pm2 delete all
+# Copy env to build for knex commands to recognize it
+cp $ENVFILE ./build/server/$ENVFILE
+
 pm2 start yarn --name backend -- start-prod
