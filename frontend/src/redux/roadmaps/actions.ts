@@ -160,7 +160,7 @@ export const addRoadmap = createAsyncThunk<
   Roadmap,
   RoadmapRequest,
   { rejectValue: AxiosError }
->('roadmaps/addRoadmap', async (roadmap: RoadmapRequest, thunkAPI) => {
+>('roadmaps/addRoadmap', async (roadmap, thunkAPI) => {
   try {
     return await api.addRoadmap(roadmap);
   } catch (err) {
@@ -172,7 +172,7 @@ export const deleteRoadmap = createAsyncThunk<
   RoadmapRequest,
   RoadmapRequest,
   { rejectValue: AxiosError }
->('roadmaps/deleteRoadmap', async (roadmap: RoadmapRequest, thunkAPI) => {
+>('roadmaps/deleteRoadmap', async (roadmap, thunkAPI) => {
   try {
     return await api.deleteRoadmap(roadmap);
   } catch (err) {
@@ -184,7 +184,7 @@ export const addTask = createAsyncThunk<
   Task,
   TaskRequest,
   { rejectValue: AxiosError }
->('roadmaps/addTask', async (task: TaskRequest, thunkAPI) => {
+>('roadmaps/addTask', async (task, thunkAPI) => {
   try {
     return await api.addTask(task);
   } catch (err) {
@@ -196,7 +196,7 @@ export const patchTask = createAsyncThunk<
   Task,
   TaskRequest,
   { rejectValue: AxiosError }
->('roadmaps/patchTask', async (task: TaskRequest, thunkAPI) => {
+>('roadmaps/patchTask', async (task, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
@@ -211,7 +211,7 @@ export const deleteTask = createAsyncThunk<
   TaskRequest,
   TaskRequest,
   { rejectValue: AxiosError }
->('roadmaps/deleteTask', async (task: TaskRequest, thunkAPI) => {
+>('roadmaps/deleteTask', async (task, thunkAPI) => {
   try {
     return await api.deleteTask(task);
   } catch (err) {
@@ -223,7 +223,7 @@ export const addTaskrating = createAsyncThunk<
   Taskrating,
   TaskratingRequest,
   { rejectValue: AxiosError }
->('roadmaps/addTaskrating', async (taskrating: TaskratingRequest, thunkAPI) => {
+>('roadmaps/addTaskrating', async (taskrating, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
@@ -238,60 +238,51 @@ export const deleteTaskrating = createAsyncThunk<
   TaskratingRequest,
   TaskratingRequest,
   { rejectValue: AxiosError }
->(
-  'roadmaps/deleteTaskrating',
-  async (taskrating: TaskratingRequest, thunkAPI) => {
-    try {
-      const currentroadmapId = chosenRoadmapIdSelector(
-        thunkAPI.getState() as RootState,
-      )!;
-      return await api.deleteTaskrating(taskrating, currentroadmapId);
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err as AxiosError<any>);
-    }
-  },
-);
+>('roadmaps/deleteTaskrating', async (taskrating, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.deleteTaskrating(taskrating, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
 
 export const patchTaskrating = createAsyncThunk<
   Taskrating,
   TaskratingRequest,
   { rejectValue: AxiosError }
->(
-  'roadmaps/patchTaskrating',
-  async (taskrating: TaskratingRequest, thunkAPI) => {
-    try {
-      const currentroadmapId = chosenRoadmapIdSelector(
-        thunkAPI.getState() as RootState,
-      )!;
-      return await api.patchTaskrating(taskrating, currentroadmapId);
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err as AxiosError<any>);
-    }
-  },
-);
+>('roadmaps/patchTaskrating', async (taskrating, thunkAPI) => {
+  try {
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return await api.patchTaskrating(taskrating, currentroadmapId);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
 
 export const addOrPatchTaskrating = createAsyncThunk<
   Taskrating,
   TaskratingRequest,
   { rejectValue: AxiosError }
->(
-  'roadmaps/patchTaskrating',
-  async (taskrating: TaskratingRequest, thunkAPI) => {
-    if (taskrating.id) {
-      const res = await thunkAPI.dispatch(patchTaskrating(taskrating));
-      if (patchTaskrating.rejected.match(res)) {
-        return thunkAPI.rejectWithValue(res.payload!);
-      }
-      return res.payload;
-    }
-
-    const res = await thunkAPI.dispatch(addTaskrating(taskrating));
-    if (addTaskrating.rejected.match(res)) {
+>('roadmaps/patchTaskrating', async (taskrating, thunkAPI) => {
+  if (taskrating.id) {
+    const res = await thunkAPI.dispatch(patchTaskrating(taskrating));
+    if (patchTaskrating.rejected.match(res)) {
       return thunkAPI.rejectWithValue(res.payload!);
     }
     return res.payload;
-  },
-);
+  }
+
+  const res = await thunkAPI.dispatch(addTaskrating(taskrating));
+  if (addTaskrating.rejected.match(res)) {
+    return thunkAPI.rejectWithValue(res.payload!);
+  }
+  return res.payload;
+});
 
 export const importIntegrationBoard = createAsyncThunk<
   Roadmap[],
@@ -313,7 +304,7 @@ export const addIntegrationConfiguration = createAsyncThunk<
   { rejectValue: AxiosError }
 >(
   'configurations/addIntegrationConfiguration',
-  async (configuration: IntegrationConfigurationRequest, thunkAPI) => {
+  async (configuration, thunkAPI) => {
     try {
       const currentroadmapId = chosenRoadmapIdSelector(
         thunkAPI.getState() as RootState,
@@ -335,7 +326,7 @@ export const patchIntegrationConfiguration = createAsyncThunk<
   { rejectValue: AxiosError }
 >(
   'configurations/patchIntegrationConfiguration',
-  async (configuration: IntegrationConfigurationRequest, thunkAPI) => {
+  async (configuration, thunkAPI) => {
     try {
       const currentroadmapId = chosenRoadmapIdSelector(
         thunkAPI.getState() as RootState,
@@ -373,7 +364,7 @@ export const addVersion = createAsyncThunk<
   { roadmapId: number; response: Version[] },
   VersionRequest,
   { rejectValue: AxiosError }
->('versions/addVersion', async (version: VersionRequest, thunkAPI) => {
+>('versions/addVersion', async (version, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
@@ -397,7 +388,7 @@ export const patchVersion = createAsyncThunk<
   { roadmapId: number; response: Version[] },
   VersionRequest,
   { rejectValue: AxiosError }
->('versions/patchVersion', async (version: VersionRequest, thunkAPI) => {
+>('versions/patchVersion', async (version, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
@@ -420,7 +411,7 @@ export const deleteVersion = createAsyncThunk<
   { roadmapId: number; response: Version[] },
   VersionRequest,
   { rejectValue: AxiosError }
->('versions/deleteVersion', async (version: VersionRequest, thunkAPI) => {
+>('versions/deleteVersion', async (version, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
@@ -452,45 +443,37 @@ export const addTaskToVersion = createAsyncThunk<
   { roadmapId: number; response: Version[] },
   AddTaskToVersionRequest,
   { rejectValue: AxiosError }
->(
-  'versions/addTaskToVersion',
-  async (request: AddTaskToVersionRequest, thunkAPI) => {
-    const versions = roadmapsVersionsSelector(thunkAPI.getState() as RootState);
-    if (versions === undefined) throw new Error('Versions not fetched yet!');
+>('versions/addTaskToVersion', async (request, thunkAPI) => {
+  const versions = roadmapsVersionsSelector(thunkAPI.getState() as RootState);
+  if (versions === undefined) throw new Error('Versions not fetched yet!');
 
-    const payload = versionPayload(versions, request.version.id);
+  const payload = versionPayload(versions, request.version.id);
 
-    payload.tasks.splice(request.index, 0, request.task.id!);
-    try {
-      return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err as AxiosError<any>);
-    }
-  },
-);
+  payload.tasks.splice(request.index, 0, request.task.id!);
+  try {
+    return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
 
 export const removeTaskFromVersion = createAsyncThunk<
   { roadmapId: number; response: Version[] },
   RemoveTaskFromVersionRequest,
   { rejectValue: AxiosError }
->(
-  'versions/removeTaskFromVersion',
-  async (request: RemoveTaskFromVersionRequest, thunkAPI) => {
-    const versions = roadmapsVersionsSelector(thunkAPI.getState() as RootState);
-    if (versions === undefined) throw new Error('Versions not fetched yet!');
+>('versions/removeTaskFromVersion', async (request, thunkAPI) => {
+  const versions = roadmapsVersionsSelector(thunkAPI.getState() as RootState);
+  if (versions === undefined) throw new Error('Versions not fetched yet!');
 
-    const payload = versionPayload(versions, request.version.id);
+  const payload = versionPayload(versions, request.version.id);
 
-    payload.tasks = payload.tasks.filter(
-      (taskId) => taskId !== request.task.id,
-    );
-    try {
-      return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err as AxiosError<any>);
-    }
-  },
-);
+  payload.tasks = payload.tasks.filter((taskId) => taskId !== request.task.id);
+  try {
+    return await thunkAPI.dispatch(patchVersion(payload)).unwrap();
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
 
 export const notifyUsers = createAsyncThunk<
   boolean,
