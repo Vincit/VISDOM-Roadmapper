@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+# Update instance
+yum -y update
+
+# Install nodejs, pm2, yarn
+curl --silent --location https://rpm.nodesource.com/setup_14.x | bash -
+yum -y install nodejs
+npm install -g yarn
+npm install -g pm2
+pm2 update
+
+# Ensure EC2 instance has the most recent version of the AWS CLI
+yum install -y python3-pip jq
+pip3 install awscli --upgrade

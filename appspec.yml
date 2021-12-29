@@ -2,13 +2,21 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /app
+    destination: /var/app
 hooks:
+  BeforeInstall:
+    - location: scripts/install
+      timeout: 300
+      runas: root
   AfterInstall:
-    - location: scripts/install_dependencies
+    - location: scripts/post_install
       timeout: 180
       runas: root
   ApplicationStart:
     - location: scripts/start_server
       timeout: 180
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop_server
+      timeout: 120
       runas: root
