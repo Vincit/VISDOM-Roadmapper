@@ -20,7 +20,7 @@ export const login = createAsyncThunk<
   boolean,
   UserLoginRequest,
   { rejectValue: AxiosError }
->('user/login', async (loginRequest: UserLoginRequest, thunkAPI) => {
+>('user/login', async (loginRequest, thunkAPI) => {
   try {
     const success = await api.login(loginRequest);
     if (success) await thunkAPI.dispatch(getUserInfo());
@@ -46,7 +46,7 @@ export const register = createAsyncThunk<
   boolean,
   UserRegisterRequest,
   { rejectValue: AxiosError }
->('user/register', async (newUser: UserRegisterRequest, thunkAPI) => {
+>('user/register', async (newUser, thunkAPI) => {
   try {
     if (await api.register(newUser)) {
       await thunkAPI.dispatch(getUserInfo());
@@ -104,6 +104,6 @@ export const verifyEmail = createAsyncThunk<
   try {
     return await api.verifyEmail(user, verificationId);
   } catch (err) {
-    return thunkAPI.rejectWithValue(err as AxiosError);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
