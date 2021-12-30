@@ -1,4 +1,5 @@
 @import './typography.scss';
+@import './colors.module.scss';
 
 html {
   font-family: Work Sans, Arial, Helvetica, sans-serif;
@@ -33,4 +34,17 @@ h3 {
   width: 100%;
   text-align: center;
   overflow-y: auto;
+}
+
+// custom scrollbar
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background-color: $COLOR_BLACK10;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 49px;
+  background-color: $COLOR_BLACK40 !important;
 }

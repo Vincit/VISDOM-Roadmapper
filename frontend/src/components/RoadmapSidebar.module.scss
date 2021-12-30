@@ -8,9 +8,13 @@
 .buttonsContainer {
   @extend .layout-column;
   overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
 
-  @extend .hide-scrollbar;
+  // smaller scrollbar to prevent text clipping
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
 }
 
 .navButton {
@@ -26,8 +30,8 @@
   @extend .typography-pre-title;
 
   color: $COLOR_BLACK100;
-  border-left: 5px solid white;
-  border-right: 5px solid white;
+  border-left: 10px solid white;
+  border-right: 10px solid white;
   padding: 0 -5px;
 
   &:hover {
