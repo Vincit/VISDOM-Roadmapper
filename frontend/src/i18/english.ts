@@ -271,5 +271,12 @@ export const english = {
     'Project link no access info 2/2':
       'Do you want to log in again with different email to join?',
     'Yes, log in again': 'Yes, log in again',
+    Oops: 'Oops...',
+    'Page not found description 1/2':
+      'It seems we can’t find the page you’re looking for.',
+    'Page not found description 2/2':
+      'The link may be broken or the page may have been removed. If the link was typed in by hand, check the link for typo monsters!',
+    'Go to Homepage': 'Go to Homepage',
+    'Problems with Roadmapper?': 'Problems with Roadmapper?',
   },
 };

@@ -1,6 +1,10 @@
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Link, useLocation, matchPath } from 'react-router-dom';
+import { RootState } from '../redux/types';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
 import { paths } from '../routers/paths';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 
@@ -10,7 +14,7 @@ const classes = classNames.bind(css);
 
 const navBars: {
   path: string;
-  button: { to: (search: string) => string; label: string };
+  button?: { to: (search: string) => string; label: string };
   linkHome?: boolean;
 }[] = [
   {
@@ -37,13 +41,22 @@ const navBars: {
     button: { to: () => paths.logoutPage, label: 'Logout' },
     linkHome: true,
   },
+  {
+    path: paths.notFound,
+    linkHome: true,
+  },
 ];
 
-export const findLoginNavBar = (pathname: string) => {
+export const findLoginNavBar = (pathname: string, loggedIn: boolean) => {
   const bar = navBars.find(({ path }) =>
     matchPath(pathname, { path, strict: true, exact: true }),
   );
   if (!bar) return undefined;
+
+  const { to, label } = loggedIn
+    ? { to: paths.logoutPage, label: 'Logout' }
+    : { to: paths.loginPage, label: 'Login' };
+
   return ({ search }: { search: string }) => (
     <div className={classes(css.loginNavBar)}>
       {bar.linkHome ? (
@@ -54,8 +67,11 @@ export const findLoginNavBar = (pathname: string) => {
         <VisdomLogo />
       )}
       <span />
-      <Link className={classes(css.loginButton)} to={bar.button.to(search)}>
-        <Trans i18nKey={bar.button.label} />
+      <Link
+        className={classes(css.loginButton)}
+        to={bar.button?.to(search) || to}
+      >
+        <Trans i18nKey={bar.button?.label || label} />
       </Link>
     </div>
   );
@@ -63,7 +79,11 @@ export const findLoginNavBar = (pathname: string) => {
 
 export const LoginNavBar = () => {
   const { search, pathname } = useLocation();
-  return findLoginNavBar(pathname)?.({ search }) ?? null;
+  const loggedIn = !!useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  return findLoginNavBar(pathname, loggedIn)?.({ search }) ?? null;
 };
 
 export const LandingPageNavBar = () => {

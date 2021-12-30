@@ -1,8 +1,12 @@
 import { Trans } from 'react-i18next';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classNames from 'classnames';
+import { RootState } from '../redux/types';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
 import { ReactComponent as CornerPiece } from '../icons/corner_rounder.svg';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import { paths } from '../routers/paths';
@@ -14,8 +18,12 @@ const classes = classNames.bind(css);
 
 export const NavBar = () => {
   const { search, pathname } = useLocation();
+  const loggedIn = !!useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
 
-  const loginNavBar = findLoginNavBar(pathname);
+  const loginNavBar = findLoginNavBar(pathname, loggedIn);
   if (loginNavBar) return loginNavBar({ search });
 
   return (
