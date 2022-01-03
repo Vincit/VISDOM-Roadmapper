@@ -10,7 +10,6 @@ import { RoleType } from '../../../shared/types/customTypes';
 import css from './UserInfoCard.module.scss';
 import { EditableTextWithButtons } from './EditableText';
 import { table, TableRow } from './Table';
-import { sortKeyNumeric } from '../utils/SortUtils';
 import { idRoadmapSelector } from '../redux/roadmaps/selectors';
 import { StoreDispatchType } from '../redux';
 import { ModalTypes } from './modals/types';
@@ -29,13 +28,13 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
     const roadmap = useSelector(idRoadmapSelector(roadmapId));
     return (
       <div className={classes(css.virtualizedTableRow)} style={style}>
-        <td className="styledTd roleIcon">
+        <div className="styledTd roleIcon">
           <div className={classes(css.memberIcon)}>
             {type === RoleType.Admin && <StarSharpIcon />}
             {type === RoleType.Developer && <BuildSharpIcon />}
             {type === RoleType.Business && <BusinessIcon />}
           </div>
-        </td>
+        </div>
         <div>{RoleType[type]}</div>
         <div>{roadmap?.name}</div>
       </div>
@@ -48,8 +47,8 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
         <Trans i18nKey="Projects" />
       </h2>
     ),
-    getSort: (t: any) => sortKeyNumeric(t),
-    Row: ProjectRow as TableRow<unknown>,
+    getSort: () => undefined,
+    Row: ProjectRow,
     header: [{ label: 'Role', width: 5 }, { label: '' }, { label: 'Project' }],
   });
 
