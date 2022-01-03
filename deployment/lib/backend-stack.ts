@@ -266,7 +266,7 @@ export class BackendStack extends cdk.Stack {
       },
       securityGroups: [databaseSg],
       removalPolicy: cdk.RemovalPolicy.SNAPSHOT,
-      storageType: rds.StorageType.IO1,
+      storageType: rds.StorageType.GP2,
       allocatedStorage: 100,
       maxAllocatedStorage: 500,
     });
