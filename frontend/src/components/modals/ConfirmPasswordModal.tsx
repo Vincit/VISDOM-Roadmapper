@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import { ModalTypes, Modal } from './types';
@@ -32,7 +32,7 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
         break;
       }
       default:
-        setErrorMessage(t('Internal server error.'));
+        setErrorMessage(t('Internal server error'));
         break;
     }
   };
@@ -52,7 +52,7 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   };
 
   return (
-    <>
+    <Form>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Enter your password to continue" />
@@ -95,6 +95,6 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </>
+    </Form>
   );
 };

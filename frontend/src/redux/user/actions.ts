@@ -69,11 +69,8 @@ export const modifyUser = createAsyncThunk<
   { rejectValue: AxiosError }
 >('/user/patchUser', async (userPatch: UserModifyRequest, thunkAPI) => {
   try {
-    if (userPatch.deleteUser) {
-      if (await api.deleteUser(userPatch)) {
-        return true;
-      }
-    } else if (await api.patchUser(userPatch)) {
+    if (userPatch.deleteUser) return await api.deleteUser(userPatch);
+    if (await api.patchUser(userPatch)) {
       await thunkAPI.dispatch(getUserInfo());
       return true;
     }
