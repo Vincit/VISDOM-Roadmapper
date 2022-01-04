@@ -108,14 +108,16 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
             <p className={classes(css.unVerifiedText)}>(unverified)</p>
           ) : null}
         </div>
-        <button
-          className="button-small-outlined"
-          type="button"
-          onClick={resendOnClick}
-          disabled={sent || sending}
-        >
-          Resend verification email
-        </button>
+        {!userInfo.emailVerified && (
+          <button
+            className="button-small-outlined"
+            type="button"
+            onClick={resendOnClick}
+            disabled={sent || sending}
+          >
+            Resend verification email
+          </button>
+        )}
       </div>
       <div className={classes(css.spacer)} />
       <p className={classes(css.subtitle)}>Password</p>
