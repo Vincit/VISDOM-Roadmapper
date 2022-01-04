@@ -76,3 +76,21 @@
   @extend .transform-transition;
   color: $COLOR_BLACK40;
 }
+
+.userInfoContainer {
+  @extend .typography-body-small;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -2px;
+  margin-right: 10px;
+  gap: 2px;
+}
+
+.memberIcon path {
+  fill: $COLOR_BLACK100;
+}
+
+.memberIcon svg {
+  width: 18px;
+}
