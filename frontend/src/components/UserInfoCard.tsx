@@ -76,9 +76,7 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.CONFIRM_PASSWORD_MODAL,
-        modalProps: {
-          actionData: { id: userInfo.id, deleteUser: true },
-        },
+        modalProps: { actionData: { id: userInfo.id }, deleteUser: true },
       }),
     );
   };

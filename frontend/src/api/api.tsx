@@ -31,6 +31,7 @@ import {
   UserLoginRequest,
   UserModifyRequest,
   UserRegisterRequest,
+  UserDeleteRequest,
 } from '../redux/user/types';
 
 dotenv.config();
@@ -181,7 +182,7 @@ const patchUser = async (userPatch: UserModifyRequest) => {
   return response.status === 200;
 };
 
-const deleteUser = async (userDelete: UserModifyRequest) => {
+const deleteUser = async (userDelete: UserDeleteRequest) => {
   const response = await axios.delete(`/users/${userDelete.id}`, {
     data: userDelete,
   });

@@ -17,8 +17,11 @@ const appReducer = combineReducers({
 });
 
 const rootReducer: typeof appReducer = (state, action) => {
-  if (userActions.logout.fulfilled.match(action)) {
-    // clear all state on logout
+  if (
+    userActions.logout.fulfilled.match(action) ||
+    userActions.deleteUser.fulfilled.match(action)
+  ) {
+    // clear all state on logout or account deletion
     return appReducer(undefined, action);
   }
   return appReducer(state, action);

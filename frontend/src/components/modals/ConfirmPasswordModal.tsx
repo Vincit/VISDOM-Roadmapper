@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Alert, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { errorState, Input } from '../forms/FormField';
+import { paths } from '../../routers/paths';
 import '../../shared.scss';
 
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -18,7 +20,9 @@ import { userActions } from '../../redux/user';
 export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   closeModal,
   actionData,
+  deleteUser,
 }) => {
+  const history = useHistory();
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [password, setPassword] = useState('');
@@ -38,17 +42,22 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   };
 
   const handleConfirm = async () => {
+    const action = deleteUser ? userActions.deleteUser : userActions.modifyUser;
     setIsLoading(true);
     const res = await dispatch(
-      userActions.modifyUser({
+      action({
         currentPassword: password,
         ...actionData,
       }),
     );
     setIsLoading(false);
-    if (userActions.modifyUser.rejected.match(res)) {
+    if (action.rejected.match(res)) {
       errorHandler(res.payload?.response);
-    } else closeModal(true);
+    } else if (deleteUser) {
+      history.push(paths.home);
+    } else {
+      closeModal(true);
+    }
   };
 
   return (

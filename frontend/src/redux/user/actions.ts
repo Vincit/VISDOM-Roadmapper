@@ -5,6 +5,7 @@ import {
   UserInfo,
   UserRegisterRequest,
   UserModifyRequest,
+  UserDeleteRequest,
 } from './types';
 import { api } from '../../api/api';
 import { RoadmapRoleResponse, Invitation } from '../roadmaps/types';
@@ -63,20 +64,31 @@ export const register = createAsyncThunk<
   }
 });
 
+export const deleteUser = createAsyncThunk<
+  boolean,
+  UserDeleteRequest,
+  { rejectValue: AxiosError }
+>('/user/patchUser', async (userPatch, thunkAPI) => {
+  try {
+    return await api.deleteUser(userPatch);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
 export const modifyUser = createAsyncThunk<
   boolean,
   UserModifyRequest,
   { rejectValue: AxiosError }
->('/user/patchUser', async (userPatch: UserModifyRequest, thunkAPI) => {
+>('/user/patchUser', async (userPatch, thunkAPI) => {
   try {
-    if (userPatch.deleteUser) return await api.deleteUser(userPatch);
     if (await api.patchUser(userPatch)) {
       await thunkAPI.dispatch(getUserInfo());
       return true;
     }
     return false;
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
 

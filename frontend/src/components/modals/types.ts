@@ -6,7 +6,7 @@ import {
   Invitation,
   Task,
 } from '../../redux/roadmaps/types';
-import { UserModifyRequest } from '../../redux/user/types';
+import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
 export enum ModalTypes {
   ADD_TASK_MODAL = 'ADD_TASK_MODAL',
@@ -82,9 +82,15 @@ type OwnProps = {
   [ModalTypes.JOIN_PROJECT_MODAL]: { invitation: Invitation };
   [ModalTypes.JOIN_LINK_INVALID_MODAL]: {};
   [ModalTypes.JOIN_LINK_NO_ACCESS_MODAL]: { invitationLink: string };
-  [ModalTypes.CONFIRM_PASSWORD_MODAL]: {
-    actionData: Omit<UserModifyRequest, 'currentPassword'>;
-  };
+  [ModalTypes.CONFIRM_PASSWORD_MODAL]:
+    | {
+        actionData: Omit<UserModifyRequest, 'currentPassword'>;
+        deleteUser?: false;
+      }
+    | {
+        actionData: Omit<UserDeleteRequest, 'currentPassword'>;
+        deleteUser: true;
+      };
 };
 
 type Props = {
