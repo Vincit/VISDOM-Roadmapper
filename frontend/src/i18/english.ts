@@ -294,5 +294,21 @@ export const english = {
       'Milestones create your project’s <1>roadmap.</1>',
     'Planner weights tooltip':
       'Client weights affect the scaling of milestone`s total values in the roadmap graph. Weight of 0% will ignore the ratings of the client in question.',
+    'Estimate milestone durations ': 'Estimate milestone durations ',
+    'Compare milestone durations with different estimates.':
+      'Compare milestone durations with different estimates.',
+    Realization: 'Realization',
+    'system calculated average values over time':
+      'system calculated average values over time',
+    Comparison: 'Comparison',
+    'compare to another milestone.': 'compare to another milestone.',
+    Custom: 'Custom',
+    'estimate with a custom value for work amount in working days.':
+      'estimate with a custom value for work amount in working days.',
+    'config-jira-tooltip': 'Settings for JIRA for task imports',
+    'config-trello-tooltip': 'Settings for TRELLO for task imports',
+    'oauth-jira-tooltip': 'TBD',
+    'oauth-trello-tooltip': 'TBD',
+    'Personal auth token tooltip': 'TBD',
   },
 };
