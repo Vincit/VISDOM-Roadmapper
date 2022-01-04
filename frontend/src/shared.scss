@@ -517,6 +517,17 @@ textarea {
   cursor: pointer;
 }
 
+.tooltipGray {
+  path {
+    fill: $COLOR_BLACK40;
+    transition: 150ms ease-out;
+  }
+  &:hover path {
+    fill: $COLOR_EMERALD;
+  }
+  cursor: help;
+}
+
 .hide-text-ellipsis {
   text-overflow: ellipsis;
   overflow: hidden;

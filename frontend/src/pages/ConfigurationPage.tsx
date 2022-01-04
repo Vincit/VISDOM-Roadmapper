@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../components/modals/types';
@@ -14,6 +15,8 @@ import { requireVerifiedEmail } from '../utils/requirelogin';
 import { titleCase } from '../utils/string';
 import { getType } from '../utils/UserUtils';
 import { api } from '../api/api';
+import { InfoTooltip } from '../components/InfoTooltip';
+
 import css from './ConfigurationPage.module.scss';
 
 const classes = classNames.bind(css);
@@ -23,6 +26,7 @@ const RoadmapConfigurationPageComponent = ({
 }: {
   userInfo: UserInfo;
 }) => {
+  const { t } = useTranslation();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
@@ -78,7 +82,6 @@ const RoadmapConfigurationPageComponent = ({
 
   return (
     <div className={classes(css.configurationPage)}>
-      This is the roadmap configuration page.
       {getType(userInfo, currentRoadmap?.id) === RoleType.Admin && (
         <>
           {Object.entries(integrations).flatMap(([name, fields]) => [
@@ -86,6 +89,11 @@ const RoadmapConfigurationPageComponent = ({
               <span className={classes(css.columnHeader)}>
                 {currentRoadmap.name} {titleCase(name)}{' '}
                 <Trans i18nKey="configuration" />
+                <InfoTooltip title={t(`config-${name}-tooltip`)}>
+                  <InfoIcon
+                    className={classes(css.tooltipGray, css.infoIcon)}
+                  />
+                </InfoTooltip>
                 <br />
                 <button
                   className={classes(css['button-small-filled'])}
@@ -100,6 +108,11 @@ const RoadmapConfigurationPageComponent = ({
               <span className={classes(css.columnHeader)}>
                 {currentRoadmap.name} {titleCase(name)}{' '}
                 <Trans i18nKey="authentication" />
+                <InfoTooltip title={t(`oauth-${name}-tooltip`)}>
+                  <InfoIcon
+                    className={classes(css.tooltipGray, css.infoIcon)}
+                  />
+                </InfoTooltip>
                 <br />
                 <button
                   className={classes(css['button-small-filled'])}
@@ -116,6 +129,9 @@ const RoadmapConfigurationPageComponent = ({
       <div className={classes(css.layoutRow)}>
         <span className={classes(css.columnHeader)}>
           <Trans i18nKey="Personal auth token" />
+          <InfoTooltip title={t('Personal auth token tooltip')}>
+            <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
+          </InfoTooltip>
           <br />
           <button
             className="button-small-filled"
