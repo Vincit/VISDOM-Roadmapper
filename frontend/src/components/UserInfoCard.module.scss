@@ -1,12 +1,19 @@
 @import '../shared.scss';
 
+.content {
+  @extend .layout-column;
+  gap: 60px;
+  margin-top: 30px;
+}
+
+.section {
+  @extend .layout-column;
+  gap: 30px;
+}
+
 .subtitle {
   @extend .typography-pre-title;
   color: $COLOR_FOREST;
-}
-
-.spacer {
-  height: 30px;
 }
 
 .layoutRow {

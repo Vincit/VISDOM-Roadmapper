@@ -279,5 +279,10 @@ export const english = {
       'The link may be broken or the page may have been removed. If the link was typed in by hand, check the link for typo monsters!',
     'Go to Homepage': 'Go to Homepage',
     'Problems with Roadmapper?': 'Problems with Roadmapper?',
+    'you can remove your account 1/2':
+      'If you no longer need your account, you can remove your account.',
+    'you can remove your account 2/2':
+      'Note: Don’t remove your account if you just want to change your email address.',
+    'Remove account': 'Remove account',
   },
 };

@@ -87,70 +87,71 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
   };
 
   return (
-    <div className={classes(css.card)}>
-      <div className={classes(css.spacer)} />
-      <div>
+    <div className={classes(css.content)}>
+      <div className={classes(css.section)}>
         <h2>Account</h2>
-      </div>
-      <div className={classes(css.spacer)} />
-      <p className={classes(css.subtitle)}>Email</p>
-      <div className={classes(css.layoutRow)}>
-        <div className={classes(css.textContainer)}>
+        <div>
+          <p className={classes(css.subtitle)}>
+            <Trans i18nKey="Email" />
+          </p>
+          <div className={classes(css.layoutRow)}>
+            <div className={classes(css.textContainer)}>
+              <EditableTextWithButtons
+                onOk={emailOnOk}
+                value={userInfo.email}
+                fieldId="email"
+                format=""
+              />
+              {!userInfo.emailVerified && (
+                <p className={classes(css.unVerifiedText)}>(unverified)</p>
+              )}
+            </div>
+            {!userInfo.emailVerified && (
+              <button
+                className="button-small-outlined"
+                type="button"
+                onClick={resendOnClick}
+                disabled={sent || sending}
+              >
+                <Trans i18nKey="Resend verification email" />
+              </button>
+            )}
+          </div>
+        </div>
+        <div>
+          <p className={classes(css.subtitle)}>
+            <Trans i18nKey="Password" />
+          </p>
           <EditableTextWithButtons
-            onOk={emailOnOk}
-            value={userInfo.email}
-            fieldId="email"
+            onOk={passwordOnOk}
+            value="********"
+            fieldId="password"
             format=""
           />
-          {!userInfo.emailVerified ? (
-            <p className={classes(css.unVerifiedText)}>(unverified)</p>
-          ) : null}
         </div>
-        {!userInfo.emailVerified && (
-          <button
-            className="button-small-outlined"
-            type="button"
-            onClick={resendOnClick}
-            disabled={sent || sending}
-          >
-            Resend verification email
-          </button>
-        )}
       </div>
-      <div className={classes(css.spacer)} />
-      <p className={classes(css.subtitle)}>Password</p>
-      <EditableTextWithButtons
-        onOk={passwordOnOk}
-        value="********"
-        fieldId="password"
-        format=""
-      />
-      <div className={classes(css.spacer)} />
-      <div className={classes(css.spacer)} />
       <ProjectTable items={userInfo.roles} />
-      <div className={classes(css.spacer)} />
-      <div className={classes(css.spacer)} />
-      <div>
-        <h2>Remove account</h2>
-      </div>
-      <div className={classes(css.spacer)} />
-      <div className={classes(css.layoutRow)}>
-        <div>
-          <p>
-            If you no longer need your account, you can remove your account.
-          </p>
-          <p>
-            Note: Don&rsquo;t remove your account if you just want to change
-            your email address.
-          </p>
+      <div className={classes(css.section)}>
+        <h2>
+          <Trans i18nKey="Remove account" />
+        </h2>
+        <div className={classes(css.layoutRow)}>
+          <div>
+            <p>
+              <Trans i18nKey="you can remove your account 1/2" />
+            </p>
+            <p>
+              <Trans i18nKey="you can remove your account 2/2" />
+            </p>
+          </div>
+          <button
+            className={classes(css.deleteButton)}
+            type="button"
+            onClick={removeOnClick}
+          >
+            <Trans i18nKey="Remove account" />
+          </button>
         </div>
-        <button
-          className={classes(css.deleteButton)}
-          type="button"
-          onClick={removeOnClick}
-        >
-          Remove account
-        </button>
       </div>
     </div>
   );
