@@ -76,42 +76,6 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
   return void (ctx.body = newRatings);
 };
 
-export const postTaskRating: RouteHandlerFnc = async (ctx) => {
-  if (!ctx.state.user) throw new Error('User is required');
-  const { dimension, value, comment, forCustomer } = ctx.request.body;
-  if (
-    (dimension === TaskRatingDimension.BusinessValue &&
-      !hasPermission(ctx, Permission.TaskValueRate)) ||
-    (dimension === TaskRatingDimension.RequiredWork &&
-      !hasPermission(ctx, Permission.TaskWorkRate))
-  )
-    return void (ctx.status = 403);
-
-  const userId = Number(ctx.state.user.id);
-  const child = await Task.transaction(async (trx) => {
-    if (forCustomer !== undefined) {
-      // check that user is representative for given customer
-      const found = await Customer.relatedQuery('representatives', trx)
-        .for(forCustomer)
-        .findById(userId);
-      if (!found) return false;
-    }
-    return await Task.relatedQuery('ratings', trx)
-      .for(Number(ctx.params.taskId))
-      .insertAndFetch({
-        dimension: dimension,
-        value: value,
-        comment: comment,
-        forCustomer: forCustomer,
-        parentTask: Number(ctx.params.taskId),
-        createdByUser: userId,
-      })
-      .where({ roadmapId: Number(ctx.params.roadmapId) });
-  });
-  if (child) return void (ctx.body = child);
-  return void (ctx.status = 403);
-};
-
 export const deleteTaskrating: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
 
@@ -177,34 +141,4 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
       ),
   );
   return void (ctx.body = updated);
-};
-
-export const patchTaskrating: RouteHandlerFnc = async (ctx) => {
-  if (!ctx.state.user) throw new Error('User is required');
-  const { id, value, comment, ...others } = ctx.request.body;
-  if (Object.keys(others).length) return void (ctx.status = 400);
-
-  return await Taskrating.transaction(async (trx) => {
-    const rating = await Taskrating.query(trx)
-      .findById(Number(ctx.params.ratingId))
-      .where({ parentTask: Number(ctx.params.taskId) });
-
-    if (!rating) return void (ctx.status = 404);
-    if (
-      !hasPermission(ctx, Permission.TaskRatingEditOthers) &&
-      rating.createdByUser !== ctx.state.user!.id
-    )
-      return void (ctx.status = 403);
-    if (
-      (rating.dimension === TaskRatingDimension.BusinessValue &&
-        !hasPermission(ctx, Permission.TaskValueRate)) ||
-      (rating.dimension === TaskRatingDimension.RequiredWork &&
-        !hasPermission(ctx, Permission.TaskWorkRate))
-    )
-      return void (ctx.status = 403);
-
-    return void (ctx.body = await rating
-      .$query(trx)
-      .patchAndFetch({ value: value, comment: comment }));
-  });
 };
