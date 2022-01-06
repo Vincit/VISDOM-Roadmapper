@@ -16,6 +16,7 @@ import {
   Version,
   Invitation,
 } from './types';
+import { findTask } from '../../utils/TaskUtils';
 
 export const GET_ROADMAPS_FULFILLED = (
   state: RoadmapsState,
@@ -171,16 +172,9 @@ export const ADD_TASKRATINGS_FULFILLED = (
 ) => {
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
 
-  action.payload.forEach((taskRating) => {
-    let parentTask: Task | undefined;
-    state.roadmaps!.forEach((roadmap) => {
-      if (parentTask !== undefined) return;
-      parentTask = roadmap.tasks.find(
-        (task) => task.id === taskRating.parentTask,
-      );
-    });
-
-    if (parentTask) parentTask.ratings.push(taskRating);
+  action.payload.forEach((rating) => {
+    const parentTask = findTask(rating.parentTask, state.roadmaps!);
+    if (parentTask) parentTask.ratings.push(rating);
   });
 };
 
@@ -191,12 +185,7 @@ export const PATCH_TASKRATINGS_FULFILLED = (
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
 
   action.payload.forEach((rating) => {
-    let parentTask: Task | undefined;
-    state.roadmaps!.forEach((roadmap) => {
-      if (parentTask !== undefined) return;
-      parentTask = roadmap.tasks.find((task) => task.id === rating.parentTask);
-    });
-
+    const parentTask = findTask(rating.parentTask, state.roadmaps!);
     if (parentTask) {
       const oldRating = parentTask.ratings.find(({ id }) => id === rating.id);
       Object.assign(oldRating, rating);
@@ -208,14 +197,8 @@ export const DELETE_TASKRATING_FULFILLED = (
   state: RoadmapsState,
   action: PayloadAction<TaskratingRequest>,
 ) => {
-  let parentTask: Task | undefined;
   if (!state.roadmaps) throw new Error('Roadmaps havent been fetched yet');
-  state.roadmaps.forEach((roadmap) => {
-    if (parentTask !== undefined) return;
-    parentTask = roadmap.tasks.find(
-      (task) => task.id === action.payload.parentTask,
-    );
-  });
+  const parentTask = findTask(action.payload.parentTask!, state.roadmaps);
 
   if (parentTask) {
     parentTask.ratings = parentTask.ratings.filter(

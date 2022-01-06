@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState, useEffect, MouseEvent } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/Build';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -10,7 +10,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { InfoTooltip } from './InfoTooltip';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from './modals/types';
+import { ModalTypes, ShowModalPayload } from './modals/types';
 import { Customer, RoadmapUser, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -91,45 +91,26 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     }
   }, [task, allCustomers, allUsers, userInfo, type]);
 
-  const openNotifyModal = (e: SyntheticEvent) => {
+  const openModal = (payload: ShowModalPayload) => (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.NOTIFY_USERS_MODAL,
-        modalProps: {
-          taskId: task.id,
-        },
-      }),
-    );
+    dispatch(modalsActions.showModal(payload));
   };
 
-  const openRateModal = (e: SyntheticEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.RATE_TASK_MODAL,
-        modalProps: {
-          taskId: task.id,
-          edit: false,
-        },
-      }),
-    );
-  };
+  const openNotifyModal = openModal({
+    modalType: ModalTypes.NOTIFY_USERS_MODAL,
+    modalProps: { taskId: task.id },
+  });
 
-  const handleTaskDelete = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.REMOVE_TASK_MODAL,
-        modalProps: {
-          task,
-        },
-      }),
-    );
-  };
+  const openRateModal = openModal({
+    modalType: ModalTypes.RATE_TASK_MODAL,
+    modalProps: { taskId: task.id, edit: false },
+  });
+
+  const handleTaskDelete = openModal({
+    modalType: ModalTypes.REMOVE_TASK_MODAL,
+    modalProps: { task },
+  });
 
   return (
     <Link

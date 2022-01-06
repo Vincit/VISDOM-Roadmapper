@@ -156,29 +156,17 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     setBusinessRatingModified(modified);
   }, [businessValueRatings, ratings]);
 
-  const editRatings = async (edited: TaskratingRequest[]) => {
-    const res = await dispatch(
-      roadmapsActions.patchTaskratings({ ratings: edited, taskId }),
-    );
-    if (roadmapsActions.patchTaskratings.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
-  };
-
-  const addRatings = async (added: TaskratingRequest[]) => {
-    const res = await dispatch(
-      roadmapsActions.addTaskratings({ ratings: added, taskId }),
-    );
-    if (roadmapsActions.addTaskratings.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
-  };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
     setIsLoading(true);
     const changed = businessValueRatings.filter((rating) => rating.changed);
-    const error = edit ? await editRatings(changed) : await addRatings(changed);
+    const action = edit
+      ? roadmapsActions.patchTaskratings
+      : roadmapsActions.addTaskratings;
+    const res = await dispatch(action({ ratings: changed, taskId }));
+    const error = action.rejected.match(res) && res.payload?.message;
     setIsLoading(false);
 
     if (error) setErrorMessage(error);

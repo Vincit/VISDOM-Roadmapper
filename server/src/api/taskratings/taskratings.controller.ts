@@ -51,27 +51,24 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
     }),
   );
 
-  if (errors.some(({ err }: any) => err === 403))
-    return void (ctx.status = 403);
+  if (errors.some(({ err }) => err === 403)) return void (ctx.status = 403);
 
-  const newRatings = await Taskrating.transaction(
-    async (trx) =>
-      await Promise.all(
-        ratings.map(
-          async ({ dimension, value, comment, forCustomer }: any) =>
-            await Task.relatedQuery('ratings', trx)
-              .for(taskId)
-              .insertAndFetch({
-                dimension,
-                value,
-                comment,
-                forCustomer,
-                parentTask: taskId,
-                createdByUser: userId,
-              })
-              .where({ roadmapId }),
-        ),
+  const newRatings = await Taskrating.transaction((trx) =>
+    Promise.all(
+      ratings.map(({ dimension, value, comment, forCustomer }: any) =>
+        Task.relatedQuery('ratings', trx)
+          .for(taskId)
+          .insertAndFetch({
+            dimension,
+            value,
+            comment,
+            forCustomer,
+            parentTask: taskId,
+            createdByUser: userId,
+          })
+          .where({ roadmapId }),
       ),
+    ),
   );
   return void (ctx.body = newRatings);
 };
@@ -126,19 +123,17 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
     }),
   );
 
-  if (foundRatings.some(({ err }: any) => err === 404))
+  if (foundRatings.some(({ err }) => err === 404))
     return void (ctx.status = 404);
-  if (foundRatings.some(({ err }: any) => err === 403))
+  if (foundRatings.some(({ err }) => err === 403))
     return void (ctx.status = 403);
 
-  const updated = await Taskrating.transaction(
-    async (trx) =>
-      await Promise.all(
-        foundRatings.map(
-          async ({ rating, value, comment }: any) =>
-            await rating.$query(trx).patchAndFetch({ value, comment }),
-        ),
+  const updated = await Taskrating.transaction((trx) =>
+    Promise.all(
+      foundRatings.map(({ rating, value, comment }: any) =>
+        rating.$query(trx).patchAndFetch({ value, comment }),
       ),
+    ),
   );
   return void (ctx.body = updated);
 };

@@ -309,3 +309,10 @@ export const getRatingsByType = (ratings: Taskrating[]) => {
   );
   return { value, work };
 };
+
+export const findTask = (taskId: number, roadmaps: Roadmap[]) =>
+  roadmaps.reduce<Task | undefined>(
+    (found, roadmap) =>
+      found ?? roadmap.tasks.find((task) => task.id === taskId),
+    undefined,
+  );
