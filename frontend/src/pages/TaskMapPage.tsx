@@ -153,8 +153,13 @@ export const TaskMapPage = () => {
     dispatch(roadmapsActions.getRoadmaps());
   };
 
-  const addSynergyRelations = (from: number, to: number[]) =>
-    dispatch(roadmapsActions.addSynergyRelations({ from, to })).unwrap();
+  const addSynergyRelations = async (from: number, to: number[]) => {
+    const ok = await dispatch(
+      roadmapsActions.addSynergyRelations({ from, to }),
+    ).unwrap();
+    if (ok) dispatch(roadmapsActions.getRoadmaps());
+    return ok;
+  };
 
   const onDragMoveOutside = async (draggedTaskId: number) => {
     const newList = taskRelations
