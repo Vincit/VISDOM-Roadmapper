@@ -120,12 +120,12 @@ export const TimeEstimationPage = () => {
           header: t('Estimate milestone durations'),
           content: {
             subHeader: t(
-              'Compare milestone durations with different estimates.',
+              'Compare milestone durations with different estimates',
             ),
             columns: [
               {
                 header: t('Realization'),
-                text: t('system calculated average values over time.'),
+                text: t('system calculated average values over time'),
               },
               {
                 header: t('Comparison'),
@@ -134,7 +134,7 @@ export const TimeEstimationPage = () => {
               {
                 header: t('Custom'),
                 text: t(
-                  'estimate with a custom value for work amount in working days.',
+                  'estimate with a custom value for work amount in working days',
                 ),
               },
             ],

@@ -89,11 +89,9 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
 
 export const TaskTableRated = table({
   Title: ({ count }) => (
-    <>
-      <h2 className={classes(css.title)}>
-        <Trans i18nKey="Rated tasks" /> ({count})
-      </h2>
-    </>
+    <h2 className={classes(css.title)}>
+      <Trans i18nKey="Rated tasks" /> ({count})
+    </h2>
   ),
   Row: TableRatedTaskRow,
   getSort: taskSort,
