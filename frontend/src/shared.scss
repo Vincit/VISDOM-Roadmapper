@@ -498,8 +498,8 @@ textarea {
 
 .tooltipIcon {
   path {
+    @extend .transform-transition;
     fill: $COLOR_EMERALD;
-    transition: 150ms ease-out;
   }
   &:hover path {
     fill: $COLOR_FOREST;
@@ -507,25 +507,20 @@ textarea {
   cursor: help;
 }
 
-.tooltipClickable {
-  path {
-    transition: 150ms ease-out;
-  }
-  &:hover path {
-    fill: $COLOR_EMERALD;
-  }
-  cursor: pointer;
-}
-
 .tooltipGray {
   path {
+    @extend .transform-transition;
     fill: $COLOR_BLACK40;
-    transition: 150ms ease-out;
   }
   &:hover path {
     fill: $COLOR_EMERALD;
   }
   cursor: help;
+}
+
+.tooltipClickable {
+  @extend .tooltipGray;
+  cursor: pointer;
 }
 
 .hide-text-ellipsis {
