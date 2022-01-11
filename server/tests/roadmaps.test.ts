@@ -17,7 +17,13 @@ describe('Test /roadmaps/ api', function () {
 
       expect(res.status).to.equal(200);
       expect(res.body.length).to.equal(fetchedAgent.roadmaps.length);
-      expect(res.body[0]).to.have.keys('id', 'name', 'description', 'tasks');
+      expect(res.body[0]).to.have.keys(
+        'id',
+        'name',
+        'description',
+        'tasks',
+        'daysPerWorkCalibration',
+      );
     });
 
     it('Should return all roadmaps, eager loaded', async function () {
@@ -33,6 +39,7 @@ describe('Test /roadmaps/ api', function () {
         'name',
         'description',
         'tasks',
+        'daysPerWorkCalibration',
         'integrations',
       );
       expect(res.body[0].tasks[0]).to.have.keys(
