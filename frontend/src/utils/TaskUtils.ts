@@ -237,8 +237,10 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
   roadmap: T extends UserInfo ? number | Roadmap : Roadmap,
 ) => {
   const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
-  const type = getType(user, roadmapId);
-  if (type === RoleType.Admin || type === RoleType.Business) {
+  const userType = getType(user, roadmapId);
+
+  // Admins and business users represent customers. Separate logic for determining need for ratings.
+  if (userType === RoleType.Admin || userType === RoleType.Business) {
     const customers = isUserInfo(user)
       ? user.representativeFor?.filter(
           (customer) => customer.roadmapId === roadmapId,
@@ -246,10 +248,17 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
       : (roadmap as Roadmap).customers?.filter((customer) =>
           customer.representatives?.some((rep) => rep.id === user.id),
         );
+
+    // If user represents no customers, always return false
+    if (!customers || customers.length === 0) return () => false;
+
+    // Otherwise filter for tasks that lack ratings from at least one represented customer
     return (task: Task) =>
       task.roadmapId === roadmapId &&
-      !customers?.every((customer) => ratedByCustomer(customer, user)(task));
+      !customers.every((customer) => ratedByCustomer(customer, user)(task));
   }
+
+  // For other user types just look for missing ratings by them
   return not(ratedByUser(user));
 };
 
