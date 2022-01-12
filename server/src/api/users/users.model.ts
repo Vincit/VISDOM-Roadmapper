@@ -105,7 +105,9 @@ export default class User extends Password(Model) {
     delete json.password;
     delete json.tokens;
     delete json.authToken;
-    delete json.emailVerificationLink.uuid;
+    if (json.emailVerificationLink) {
+      delete json.emailVerificationLink.uuid;
+    }
     return json;
   }
 

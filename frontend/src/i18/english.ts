@@ -245,6 +245,7 @@ export const english = {
       'We have sent an email to <strong>{{email}}</strong> on <strong>{{sent}}</strong> for you to verify your email address using the verification link in the email.',
     'no email verification link info':
       'We will soon send an email to <strong>{{email}}</strong> for you to verify your email address using the verification link in the email.',
+    'Email verification failed': 'Email verification failed',
     'Resend email': 'Resend email',
     'Wrong email address?': 'Wrong email address?',
     'Change address': 'Change address',

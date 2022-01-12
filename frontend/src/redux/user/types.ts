@@ -11,6 +11,7 @@ export interface UserInfo {
   emailVerificationLink?: {
     email: string;
     updatedAt: string;
+    valid: boolean;
   };
 }
 

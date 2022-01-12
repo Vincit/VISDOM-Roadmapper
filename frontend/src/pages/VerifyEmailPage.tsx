@@ -36,51 +36,72 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
     dispatch(userActions.verifyEmail({ user: userInfo, verificationId }))
       .then((res) => {
         if (userActions.verifyEmail.rejected.match(res)) {
-          setErrorMessage(res.payload?.message ?? 'Something went wrong');
+          setErrorMessage(
+            res.payload?.response?.data ||
+              res.payload?.message ||
+              'Something went wrong',
+          );
         }
       })
       .finally(() => setIsLoading(false));
   }, [verificationId, userInfo, dispatch, history]);
 
-  if (!userInfo.emailVerified)
+  const renderContent = () => {
+    if (!userInfo.emailVerified) {
+      return (
+        <div>
+          <div>{errorMessage}</div>
+          {isLoading && (
+            <div className={classes(css.centered)}>
+              <LoadingSpinner />
+            </div>
+          )}
+        </div>
+      );
+    }
+
     return (
-      <div>
-        <div>{errorMessage || <Trans i18nKey="Verifying email" />}</div>
-        {isLoading && <LoadingSpinner />}
-      </div>
+      <>
+        <div className={classes(css.formSubtitle)}>
+          <Trans
+            i18nKey="Your email has now been verified"
+            values={{ email: userInfo.email }}
+          />
+        </div>
+        <MailIconChecked className={classes(css.icon)} />
+        <div className={classes(css.centered)}>
+          <Trans i18nKey="Go explore" />
+        </div>
+        <Link
+          className={classes(css['button-large'], css.centered)}
+          to={roadmaps?.length ? paths.overview : paths.getStarted}
+        >
+          <Trans i18nKey="Go to my projects" />
+        </Link>
+        <div className={classes(css.formFooter)}>
+          <Trans i18nKey="Explore later?" />
+          <Link to={paths.logoutPage}>
+            <Trans i18nKey="Log out" />
+          </Link>
+        </div>
+      </>
     );
+  };
+
   return (
     <>
       <div className={classes(css.formDiv)}>
         <ModalHeader>
           <h2>
-            <Trans i18nKey="Email verified" />
+            {userInfo.emailVerified && !errorMessage && (
+              <Trans i18nKey="Email verified" />
+            )}
+            {!userInfo.emailVerified && errorMessage && (
+              <Trans i18nKey="Email verification failed" />
+            )}
           </h2>
         </ModalHeader>
-        <ModalContent gap={50}>
-          <div className={classes(css.formSubtitle)}>
-            <Trans
-              i18nKey="Your email has now been verified"
-              values={{ email: userInfo.email }}
-            />
-          </div>
-          <MailIconChecked className={classes(css.icon)} />
-          <div className={classes(css.centered)}>
-            <Trans i18nKey="Go explore" />
-          </div>
-          <Link
-            className={classes(css['button-large'], css.centered)}
-            to={roadmaps?.length ? paths.overview : paths.getStarted}
-          >
-            <Trans i18nKey="Go to my projects" />
-          </Link>
-          <div className={classes(css.formFooter)}>
-            <Trans i18nKey="Explore later?" />{' '}
-            <Link to={paths.logoutPage}>
-              <Trans i18nKey="Log out" />
-            </Link>
-          </div>
-        </ModalContent>
+        <ModalContent gap={50}>{renderContent()}</ModalContent>
       </div>
       <Footer />
     </>
@@ -102,7 +123,7 @@ export const EmailVerificationPage = requireLogin(({ userInfo }) => {
   const linkSent =
     userInfo.emailVerificationLink &&
     new Date(userInfo.emailVerificationLink.updatedAt);
-  const linkValid = !!linkSent; // TODO: expiration for the link
+  const linkValid = userInfo.emailVerificationLink?.valid;
   return (
     <>
       <div className={classes(css.formDiv)}>

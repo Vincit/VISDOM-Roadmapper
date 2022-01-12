@@ -223,6 +223,12 @@ export const verifyEmail: RouteHandlerFnc = async (ctx) => {
     return;
   }
 
+  if (!verification.valid) {
+    ctx.status = 400;
+    ctx.body = 'Verification link has expired';
+    return;
+  }
+
   await User.query()
     .findById(verification.userId)
     .where({ email: verification.email })
