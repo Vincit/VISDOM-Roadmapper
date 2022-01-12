@@ -100,11 +100,12 @@ export default class User extends Password(Model) {
   $formatJson(json: Pojo): Pojo {
     json = super.$formatJson(json);
     /*
-     * Make sure the password, tokens are never sent when this model is sent in response body
+     * Make sure the password, tokens, etc. are never sent when this model is sent in response body
      */
     delete json.password;
     delete json.tokens;
     delete json.authToken;
+    delete json.emailVerificationLink.uuid;
     return json;
   }
 
