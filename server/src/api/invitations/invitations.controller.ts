@@ -3,7 +3,7 @@ import Invitation from './invitations.model';
 import User from '../users/users.model';
 import uuid from 'uuid';
 import { sendEmail } from '../../utils/sendEmail';
-import { daysAgo } from '../../utils/date';
+import { daysAgo } from '../../../../shared/utils/date';
 
 // should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
 const BASE_URL = process.env.FRONTEND_BASE_URL!;

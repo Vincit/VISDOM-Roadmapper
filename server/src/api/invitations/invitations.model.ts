@@ -1,6 +1,6 @@
 import { Model, Pojo, QueryBuilder } from 'objection';
 import { RoleType } from '../../../../shared/types/customTypes';
-import { daysAgo } from '../../utils/date';
+import { daysAgo } from '../../../../shared/utils/date';
 import Roadmap from '../roadmaps/roadmaps.model';
 
 export default class Invitation extends Model {
@@ -14,6 +14,7 @@ export default class Invitation extends Model {
   roadmap?: Roadmap;
 
   static tableName = 'invitations';
+  static linkExpirationDays = 2;
 
   static jsonSchema = {
     type: 'object',
@@ -35,7 +36,7 @@ export default class Invitation extends Model {
     json = super.$parseDatabaseJson(json);
     json.updatedAt = json.updatedAt && new Date(json.updatedAt);
 
-    json.valid = json.updatedAt >= daysAgo(2);
+    json.valid = json.updatedAt >= daysAgo(Invitation.linkExpirationDays);
     return json;
   }
   static get relationMappings() {
