@@ -42,7 +42,9 @@ describe('Test /roadmaps/ api', function () {
         'daysPerWorkCalibration',
         'integrations',
       );
-      expect(res.body[0].tasks[0]).to.have.keys(
+      expect(
+        res.body.find((rm: any) => rm.tasks.length > 0)?.tasks[0],
+      ).to.have.keys(
         'id',
         'name',
         'description',
