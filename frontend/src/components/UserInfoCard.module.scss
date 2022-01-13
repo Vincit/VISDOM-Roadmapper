@@ -6,6 +6,11 @@
   margin-top: 30px;
 }
 
+.roleColumn {
+  @extend .layout-row;
+  gap: 1rem;
+}
+
 .section {
   @extend .layout-column;
   gap: 30px;

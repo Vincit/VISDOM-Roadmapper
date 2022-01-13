@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { BusinessIcon } from './RoleIcons';
@@ -15,6 +17,7 @@ import { StoreDispatchType } from '../redux';
 import { ModalTypes } from './modals/types';
 import { modalsActions } from '../redux/modals';
 import { api } from '../api/api';
+import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
 
@@ -27,17 +30,25 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
     const { roadmapId, type } = roadmapRole;
     const roadmap = useSelector(idRoadmapSelector(roadmapId));
     return (
-      <div className={classes(css.virtualizedTableRow)} style={style}>
-        <div className="styledTd roleIcon">
-          <div className={classes(css.memberIcon)}>
-            {type === RoleType.Admin && <StarSharpIcon />}
-            {type === RoleType.Developer && <BuildSharpIcon />}
-            {type === RoleType.Business && <BusinessIcon />}
+      <Link
+        className={classes(css.navBarLink, css.hoverRow)}
+        to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.dashboard}`}
+      >
+        <div className={classes(css.virtualizedTableRow)} style={style}>
+          <div className={classes(css.roleColumn)}>
+            <div className={classes(css.memberIcon)}>
+              {type === RoleType.Admin && <StarSharpIcon />}
+              {type === RoleType.Developer && <BuildSharpIcon />}
+              {type === RoleType.Business && <BusinessIcon />}
+            </div>
+            <div>{RoleType[type]}</div>
+          </div>
+          <div>{roadmap?.name}</div>
+          <div className={classes(css.textAlignEnd)}>
+            <ArrowForwardIcon className={classes(css.arrowIcon)} />
           </div>
         </div>
-        <div>{RoleType[type]}</div>
-        <div>{roadmap?.name}</div>
-      </div>
+      </Link>
     );
   };
 
@@ -49,7 +60,11 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
     ),
     getSort: () => undefined,
     Row: ProjectRow,
-    header: [{ label: 'Role', width: 5 }, { label: '' }, { label: 'Project' }],
+    header: [
+      { label: 'Role' },
+      { label: 'Project' },
+      { label: '', width: 0.5 },
+    ],
   });
 
   const emailOnOk = async (newValue: string) => {
