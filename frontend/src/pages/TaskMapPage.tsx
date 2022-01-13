@@ -4,7 +4,6 @@ import ReactFlow, {
   Controls,
   OnLoadParams,
   ReactFlowProvider,
-  useStoreState,
 } from 'react-flow-renderer';
 import {
   DragDropContext,
@@ -44,20 +43,6 @@ const copyRelationList = (list: GroupedRelation[]) =>
     synergies: [...synergies],
     dependencies: [...dependencies],
   })) as GroupedRelation[];
-
-const ReactFlowState = () => {
-  const dispatch = useDispatch<StoreDispatchType>();
-  const pos = useStoreState((state) => state.transform);
-
-  useEffect(() => {
-    const [x, y, zoom] = pos;
-    // don't set to the default state to allow fitting into view on load
-    if (x !== 0 || y !== 0 || zoom !== 1)
-      dispatch(roadmapsActions.setTaskmapPosition({ x, y, zoom }));
-  }, [dispatch, pos]);
-
-  return null;
-};
 
 const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
   return <div>{data.label}</div>;
@@ -266,8 +251,10 @@ export const TaskMapPage = () => {
               onLoad={setFlowInstance}
               defaultZoom={mapPosition?.zoom}
               defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
+              onMove={(tr) => {
+                if (tr) dispatch(roadmapsActions.setTaskmapPosition(tr));
+              }}
             >
-              <ReactFlowState />
               <Controls showInteractive={false} showZoom={false}>
                 <InfoTooltip title={t('Taskmap-tooltip')}>
                   <InfoIcon
