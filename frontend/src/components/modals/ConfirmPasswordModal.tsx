@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Alert, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
@@ -28,6 +28,7 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const errorHandler = (response?: { data: string; status: number }) => {
     switch (response?.status) {
@@ -42,6 +43,7 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   };
 
   const handleConfirm = async () => {
+    if (!formRef.current?.checkValidity()) return;
     const action = deleteUser ? userActions.deleteUser : userActions.modifyUser;
     setIsLoading(true);
     const res = await dispatch(
@@ -61,7 +63,7 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   };
 
   return (
-    <Form>
+    <Form ref={formRef}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Enter your password to continue" />
