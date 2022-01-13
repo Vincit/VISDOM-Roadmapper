@@ -75,13 +75,15 @@ export const sendNewVerificationLink: RouteHandlerFnc = async (ctx) => {
 
 export const deleteUsers: RouteHandlerFnc = async (ctx) => {
   const { currentPassword } = ctx.request.body;
-  const user = await User.query().findById(ctx.params.id);
-  if (!(await user.verifyPassword(currentPassword))) {
-    ctx.status = 400;
-  }
-  const numDeleted = await User.query().findById(ctx.params.id).delete();
+  ctx.status = await User.transaction(async (trx) => {
+    const user = await User.query(trx).findById(ctx.params.id);
 
-  ctx.status = numDeleted == 1 ? 200 : 404;
+    if (!user) return 404;
+    if (!(await user.verifyPassword(currentPassword))) return 400;
+
+    const numDeleted = await user.$query(trx).delete();
+    return numDeleted == 1 ? 200 : 500;
+  });
 };
 
 export const registerUser: RouteHandlerFnc = async (ctx) => {
