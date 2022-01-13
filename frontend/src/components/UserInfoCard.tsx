@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
@@ -21,36 +21,37 @@ import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
 
+const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
+  const { t } = useTranslation();
+  const { roadmapId, type } = roadmapRole;
+  const roadmap = useSelector(idRoadmapSelector(roadmapId));
+  return (
+    <Link
+      className={classes(css.navBarLink, css.hoverRow)}
+      to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.dashboard}`}
+    >
+      <div className={classes(css.virtualizedTableRow)} style={style}>
+        <div className={classes(css.roleColumn)}>
+          <div className={classes(css.memberIcon)}>
+            {type === RoleType.Admin && <StarSharpIcon />}
+            {type === RoleType.Developer && <BuildSharpIcon />}
+            {type === RoleType.Business && <BusinessIcon />}
+          </div>
+          <div>{t(RoleType[type])}</div>
+        </div>
+        <div>{roadmap?.name}</div>
+        <div className={classes(css.textAlignEnd)}>
+          <ArrowForwardIcon className={classes(css.arrowIcon)} />
+        </div>
+      </div>
+    </Link>
+  );
+};
+
 export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
-
-  const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
-    const { roadmapId, type } = roadmapRole;
-    const roadmap = useSelector(idRoadmapSelector(roadmapId));
-    return (
-      <Link
-        className={classes(css.navBarLink, css.hoverRow)}
-        to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.dashboard}`}
-      >
-        <div className={classes(css.virtualizedTableRow)} style={style}>
-          <div className={classes(css.roleColumn)}>
-            <div className={classes(css.memberIcon)}>
-              {type === RoleType.Admin && <StarSharpIcon />}
-              {type === RoleType.Developer && <BuildSharpIcon />}
-              {type === RoleType.Business && <BusinessIcon />}
-            </div>
-            <div>{RoleType[type]}</div>
-          </div>
-          <div>{roadmap?.name}</div>
-          <div className={classes(css.textAlignEnd)}>
-            <ArrowForwardIcon className={classes(css.arrowIcon)} />
-          </div>
-        </div>
-      </Link>
-    );
-  };
 
   const ProjectTable = table({
     Title: () => (
