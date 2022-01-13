@@ -1,6 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import ReactFlow, { Controls, useStoreState } from 'react-flow-renderer';
+import ReactFlow, {
+  Controls,
+  OnLoadParams,
+  ReactFlowProvider,
+  useStoreState,
+} from 'react-flow-renderer';
 import {
   DragDropContext,
   DropResult,
@@ -45,13 +50,10 @@ const ReactFlowState = () => {
   const pos = useStoreState((state) => state.transform);
 
   useEffect(() => {
-    dispatch(
-      roadmapsActions.setTaskmapPosition({
-        x: pos[0],
-        y: pos[1],
-        zoom: pos[2],
-      }),
-    );
+    const [x, y, zoom] = pos;
+    // don't set to the default state to allow fitting into view on load
+    if (x !== 0 || y !== 0 || zoom !== 1)
+      dispatch(roadmapsActions.setTaskmapPosition({ x, y, zoom }));
   }, [dispatch, pos]);
 
   return null;
@@ -71,6 +73,16 @@ export const TaskMapPage = () => {
   const [disableDrag, setDisableDrag] = useState(false);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [flowElements, setFlowElements] = useState<any>([]);
+  const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
+
+  useEffect(() => {
+    if (!mapPosition && flowInstance && flowElements.length) {
+      // calling flowInstance.fitView() directly doesn't work, this seems to be
+      // a limitation of the library
+      const instance = flowInstance;
+      requestAnimationFrame(() => instance.fitView());
+    }
+  }, [flowInstance, flowElements, mapPosition]);
 
   useEffect(() => {
     if (!divRef || taskRelations.length === 0) return;
@@ -232,31 +244,34 @@ export const TaskMapPage = () => {
           onDragEnd={onDragEnd}
           onDragStart={() => setDisableDrag(true)}
         >
-          <ReactFlow
-            className={classes(css.flowContainer)}
-            connectionLineComponent={ConnectionLine}
-            elements={flowElements}
-            nodeTypes={{
-              special: CustomNodeComponent,
-            }}
-            draggable={false}
-            onConnect={onConnect}
-            edgeTypes={{
-              custom: CustomEdge,
-            }}
-            onContextMenu={(e) => e.preventDefault()}
-            defaultZoom={mapPosition?.zoom}
-            defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
-          >
-            <ReactFlowState />
-            <Controls showInteractive={false} showZoom={false}>
-              <InfoTooltip title={t('Taskmap-tooltip')}>
-                <InfoIcon
-                  className={classes(css.info, css.tooltipIcon, css.infoIcon)}
-                />
-              </InfoTooltip>
-            </Controls>
-          </ReactFlow>
+          <ReactFlowProvider>
+            <ReactFlow
+              className={classes(css.flowContainer)}
+              connectionLineComponent={ConnectionLine}
+              elements={flowElements}
+              nodeTypes={{
+                special: CustomNodeComponent,
+              }}
+              draggable={false}
+              onConnect={onConnect}
+              edgeTypes={{
+                custom: CustomEdge,
+              }}
+              onContextMenu={(e) => e.preventDefault()}
+              onLoad={setFlowInstance}
+              defaultZoom={mapPosition?.zoom}
+              defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
+            >
+              <ReactFlowState />
+              <Controls showInteractive={false} showZoom={false}>
+                <InfoTooltip title={t('Taskmap-tooltip')}>
+                  <InfoIcon
+                    className={classes(css.info, css.tooltipIcon, css.infoIcon)}
+                  />
+                </InfoTooltip>
+              </Controls>
+            </ReactFlow>
+          </ReactFlowProvider>
           <div className={classes(css.taskOverviewContainer)}>
             {selectedTask && (
               <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
