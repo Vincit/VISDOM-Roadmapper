@@ -33,8 +33,22 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
 };
 
 export const getRoadmapsUsers: RouteHandlerFnc = async (ctx) => {
-  const users = await Roadmap.relatedQuery('users').for(ctx.params.roadmapId);
-  ctx.body = users;
+  const { user, role } = ctx.state;
+  const { roadmapId } = ctx.params;
+  if (!user || !role) throw new Error('User and role are required');
+
+  const users = (await Roadmap.relatedQuery('users')
+    .for(roadmapId)
+    .withGraphFetched('representativeFor')
+    .modifyGraph('representativeFor', (builder) => {
+      builder.where('roadmapId', roadmapId).select('id');
+    })) as User[] | undefined;
+
+  ctx.body = users
+    ?.filter((roadmapUser) =>
+      roadmapUser.visibleFor(user, role, Number(roadmapId)),
+    )
+    .map(({ id, email, type }) => ({ id, email, type }));
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx) => {

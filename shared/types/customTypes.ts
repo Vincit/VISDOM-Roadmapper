@@ -57,5 +57,6 @@ export enum RoleType {
     Permission.TaskRate |
     Permission.TaskRatingEdit |
     Permission.TaskValueRate |
-    Permission.CustomerRepresent,
+    Permission.CustomerRepresent |
+    Permission.RoadmapReadUsers,
 }

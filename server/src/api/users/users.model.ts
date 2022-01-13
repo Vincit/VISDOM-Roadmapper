@@ -5,6 +5,7 @@ import { Role } from '../roles/roles.model';
 import Roadmap from '../roadmaps/roadmaps.model';
 import Customer from '../customer/customer.model';
 import EmailVerification from '../emailVerification/emailVerification.model';
+import { RoleType } from '../../../../shared/types/customTypes';
 
 const Password = objectionPassword();
 export default class User extends Password(Model) {
@@ -20,6 +21,7 @@ export default class User extends Password(Model) {
   tokens!: Token[];
   roadmaps!: Roadmap[];
   emailVerificationLink?: EmailVerification;
+  type?: RoleType;
 
   static tableName = 'users';
 
@@ -118,4 +120,13 @@ export default class User extends Password(Model) {
       });
     },
   };
+  visibleFor(user: User, role: RoleType, roadmapId: number): boolean {
+    if (role !== RoleType.Business) return true;
+    if (this.type === RoleType.Developer) return true;
+
+    const represented = user.representativeFor
+      .filter((customer) => customer.roadmapId === roadmapId)
+      .map(({ id }) => id);
+    return this.representativeFor.some(({ id }) => represented.includes(id));
+  }
 }
