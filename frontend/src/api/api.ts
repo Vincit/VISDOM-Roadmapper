@@ -141,14 +141,17 @@ const patchCustomer = async (customer: CustomerRequest, roadmapId: number) => {
   return response.data as Customer;
 };
 
+/** Checks if the given `status` code is in the successful 2xx range */
+const successful = (status: number) => status >= 200 && status < 300;
+
 const login = async (loginRequest: UserLoginRequest) => {
   const response = await axios.post(`/users/login`, loginRequest);
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const logout = async () => {
   const response = await axios.get(`/users/logout`);
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const getCurrentUserToken = async () => {
@@ -163,7 +166,7 @@ const generateCurrentUserToken = async () => {
 
 const deleteCurrentUserToken = async () => {
   const response = await axios.delete(`/users/mytoken`);
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const getCurrentUserInfo = async () => {
@@ -173,7 +176,7 @@ const getCurrentUserInfo = async () => {
 
 const register = async (newUser: UserRegisterRequest) => {
   const response = await axios.post(`/users/register`, newUser);
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const getRoadmapUsers = async (roadmapId: number) => {
@@ -319,7 +322,7 @@ const sendNotification = async (
     `roadmaps/${task.roadmapId}/tasks/${task.id}/notify`,
     { users, message },
   );
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const getInvitations = async (roadmapId: number) => {
@@ -341,7 +344,7 @@ const sendInvitation = async (
     email,
     type,
   });
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const patchInvitation = async (
@@ -364,7 +367,7 @@ const patchDefaultRoadmap = async (userId: number, roadmapId?: number) => {
   const response = await axios.patch(`users/${userId}`, {
     defaultRoadmapId: roadmapId ?? null,
   });
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const joinRoadmap = async (user: UserInfo, invitationLink: string) => {
@@ -376,14 +379,14 @@ const verifyEmail = async (user: UserInfo, verificationId: string) => {
   const response = await axios.post(
     `/users/${user.id}/verifyEmail/${verificationId}`,
   );
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const sendEmailVerificationLink = async (user: UserInfo) => {
   const response = await axios.post(
     `/users/${user.id}/sendEmailVerificationLink/`,
   );
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const addTaskRelation = async (roadmapId: number, relation: TaskRelation) => {
@@ -392,7 +395,7 @@ const addTaskRelation = async (roadmapId: number, relation: TaskRelation) => {
     to: relation.to,
     type: relation.type,
   });
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const removeTaskRelation = async (
@@ -403,7 +406,7 @@ const removeTaskRelation = async (
     `/roadmaps/${roadmapId}/tasks/relations`,
     { data: relation },
   );
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const addSynergyRelations = async (
@@ -415,7 +418,7 @@ const addSynergyRelations = async (
     `/roadmaps/${roadmapId}/tasks/relations/synergies`,
     { from, to },
   );
-  return response.status === 200;
+  return successful(response.status);
 };
 
 export const api = {
