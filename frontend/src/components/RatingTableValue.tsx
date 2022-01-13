@@ -22,14 +22,14 @@ const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   return (
     <div style={style} className={classes(css.ratingRow)}>
       <div className={classes(css.valueRating)}>
-        <div className={classes(css.rightSide)}>
+        <div className={classes(css.leftSide)}>
           <div className={classes(css.topRow)}>
             <Dot fill={customer.color} />
             <div className={classes(css.name)}>{customer.name}</div>
           </div>
           <div className={classes(css.bottomRow, css.name)}>{user.email}</div>
         </div>
-        <div className={classes(css.leftSide)}>
+        <div className={classes(css.rightSide)}>
           {user.id === userId && (
             <EditButton fontSize="medium" onClick={onEdit} />
           )}

@@ -41,7 +41,7 @@
   @extend .layout-row;
   align-items: center;
 
-  .rightSide {
+  .leftSide {
     @extend .layout-column;
     flex: 1;
   }
@@ -51,7 +51,7 @@
   }
 }
 
-.leftSide {
+.rightSide {
   @extend .typography-h3;
   @extend .layout-row;
   margin-left: auto;

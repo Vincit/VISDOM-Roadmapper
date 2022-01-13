@@ -113,7 +113,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
         className={classes(css.subtitleContainer)}
       >
         <div>{t('Average type', { type: t(typeString) })}</div>
-        <div className={classes(css.leftSide)}>
+        <div className={classes(css.rightSide)}>
           {type === TaskRatingDimension.BusinessValue ? (
             <BusinessIcon color={colors.black100} size="small" />
           ) : (

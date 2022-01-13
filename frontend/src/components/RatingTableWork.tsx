@@ -25,7 +25,7 @@ const TableWorkRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
           <BuildSharpIcon fontSize="small" />
         </div>
         <div className={classes(css.name)}>{user.email}</div>
-        <div className={classes(css.leftSide)}>
+        <div className={classes(css.rightSide)}>
           {user.id === userId && (
             <EditButton fontSize="medium" onClick={onEdit} />
           )}
