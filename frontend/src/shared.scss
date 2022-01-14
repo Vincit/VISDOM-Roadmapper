@@ -437,35 +437,34 @@ textarea {
   }
 }
 
+.link-button {
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  font-weight: bold;
+}
+
 .green {
-  text-decoration: underline;
   color: $COLOR_EMERALD;
 
   &.linkButton {
-    background-color: transparent;
-    padding: 0;
-    border: none;
+    @extend .link-button;
   }
 
   &:hover {
-    text-decoration: none;
-    color: $COLOR_FOREST;
+    text-decoration: underline;
   }
 }
 
 .blue {
-  text-decoration: underline;
   color: $COLOR_AZURE;
 
   &.linkButton {
-    background-color: transparent;
-    padding: 0;
-    border: none;
+    @extend .link-button;
   }
 
   &:hover {
-    text-decoration: none;
-    color: darken($COLOR_AZURE, 10%);
+    text-decoration: underline;
   }
 }
 
