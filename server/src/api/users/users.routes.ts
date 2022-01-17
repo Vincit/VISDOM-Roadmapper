@@ -16,6 +16,8 @@ import {
   joinRoadmap,
   verifyEmail,
   sendNewVerificationLink,
+  sendPasswordResetLink,
+  resetPassword,
 } from './users.controller';
 import { Context } from 'koa';
 import { IKoaState } from 'src/types/customTypes';
@@ -48,5 +50,8 @@ userRouter.post(
   requireAuth,
   sendNewVerificationLink,
 );
+
+userRouter.post('/sendPasswordResetLink/', sendPasswordResetLink);
+userRouter.post('/resetPassword/', resetPassword);
 
 export default userRouter;

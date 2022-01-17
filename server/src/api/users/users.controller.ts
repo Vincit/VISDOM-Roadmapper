@@ -4,8 +4,10 @@ import { RouteHandlerFnc } from '../../types/customTypes';
 import User from './users.model';
 import Invitation from '../invitations/invitations.model';
 import EmailVerification from '../emailVerification/emailVerification.model';
+import PasswordReset from '../passwordReset/passwordReset.model';
 import { sendVerificationLink } from '../emailVerification/emailVerification.controller';
 import { Role } from '../roles/roles.model';
+import { sendEmail } from '../../utils/sendEmail';
 
 export const getUsers: RouteHandlerFnc = async (ctx) => {
   const query = User.query();
@@ -237,4 +239,51 @@ export const verifyEmail: RouteHandlerFnc = async (ctx) => {
     .patch({ emailVerified: true });
   await verification.$query().delete();
   ctx.status = 200;
+};
+
+const BASE_URL = process.env.FRONTEND_BASE_URL!;
+
+export const sendPasswordResetLink: RouteHandlerFnc = async (ctx) => {
+  console.log(ctx.request.body);
+  const { email, ...rest } = ctx.request.body;
+  if (Object.keys(rest).length) {
+    ctx.status = 400;
+    return;
+  }
+  ctx.status = await User.transaction(async (trx) => {
+    const user = await User.query(trx).where({ email }).first();
+    if (!user) return 404;
+    const created = await PasswordReset.query(trx)
+      .insertAndFetch({ userId: user.id, uuid: uuid.v4(), updatedAt: 'now' })
+      .onConflict('userId')
+      .merge();
+    if (!created) return 500;
+    await sendEmail(
+      email,
+      'Reset your password',
+      `Please reset your password using the link:\r\n${BASE_URL}/resetPassword/${created.uuid}`,
+    );
+    return 200;
+  });
+};
+
+export const resetPassword: RouteHandlerFnc = async (ctx) => {
+  const { token, password, ...rest } = ctx.request.body;
+  if (Object.keys(rest).length) {
+    ctx.status = 400;
+    return;
+  }
+  ctx.status = await User.transaction(async (trx) => {
+    const found = await PasswordReset.query(trx).where({ uuid: token }).first();
+    if (!found) return 404;
+    if (!found.valid) {
+      ctx.body = 'Password reset link has expired';
+      return 400;
+    }
+    const user = await User.query(trx).findById(found.userId);
+    if (!user) return 404;
+    await user.$query(trx).patch({ password });
+    await found.$query(trx).delete();
+    return 200;
+  });
 };
