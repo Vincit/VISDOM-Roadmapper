@@ -8,6 +8,7 @@ import PasswordReset from '../passwordReset/passwordReset.model';
 import { sendVerificationLink } from '../emailVerification/emailVerification.controller';
 import { Role } from '../roles/roles.model';
 import { sendEmail } from '../../utils/sendEmail';
+import { daysAgo } from '../../../../shared/utils/date';
 
 export const getUsers: RouteHandlerFnc = async (ctx) => {
   const query = User.query();
@@ -244,12 +245,17 @@ export const verifyEmail: RouteHandlerFnc = async (ctx) => {
 const BASE_URL = process.env.FRONTEND_BASE_URL!;
 
 export const sendPasswordResetLink: RouteHandlerFnc = async (ctx) => {
-  console.log(ctx.request.body);
   const { email, ...rest } = ctx.request.body;
   if (Object.keys(rest).length) {
     ctx.status = 400;
     return;
   }
+
+  // clean up expired links
+  await PasswordReset.query()
+    .delete()
+    .where('updatedAt', '<', daysAgo(PasswordReset.linkExpirationDays * 2));
+
   ctx.status = await User.transaction(async (trx) => {
     const user = await User.query(trx).where({ email }).first();
     if (!user) return 404;
