@@ -1,8 +1,11 @@
+import Objection from 'objection';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import { hasPermission } from './../../utils/checkPermissions';
 import { Permission } from '../../../../shared/types/customTypes';
 import Task from './tasks.model';
-import Objection from 'objection';
+import User from '../users/users.model';
+import { sendEmail } from '../../utils/sendEmail';
+import { isNumberArray } from '../../utils/typeValidation';
 
 export const getTasks: RouteHandlerFnc = async (ctx) => {
   const { user, role } = ctx.state;
@@ -90,4 +93,29 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
       completed: completed,
     }));
   });
+};
+
+export const notifyUsers: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  const roadmapId = Number(ctx.params.roadmapId);
+  const { users: userIds, message, ...rest } = ctx.request.body;
+  if (Object.keys(rest).length || !isNumberArray(userIds)) {
+    ctx.status = 400;
+    return;
+  }
+  const users = (
+    await User.query().findByIds(userIds).withGraphFetched('[roles]')
+  ).filter(({ roles }) => roles.some((role) => role.roadmapId === roadmapId));
+  if (users.length !== userIds.length) {
+    ctx.status = 400;
+    return;
+  }
+  // TODO: link to the actual task, where the user can give the rating
+  const messageBody = `${ctx.state.user.email} has requested your rating for the task ${ctx.params.taskId}.\r\n\r\n${message}`;
+  users.forEach(({ email }) => {
+    sendEmail(email, 'Task rating notification', messageBody);
+  });
+  ctx.status = 200;
 };

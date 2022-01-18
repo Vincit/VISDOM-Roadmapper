@@ -4,6 +4,7 @@ import {
   deleteTasks,
   patchTasks,
   postTasks,
+  notifyUsers,
 } from './tasks.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Context } from 'koa';
@@ -35,6 +36,11 @@ tasksRouter.patch(
   '/tasks/:taskId',
   requirePermission(Permission.TaskEdit),
   patchTasks,
+);
+tasksRouter.post(
+  '/tasks/:taskId/notify',
+  requirePermission(Permission.RoadmapReadUsers | Permission.TaskEdit),
+  notifyUsers,
 );
 
 tasksRouter.use('/tasks/:taskId', taskratingRouter.routes());
