@@ -223,10 +223,10 @@ export const TaskMapPage = () => {
   };
 
   return (
-    <>
+    <div className={classes(css['layout-row'], css.grow)}>
       <div
         id="taskmap"
-        className={classes(css.taskmap)}
+        className={classes(css.taskmap, css.grow)}
         style={{
           ['--zoom' as any]: mapPosition?.zoom || 1,
         }}
@@ -271,8 +271,8 @@ export const TaskMapPage = () => {
             )}
           </div>
         </DragDropContext>
+        <div ref={setDivRef} className={classes(css.measureTaskName)} />
       </div>
-      <div ref={setDivRef} className={classes(css.measureTaskName)} />
-    </>
+    </div>
   );
 };
