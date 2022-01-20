@@ -9,9 +9,10 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
-import { getType } from '../utils/UserUtils';
+import {
+  userInfoCustomersSelector,
+  userRoleSelector,
+} from '../redux/user/selectors';
 import { RoleType } from '../../../shared/types/customTypes';
 import { Overview, ArrowType } from '../components/Overview';
 import { BusinessIcon } from '../components/RoleIcons';
@@ -119,24 +120,19 @@ const ClientOverview: FC<{
 };
 
 export const ClientOverviewPage = () => {
-  const { clientId, roadmapId } = useParams<{
-    clientId: string | undefined;
-    roadmapId: string | undefined;
-  }>();
+  const { clientId } = useParams<{ clientId: string | undefined }>();
 
   const customers = useSelector<RootState, Customer[] | undefined>(
     allCustomersSelector,
     shallowEqual,
   )!;
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
+  const userInfoCustomers = useSelector<RootState, Customer[]>(
+    userInfoCustomersSelector,
     shallowEqual,
-  )!;
+  );
+  const role = useSelector(userRoleSelector, shallowEqual);
 
-  const clients =
-    getType(userInfo, Number(roadmapId)) === RoleType.Admin
-      ? customers
-      : userInfo.representativeFor!;
+  const clients = role === RoleType.Admin ? customers : userInfoCustomers;
   const clientIdx = clients.findIndex(({ id }) => Number(clientId) === id);
   const client =
     clientIdx !== undefined && clientIdx >= 0 ? clients[clientIdx] : undefined;

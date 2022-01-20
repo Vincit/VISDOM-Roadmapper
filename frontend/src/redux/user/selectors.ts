@@ -11,3 +11,8 @@ export const userRoleSelector = createSelector(
   (state) => state.roadmaps.selectedRoadmapId,
   getType,
 );
+
+export const userInfoCustomersSelector = (state: RootState) =>
+  state.user.info?.representativeFor?.filter(
+    ({ roadmapId }) => roadmapId === state.roadmaps.selectedRoadmapId,
+  ) || [];

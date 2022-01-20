@@ -85,11 +85,13 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     if (type === RoleType.Business) {
       setMissingRatings(
         userInfo?.representativeFor?.filter(
-          (customer) => !ratedByCustomer(customer, userInfo)(task),
+          (customer) =>
+            roadmapId === customer.roadmapId &&
+            !ratedByCustomer(customer, userInfo)(task),
         ),
       );
     }
-  }, [task, allCustomers, allUsers, userInfo, type]);
+  }, [task, allCustomers, allUsers, userInfo, type, roadmapId]);
 
   const openModal = (payload: ShowModalPayload) => (e: SyntheticEvent) => {
     e.preventDefault();

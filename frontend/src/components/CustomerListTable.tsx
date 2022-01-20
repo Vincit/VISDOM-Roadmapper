@@ -11,8 +11,7 @@ import {
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { UserInfo } from '../redux/user/types';
+import { userInfoCustomersSelector } from '../redux/user/selectors';
 import { CustomerSortingTypes, customerSort } from '../utils/SortCustomerUtils';
 import { RoleType } from '../../../shared/types/customTypes';
 
@@ -29,8 +28,8 @@ export const CustomerList: FC<{
     chosenRoadmapSelector,
     shallowEqual,
   );
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
+  const userInfoCustomers = useSelector<RootState, Customer[]>(
+    userInfoCustomersSelector,
     shallowEqual,
   );
   const dispatch = useDispatch<StoreDispatchType>();
@@ -46,10 +45,9 @@ export const CustomerList: FC<{
 
   useEffect(() => {
     // Filter, search, sort customers
-    const selected =
-      role === RoleType.Admin ? customers : userInfo?.representativeFor;
+    const selected = role === RoleType.Admin ? customers : userInfoCustomers;
     setSelectedCustomers(selected ?? []);
-  }, [customers, userInfo, role]);
+  }, [customers, userInfoCustomers, role]);
 
   const filterPredicate = search
     ? ({ name }: Customer) => name.toLowerCase().includes(search)
