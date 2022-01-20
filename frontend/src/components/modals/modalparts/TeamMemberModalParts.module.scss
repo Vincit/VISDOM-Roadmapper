@@ -36,6 +36,24 @@
   }
 }
 
+.customerSelection {
+  @extend .layout-column;
+
+  .customers {
+    margin: 2px 20px 0 20px;
+
+    .customer {
+      display: flex;
+      align-items: center;
+
+      > :last-child {
+        position: relative;
+        top: -4px;
+      }
+    }
+  }
+}
+
 .displayMember {
   @extend .layout-row;
   user-select: none;

@@ -41,6 +41,7 @@ export const JoinProjectModal: Modal<ModalTypes.JOIN_PROJECT_MODAL> = ({
     if (userActions.joinRoadmap.rejected.match(res))
       return { message: res.payload?.message ?? '' };
     await dispatch(roadmapsActions.getRoadmaps());
+    await dispatch(userActions.getUserInfo());
   };
 
   const steps = [

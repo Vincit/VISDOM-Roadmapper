@@ -36,6 +36,10 @@ export interface CustomerStakes {
   color: string;
 }
 
+export interface CheckableCustomer extends Customer {
+  checked: boolean;
+}
+
 export interface CheckableUser extends RoadmapUser {
   checked: boolean;
 }
@@ -210,6 +214,7 @@ export interface Invitation {
   updatedAt: string;
   valid: boolean;
   roadmap?: { name: string };
+  representativeFor: Customer[];
 }
 
 export interface InvitationRequest {
@@ -217,6 +222,14 @@ export interface InvitationRequest {
   roadmapId?: number;
   type?: RoleType;
   email?: string;
+  representativeFor?: number[];
+}
+
+export interface NewInvitation {
+  roadmapId?: number;
+  type: RoleType;
+  email: string;
+  representativeFor?: number[];
 }
 
 interface InfoModalColumn {

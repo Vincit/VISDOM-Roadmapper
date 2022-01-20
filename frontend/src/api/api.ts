@@ -1,6 +1,5 @@
 import Axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
-import { RoleType } from '../../../shared/types/customTypes';
 import {
   ImportBoardRequest,
   IntegrationConfigurationRequest,
@@ -25,6 +24,7 @@ import {
   Invitation,
   InvitationRequest,
   TaskRelation,
+  NewInvitation,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -350,15 +350,11 @@ const getInvitation = async (invitationId: string) => {
   return response.data as Invitation;
 };
 
-const sendInvitation = async (
-  email: string,
-  type: RoleType,
-  roadmapId: number,
-) => {
-  const response = await axios.post(`roadmaps/${roadmapId}/invitations/`, {
-    email,
-    type,
-  });
+const sendInvitation = async (roadmapId: number, invitation: NewInvitation) => {
+  const response = await axios.post(
+    `roadmaps/${roadmapId}/invitations/`,
+    invitation,
+  );
   return successful(response.status);
 };
 
