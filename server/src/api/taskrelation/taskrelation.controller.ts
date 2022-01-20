@@ -1,6 +1,7 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Task from '../tasks/tasks.model';
 import { TaskRelation } from './taskrelation.model';
+import { isNumberArray } from '../../utils/typeValidation';
 import { TaskRelationType } from '../../../../shared/types/customTypes';
 
 export const getRelations: RouteHandlerFnc = async (ctx) => {
@@ -30,11 +31,6 @@ export const addRelation: RouteHandlerFnc = async (ctx) => {
   } else {
     ctx.status = 400;
   }
-};
-
-const isNumberArray = (value: any): value is number[] => {
-  if (!Array.isArray(value)) return false;
-  return value.every((num) => typeof num === 'number');
 };
 
 export const addSynergies: RouteHandlerFnc = async (ctx) => {
