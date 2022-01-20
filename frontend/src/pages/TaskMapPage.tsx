@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { ReactNode, FC, useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import ReactFlow, {
   Controls,
@@ -48,6 +48,38 @@ const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
   return <div>{data.label}</div>;
 };
 
+type Group = {
+  id: string;
+  type: 'special';
+  sourcePosition: Position;
+  targetPosition: Position;
+  draggable: boolean;
+  position: {
+    x: number;
+    y: number;
+  };
+  data: {
+    label: ReactNode;
+  };
+};
+
+type Edge = {
+  id: string;
+  type: 'custom';
+  source: string;
+  sourceHandle: string;
+  target: string;
+  targetHandle: string;
+  data: {
+    disableInteraction: boolean;
+  };
+};
+
+/* eslint-disable */
+const isEdge = (x: Edge | Group): x is Edge => x.type === 'custom';
+const isGroup = (x: Edge | Group): x is Group => x.type === 'special';
+/* eslint-enable */
+
 export const TaskMapPage = () => {
   const { t } = useTranslation();
   const tasks = useSelector(allTasksSelector, shallowEqual);
@@ -57,7 +89,7 @@ export const TaskMapPage = () => {
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [disableDrag, setDisableDrag] = useState(false);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
-  const [flowElements, setFlowElements] = useState<any>([]);
+  const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
 
   useEffect(() => {
@@ -90,7 +122,7 @@ export const TaskMapPage = () => {
 
     const graph = getAutolayout(measuredRelations);
 
-    const groups = measuredRelations.map(({ id, synergies }) => {
+    const groups: Group[] = measuredRelations.map(({ id, synergies }) => {
       const node = graph.node(id);
       return {
         id,
@@ -117,7 +149,7 @@ export const TaskMapPage = () => {
       };
     });
 
-    const edges = measuredRelations.flatMap(({ dependencies }, idx) =>
+    const edges: Edge[] = measuredRelations.flatMap(({ dependencies }, idx) =>
       dependencies.map(({ from, to }) => {
         const targetGroup = measuredRelations.find(({ synergies }) =>
           synergies.includes(to),
