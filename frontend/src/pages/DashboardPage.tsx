@@ -16,7 +16,8 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType, Permission } from '../../../shared/types/customTypes';
 import { awaitsUserRatings } from '../utils/TaskUtils';
-import { getType, hasPermission } from '../utils/UserUtils';
+import { getType } from '../utils/UserUtils';
+import { hasPermission } from '../../../shared/utils/permission';
 import css from './DashboardPage.module.scss';
 
 const classes = classNames.bind(css);
