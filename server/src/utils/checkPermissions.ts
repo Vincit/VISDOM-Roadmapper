@@ -1,5 +1,6 @@
 import { Context } from 'koa';
 import { Role } from '../api/roles/roles.model';
+import { hasPermission } from '../../../shared/utils/permission';
 
 export class ForbiddenError extends Error {}
 
@@ -24,7 +25,7 @@ export const requirePermission = (permission: number) => (
   next: () => Promise<any>,
 ) => {
   const check = async () => {
-    if (!hasPermission(ctx, permission)) {
+    if (!userHasPermission(ctx, permission)) {
       throw new ForbiddenError('No permission');
     }
     await next();
@@ -32,7 +33,7 @@ export const requirePermission = (permission: number) => (
   return ctx.state.role === undefined ? requireRole(ctx, check) : check();
 };
 
-export const hasPermission = (ctx: Context, permission: number) => {
+export const userHasPermission = (ctx: Context, permission: number) => {
   const role = ctx.state.role;
-  return role !== undefined && (role & permission) === permission;
+  return hasPermission(role, permission);
 };
