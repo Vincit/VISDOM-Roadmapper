@@ -45,7 +45,7 @@ export const table: <ItemType, Sorting>(
   Title,
   getSort,
   minUnitWidth,
-}) => ({ items, filterPredicate, rowHeight = 80, height = 600 }) => {
+}) => ({ items, filterPredicate, rowHeight = 55, height = 600 }) => {
   const [sort, sorting] = useSorting(getSort);
 
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
