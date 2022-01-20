@@ -1,4 +1,4 @@
-import { hasPermission } from './../../utils/checkPermissions';
+import { userHasPermission } from './../../utils/checkPermissions';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Customer from './customer.model';
 import { Permission } from '../../../../shared/types/customTypes';
@@ -10,7 +10,7 @@ export const getCustomers: RouteHandlerFnc = async (ctx) => {
     .where('roadmapId', Number(ctx.params.roadmapId))
     .withGraphFetched('[representatives]');
 
-  if (!hasPermission(ctx, Permission.RoadmapReadCustomerValues)) {
+  if (!userHasPermission(ctx, Permission.RoadmapReadCustomerValues)) {
     query = query.select('roadmapId', 'id', 'name', 'email', 'color');
   }
   ctx.body = await query;

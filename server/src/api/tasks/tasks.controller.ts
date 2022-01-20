@@ -1,6 +1,6 @@
 import Objection from 'objection';
 import { RouteHandlerFnc } from '../../types/customTypes';
-import { hasPermission } from './../../utils/checkPermissions';
+import { userHasPermission } from './../../utils/checkPermissions';
 import { Permission } from '../../../../shared/types/customTypes';
 import Task from './tasks.model';
 import User from '../users/users.model';
@@ -59,7 +59,7 @@ export const deleteTasks: RouteHandlerFnc = async (ctx) => {
     .findById(Number(ctx.params.taskId))
     .where({
       roadmapId: Number(ctx.params.roadmapId),
-      ...(!hasPermission(ctx, Permission.TaskEditOthers) && {
+      ...(!userHasPermission(ctx, Permission.TaskEditOthers) && {
         createdByUser: Number(ctx.state.user.id),
       }),
     })
@@ -82,7 +82,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
 
     if (!task) return void (ctx.status = 404);
     if (
-      !hasPermission(ctx, Permission.TaskEditOthers) &&
+      !userHasPermission(ctx, Permission.TaskEditOthers) &&
       task.createdByUser !== ctx.state.user!.id
     )
       return void (ctx.status = 403);

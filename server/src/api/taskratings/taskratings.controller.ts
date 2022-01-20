@@ -1,5 +1,5 @@
 import { RouteHandlerFnc } from '../../types/customTypes';
-import { hasPermission } from './../../utils/checkPermissions';
+import { userHasPermission } from './../../utils/checkPermissions';
 import {
   Permission,
   TaskRatingDimension,
@@ -28,8 +28,11 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
 
   if (!Array.isArray(ratings)) return void (ctx.status = 400);
 
-  const hasValueRatePermission = hasPermission(ctx, Permission.TaskValueRate);
-  const hasWorkRatePermission = hasPermission(ctx, Permission.TaskWorkRate);
+  const hasValueRatePermission = userHasPermission(
+    ctx,
+    Permission.TaskValueRate,
+  );
+  const hasWorkRatePermission = userHasPermission(ctx, Permission.TaskWorkRate);
 
   const errors = await Promise.all(
     ratings.map(async (rating) => {
@@ -80,7 +83,7 @@ export const deleteTaskrating: RouteHandlerFnc = async (ctx) => {
     .findById(Number(ctx.params.ratingId))
     .where({
       parentTask: Number(ctx.params.taskId),
-      ...(!hasPermission(ctx, Permission.TaskRatingEditOthers) && {
+      ...(!userHasPermission(ctx, Permission.TaskRatingEditOthers) && {
         createdByUser: Number(ctx.state.user.id),
       }),
     })
@@ -97,9 +100,12 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
 
   if (!Array.isArray(ratings)) return void (ctx.status = 400);
 
-  const hasValueRatePermission = hasPermission(ctx, Permission.TaskValueRate);
-  const hasWorkRatePermission = hasPermission(ctx, Permission.TaskWorkRate);
-  const hasEditOthersPermission = hasPermission(
+  const hasValueRatePermission = userHasPermission(
+    ctx,
+    Permission.TaskValueRate,
+  );
+  const hasWorkRatePermission = userHasPermission(ctx, Permission.TaskWorkRate);
+  const hasEditOthersPermission = userHasPermission(
     ctx,
     Permission.TaskRatingEditOthers,
   );
