@@ -164,6 +164,7 @@ export const english = {
     'Pick a color': 'Pick a color',
     "Who's responsible for the client value ratings?":
       "Who's responsible for the client value ratings?",
+    'Responsible for': 'Responsible for',
     'Remove customer warning':
       'Are you sure you want to remove <strong>{{name}}</strong>?',
     'Remove team warning':

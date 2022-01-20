@@ -26,12 +26,12 @@ import {
   VersionRequest,
   Invitation,
   InvitationRequest,
+  NewInvitation,
 } from './types';
-import { RoleType } from '../../../../shared/types/customTypes';
 
 export const getCustomers = createAsyncThunk<
   { roadmapId: number; customers: Customer[] },
-  number,
+  number | undefined,
   { rejectValue: AxiosError }
 >('roadmaps/getCustomers', async (roadmapId, thunkAPI) => {
   try {
@@ -451,15 +451,14 @@ export const notifyUsers = createAsyncThunk<
 
 export const sendInvitation = createAsyncThunk<
   boolean,
-  { email: string; type: RoleType },
+  NewInvitation,
   { rejectValue: AxiosError }
->('sendInvitation', async (invitationRequest, thunkAPI) => {
-  const { email, type } = invitationRequest;
+>('sendInvitation', async (invitation, thunkAPI) => {
   try {
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
-    return await api.sendInvitation(email, type, currentroadmapId);
+    return await api.sendInvitation(currentroadmapId, invitation);
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }

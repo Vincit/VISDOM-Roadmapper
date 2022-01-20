@@ -1,5 +1,5 @@
 import convert from 'color-convert';
-import { Customer, CheckableUser, RoadmapUser } from '../redux/roadmaps/types';
+import { Customer, RoadmapUser } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 
 export const isCustomer = (
@@ -22,6 +22,6 @@ export const randomColor = (
   return `#${convert.hsl.hex([hue, 100, 65])}`;
 };
 
-export const getCheckedIds = (reps: CheckableUser[]) => {
-  return reps.filter((rep) => rep.checked).map(({ id }) => id);
+export const getCheckedIds = <T>(array: { checked: boolean; id: T }[]) => {
+  return array.filter(({ checked }) => checked).map(({ id }) => id);
 };

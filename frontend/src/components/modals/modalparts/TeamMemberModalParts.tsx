@@ -4,14 +4,19 @@ import classNames from 'classnames';
 import StarSharpIcon from '@material-ui/icons/StarSharp';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { Alert } from 'react-bootstrap';
+import { Checkbox } from '../../forms/Checkbox';
 import { BusinessIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
 import { Input } from '../../forms/FormField';
 import { RoleType } from '../../../../../shared/types/customTypes';
 import { DeleteButton, EditButton } from '../../forms/SvgButton';
 import { ControlledTooltip } from '../../ControlledTooltip';
-import { InviteRoadmapUser } from '../../../redux/roadmaps/types';
+import {
+  CheckableCustomer,
+  InviteRoadmapUser,
+} from '../../../redux/roadmaps/types';
 import css from './TeamMemberModalParts.module.scss';
+import { Dot } from '../../Dot';
 
 const classes = classNames.bind(css);
 
@@ -56,6 +61,32 @@ export const SelectMemberRole: FC<{
         )}
       </div>
     </>
+  );
+};
+
+export const SelectCustomers: FC<{
+  customers: CheckableCustomer[];
+  onCustomerChange: (idx: number, checked: boolean) => void;
+}> = ({ customers, onCustomerChange }) => {
+  if (!customers.length) return null;
+  return (
+    <div className={classes(css.customerSelection)}>
+      <label htmlFor="customers">
+        <Trans i18nKey="Responsible for" />
+      </label>
+      <div id="customers" className={classes(css.customers)}>
+        {customers.map(({ id, name, checked, color }, idx) => (
+          <div key={id} className={classes(css.customer)}>
+            <Checkbox
+              label={name}
+              checked={checked}
+              onChange={(changed) => onCustomerChange(idx, changed)}
+            />
+            <Dot fill={color} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
