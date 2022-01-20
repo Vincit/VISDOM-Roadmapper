@@ -2,6 +2,7 @@ import { hasPermission } from './../../utils/checkPermissions';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Customer from './customer.model';
 import { Permission } from '../../../../shared/types/customTypes';
+import { difference } from '../../utils/array';
 import User from '../users/users.model';
 
 export const getCustomers: RouteHandlerFnc = async (ctx) => {
@@ -35,14 +36,6 @@ export const postCustomer: RouteHandlerFnc = async (ctx) => {
     return await customer.$query(trx).withGraphFetched('representatives');
   });
   ctx.body = inserted;
-};
-
-const difference = <T>(old: T[], updated: T[]) => {
-  const oldSet = new Set(old);
-  const updatedSet = new Set(updated);
-  const removed = old.filter((value) => !updatedSet.has(value));
-  const added = updated.filter((value) => !oldSet.has(value));
-  return { removed, added };
 };
 
 export const patchCustomer: RouteHandlerFnc = async (ctx) => {

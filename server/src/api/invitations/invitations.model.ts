@@ -2,6 +2,7 @@ import { Model, Pojo, QueryBuilder } from 'objection';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { daysAgo } from '../../../../shared/utils/date';
 import Roadmap from '../roadmaps/roadmaps.model';
+import Customer from '../customer/customer.model';
 
 export default class Invitation extends Model {
   id!: string;
@@ -12,6 +13,7 @@ export default class Invitation extends Model {
 
   valid?: boolean;
   roadmap?: Roadmap;
+  representativeFor?: Customer[];
 
   static tableName = 'invitations';
   static linkExpirationDays = 2;
@@ -49,6 +51,18 @@ export default class Invitation extends Model {
         join: {
           from: 'invitations.roadmapId',
           to: 'roadmaps.id',
+        },
+      },
+      representativeFor: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Customer,
+        join: {
+          from: 'invitations.id',
+          through: {
+            from: 'invitationRepresentative.invitationId',
+            to: 'invitationRepresentative.customerId',
+          },
+          to: 'customer.id',
         },
       },
     };

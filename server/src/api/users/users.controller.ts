@@ -190,8 +190,11 @@ export const getInvitation: RouteHandlerFnc = async (ctx) => {
 export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
   const { ...others } = ctx.request.body;
+  const userId = Number(ctx.params.userId);
 
-  const invitation = await Invitation.query().findById(ctx.params.invitationId);
+  const invitation = await Invitation.query()
+    .withGraphFetched('representativeFor')
+    .findById(ctx.params.invitationId);
 
   if (Object.keys(others).length || !invitation || !invitation.valid)
     return void (ctx.status = 400);
@@ -200,8 +203,13 @@ export const joinRoadmap: RouteHandlerFnc = async (ctx) => {
   const role = await Invitation.transaction(async (trx) => {
     await invitation.$query(trx).delete();
 
+    if (invitation.representativeFor!.length > 0)
+      await User.relatedQuery('representativeFor', trx)
+        .for(userId)
+        .relate(invitation.representativeFor!);
+
     return await Role.query(trx).insertAndFetch({
-      userId: Number(ctx.params.userId),
+      userId,
       roadmapId: invitation.roadmapId,
       type: invitation.type,
     });
