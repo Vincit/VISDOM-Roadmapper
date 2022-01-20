@@ -13,6 +13,10 @@
   position: relative;
   align-items: center;
 
+  &.unavailable {
+    filter: grayscale(100%) opacity(20%);
+  }
+
   button {
     visibility: hidden;
     padding: 0;
@@ -56,48 +60,47 @@
   }
 }
 
-.draggingHandle {
-  height: calc(17px * #{$ZOOM});
-  width: calc(17px * #{$ZOOM});
-  border-width: calc(2px * #{$ZOOM});
+.handle {
+  visibility: visible;
+  position: absolute;
+  border-radius: 50%;
+  height: 17px;
+  width: 17px;
+  background-color: $COLOR_WHITE;
+
+  &.dragging {
+    height: calc(17px * #{$ZOOM});
+    width: calc(17px * #{$ZOOM});
+    border-width: calc(2px * #{$ZOOM});
+  }
 }
 
 .leftHandle {
-  visibility: visible;
-  position: absolute;
+  @extend .handle;
   left: -3%;
-  border-radius: 20;
-  height: 17px;
-  width: 17px;
-  background-color: $COLOR_WHITE;
   border: 2px solid $COLOR_ORANGE;
 
-  &.dragging {
-    @extend .draggingHandle;
+  &.filled {
+    background-color: lighten($COLOR_ORANGE, 20%);
   }
-}
 
-.filledLeftHandle {
-  background-color: lighten($COLOR_ORANGE, 20%);
+  &.connectable {
+    box-shadow: 0 0 10px 4px $COLOR_ORANGE;
+  }
 }
 
 .rightHandle {
-  visibility: visible;
-  position: absolute;
+  @extend .handle;
   left: 97%;
-  border-radius: 20;
-  height: 17px;
-  width: 17px;
-  background-color: $COLOR_WHITE;
   border: 2px solid $COLOR_FOREST;
 
-  &.dragging {
-    @extend .draggingHandle;
+  &.filled {
+    background-color: lighten($COLOR_FOREST, 20%);
   }
-}
 
-.filledRightHandle {
-  background-color: lighten($COLOR_FOREST, 20%);
+  &.connectable {
+    box-shadow: 0 0 10px 4px $COLOR_FOREST;
+  }
 }
 
 .taskRatingTexts {

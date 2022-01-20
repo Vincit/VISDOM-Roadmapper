@@ -74,3 +74,29 @@ export const getAutolayout = (relations: MeasuredRelation[]) => {
   dagre.layout(graph);
   return graph;
 };
+
+export const reachable = (
+  task: number,
+  graph: GroupedRelation[],
+  type: 'target' | 'source',
+) => {
+  const from = type === 'target' ? 'from' : 'to';
+  const to = type === 'target' ? 'to' : 'from';
+  const visited = new Set<number>();
+  const queue = [task];
+  while (queue.length > 0) {
+    const t = queue.pop()!;
+    visited.add(t);
+    graph.forEach((group) => {
+      if (group.synergies.includes(t)) {
+        group.synergies.forEach((s) => {
+          if (!visited.has(s)) queue.push(s);
+        });
+      }
+      group.dependencies.forEach((edge) => {
+        if (edge[from] === t && !visited.has(edge[to])) queue.push(edge[to]);
+      });
+    });
+  }
+  return visited;
+};

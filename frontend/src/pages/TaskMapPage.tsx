@@ -24,13 +24,14 @@ import {
   groupTaskRelations,
   GroupedRelation,
   getAutolayout,
+  reachable,
 } from '../utils/TaskRelationUtils';
 import { getTaskOverviewData } from './TaskOverviewPage';
 import { OverviewContent } from '../components/Overview';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 import { CustomEdge } from '../components/TaskMapEdge';
 import { ConnectionLine } from '../components/TaskMapConnection';
-import { Position } from '../components/TaskMapTask';
+import { Position, TaskProps } from '../components/TaskMapTask';
 import { move } from '../utils/array';
 import { TaskGroup } from '../components/TaskMapTaskGroup';
 import css from './TaskMapPage.module.scss';
@@ -91,6 +92,8 @@ export const TaskMapPage = () => {
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
+  const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
+  const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
 
   useEffect(() => {
     if (!mapPosition && flowInstance && flowElements.length) {
@@ -143,6 +146,8 @@ export const TaskMapPage = () => {
                 ({ dependencies }) => dependencies,
               )}
               disableDragging={disableDrag}
+              unavailable={unavailable}
+              dragHandle={dragHandle}
             />
           ),
         },
@@ -168,7 +173,15 @@ export const TaskMapPage = () => {
     );
 
     setFlowElements([...groups, ...edges]);
-  }, [disableDrag, divRef, selectedTask, taskRelations, tasks]);
+  }, [
+    unavailable,
+    disableDrag,
+    divRef,
+    dragHandle,
+    selectedTask,
+    taskRelations,
+    tasks,
+  ]);
 
   const onConnect = async (data: any) => {
     const { sourceHandle, targetHandle } = data;
@@ -177,6 +190,22 @@ export const TaskMapPage = () => {
     // Handles are in form 'from-{id}' and 'to-{id}', splitting required
     const from = Number(sourceHandle.split('-')[1]);
     const to = Number(targetHandle.split('-')[1]);
+
+    if (
+      // the connection would introduce a dependency cycle
+      from === to ||
+      unavailable.has(from) ||
+      unavailable.has(to) ||
+      // the relation already exists
+      taskRelations.some(({ dependencies }) =>
+        dependencies.some(
+          (x) =>
+            (to === x.from && from === x.to) ||
+            (to === x.to && from === x.from),
+        ),
+      )
+    )
+      return;
 
     await dispatch(roadmapsActions.addTaskRelation({ from, to, type }));
     dispatch(roadmapsActions.getRoadmaps());
@@ -276,6 +305,26 @@ export const TaskMapPage = () => {
                 special: CustomNodeComponent,
               }}
               draggable={false}
+              onConnectStart={(_, { nodeId, handleId, handleType }) => {
+                if (!nodeId || !handleId || !handleType) return;
+                const taskId = Number(handleId.split('-')[1]);
+                setUnavailable(reachable(taskId, taskRelations, handleType));
+                const existingConnections = taskRelations.flatMap(
+                  ({ dependencies }) =>
+                    dependencies.flatMap(({ from, to }) =>
+                      from === taskId || to === taskId ? [from, to] : [],
+                    ),
+                );
+                setDragHandle({
+                  type: handleType,
+                  from: taskId,
+                  existingConnections,
+                });
+              }}
+              onConnectEnd={() => {
+                setUnavailable(new Set());
+                setDragHandle(undefined);
+              }}
               onConnect={onConnect}
               edgeTypes={{
                 custom: CustomEdge,

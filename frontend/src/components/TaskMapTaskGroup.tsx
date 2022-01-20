@@ -2,25 +2,26 @@ import { FC } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import { Task } from '../redux/roadmaps/types';
-import { DraggableSingleTask } from './TaskMapTask';
+import { DraggableSingleTask, TaskProps } from './TaskMapTask';
 import css from './TaskMapTaskGroup.module.scss';
 
 const classes = classNames.bind(css);
 
-export const TaskGroup: FC<{
-  listId: string;
-  taskIds: number[];
-  selectedTask: Task | undefined;
-  setSelectedTask: any;
-  allDependencies: { from: number; to: number }[];
-  disableDragging: boolean;
-}> = ({
+export const TaskGroup: FC<
+  {
+    listId: string;
+    taskIds: number[];
+    selectedTask: Task | undefined;
+    setSelectedTask: any;
+    allDependencies: { from: number; to: number }[];
+  } & Omit<TaskProps, 'taskId' | 'checked'>
+> = ({
   listId,
   taskIds,
   selectedTask,
-  setSelectedTask,
   allDependencies,
   disableDragging,
+  ...rest
 }) => (
   <Droppable droppableId={listId} type="TASKS">
     {(provided, snapshot) => (
@@ -37,11 +38,13 @@ export const TaskGroup: FC<{
             <DraggableSingleTask
               taskId={taskId}
               selected={selectedTask?.id === taskId}
-              setSelectedTask={setSelectedTask}
               index={index}
-              toChecked={allDependencies.some(({ to }) => to === taskId)}
-              fromChecked={allDependencies.some(({ from }) => from === taskId)}
+              checked={{
+                to: allDependencies.some(({ to }) => to === taskId),
+                from: allDependencies.some(({ from }) => from === taskId),
+              }}
               disableDragging={disableDragging}
+              {...rest}
             />
           </div>
         ))}
