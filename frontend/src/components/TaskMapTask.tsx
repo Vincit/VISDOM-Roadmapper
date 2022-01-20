@@ -1,7 +1,7 @@
 import { FC, MouseEvent } from 'react';
 import ReactDOM from 'react-dom';
 import { shallowEqual, useSelector } from 'react-redux';
-import { Handle } from 'react-flow-renderer';
+import { Handle, HandleType } from 'react-flow-renderer';
 import { Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
@@ -21,13 +21,18 @@ export enum Position {
   Bottom = 'bottom',
 }
 
-interface TaskProps {
+export interface TaskProps {
   taskId: number;
   selected?: boolean;
   setSelectedTask?: any;
-  toChecked: boolean;
-  fromChecked: boolean;
+  checked: { from: boolean; to: boolean };
   disableDragging: boolean;
+  unavailable: Set<number>;
+  dragHandle?: {
+    type: HandleType;
+    from: number;
+    existingConnections: number[];
+  };
 }
 
 const SingleTask: FC<
@@ -39,11 +44,12 @@ const SingleTask: FC<
   taskId,
   setSelectedTask,
   selected,
-  toChecked,
-  fromChecked,
+  checked,
   provided,
   snapshot,
   disableDragging,
+  unavailable,
+  dragHandle,
 }) => {
   const { isDragging } = snapshot;
   const task = useSelector<RootState, Task | undefined>(
@@ -57,6 +63,32 @@ const SingleTask: FC<
   };
 
   if (!task) return null;
+
+  const handle = (type: HandleType) => {
+    const left = type === 'target';
+    const key = left ? 'to' : 'from';
+    return (
+      /* drag-n-drop is blocked for interactive elements such as buttons */
+      <button type="button">
+        <Handle
+          className={classes(left ? css.leftHandle : css.rightHandle, {
+            [css.filled]: checked[key],
+            [css.dragging]: isDragging,
+            [css.connectable]:
+              !isDragging &&
+              dragHandle &&
+              dragHandle.type !== type &&
+              !dragHandle.existingConnections.includes(taskId) &&
+              !unavailable.has(taskId),
+          })}
+          id={`${key}-${taskId}`}
+          type={type}
+          position={left ? Position.Left : Position.Right}
+        />
+      </button>
+    );
+  };
+
   return (
     <div
       role="button"
@@ -68,23 +100,14 @@ const SingleTask: FC<
         [css.dragging]: isDragging,
         [css.draggingOutside]: !snapshot.draggingOver,
         [css.loading]: disableDragging && !isDragging,
+        [css.unavailable]:
+          dragHandle?.from !== taskId && unavailable.has(taskId),
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
-      {/* drag-n-drop is blocked for interactive elements such as buttons */}
-      <button type="button">
-        <Handle
-          className={classes(css.leftHandle, {
-            [css.filledLeftHandle]: toChecked,
-            [css.dragging]: isDragging,
-          })}
-          id={`to-${task.id}`}
-          type="target"
-          position={Position.Left}
-        />
-      </button>
+      {handle('target')}
       {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
       <div
         className={classes(css.taskName, {
@@ -101,17 +124,7 @@ const SingleTask: FC<
           dragging={isDragging}
         />
       </div>
-      <button type="button">
-        <Handle
-          className={classes(css.rightHandle, {
-            [css.filledRightHandle]: fromChecked,
-            [css.dragging]: isDragging,
-          })}
-          id={`from-${task.id}`}
-          type="source"
-          position={Position.Right}
-        />
-      </button>
+      {handle('source')}
     </div>
   );
 };
