@@ -9,7 +9,6 @@ import { Permission } from '../../../shared/types/customTypes';
 import { roadmapsActions } from '../redux/roadmaps';
 import { StoreDispatchType } from '../redux/index';
 import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
-import { hasPermission } from '../utils/UserUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { userRoleSelector } from '../redux/user/selectors';
@@ -18,6 +17,7 @@ import { paths } from '../routers/paths';
 import { RatingTableWork } from '../components/RatingTableWork';
 import { RatingTableValue } from '../components/RatingTableValue';
 import { Overview, ArrowType } from '../components/Overview';
+import { hasPermission } from '../../../shared/utils/permission';
 import colors from '../colors.module.scss';
 import css from './TaskOverviewPage.module.scss';
 

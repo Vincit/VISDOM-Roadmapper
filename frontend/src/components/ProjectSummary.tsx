@@ -13,13 +13,14 @@ import { MoreButton } from './forms/SvgButton';
 import { isCustomer } from '../utils/CustomerUtils';
 import { paths } from '../routers/paths';
 import { modalLink, ModalTypes } from './modals/types';
-import { getType, hasPermission } from '../utils/UserUtils';
+import { getType } from '../utils/UserUtils';
 import { Permission } from '../../../shared/types/customTypes';
 import css from './ProjectSummary.module.scss';
 import { RootState } from '../redux/types';
 import { UserInfo } from '../redux/user/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { userActions } from '../redux/user';
+import { hasPermission } from '../../../shared/utils/permission';
 
 const classes = classNames.bind(css);
 

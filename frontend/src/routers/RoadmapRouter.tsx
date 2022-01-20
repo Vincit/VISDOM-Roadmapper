@@ -16,7 +16,7 @@ import { ClientOverviewPage } from '../pages/ClientOverviewPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { UserInfo } from '../redux/user/types';
-import { getType, hasPermission } from '../utils/UserUtils';
+import { getType } from '../utils/UserUtils';
 import { Permission } from '../../../shared/types/customTypes';
 import {
   chosenRoadmapSelector,
@@ -29,6 +29,7 @@ import { requireVerifiedEmail } from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
 import { TasksPageRouter } from './TasksPageRouter';
+import { hasPermission } from '../../../shared/utils/permission';
 import '../shared.scss';
 
 const routes = [
