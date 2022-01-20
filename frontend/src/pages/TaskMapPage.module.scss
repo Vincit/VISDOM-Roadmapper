@@ -2,10 +2,16 @@
 
 $ZOOM: var(--zoom, 1);
 
+.taskmap {
+  @extend .layout-column;
+  height: 100%;
+}
+
 .flowContainer {
   background-color: $COLOR_WHITE;
   border-radius: 10px;
-  height: 540px;
+  min-height: 540px;
+  max-height: 70vh;
   margin-top: 10px;
 }
 

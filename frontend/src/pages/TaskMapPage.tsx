@@ -226,6 +226,7 @@ export const TaskMapPage = () => {
     <>
       <div
         id="taskmap"
+        className={classes(css.taskmap)}
         style={{
           ['--zoom' as any]: mapPosition?.zoom || 1,
         }}
