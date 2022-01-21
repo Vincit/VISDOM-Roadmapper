@@ -439,6 +439,21 @@ const leaveRoadmap = async (roadmapId: number) => {
   return successful(response.status);
 };
 
+const sendPasswordResetLink = async (email: string) => {
+  const response = await axios.post('/users/sendPasswordResetLink', {
+    email,
+  });
+  return response.status === 200;
+};
+
+const resetPassword = async (token: string, password: string) => {
+  const response = await axios.post('/users/resetPassword', {
+    token,
+    password,
+  });
+  return response.status === 200;
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -491,4 +506,6 @@ export const api = {
   removeTaskRelation,
   addSynergyRelations,
   leaveRoadmap,
+  sendPasswordResetLink,
+  resetPassword,
 };

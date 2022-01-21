@@ -10,6 +10,7 @@ import {
   joinRoadmap,
   verifyEmail,
   getInvitation,
+  resetPassword,
 } from './actions';
 import { UserState } from './types';
 import {
@@ -49,4 +50,5 @@ export const userActions = {
   getInvitation,
   joinRoadmap,
   verifyEmail,
+  resetPassword,
 };

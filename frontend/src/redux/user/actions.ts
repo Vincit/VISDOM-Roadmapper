@@ -141,3 +141,15 @@ export const verifyEmail = createAsyncThunk<
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
 });
+
+export const resetPassword = createAsyncThunk<
+  boolean,
+  { token: string; password: string },
+  { rejectValue: AxiosError }
+>('resetPassword', async ({ token, password }, thunkAPI) => {
+  try {
+    return await api.resetPassword(token, password);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
