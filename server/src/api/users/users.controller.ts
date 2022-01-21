@@ -292,7 +292,7 @@ export const resetPassword: RouteHandlerFnc = async (ctx) => {
     if (!found) return 404;
     if (!found.valid) {
       ctx.body = 'Password reset link has expired';
-      return 400;
+      return 403;
     }
     const user = await User.query(trx).findById(found.userId);
     if (!user) return 404;
