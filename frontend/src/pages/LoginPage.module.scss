@@ -1,1 +1,10 @@
 @import '../shared.scss';
+
+.loginFooter {
+  @extend .formFooter;
+  text-align: center;
+}
+
+.loginFooter > div:first-of-type {
+  margin-bottom: 16px;
+}
