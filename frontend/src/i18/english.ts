@@ -316,5 +316,22 @@ export const english = {
     'Personal auth token tooltip': 'TBD',
     'Taskmap-tooltip':
       'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
+    'Forgot password': 'Forgot password?',
+    'Remembered password': 'Remembered password?',
+    'Forgot password subtitle':
+      'No worries, enter your registered email address and we’ll send you a link to reset your password.',
+    'Reset link sent': 'Reset link sent',
+    'Resend link': 'Resend link',
+    'Didn’t receive the email': 'Didn’t receive the email?',
+    'Reset link sent successfully': 'Reset link sent successfully.',
+    'Reset password': 'Reset password',
+    'We have sent an email':
+      'We have sent an email to <strong>{{email}}</strong> for you to reset your password',
+    'Retry timer': 'Retry in {{time}}s',
+    'Password set success':
+      '<strong>All done!</strong> Your new password has been set.',
+    'Token not found': 'Token not found.',
+    'Token expired': 'Token expired.',
+    'Error message': 'Error: {{error}}.',
   },
 };
