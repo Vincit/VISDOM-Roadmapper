@@ -24,6 +24,8 @@ import {
   VerifyEmailPage,
   EmailVerificationPage,
 } from '../pages/VerifyEmailPage';
+import { ForgotPasswordPage } from '../pages/ForgotPasswordPage';
+import { ResetPasswordPage } from '../pages/ResetPasswordPage';
 
 const Home = () => {
   const loggedInUser = useSelector<RootState, UserInfo | undefined>(
@@ -93,6 +95,16 @@ const routes = [
     path: paths.notFound,
     component: () => <NavLayout Content={NotFoundPage} />,
     exact: true,
+  },
+  {
+    path: paths.forgotPassword,
+    component: () => <NavLayout Content={ForgotPasswordPage} />,
+    exact: true,
+  },
+  {
+    path: paths.resetPassword,
+    component: () => <NavLayout Content={ResetPasswordPage} />,
+    exact: false,
   },
   {
     path: '',
