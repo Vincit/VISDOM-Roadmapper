@@ -113,11 +113,18 @@ export const LoginPage = () => {
               </button>
             )}
           </form>
-          <div className={classes(css.formFooter)}>
-            <Trans i18nKey="No account?" />{' '}
-            <Link to={`${paths.registerPage}${urlSearchString}`}>
-              <Trans i18nKey="Register" />
-            </Link>
+          <div className={classes(css.loginFooter)}>
+            <div>
+              <Trans i18nKey="No account?" />{' '}
+              <Link to={`${paths.registerPage}${urlSearchString}`}>
+                <Trans i18nKey="Register" />
+              </Link>
+            </div>
+            <div>
+              <Link to={`${paths.forgotPassword}`}>
+                <Trans i18nKey="Forgot password" />
+              </Link>
+            </div>
           </div>
         </ModalContent>
       </div>
