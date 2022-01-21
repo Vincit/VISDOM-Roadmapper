@@ -45,6 +45,16 @@ const navBars: {
     path: paths.notFound,
     linkHome: true,
   },
+  {
+    path: paths.forgotPassword,
+    button: { to: (search) => paths.home + search, label: 'Home' },
+    linkHome: true,
+  },
+  {
+    path: paths.resetPassword,
+    button: { to: (search) => paths.home + search, label: 'Home' },
+    linkHome: true,
+  },
 ];
 
 export const findLoginNavBar = (pathname: string, loggedIn: boolean) => {

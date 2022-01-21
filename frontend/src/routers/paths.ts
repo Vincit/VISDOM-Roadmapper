@@ -14,6 +14,8 @@ export const paths = {
   verifyEmail: `/verifyEmail/:verificationId(${uuidPattern})`,
   roadmapHome: '/roadmap',
   notFound: '/404',
+  forgotPassword: '/forgotpassword',
+  resetPassword: `/resetPassword/:token(${uuidPattern})`,
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
   roadmapRelative: {
     dashboard: '/dashboard',
