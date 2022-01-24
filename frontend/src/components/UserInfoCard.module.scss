@@ -35,16 +35,6 @@
   margin: auto 0px;
 }
 
-.deleteButton {
-  @extend .button-small-filled;
-  background: $COLOR_MANDY;
-  &:hover:not(.cancel, :disabled),
-  &:focus:not(.cancel, :disabled) {
-    background: $COLOR_MANDY_HOVER;
-  }
-  margin: auto 0px;
-}
-
 .textContainer {
   @extend .layout-row;
   min-width: 400px;
