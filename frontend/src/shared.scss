@@ -598,6 +598,16 @@ textarea {
   }
 }
 
+.deleteButton {
+  @extend .button-small-filled;
+  background: $COLOR_MANDY;
+  &:hover:not(.cancel, :disabled),
+  &:focus:not(.cancel, :disabled) {
+    background: $COLOR_MANDY_HOVER;
+  }
+  margin: auto 0px;
+}
+
 .react-flow__edges {
   z-index: 3 !important;
 }

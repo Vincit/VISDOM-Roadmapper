@@ -2,6 +2,7 @@ import { FC, FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import { StoreDispatchType } from '../../redux';
@@ -13,6 +14,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import css from './DeleteModal.module.scss';
+import { paths } from '../../routers/paths';
 
 const classes = classNames.bind(css);
 
@@ -95,12 +97,16 @@ export const DeleteRoadmapModal: Modal<ModalTypes.DELETE_ROADMAP_MODAL> = ({
   id,
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
   return (
     <DeleteModalContent
       header={t('Delete project')}
       action={roadmapsActions.deleteRoadmap}
       payload={{ id }}
-      closeModal={closeModal}
+      closeModal={() => {
+        closeModal();
+        history.push(paths.overview);
+      }}
     >
       <Trans i18nKey="Delete project confirmation">
         <p>{t('Are you sure to continue')}</p>

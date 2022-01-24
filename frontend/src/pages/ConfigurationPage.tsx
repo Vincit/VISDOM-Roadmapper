@@ -32,6 +32,7 @@ const RoadmapConfigurationPageComponent = ({
     shallowEqual,
   )!;
   const dispatch = useDispatch<StoreDispatchType>();
+  const userType = getType(userInfo, currentRoadmap?.id);
 
   const onConfigurationClick = (target: string, fields: any[]) => (e: any) => {
     e.preventDefault();
@@ -72,6 +73,17 @@ const RoadmapConfigurationPageComponent = ({
       }),
     );
   };
+  const openDeleteRoadmapModal = (e: any) => {
+    e.preventDefault();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.DELETE_ROADMAP_MODAL,
+        modalProps: {
+          id: currentRoadmap.id,
+        },
+      }),
+    );
+  };
 
   const [integrations, setIntegrations] = useState<Integrations>({});
 
@@ -82,7 +94,7 @@ const RoadmapConfigurationPageComponent = ({
 
   return (
     <div className={classes(css.configurationPage)}>
-      {getType(userInfo, currentRoadmap?.id) === RoleType.Admin && (
+      {userType === RoleType.Admin && (
         <>
           {Object.entries(integrations).flatMap(([name, fields]) => [
             <div key={`config-${name}`} className={classes(css.layoutRow)}>
@@ -142,6 +154,21 @@ const RoadmapConfigurationPageComponent = ({
           </button>
         </span>
       </div>
+      {userType === RoleType.Admin && (
+        <div className={classes(css.layoutRow)}>
+          <span className={classes(css.columnHeader)}>
+            <Trans i18nKey="Delete roadmap" />
+            <br />
+            <button
+              className={classes(css['button-small-filled'], css.deleteButton)}
+              type="submit"
+              onClick={openDeleteRoadmapModal}
+            >
+              <Trans i18nKey="Delete roadmap" />
+            </button>
+          </span>
+        </div>
+      )}
     </div>
   );
 };

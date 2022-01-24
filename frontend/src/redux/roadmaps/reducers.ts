@@ -42,6 +42,8 @@ export const DELETE_ROADMAP_FULFILLED = (
   state.roadmaps = state.roadmaps.filter(
     (roadmap) => roadmap.id !== action.payload.id,
   );
+  if (state.selectedRoadmapId === action.payload.id)
+    state.selectedRoadmapId = undefined;
 };
 
 export const GET_CUSTOMERS_FULFILLED = (
