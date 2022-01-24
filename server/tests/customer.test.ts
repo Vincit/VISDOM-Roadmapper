@@ -13,6 +13,9 @@ import {
 } from './testUtils';
 chai.use(chaiHttp);
 
+const byId = <T extends { id: number } | { id: string }>(a: T, b: T) =>
+  a.id.toString().localeCompare(b.id.toString());
+
 describe('Test /customers/ api', function () {
   describe('GET /customers/', function () {
     it('Should get all customers with correct permissions', async function () {
@@ -71,9 +74,9 @@ describe('Test /customers/ api', function () {
 
       expect(res.status).to.equal(200);
       expect(customersAfter.length).to.equal(customersBefore.length + 1);
-      expect(customersAfter[customersAfter.length - 1]).to.include({
-        name: 'Test-customer',
-      });
+      expect(customersAfter.map(({ name }) => name)).to.include(
+        validCustomer.name,
+      );
     });
 
     it('Should create a customer without representatives', async function () {
@@ -97,9 +100,13 @@ describe('Test /customers/ api', function () {
 
       expect(res.status).to.equal(200);
       expect(customersAfter.length).to.equal(customersBefore.length + 1);
-      expect(customersAfter[customersAfter.length - 1]).to.include(
-        validCustomer,
-      );
+      expect(
+        customersAfter.map(({ name, email, color }) => ({
+          name,
+          email,
+          color,
+        })),
+      ).to.include.deep.members([validCustomer]);
     });
 
     it('Should not create a new customer with incorrect permissions', async function () {
@@ -129,9 +136,9 @@ describe('Test /customers/ api', function () {
 
       expect(res.status).to.equal(403);
       expect(customersBefore.length).to.equal(customersAfter.length);
-      expect(customersAfter[customersAfter.length - 1]).to.not.include({
-        name: 'Test-customer',
-      });
+      expect(customersAfter.map(({ name }) => name)).to.not.include(
+        validCustomer.name,
+      );
     });
 
     it('Should not create a new customer with empty payload', async function () {
@@ -171,7 +178,7 @@ describe('Test /customers/ api', function () {
       );
 
       expect(res.status).to.equal(400);
-      expect(customersAfter).to.eql(customersBefore);
+      expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
     });
 
     describe('Should not create customer with overflown parameters', function () {
@@ -203,7 +210,7 @@ describe('Test /customers/ api', function () {
           );
 
           expect(res.status).to.equal(400);
-          expect(customersAfter).to.eql(customersBefore);
+          expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
         });
       });
     });
@@ -240,7 +247,7 @@ describe('Test /customers/ api', function () {
           );
 
           expect(res.status).to.equal(400);
-          expect(customersAfter).to.eql(customersBefore);
+          expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
         });
       });
     });
@@ -280,7 +287,7 @@ describe('Test /customers/ api', function () {
           );
 
           expect(res.status).to.equal(400);
-          expect(customersAfter).to.eql(customersBefore);
+          expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
         });
       });
     });
@@ -320,7 +327,7 @@ describe('Test /customers/ api', function () {
           );
 
           expect(res.status).to.equal(400);
-          expect(customersAfter).to.eql(customersBefore);
+          expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
         });
       });
     });
@@ -349,9 +356,7 @@ describe('Test /customers/ api', function () {
           .where('roadmapId', firstRoadmapId)
           .first();
         const res = await updateCustomer(customer, firstUpdation);
-        const updatedCustomer = await Customer.query()
-          .findById(customer.id)
-          .withGraphFetched('representatives');
+        const updatedCustomer = await Customer.query().findById(customer.id);
 
         expect(res.status).to.equal(200);
         expect(updatedCustomer.name).to.equal(firstUpdation.name);
@@ -371,8 +376,9 @@ describe('Test /customers/ api', function () {
           .withGraphFetched('representatives');
 
         expect(res.status).to.equal(200);
-        expect(updatedCustomer.representatives?.map((rep) => rep.id)).to.eql(
-          secondUpdation.representatives,
+        expect(updatedCustomer.representatives?.length).to.equal(1);
+        expect(updatedCustomer.representatives?.[0].id).to.equal(
+          secondUpdation.representatives[0],
         );
       });
     });
@@ -487,7 +493,9 @@ describe('Test /customers/ api', function () {
 
       expect(res.status).to.equal(200);
       expect(customersAfter.length).to.equal(customersBefore.length - 1);
-      expect(customersAfter[0]).to.not.include({ id: customerToDelete.id });
+      expect(customersAfter.map(({ id }) => id)).to.not.include(
+        customerToDelete.id,
+      );
     });
 
     it('Should not delete customer with incorrect permissions', async function () {

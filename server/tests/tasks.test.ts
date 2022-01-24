@@ -3,7 +3,6 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 import { loggedInAgent } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
-import User from '../src/api/users/users.model';
 import Task from '../src/api/tasks/tasks.model';
 import { Permission } from '../../shared/types/customTypes';
 import { withoutPermission } from './testUtils';
