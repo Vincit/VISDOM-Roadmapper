@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { SyntheticEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -18,13 +18,31 @@ import { ModalTypes } from './modals/types';
 import { modalsActions } from '../redux/modals';
 import { api } from '../api/api';
 import { paths } from '../routers/paths';
+import { ExitButton } from './forms/SvgButton';
 
 const classes = classNames.bind(css);
 
 const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { roadmapId, type } = roadmapRole;
   const roadmap = useSelector(idRoadmapSelector(roadmapId));
+
+  const leaveProject = useCallback(
+    (event: SyntheticEvent) => {
+      event.preventDefault();
+      dispatch(
+        modalsActions.showModal({
+          modalType: ModalTypes.LEAVE_ROADMAP_MODAL,
+          modalProps: {
+            roadmapId,
+          },
+        }),
+      );
+    },
+    [roadmapId, dispatch],
+  );
+
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
@@ -41,6 +59,7 @@ const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
         </div>
         <div>{roadmap?.name}</div>
         <div className={classes(css.textAlignEnd)}>
+          <ExitButton onClick={leaveProject} />
           <ArrowForwardIcon className={classes(css.arrowIcon)} />
         </div>
       </div>

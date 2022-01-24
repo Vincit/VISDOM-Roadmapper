@@ -436,6 +436,13 @@ const addSynergyRelations = async (
   return successful(response.status);
 };
 
+const leaveRoadmap = async (roadmapId: number) => {
+  const response = await axios.post(`/roadmaps/${roadmapId}/leaveRoadmap`, {
+    roadmapId,
+  });
+  return successful(response.status);
+};
+
 export const api = {
   getRoadmaps,
   addRoadmap,
@@ -487,4 +494,5 @@ export const api = {
   addTaskRelation,
   removeTaskRelation,
   addSynergyRelations,
+  leaveRoadmap,
 };

@@ -34,6 +34,7 @@ export enum ModalTypes {
   JOIN_LINK_NO_ACCESS_MODAL = 'JOIN_LINK_NO_ACCESS_MODAL',
   CONFIRM_PASSWORD_MODAL = 'CONFIRM_PASSWORD_MODAL',
   INFO_MODAL = 'INFO_MODAL',
+  LEAVE_ROADMAP_MODAL = 'LEAVE_ROADMAP_MODAL',
 }
 
 type OwnProps = {
@@ -94,6 +95,9 @@ type OwnProps = {
         deleteUser: true;
       };
   [ModalTypes.INFO_MODAL]: { header: string; content: InfoModalContent };
+  [ModalTypes.LEAVE_ROADMAP_MODAL]: {
+    roadmapId: number;
+  };
 };
 
 type Props = {

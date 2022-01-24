@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
+import { userActions } from '../user/index';
 import { api } from '../../api/api';
 import { chosenRoadmapIdSelector, roadmapsVersionsSelector } from './selectors';
 import { RootState } from '../types';
@@ -580,6 +581,23 @@ export const addSynergyRelations = createAsyncThunk<
       thunkAPI.getState() as RootState,
     )!;
     return await api.addSynergyRelations(currentRoadmapId, from, to);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err as AxiosError<any>);
+  }
+});
+
+export const leaveRoadmap = createAsyncThunk<
+  boolean,
+  { roadmapId: number },
+  { rejectValue: AxiosError }
+>('leaveRoadmap', async (leaveRoadmapRequest, thunkAPI) => {
+  try {
+    const success = await api.leaveRoadmap(leaveRoadmapRequest.roadmapId);
+    if (success) {
+      await thunkAPI.dispatch(getRoadmaps());
+      await thunkAPI.dispatch(userActions.getUserInfo());
+    }
+    return success;
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }

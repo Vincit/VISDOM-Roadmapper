@@ -7,6 +7,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
+import CancelIcon from '@material-ui/icons/Cancel';
 import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
 
 import colors from '../../colors.module.scss';
@@ -61,15 +62,19 @@ export const MoreButton = svgButton(MoreVertSharpIcon, {
 });
 export const InfoButton = svgButton(InfoIcon, { hoverColor: colors.azure });
 export const DeleteButton = svgButton(DeleteIcon, {
-  hoverColor: colors.raspberry,
+  hoverColor: colors.mandy,
 });
 export const ModalCloseButton = svgButton(CloseIcon, {
   className: classes(css.closeButton),
 });
 export const CloseButton = svgButton(CloseIcon, {
-  hoverColor: colors.raspberry,
+  hoverColor: colors.mandy,
 });
 export const ConfirmButton = svgButton(CheckIcon, {
   hoverColor: colors.emerald,
 });
 export const MailButton = svgButton(MailIcon, { hoverColor: colors.azure });
+
+export const ExitButton = svgButton(CancelIcon, {
+  hoverColor: colors.mandy,
+});

@@ -33,6 +33,7 @@ import {
   addTaskRelation,
   removeTaskRelation,
   addSynergyRelations,
+  leaveRoadmap,
 } from './actions';
 import {
   ADD_ROADMAP_FULFILLED,
@@ -153,4 +154,5 @@ export const roadmapsActions = {
   addTaskRelation,
   removeTaskRelation,
   addSynergyRelations,
+  leaveRoadmap,
 };

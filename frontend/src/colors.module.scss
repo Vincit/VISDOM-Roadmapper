@@ -5,6 +5,7 @@ $COLOR_SKY: #a6dfff;
 $COLOR_CLOUD: #ecf8ff;
 $COLOR_RASPBERRY: #ff3062;
 $COLOR_MANDY: #e24a4a; // https://hexcolor.co/hex/e24a4a
+$COLOR_MANDY_HOVER: adjust-color($COLOR_MANDY, $lightness: -7%);
 $COLOR_ORANGE: #ffac30;
 $COLOR_WHITE: #ffffff;
 
@@ -22,6 +23,7 @@ $COLOR_BLACK5: #f5f5f5;
   cloud: $COLOR_CLOUD;
   raspberry: $COLOR_RASPBERRY;
   mandy: $COLOR_MANDY;
+  mandy_hover: $COLOR_MANDY_HOVER;
   orange: $COLOR_ORANGE;
   white: $COLOR_WHITE;
 
