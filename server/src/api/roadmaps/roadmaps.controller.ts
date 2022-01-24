@@ -96,3 +96,35 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx) => {
 
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
+
+export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) throw new Error('User is required');
+  await Role.transaction(async (trx) => {
+    const userRole = await Role.query(trx).findById([
+      ctx.state.user!.id,
+      Number(ctx.params.roadmapId),
+    ]);
+
+    if (!userRole) {
+      return void (ctx.status = 404);
+    }
+
+    if (userRole.type === RoleType.Admin) {
+      const numAdmins = await Role.query(trx)
+        .where('roadmapId', ctx.params.roadmapId)
+        .andWhere('type', RoleType.Admin)
+        .resultSize();
+
+      if (numAdmins === 1) {
+        ctx.status = 403;
+        ctx.body =
+          'Cannot leave as the last admin of roadmap, delete the whole roadmap instead.';
+        return;
+      }
+    }
+
+    const numDeleted = await userRole.$query(trx).delete();
+    ctx.status = numDeleted == 1 ? 200 : 500;
+    return;
+  });
+};

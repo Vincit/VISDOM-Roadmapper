@@ -9,6 +9,7 @@ import {
   patchRoadmaps,
   deleteRoadmaps,
   getRoadmapsUsers,
+  leaveRoadmap,
 } from './roadmaps.controller';
 import { Context } from 'koa';
 import versionsRouter from '../versions/versions.routes';
@@ -46,6 +47,8 @@ roadmapRouter.get(
   requirePermission(Permission.RoadmapReadUsers),
   getRoadmapsUsers,
 );
+
+roadmapRouter.post('/:roadmapId/leaveRoadmap', leaveRoadmap);
 
 roadmapRouter.use('/:roadmapId', versionsRouter.routes());
 roadmapRouter.use('/:roadmapId', versionsRouter.allowedMethods());

@@ -234,6 +234,11 @@ export const english = {
     'Remove task': 'Remove task',
     'Remove task warning':
       'Are you sure you want to remove <strong>{{name}}</strong>?',
+    'Leave roadmap warning':
+      'Are you sure you want to leave roadmap <strong>{{name}}</strong>?',
+    'Leave roadmap warning last admin':
+      'Cannot leave as the last Project Owner of roadmap. Delete the whole roadmap instead.',
+    'Leave roadmap': 'Leave roadmap',
     'Go to my projects': 'Go to my projects',
     'Explore later?': 'Explore later?',
     'Go explore':

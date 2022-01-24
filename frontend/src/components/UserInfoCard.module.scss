@@ -37,10 +37,10 @@
 
 .deleteButton {
   @extend .button-small-filled;
-  background: $COLOR_RASPBERRY;
+  background: $COLOR_MANDY;
   &:hover:not(.cancel, :disabled),
   &:focus:not(.cancel, :disabled) {
-    background: $COLOR_MANDY;
+    background: $COLOR_MANDY_HOVER;
   }
   margin: auto 0px;
 }
