@@ -99,12 +99,12 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
 
   describe('DELETE /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should delete taskrating', async function () {
-      const { ratingId, taskId, roadmapId } = await getTestRatingData();
+      const { rating, taskId, roadmapId } = await getTestRatingData();
       const before = await loggedInAgent.get(
         `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       const res = await loggedInAgent.delete(
-        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${rating.id}`,
       );
       expect(res.status).to.equal(200);
       const after = await loggedInAgent.get(
@@ -113,7 +113,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(before.body.length - 1).to.equal(after.body.length);
     });
     it('Should not delete taskrating with incorrect permissions', async function () {
-      const { ratingId, taskId, roadmapId } = await getTestRatingData();
+      const { rating, taskId, roadmapId } = await getTestRatingData();
       if (!roadmapId) assert.fail('Roadmap should exist');
       const before = await loggedInAgent.get(
         `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
@@ -123,7 +123,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         Permission.TaskRatingEdit,
         () =>
           loggedInAgent.delete(
-            `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${ratingId}`,
+            `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings/${rating.id}`,
           ),
       );
       expect(res.status).to.equal(403);
@@ -136,22 +136,24 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
 
   describe('PATCH /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should patch taskrating', async function () {
-      const { ratingId, taskId, roadmapId } = await getTestRatingData();
+      const { rating, taskId, roadmapId } = await getTestRatingData();
+      const newValue = rating.value === 9 ? 7 : 9; // pick a different value
       const res = await loggedInAgent
         .patch(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
         .type('json')
         .send([
           {
-            id: ratingId,
-            value: 9,
+            id: rating.id,
+            value: newValue,
           },
         ]);
       expect(res.status).to.equal(200);
-      expect(res.body[0].dimension).to.equal(TaskRatingDimension.RequiredWork);
-      expect(res.body[0].value).to.equal(9);
+      expect(res.body.length).to.equal(1);
+      expect(res.body[0].dimension).to.equal(rating.dimension);
+      expect(res.body[0].value).to.equal(newValue);
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
-      const { ratingId, taskId, roadmapId } = await getTestRatingData();
+      const { rating, taskId, roadmapId } = await getTestRatingData();
       if (!roadmapId) assert.fail('Roadmap should exist');
       const res = await withoutPermission(
         roadmapId,
@@ -162,8 +164,8 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
             .type('json')
             .send([
               {
-                id: ratingId,
-                value: 9,
+                id: rating.id,
+                value: rating.value === 9 ? 7 : 9, // pick a different value
               },
             ]),
       );
@@ -172,9 +174,9 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       const after = await loggedInAgent.get(
         `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
-      const rating = after.body.find(({ id }: any) => id === ratingId);
-      expect(rating).to.exist;
-      expect(rating.value).not.to.equal(9);
+      const ratingAfter = after.body.find(({ id }: any) => id === rating.id);
+      expect(ratingAfter).to.exist;
+      expect(ratingAfter.value).to.equal(rating.value);
     });
   });
 });

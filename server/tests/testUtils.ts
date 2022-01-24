@@ -60,8 +60,7 @@ export const getTestRatingData = async () => {
   const rating = await TaskRating.query()
     .first()
     .withGraphFetched('[belongsToTask.[belongsToRoadmap]]');
-  const ratingId = rating.id;
   const taskId = rating.belongsToTask?.id;
   const roadmapId = rating.belongsToTask?.belongsToRoadmap.id;
-  return { ratingId, taskId, roadmapId };
+  return { rating, taskId, roadmapId };
 };
