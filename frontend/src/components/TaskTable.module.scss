@@ -34,25 +34,14 @@
   color: $COLOR_BLACK100;
 }
 
+.missingRatings {
+  display: flex;
+  align-items: center;
+}
+
 .taskTitle {
   text-align: left;
   overflow-wrap: break-word;
-}
-
-.missingContainer {
-  display: flex;
-  flex-direction: row;
-}
-
-.dotContainer {
-  margin: auto 5px;
-}
-
-.developerIcon {
-  height: 16px !important;
-  width: 16px !important;
-  color: $COLOR_BLACK60;
-  margin-right: 7px;
 }
 
 .userIcon {
