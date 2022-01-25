@@ -106,7 +106,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   return (
     <div className={classes(css.ratingContainer)}>
       <div className={classes(css.titleContainer)}>
-        <h2>{t('Ratings title', { type: titleCase(t(typeString)) })}</h2>
+        <h3>{titleCase(t(typeString))}</h3>
       </div>
       <div
         style={{ marginRight: scrollBarWidth }}

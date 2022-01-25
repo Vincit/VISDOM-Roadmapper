@@ -5,6 +5,26 @@
   width: 100%;
 }
 
+.section {
+  @extend .layout-column;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.ratingsHeader {
+  @extend .layout-column;
+  gap: 15px;
+  text-align: left;
+  min-width: 550px;
+
+  .missingRatings {
+    @extend .layout-row;
+    justify-content: space-between;
+    height: 42px;
+    gap: 25px;
+  }
+}
+
 .ratings {
   @extend .content;
   gap: 10%;

@@ -20,6 +20,8 @@ import { RatingTableValue } from '../components/RatingTableValue';
 import { Overview, ArrowType } from '../components/Overview';
 import colors from '../colors.module.scss';
 import css from './TaskOverviewPage.module.scss';
+import { MissingRatings } from '../components/MissingRatings';
+import { TaskModalButtons } from '../components/TaskModalButtons';
 
 const classes = classNames.bind(css);
 
@@ -135,21 +137,30 @@ const TaskOverview: FC<{
         {...getTaskOverviewData(task, hasEditPermission)}
       />
       {hasEditPermission && (
-        <div className={classes(css.ratings)}>
-          {valueRatings.length > 0 && (
-            <RatingTableValue
-              ratings={valueRatings}
-              avg={value.avg}
-              taskId={task.id}
-            />
-          )}
-          {workRatings.length > 0 && (
-            <RatingTableWork
-              ratings={workRatings}
-              avg={work.avg}
-              taskId={task.id}
-            />
-          )}
+        <div className={classes(css.section)}>
+          <div className={classes(css.ratingsHeader)}>
+            <h2>{t('Ratings')}</h2>
+            <div className={classes(css.missingRatings)}>
+              <MissingRatings task={task} label />
+              <TaskModalButtons task={task} overview />
+            </div>
+          </div>
+          <div className={classes(css.ratings)}>
+            {valueRatings.length > 0 && (
+              <RatingTableValue
+                ratings={valueRatings}
+                avg={value.avg}
+                taskId={task.id}
+              />
+            )}
+            {workRatings.length > 0 && (
+              <RatingTableWork
+                ratings={workRatings}
+                avg={work.avg}
+                taskId={task.id}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -66,7 +66,6 @@ export const english = {
     'Created on': 'Created on',
     Name: 'Name',
     Value: 'Value',
-    'Ratings title': '{{type}} ratings',
     'Average type': 'Average {{type}}',
     'Rate customer': 'Rate customer',
     milestones: 'milestones',
