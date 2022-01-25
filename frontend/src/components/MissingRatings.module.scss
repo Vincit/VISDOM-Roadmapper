@@ -1,0 +1,24 @@
+@import '../shared.scss';
+
+.missingContainer {
+  @extend .layout-row;
+  gap: 7px;
+  flex-wrap: wrap;
+
+  .dotContainer {
+    display: flex;
+    align-items: center;
+  }
+  .developerIcon {
+    height: 16px !important;
+    width: 16px !important;
+    color: $COLOR_BLACK60;
+  }
+}
+
+.withLabel {
+  @extend .typography-pre-title;
+  @extend .layout-row;
+  gap: 25px;
+  align-items: center;
+}
