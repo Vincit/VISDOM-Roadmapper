@@ -333,5 +333,7 @@ export const english = {
     'Token not found': 'Token not found.',
     'Token expired': 'Token expired.',
     'Error message': 'Error: {{error}}.',
+    'Email service error': 'Email service error',
+    'This email doesn’t exist': 'This email doesn’t exist',
   },
 };
