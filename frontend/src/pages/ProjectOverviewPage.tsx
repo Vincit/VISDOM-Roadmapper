@@ -22,6 +22,9 @@ export const ProjectOverviewComponent = () => {
     roadmapsSelector,
     shallowEqual,
   );
+  const sortedRoadmaps = [...(roadmaps || [])].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
 
   useEffect(() => {
     if (!roadmaps) dispatch(roadmapsActions.getRoadmaps());
@@ -49,7 +52,7 @@ export const ProjectOverviewComponent = () => {
         <Trans i18nKey="Your projects" />
       </h2>
       <div className={classes(css.roadmapsContainer)}>
-        {roadmaps?.map((roadmap) => (
+        {sortedRoadmaps?.map((roadmap) => (
           <ProjectSummary roadmap={roadmap} key={roadmap.id} />
         ))}
         <div className={classes(css.addButtonContainer)}>
