@@ -2,9 +2,7 @@
 
 .loginFooter {
   @extend .formFooter;
+  @extend .layout-column;
+  gap: 16px;
   text-align: center;
-}
-
-.loginFooter > div:first-of-type {
-  margin-bottom: 16px;
 }

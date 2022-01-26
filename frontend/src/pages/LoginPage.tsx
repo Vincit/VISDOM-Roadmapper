@@ -120,11 +120,9 @@ export const LoginPage = () => {
                 <Trans i18nKey="Register" />
               </Link>
             </div>
-            <div>
-              <Link to={`${paths.forgotPassword}`}>
-                <Trans i18nKey="Forgot password" />
-              </Link>
-            </div>
+            <Link to={`${paths.forgotPassword}`}>
+              <Trans i18nKey="Forgot password" />
+            </Link>
           </div>
         </ModalContent>
       </div>

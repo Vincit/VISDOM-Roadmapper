@@ -24,7 +24,7 @@ export const ResetPasswordPage = () => {
     token: string | undefined;
   }>();
 
-  const [view, setView] = useState('Reset password');
+  const [done, setDone] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -53,107 +53,100 @@ export const ResetPasswordPage = () => {
           setErrorMessage(t('Error message', { error: res.payload.message }));
         }
       } else {
-        setView('Done');
+        setDone(true);
       }
     });
   };
 
-  const resetPasswordView = () => {
-    return (
-      <>
-        <div className="formDiv">
-          <ModalHeader>
-            <h2>
-              <Trans i18nKey="Reset password" />
-            </h2>
-          </ModalHeader>
-          <ModalContent gap={30}>
-            <div className="formSubtitle">
-              <Trans i18nKey="Enter your new password below" />
-            </div>
-            <form onSubmit={handleReset}>
-              <Input
-                label={t('New password')}
-                required
-                minLength={8}
-                maxLength={72}
-                id="password"
-                type="password"
-                placeholder={t('Password')}
-                value={password}
-                onChange={(e) => setPassword(e.currentTarget.value)}
-              />
-              <Input
-                label={t('Confirm new password')}
-                required
-                id="confirm password"
-                type="password"
-                placeholder={t('Confirm password')}
-                value={confirmPassword}
-                error={confirmationError.err}
-                onChange={(e) => setConfirmPassword(e.currentTarget.value)}
-              />
-              <button className="button-large" type="submit">
-                <Trans i18nKey="Reset password" />
-              </button>
-              <Alert
-                show={errorMessage.length > 0}
-                variant="danger"
-                dismissible
-                onClose={() => setErrorMessage('')}
-              >
-                {errorMessage}
-              </Alert>
-            </form>
-            <div className="formFooter">
-              <Trans i18nKey="Remembered password" />{' '}
-              <Link to={`${paths.loginPage}`}>
-                <Trans i18nKey="Log in" />
-              </Link>
-            </div>
-          </ModalContent>
+  const resetPasswordView = () => (
+    <div className="formDiv">
+      <ModalHeader>
+        <h2>
+          <Trans i18nKey="Reset password" />
+        </h2>
+      </ModalHeader>
+      <ModalContent gap={30}>
+        <div className="formSubtitle">
+          <Trans i18nKey="Enter your new password below" />
         </div>
-      </>
-    );
-  };
+        <form onSubmit={handleReset}>
+          <Input
+            label={t('New password')}
+            required
+            minLength={8}
+            maxLength={72}
+            id="password"
+            type="password"
+            placeholder={t('Password')}
+            value={password}
+            onChange={(e) => setPassword(e.currentTarget.value)}
+          />
+          <Input
+            label={t('Confirm new password')}
+            required
+            id="confirm password"
+            type="password"
+            placeholder={t('Confirm password')}
+            value={confirmPassword}
+            error={confirmationError.err}
+            onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+          />
+          <button className="button-large" type="submit">
+            <Trans i18nKey="Reset password" />
+          </button>
+          <Alert
+            show={errorMessage.length > 0}
+            variant="danger"
+            dismissible
+            onClose={() => setErrorMessage('')}
+          >
+            {errorMessage}
+          </Alert>
+        </form>
+        <div className="formFooter">
+          <Trans i18nKey="Remembered password" />{' '}
+          <Link to={`${paths.loginPage}`}>
+            <Trans i18nKey="Log in" />
+          </Link>
+        </div>
+      </ModalContent>
+    </div>
+  );
 
-  const doneView = () => {
-    return (
-      <div className="formDiv">
-        <ModalHeader>
-          <h2>
-            <Trans i18nKey="Password reset" />
-          </h2>
-        </ModalHeader>
-        <ModalContent gap={30}>
-          <div className={classes(css.doneSubtitle)}>
-            <div className={classes(css.doneCheckIcon)}>
-              <CheckIcon />
-            </div>
-            <div className={classes(css.doneSubtitleText)}>
-              <p>
-                <Trans i18nKey="Password set success" />
-              </p>
-            </div>
-            <div>
-              <button
-                className="button-large"
-                type="button"
-                onClick={() => history.push(paths.loginPage)}
-              >
-                <Trans i18nKey="Go to Login" />
-              </button>
-            </div>
+  const doneView = () => (
+    <div className="formDiv">
+      <ModalHeader>
+        <h2>
+          <Trans i18nKey="Password reset" />
+        </h2>
+      </ModalHeader>
+      <ModalContent gap={30}>
+        <div className={classes(css.doneSubtitle)}>
+          <div className={classes(css.doneCheckIcon)}>
+            <CheckIcon />
           </div>
-        </ModalContent>
-      </div>
-    );
-  };
+          <div className={classes(css.doneSubtitleText)}>
+            <p>
+              <Trans i18nKey="Password set success" />
+            </p>
+          </div>
+          <div>
+            <button
+              className="button-large"
+              type="button"
+              onClick={() => history.push(paths.loginPage)}
+            >
+              <Trans i18nKey="Go to Login" />
+            </button>
+          </div>
+        </div>
+      </ModalContent>
+    </div>
+  );
 
   return (
     <>
-      {view === 'Reset password' && resetPasswordView()}
-      {view === 'Done' && doneView()}
+      {done ? doneView() : resetPasswordView()}
       <Footer />
     </>
   );

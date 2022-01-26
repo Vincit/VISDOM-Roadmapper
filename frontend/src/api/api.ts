@@ -443,7 +443,7 @@ const sendPasswordResetLink = async (email: string) => {
   const response = await axios.post('/users/sendPasswordResetLink', {
     email,
   });
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const resetPassword = async (token: string, password: string) => {
@@ -451,7 +451,7 @@ const resetPassword = async (token: string, password: string) => {
     token,
     password,
   });
-  return response.status === 200;
+  return successful(response.status);
 };
 
 export const api = {

@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
+import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -6,7 +7,8 @@ import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { Footer } from '../components/Footer';
 import { paths } from '../routers/paths';
-import { Input } from '../components/forms/FormField';
+import { Input, errorState } from '../components/forms/FormField';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ReactComponent as MailIcon } from '../icons/mail_icon.svg';
 import { api } from '../api/api';
 import css from './ForgotPassword.module.scss';
@@ -17,135 +19,200 @@ export const ForgotPasswordPage = () => {
   const { t } = useTranslation();
   const defaultDisableTime = 30; // Seconds
 
-  const [view, setView] = useState('Send link');
+  const [linkSent, setLinkSent] = useState(false);
   const [email, setEmail] = useState('');
+  const [sendDisabled, setSendDisabled] = useState(false);
+  const [sendDisableTime, setSendDisableTime] = useState(
+    defaultDisableTime / 2,
+  );
   const [resendDisabled, setResendDisabled] = useState(false);
-  const [disableTime, setDisableTime] = useState(defaultDisableTime);
+  const [resendDisableTime, setResendDisableTime] = useState(
+    defaultDisableTime,
+  );
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const sendEmailLink = () => {
-    api.sendPasswordResetLink(email);
+  const confirmationError = {
+    err: errorState(useState('')),
   };
 
-  const disableSending = () => {
-    setResendDisabled(true);
+  const sendEmailLink = () => {
+    return api.sendPasswordResetLink(email);
+  };
 
+  const createDisableTimer = (
+    disableTime: number,
+    setDisableTime: React.Dispatch<React.SetStateAction<number>>,
+    setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
+    time: number,
+  ) => {
+    setDisabled(true);
     const countdownInterval = setInterval(() => {
       if (disableTime > 0) setDisableTime((previous) => previous - 1);
     }, 1000);
 
-    setTimeout(() => setResendDisabled(false), defaultDisableTime * 1000);
     setTimeout(() => {
       clearInterval(countdownInterval);
-      setDisableTime(defaultDisableTime);
-    }, defaultDisableTime * 1000);
+      setDisabled(false);
+      setDisableTime(defaultDisableTime / 2);
+    }, time * 1000);
   };
 
-  const handleSend = (e: FormEvent<HTMLFormElement>) => {
+  const isUniqueError = (err: any) => err.response?.status === 404;
+
+  const handleSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    sendEmailLink();
-    setView('Link sent');
+    setIsLoading(true);
+
+    try {
+      await sendEmailLink();
+    } catch (err) {
+      if (isUniqueError(err)) {
+        confirmationError.err.setMessage(t('This email doesn’t exist'));
+      } else {
+        setErrorMessage(t('Email service error'));
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    createDisableTimer(
+      sendDisableTime,
+      setSendDisableTime,
+      setSendDisabled,
+      defaultDisableTime / 2,
+    );
+    setErrorMessage('');
+    setIsLoading(false);
+    setLinkSent(true);
   };
 
   const handleResend = () => {
     sendEmailLink();
-    setDisableTime(defaultDisableTime);
-    disableSending();
+    setResendDisableTime(defaultDisableTime);
+    createDisableTimer(
+      resendDisableTime,
+      setResendDisableTime,
+      setResendDisabled,
+      defaultDisableTime,
+    );
   };
 
-  const sendLinkView = () => {
-    return (
-      <div className="formDiv">
-        <ModalHeader>
-          <h2>
-            <Trans i18nKey="Forgot password" />
-          </h2>
-        </ModalHeader>
-        <ModalContent gap={30}>
-          <div className="formSubtitle">
-            <Trans i18nKey="Forgot password subtitle" />
-          </div>
-          <form onSubmit={handleSend}>
-            <Input
-              label={t('Your email')}
-              required
-              id="email"
-              type="email"
-              placeholder={t('Email')}
-              value={email}
-              onChange={(e) => setEmail(e.currentTarget.value)}
-            />
-            <button className="button-large" type="submit">
-              <Trans i18nKey="Send link" />
+  const sendLinkView = () => (
+    <div className="formDiv">
+      <ModalHeader>
+        <h2>
+          <Trans i18nKey="Forgot password" />
+        </h2>
+      </ModalHeader>
+      <ModalContent gap={30}>
+        <div className="formSubtitle">
+          <Trans i18nKey="Forgot password subtitle" />
+        </div>
+        <form onSubmit={handleSend}>
+          <Input
+            label={t('Your email')}
+            required
+            id="email"
+            type="email"
+            placeholder={t('Email')}
+            value={email}
+            error={confirmationError.err}
+            onChange={(e) => setEmail(e.currentTarget.value)}
+          />
+          <Alert
+            show={errorMessage.length > 0}
+            variant="danger"
+            dismissible
+            onClose={() => setErrorMessage('')}
+          >
+            {errorMessage}
+          </Alert>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <button
+              className="button-large"
+              type="submit"
+              disabled={sendDisabled}
+            >
+              {sendDisabled ? (
+                <Trans
+                  i18nKey="Retry timer"
+                  values={{ time: sendDisableTime }}
+                />
+              ) : (
+                <Trans i18nKey="Send link" />
+              )}
             </button>
-          </form>
-          <div className="formFooter">
-            <Trans i18nKey="Remembered password" />{' '}
-            <Link to={`${paths.loginPage}`}>
-              <Trans i18nKey="Log in" />
-            </Link>
-          </div>
-        </ModalContent>
-      </div>
-    );
-  };
+          )}
+        </form>
+        <div className="formFooter">
+          <Trans i18nKey="Remembered password" />{' '}
+          <Link to={`${paths.loginPage}`}>
+            <Trans i18nKey="Log in" />
+          </Link>
+        </div>
+      </ModalContent>
+    </div>
+  );
 
-  const linkSentView = () => {
-    return (
-      <div className="formDiv">
-        <ModalHeader>
-          <h2>
-            <Trans i18nKey="Reset link sent" />
-          </h2>
-        </ModalHeader>
-        <ModalContent gap={30}>
-          <div className={classes(css.secondSubtitle)}>
-            <MailIcon />
-            <p>
-              <Trans i18nKey="We have sent an email" values={{ email }} />
-            </p>
+  const linkSentView = () => (
+    <div className="formDiv">
+      <ModalHeader>
+        <h2>
+          <Trans i18nKey="Reset link sent" />
+        </h2>
+      </ModalHeader>
+      <ModalContent gap={30}>
+        <div className={classes(css.secondSubtitle)}>
+          <MailIcon />
+          <p>
+            <Trans i18nKey="We have sent an email" values={{ email }} />
+          </p>
+        </div>
+        <div className="formFooter" style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <Trans i18nKey="Wrong email address?" />{' '}
+            <button
+              className={classes(css.linkButton, css.green)}
+              type="button"
+              onClick={() => setLinkSent(false)}
+            >
+              <Trans i18nKey="Change address" />
+            </button>
           </div>
-          <div className="formFooter" style={{ textAlign: 'center' }}>
-            <div style={{ marginBottom: '16px' }}>
-              <Trans i18nKey="Wrong email address?" />{' '}
-              <button
-                className={classes(css.linkButton, css.green)}
-                type="button"
-                onClick={() => setView('Send link')}
-              >
-                <Trans i18nKey="Change address" />
-              </button>
-            </div>
-            <div>
-              {!resendDisabled && (
-                <>
-                  <Trans i18nKey="Didn’t receive the email" />{' '}
-                  <button
-                    type="button"
-                    className={classes(css.linkButton, css.green)}
-                    onClick={handleResend}
-                  >
-                    <Trans i18nKey="Resend link" />
-                  </button>
-                </>
-              )}
-              {resendDisabled && (
-                <>
-                  <Trans i18nKey="Reset link sent successfully" />{' '}
-                  <Trans i18nKey="Retry timer" values={{ time: disableTime }} />
-                </>
-              )}
-            </div>
+          <div>
+            {resendDisabled ? (
+              <>
+                <Trans i18nKey="Reset link sent successfully" />{' '}
+                <Trans
+                  i18nKey="Retry timer"
+                  values={{ time: resendDisableTime }}
+                />
+              </>
+            ) : (
+              <>
+                <Trans i18nKey="Didn’t receive the email" />{' '}
+                <button
+                  type="button"
+                  className={classes(css.linkButton, css.green)}
+                  onClick={handleResend}
+                >
+                  <Trans i18nKey="Resend link" />
+                </button>
+              </>
+            )}
           </div>
-        </ModalContent>
-      </div>
-    );
-  };
+        </div>
+      </ModalContent>
+    </div>
+  );
 
   return (
     <>
-      {view === 'Send link' && sendLinkView()}
-      {view === 'Link sent' && linkSentView()}
+      {linkSent ? linkSentView() : sendLinkView()}
       <Footer />
     </>
   );
