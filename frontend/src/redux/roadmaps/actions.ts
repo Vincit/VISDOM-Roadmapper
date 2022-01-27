@@ -461,10 +461,14 @@ export const sendInvitation = createAsyncThunk<
   { rejectValue: AxiosError }
 >('sendInvitation', async (invitation, thunkAPI) => {
   try {
+    const { roadmapId, ...invitationData } = invitation;
     const currentroadmapId = chosenRoadmapIdSelector(
       thunkAPI.getState() as RootState,
     )!;
-    return await api.sendInvitation(currentroadmapId, invitation);
+    return await api.sendInvitation(
+      roadmapId ?? currentroadmapId,
+      invitationData,
+    );
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
