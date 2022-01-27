@@ -145,26 +145,26 @@ const testRatings = async () => {
     {
       createdBy: { id: developer1Id },
       dimension: TaskRatingDimension.RequiredWork,
-      value: 3,
+      value: 2,
       comment: 'No big deal',
     },
     {
       createdBy: { id: developer2Id },
       dimension: TaskRatingDimension.RequiredWork,
-      value: 7,
+      value: 5,
       comment: 'I would argue this requires more work',
     },
     {
       createdBy: { id: adminId },
       createdFor: { id: customerId },
       dimension: TaskRatingDimension.BusinessValue,
-      value: 7,
+      value: 5,
     },
     {
       createdBy: { id: business1Id },
       createdFor: { id: customerId },
       dimension: TaskRatingDimension.BusinessValue,
-      value: 6,
+      value: 3,
     },
     {
       createdBy: { id: adminId },

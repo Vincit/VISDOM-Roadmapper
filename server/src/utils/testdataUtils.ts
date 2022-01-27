@@ -22,7 +22,7 @@ export const randomTaskratingValue = (
   createdBy,
   createdFor,
   dimension,
-  value: Math.floor(Math.random() * 10) + 1,
+  value: Math.floor(Math.random() * 5) + 1,
 });
 
 export const getUser = async (name: keyof typeof testUsers) =>

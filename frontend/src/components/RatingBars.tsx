@@ -28,7 +28,7 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
         name={'name' in rest ? rest.name : undefined}
         readOnly={readonly}
         value={initialValue}
-        max={10}
+        max={5}
         onChange={(e, value) => {
           if (onChange && value) onChange(value);
         }}

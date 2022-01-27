@@ -2,8 +2,6 @@ import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 import { loggedInAgent } from './setuptests';
-import Roadmap from '../src/api/roadmaps/roadmaps.model';
-import Task from '../src/api/tasks/tasks.model';
 import {
   Permission,
   TaskRatingDimension,
@@ -28,12 +26,10 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       });
     });
     it('Should not get taskratings with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const taskId = (
-        await Task.query().where('roadmapId', firstRoadmapId).first()
-      ).id;
+      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+
       const res = await withoutPermission(
-        firstRoadmapId,
+        firstRoadmapId!,
         Permission.TaskRatingRead,
         () =>
           loggedInAgent.get(
@@ -45,10 +41,8 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
   });
   describe('POST /roadmap/:roadmapId/tasks/:taskId/taskrating/', function () {
     it('Should add new taskrating', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const taskId = (
-        await Task.query().where('roadmapId', firstRoadmapId).first()
-      ).id;
+      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
@@ -68,15 +62,12 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(before.body.length + 1).to.equal(after.body.length);
     });
     it('Should not add new taskrating with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const taskId = (
-        await Task.query().where('roadmapId', firstRoadmapId).first()
-      ).id;
+      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
       const before = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
       const res = await withoutPermission(
-        firstRoadmapId,
+        firstRoadmapId!,
         Permission.TaskRate,
         () =>
           loggedInAgent
@@ -90,6 +81,37 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
             ]),
       );
       expect(res.status).to.equal(403);
+      const after = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+      );
+      expect(before.body.length).to.equal(after.body.length);
+    });
+    it('Should not add new taskrating with value outside min-max limits', async function () {
+      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+      const before = await loggedInAgent.get(
+        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+      );
+      const res = await loggedInAgent
+        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+        .type('json')
+        .send([
+          {
+            dimension: TaskRatingDimension.RequiredWork,
+            value: 6,
+          },
+        ]);
+      expect(res.status).to.equal(400);
+      const res2 = await loggedInAgent
+        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+        .type('json')
+        .send([
+          {
+            dimension: TaskRatingDimension.RequiredWork,
+            value: -1,
+          },
+        ]);
+      expect(res2.status).to.equal(400);
+
       const after = await loggedInAgent.get(
         `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
       );
@@ -137,7 +159,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
   describe('PATCH /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should patch taskrating', async function () {
       const { rating, taskId, roadmapId } = await getTestRatingData();
-      const newValue = rating.value === 9 ? 7 : 9; // pick a different value
+      const newValue = rating.value === 4 ? 3 : 4; // pick a different value
       const res = await loggedInAgent
         .patch(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
         .type('json')
@@ -165,7 +187,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
             .send([
               {
                 id: rating.id,
-                value: rating.value === 9 ? 7 : 9, // pick a different value
+                value: rating.value === 4 ? 3 : 4, // pick a different value
               },
             ]),
       );
