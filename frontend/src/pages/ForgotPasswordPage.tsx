@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useMemo } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -32,6 +32,29 @@ export const ForgotPasswordPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  let timeoutArray = useMemo(() => {
+    const array: NodeJS.Timeout[] = [];
+    return array;
+  }, []);
+
+  let intervalArray = useMemo(() => {
+    const array: NodeJS.Timeout[] = [];
+    return array;
+  }, []);
+
+  // Cleanup timers after unmounting
+  useEffect(
+    () => () => {
+      timeoutArray.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
+      intervalArray.forEach((interval) => {
+        clearInterval(interval);
+      });
+    },
+    [timeoutArray, intervalArray],
+  );
+
   const confirmationError = {
     err: errorState(useState('')),
   };
@@ -41,21 +64,31 @@ export const ForgotPasswordPage = () => {
   };
 
   const createDisableTimer = (
-    disableTime: number,
     setDisableTime: React.Dispatch<React.SetStateAction<number>>,
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
     time: number,
   ) => {
     setDisabled(true);
+
     const countdownInterval = setInterval(() => {
-      if (disableTime > 0) setDisableTime((previous) => previous - 1);
+      setDisableTime((previous) => previous - 1);
     }, 1000);
 
-    setTimeout(() => {
+    const disableTimer = setTimeout(() => {
       clearInterval(countdownInterval);
+
+      // Remove timeout and interval from the arrays after completing them
+      timeoutArray = timeoutArray.splice(timeoutArray.indexOf(disableTimer), 1);
+      intervalArray = intervalArray.splice(
+        intervalArray.indexOf(countdownInterval),
+        1,
+      );
       setDisabled(false);
-      setDisableTime(defaultDisableTime / 2);
+      setDisableTime(time);
     }, time * 1000);
+
+    timeoutArray.push(disableTimer);
+    intervalArray.push(countdownInterval);
   };
 
   const isUniqueError = (err: any) => err.response?.status === 404;
@@ -77,8 +110,8 @@ export const ForgotPasswordPage = () => {
       return;
     }
 
+    setResendDisableTime(defaultDisableTime / 2);
     createDisableTimer(
-      sendDisableTime,
       setSendDisableTime,
       setSendDisabled,
       defaultDisableTime / 2,
@@ -92,7 +125,6 @@ export const ForgotPasswordPage = () => {
     sendEmailLink();
     setResendDisableTime(defaultDisableTime);
     createDisableTimer(
-      resendDisableTime,
       setResendDisableTime,
       setResendDisabled,
       defaultDisableTime,
