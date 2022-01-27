@@ -25,6 +25,7 @@ import {
   GroupedRelation,
   getAutolayout,
   reachable,
+  blockedGroups,
 } from '../utils/TaskRelationUtils';
 import { getTaskOverviewData } from './TaskOverviewPage';
 import { OverviewContent } from '../components/Overview';
@@ -93,6 +94,9 @@ export const TaskMapPage = () => {
   const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
+  const [dropUnavailable, setDropUnavailable] = useState<Set<string>>(
+    new Set(),
+  );
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
 
   useEffect(() => {
@@ -146,6 +150,7 @@ export const TaskMapPage = () => {
                 ({ dependencies }) => dependencies,
               )}
               disableDragging={disableDrag}
+              disableDrop={dropUnavailable.has(id)}
               unavailable={unavailable}
               dragHandle={dragHandle}
             />
@@ -181,6 +186,7 @@ export const TaskMapPage = () => {
     selectedTask,
     taskRelations,
     tasks,
+    dropUnavailable,
   ]);
 
   const onConnect = async (data: any) => {
@@ -272,6 +278,7 @@ export const TaskMapPage = () => {
     const { source, destination, draggableId } = result;
     const draggedTaskId = Number(draggableId);
     const backupList = copyRelationList(taskRelations);
+    setDropUnavailable(new Set());
 
     try {
       if (!destination) await onDragMoveOutside(draggedTaskId);
@@ -295,7 +302,12 @@ export const TaskMapPage = () => {
       >
         <DragDropContext
           onDragEnd={onDragEnd}
-          onDragStart={() => setDisableDrag(true)}
+          onDragStart={({ draggableId }) => {
+            setDropUnavailable(
+              blockedGroups(Number(draggableId), taskRelations),
+            );
+            setDisableDrag(true);
+          }}
         >
           <ReactFlowProvider>
             <ReactFlow

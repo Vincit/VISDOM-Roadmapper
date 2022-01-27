@@ -100,3 +100,21 @@ export const reachable = (
   }
   return visited;
 };
+
+export const blockedGroups = (task: number, graph: GroupedRelation[]) => {
+  const taskToGroup = new Map(
+    graph.flatMap(({ synergies }, i) => synergies.map((s) => [s, i])),
+  );
+  const visited = new Set<string>();
+  graph.forEach(({ dependencies }) => {
+    dependencies.forEach(({ from, to }) => {
+      if (from !== task && to !== task) return;
+      const start = from === task ? to : from;
+      const direction = from === task ? 'target' : 'source';
+      reachable(start, graph, direction).forEach((x) =>
+        visited.add(taskToGroup.get(x)!.toString()),
+      );
+    });
+  });
+  return visited;
+};

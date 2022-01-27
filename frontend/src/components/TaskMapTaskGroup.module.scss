@@ -9,6 +9,10 @@
   border-radius: 10px;
   cursor: default;
 
+  &.unavailable {
+    filter: grayscale(100%) opacity(20%);
+  }
+
   &.loading:not(.highlight) {
     cursor: wait;
   }
