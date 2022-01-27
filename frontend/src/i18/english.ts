@@ -218,9 +218,8 @@ export const english = {
       'No problem. You can always start by making a new project. With a new project, you can start filling in tasks, milestones, and related people to your project to succeed in your product development goals.',
     'First project info 2/2':
       'Another way to start using VISDOM is to get an invitation to another existing project. Contact your project’s product owner to invite you in.',
-    tooltipMessage: 'Tooltip message placeholder', // TODO: remove it when the actual tooltip messages are added.
     workValueTitle: 'Work / Value',
-    customerStakesTitle: 'Customer stakes in milestone',
+    customerStakesTitle: 'Clients receiving the most value',
     'No ratings': 'No ratings',
     unratedTaskMessage: 'Waiting for ratings',
     'Optional message': 'Optional message',
@@ -295,7 +294,7 @@ export const english = {
     'Planner workValue tooltip':
       'Roadmap shows a visual comparison of milestones’ total amount of work and average value',
     'Planner customerStakes tooltip':
-      'Weighted values are calculated using the average value of tasks for a client with the weight scaling in the client weights tab.',
+      'Values are calculated using the average value of tasks for a client.',
     'Planner milestones tooltip':
       'Milestones create your project’s <1>roadmap.</1>',
     'Planner weights tooltip':

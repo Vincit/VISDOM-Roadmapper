@@ -172,11 +172,13 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
   }
 };
 
-const ratingValueAndCreator = (roadmap: Roadmap) => (rating: Taskrating) => {
+const ratingValueAndCreator = (roadmap: Roadmap, unweighted?: true) => (
+  rating: Taskrating,
+) => {
   const ratingCreator = roadmap.customers?.find(
     ({ id }) => id === rating.forCustomer,
   );
-  const creatorWeight = ratingCreator?.weight ?? 0;
+  const creatorWeight = unweighted ? 1 : ratingCreator?.weight ?? 0;
   return {
     value: rating.value * creatorWeight,
     customer: ratingCreator,
@@ -189,7 +191,7 @@ const taskRatingsCustomerStakes = (roadmap: Roadmap) => (
 ) =>
   task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValueAndCreator(roadmap))
+    .map(ratingValueAndCreator(roadmap, true))
     .reduce((acc, rating) => {
       if (!rating.customer) return acc;
       const previousVal = acc.get(rating.customer) || 0;
