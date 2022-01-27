@@ -60,8 +60,14 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
     }
 
     const promises = members.map((member) =>
-      dispatch(roadmapsActions.sendInvitation({ ...member })),
+      dispatch(
+        roadmapsActions.sendInvitation({
+          ...member,
+          roadmapId: res.payload.id,
+        }),
+      ),
     );
+
     await Promise.all(promises);
     await dispatch(userActions.getUserInfo());
     setCreatedRoadmapId(res.payload.id);
