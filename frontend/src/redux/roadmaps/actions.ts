@@ -35,13 +35,7 @@ export const getCustomers = createAsyncThunk<
   { rejectValue: AxiosError }
 >('roadmaps/getCustomers', async (roadmapId, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return {
-      roadmapId: roadmapId || currentroadmapId,
-      customers: await api.getCustomers(roadmapId || currentroadmapId),
-    };
+    return { roadmapId, customers: await api.getCustomers(roadmapId) };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
@@ -101,13 +95,7 @@ export const getRoadmapUsers = createAsyncThunk<
   { rejectValue: AxiosError }
 >('roadmaps/getRoadmapUsers', async (roadmapId, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return {
-      roadmapId: roadmapId || currentroadmapId,
-      response: await api.getRoadmapUsers(roadmapId || currentroadmapId),
-    };
+    return { roadmapId, response: await api.getRoadmapUsers(roadmapId) };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
@@ -330,13 +318,7 @@ export const getVersions = createAsyncThunk<
   { rejectValue: AxiosError }
 >('versions/getVersions', async (roadmapId, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    return {
-      roadmapId: roadmapId || currentroadmapId,
-      response: await api.getVersions(roadmapId || currentroadmapId),
-    };
+    return { roadmapId, response: await api.getVersions(roadmapId) };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
@@ -348,10 +330,9 @@ export const addVersion = createAsyncThunk<
   { rejectValue: AxiosError }
 >('versions/addVersion', async (version, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    const roadmapId = version.roadmapId || currentroadmapId;
+    const roadmapId =
+      version.roadmapId ??
+      chosenRoadmapIdSelector(thunkAPI.getState() as RootState)!;
     await api.addVersion({
       roadmapId,
       name: version.name,
@@ -372,10 +353,9 @@ export const patchVersion = createAsyncThunk<
   { rejectValue: AxiosError }
 >('versions/patchVersion', async (version, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    const roadmapId = version.roadmapId || currentroadmapId;
+    const roadmapId =
+      version.roadmapId ??
+      chosenRoadmapIdSelector(thunkAPI.getState() as RootState)!;
     await api.patchVersion({
       ...version,
       roadmapId,
@@ -395,10 +375,9 @@ export const deleteVersion = createAsyncThunk<
   { rejectValue: AxiosError }
 >('versions/deleteVersion', async (version, thunkAPI) => {
   try {
-    const currentroadmapId = chosenRoadmapIdSelector(
-      thunkAPI.getState() as RootState,
-    )!;
-    const roadmapId = version.roadmapId || currentroadmapId;
+    const roadmapId =
+      version.roadmapId ??
+      chosenRoadmapIdSelector(thunkAPI.getState() as RootState)!;
     await api.deleteVersion({
       ...version,
       roadmapId,
