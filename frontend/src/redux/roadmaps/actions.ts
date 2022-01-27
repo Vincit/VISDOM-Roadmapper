@@ -35,7 +35,13 @@ export const getCustomers = createAsyncThunk<
   { rejectValue: AxiosError }
 >('roadmaps/getCustomers', async (roadmapId, thunkAPI) => {
   try {
-    return { roadmapId, customers: await api.getCustomers(roadmapId) };
+    const currentroadmapId = chosenRoadmapIdSelector(
+      thunkAPI.getState() as RootState,
+    )!;
+    return {
+      roadmapId: roadmapId || currentroadmapId,
+      customers: await api.getCustomers(roadmapId || currentroadmapId),
+    };
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
