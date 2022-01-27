@@ -22,7 +22,7 @@ export const TaskHeatmap = () => {
     shallowEqual,
   );
 
-  const frequencies = matrix2d({ rows: 11, cols: 11 });
+  const frequencies = matrix2d({ rows: 5, cols: 5 });
   if (currentRoadmap) {
     currentRoadmap.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
       const value = ratings.get(TaskRatingDimension.BusinessValue);
@@ -30,7 +30,7 @@ export const TaskHeatmap = () => {
       if (value && work) {
         const avgValue = Math.round(value.avg);
         const avgWork = Math.round(work.avg);
-        frequencies[10 - avgValue][avgWork] += 1;
+        frequencies[5 - avgValue][avgWork - 1] += 1;
       }
     });
   }
@@ -82,13 +82,13 @@ export const TaskHeatmap = () => {
             </div>
           ))}
         </div>
-        <p className={classes(css.yaxismax)}>10</p>
-        <p className={classes(css.yaxismin)}>0</p>
+        <p className={classes(css.yaxismax)}>5</p>
+        <p className={classes(css.yaxismin)}>1</p>
         <p className={classes(css.yaxislabel)}>Value</p>
       </div>
-      <p className={classes(css.xaxismin)}>0</p>
+      <p className={classes(css.xaxismin)}>1</p>
       <p className={classes(css.xaxislabel)}>Work</p>
-      <p className={classes(css.xaxismax)}>10</p>
+      <p className={classes(css.xaxismax)}>5</p>
     </div>
   );
 };

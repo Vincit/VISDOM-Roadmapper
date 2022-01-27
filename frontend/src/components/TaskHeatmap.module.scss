@@ -23,13 +23,13 @@
   border: 1px solid $COLOR_SKY;
   padding-left: 16px;
   padding-top: 16px;
-  min-width: 386px;
-  min-height: 423px;
   text-align: start;
+  min-width: 215px;
+  min-height: 212px;
 
   .xaxismin {
     position: relative;
-    left: 2px;
+    left: 10px;
     display: inline-block;
     width: 0;
   }
@@ -37,12 +37,12 @@
     position: relative;
     display: inline-block;
     width: 0;
-    left: 310px;
+    left: 135px;
   }
   .xaxislabel {
     @extend .typography-pre-title;
     position: relative;
-    left: 145px;
+    left: 68px;
     display: inline-block;
     width: 0;
   }
@@ -66,6 +66,7 @@
   .yaxismax {
     position: relative;
     left: 5px;
+    bottom: -6px;
     width: 0;
     height: 0;
   }
@@ -73,7 +74,7 @@
     align-self: flex-end;
     position: relative;
     left: 5px;
-    bottom: 5px;
+    bottom: 10px;
     width: 0;
     height: 0;
   }

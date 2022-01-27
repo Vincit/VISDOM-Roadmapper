@@ -35,7 +35,7 @@ export default class TaskRating extends Model {
           TaskRatingDimension.BusinessValue,
         ],
       },
-      value: { type: 'number', minimum: 0, maximum: 10 },
+      value: { type: 'number', minimum: 0, maximum: 5 },
       comment: { type: 'string' },
     },
   };
