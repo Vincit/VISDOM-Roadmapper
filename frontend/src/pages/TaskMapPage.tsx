@@ -32,7 +32,7 @@ import { TaskRelationType } from '../../../shared/types/customTypes';
 import { CustomEdge } from '../components/TaskMapEdge';
 import { ConnectionLine } from '../components/TaskMapConnection';
 import { Position, TaskProps } from '../components/TaskMapTask';
-import { move } from '../utils/array';
+import { move, partition } from '../utils/array';
 import { TaskGroup } from '../components/TaskMapTaskGroup';
 import css from './TaskMapPage.module.scss';
 import { InfoTooltip } from '../components/InfoTooltip';
@@ -220,18 +220,22 @@ export const TaskMapPage = () => {
   };
 
   const onDragMoveOutside = async (draggedTaskId: number) => {
-    const newList = taskRelations
-      // remove dragged task from synergy list and
-      // all dependencies associated with the dragged task
-      .map(({ synergies, dependencies }) => ({
-        synergies: synergies.filter((num) => num !== draggedTaskId),
-        dependencies: dependencies.filter(
-          ({ from, to }) => from !== draggedTaskId && to !== draggedTaskId,
-        ),
-      }))
-      // remove entries where synergy list is empty
-      .filter(({ synergies }) => synergies.length);
-    newList.push({ synergies: [draggedTaskId], dependencies: [] });
+    const draggedIndex = taskRelations.findIndex(({ synergies }) =>
+      synergies.includes(draggedTaskId),
+    );
+    if (draggedIndex < 0 || taskRelations[draggedIndex].synergies.length === 1)
+      return;
+    const newList = copyRelationList(taskRelations);
+    // remove dragged task from synergy list
+    newList[draggedIndex].synergies = newList[draggedIndex].synergies.filter(
+      (num) => num !== draggedTaskId,
+    );
+    const [moved, remaining] = partition(
+      newList[draggedIndex].dependencies,
+      ({ from, to }) => from === draggedTaskId || to === draggedTaskId,
+    );
+    newList[draggedIndex].dependencies = remaining;
+    newList.push({ synergies: [draggedTaskId], dependencies: moved });
 
     setTaskRelations(newList);
     await addSynergyRelations(draggedTaskId, []);
@@ -243,24 +247,21 @@ export const TaskMapPage = () => {
     draggedTaskId: number,
   ) => {
     const destinationId = Number(destination.droppableId);
+    const sourceId = Number(source.droppableId);
     const copyList = copyRelationList(taskRelations);
 
     move()
-      .from(copyList[Number(source.droppableId)].synergies, source.index)
+      .from(copyList[sourceId].synergies, source.index)
       .to(copyList[destinationId].synergies, destination.index);
 
-    const newList = copyList
-      // remove entries where synergy list is empty
-      .filter(({ synergies }) => synergies.length)
-      // remove all dependencies associated with the dragged task
-      .map(({ synergies, dependencies }) => ({
-        synergies,
-        dependencies: dependencies.filter(
-          ({ from, to }) => from !== draggedTaskId && to !== draggedTaskId,
-        ),
-      }));
+    const [moved, remaining] = partition(
+      copyList[sourceId].dependencies,
+      ({ from, to }) => from === draggedTaskId || to === draggedTaskId,
+    );
 
-    setTaskRelations(newList);
+    copyList[sourceId].dependencies = remaining;
+    copyList[destinationId].dependencies.push(...moved);
+    setTaskRelations(copyList);
     await addSynergyRelations(
       draggedTaskId,
       taskRelations[destinationId].synergies,
