@@ -22,7 +22,7 @@ const DeleteModalContent: FC<{
   header: string;
   action: any;
   payload: any;
-  closeModal: () => void;
+  closeModal: (success?: boolean) => void;
 }> = ({ header, action, payload, closeModal, children }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +38,7 @@ const DeleteModalContent: FC<{
       if (res.payload?.message) setErrorMessage(res.payload.message);
       return;
     }
-    closeModal();
+    closeModal(true);
   };
 
   return (
@@ -103,9 +103,9 @@ export const DeleteRoadmapModal: Modal<ModalTypes.DELETE_ROADMAP_MODAL> = ({
       header={t('Delete project')}
       action={roadmapsActions.deleteRoadmap}
       payload={{ id }}
-      closeModal={() => {
-        closeModal();
-        history.push(paths.overview);
+      closeModal={(success) => {
+        closeModal(success);
+        if (success) history.push(paths.overview);
       }}
     >
       <Trans i18nKey="Delete project confirmation">
