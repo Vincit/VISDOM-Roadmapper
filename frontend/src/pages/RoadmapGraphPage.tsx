@@ -65,6 +65,11 @@ export const RoadmapGraphPage = () => {
   }, [dispatch, currentRoadmap]);
 
   useEffect(() => {
+    if (currentRoadmap && roadmapsVersions === undefined)
+      dispatch(roadmapsActions.getVersions(currentRoadmap.id));
+  }, [dispatch, currentRoadmap, roadmapsVersions]);
+
+  useEffect(() => {
     if (currentRoadmap)
       setVersions(
         roadmapsVersions?.map((version) => ({
