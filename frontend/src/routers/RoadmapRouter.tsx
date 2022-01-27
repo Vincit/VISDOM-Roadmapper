@@ -4,6 +4,7 @@ import {
   Redirect,
   Route,
   Switch,
+  useHistory,
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
@@ -22,6 +23,7 @@ import {
   chosenRoadmapSelector,
   roadmapUsersSelector,
   allCustomersSelector,
+  chosenRoadmapIdSelector,
 } from '../redux/roadmaps/selectors';
 import { RoadmapUser, Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -31,6 +33,7 @@ import { PlannerPageRouter } from './PlannerPageRouter';
 import { TasksPageRouter } from './TasksPageRouter';
 import { hasPermission } from '../../../shared/utils/permission';
 import '../shared.scss';
+import { usePrevious } from '../utils/usePrevious';
 
 const routes = [
   {
@@ -70,7 +73,12 @@ const routes = [
 
 const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
   const { path } = useRouteMatch();
-  const { roadmapId } = useParams<{ roadmapId: string | undefined }>();
+  const history = useHistory();
+  const { roadmapId: urlRoadmapId } = useParams<{
+    roadmapId: string | undefined;
+  }>();
+  const selectedRoadmapId = useSelector(chosenRoadmapIdSelector);
+  const previousRoadmapId = usePrevious<number | undefined>(selectedRoadmapId);
   const dispatch = useDispatch<StoreDispatchType>();
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
@@ -92,9 +100,38 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
 
   useEffect(() => {
     // Try to select roadmap given in route parameters
-    if (roadmapId) {
-      dispatch(roadmapsActions.selectCurrentRoadmap(+roadmapId));
+    if (urlRoadmapId) {
+      dispatch(roadmapsActions.selectCurrentRoadmap(+urlRoadmapId));
     }
+  }, [dispatch, urlRoadmapId]);
+
+  useEffect(() => {
+    // If selectedRoadmapId changes, update the url to match that
+    // (for cases where another browser tab switches roadmapId and the state gets synced into this tab)
+    let newPath: string;
+    const roadmapIdRegex = new RegExp('^/roadmap/\\d+/');
+    if (!previousRoadmapId || selectedRoadmapId === previousRoadmapId) return;
+    if (selectedRoadmapId === undefined) {
+      newPath = '/overview';
+    } else if (history.location.pathname.match(roadmapIdRegex)) {
+      newPath = history.location.pathname.replace(
+        roadmapIdRegex,
+        `/roadmap/${selectedRoadmapId}/`,
+      );
+    } else {
+      newPath = `/roadmap/${selectedRoadmapId}${paths.roadmapRelative.dashboard}`;
+    }
+    history.push(`${newPath}${history.location.search}`);
+  }, [
+    dispatch,
+    selectedRoadmapId,
+    previousRoadmapId,
+    history.location.pathname,
+    history,
+    urlRoadmapId,
+  ]);
+
+  useEffect(() => {
     if (!currentRoadmap) {
       setIsLoadingRoadmap(true);
       dispatch(roadmapsActions.getRoadmaps()).then(() => {
@@ -122,7 +159,7 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
       });
     }
     setUseEffectFinished(true);
-  }, [currentRoadmap, roadmapId, dispatch, roadmapUsers, customers, type]);
+  }, [currentRoadmap, urlRoadmapId, dispatch, roadmapUsers, customers, type]);
 
   if (!useEffectFinished) return null;
   if (!isLoadingRoadmap && !currentRoadmap)
