@@ -73,7 +73,7 @@ export const valueAndWorkSummary = (task: Task) => {
   return {
     value:
       ratings.get(TaskRatingDimension.BusinessValue) ?? new RatingsSummary(),
-    work: ratings.get(TaskRatingDimension.RequiredWork) ?? new RatingsSummary(),
+    work: ratings.get(TaskRatingDimension.Complexity) ?? new RatingsSummary(),
   };
 };
 
@@ -92,14 +92,14 @@ export const averageValueAndWork = (tasks: Task[]) => {
   const ratings = tasks.reduce(ratingsSummaryByDimensionInto, new Map());
   return {
     value: ratings.get(TaskRatingDimension.BusinessValue)?.avg ?? 0,
-    work: ratings.get(TaskRatingDimension.RequiredWork)?.avg ?? 0,
+    work: ratings.get(TaskRatingDimension.Complexity)?.avg ?? 0,
   };
 };
 
 const calcTaskPriority = (task: Task) => {
   const ratings = ratingsSummaryByDimension(task);
   const value = ratings.get(TaskRatingDimension.BusinessValue);
-  const work = ratings.get(TaskRatingDimension.RequiredWork);
+  const work = ratings.get(TaskRatingDimension.Complexity);
   if (!value) return -2;
   if (!work) return -1;
   return value.avg / work.avg;
@@ -274,7 +274,7 @@ export const hasMissingRatings = ({ users = [], customers = [] }: Roadmap) => {
 export const hasRatingsOnEachDimension = (task: Task) =>
   [
     TaskRatingDimension.BusinessValue,
-    TaskRatingDimension.RequiredWork,
+    TaskRatingDimension.Complexity,
   ].every((dim) => task.ratings.some((rating) => rating.dimension === dim));
 
 /*

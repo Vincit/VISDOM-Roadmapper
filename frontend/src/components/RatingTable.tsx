@@ -74,15 +74,13 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
     if (!divRef) return;
     const heights = ratings.map(({ comment }) => {
       if (comment.length === 0)
-        return type === TaskRatingDimension.RequiredWork ? 60 : 70;
+        return type === TaskRatingDimension.Complexity ? 60 : 70;
 
       divRef.textContent = comment;
       const textHeight = divRef.offsetHeight;
       divRef.textContent = '';
 
-      return (
-        textHeight + (type === TaskRatingDimension.RequiredWork ? 90 : 110)
-      );
+      return textHeight + (type === TaskRatingDimension.Complexity ? 90 : 110);
     });
     setRowHeights(heights);
     setListHeight(heights.reduce((a, b) => a + b, 0));

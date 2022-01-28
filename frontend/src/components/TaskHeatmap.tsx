@@ -26,7 +26,7 @@ export const TaskHeatmap = () => {
   if (currentRoadmap) {
     currentRoadmap.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
       const value = ratings.get(TaskRatingDimension.BusinessValue);
-      const work = ratings.get(TaskRatingDimension.RequiredWork);
+      const work = ratings.get(TaskRatingDimension.Complexity);
       if (value && work) {
         const avgValue = Math.round(value.avg);
         const avgWork = Math.round(work.avg);

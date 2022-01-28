@@ -42,6 +42,6 @@ const TableWorkRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
 };
 
 export const RatingTableWork = ratingTable({
-  type: TaskRatingDimension.RequiredWork,
+  type: TaskRatingDimension.Complexity,
   Row: TableWorkRatingRow,
 });

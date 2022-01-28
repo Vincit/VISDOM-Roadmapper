@@ -31,7 +31,7 @@ export default class TaskRating extends Model {
       dimension: {
         type: 'integer',
         enum: [
-          TaskRatingDimension.RequiredWork,
+          TaskRatingDimension.Complexity,
           TaskRatingDimension.BusinessValue,
         ],
       },
@@ -78,7 +78,7 @@ export default class TaskRating extends Model {
         if (role === RoleType.Business) {
           builder
             .where('createdByUser', user.id)
-            .orWhere('dimension', TaskRatingDimension.RequiredWork)
+            .orWhere('dimension', TaskRatingDimension.Complexity)
             .orWhereIn(
               'forCustomer',
               user.representativeFor.map(({ id }) => id),
@@ -91,7 +91,7 @@ export default class TaskRating extends Model {
     if (role !== RoleType.Business) return true;
     return (
       this.createdByUser === user.id ||
-      this.dimension === TaskRatingDimension.RequiredWork ||
+      this.dimension === TaskRatingDimension.Complexity ||
       user.representativeFor.some(({ id }) => id === this.forCustomer)
     );
   }

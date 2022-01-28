@@ -32,15 +32,18 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
     ctx,
     Permission.TaskValueRate,
   );
-  const hasWorkRatePermission = userHasPermission(ctx, Permission.TaskWorkRate);
+  const hasComplexityRatePermission = userHasPermission(
+    ctx,
+    Permission.TaskComplexityRate,
+  );
 
   const errors = await Promise.all(
     ratings.map(async (rating) => {
       if (
         (rating.dimension === TaskRatingDimension.BusinessValue &&
           !hasValueRatePermission) ||
-        (rating.dimension === TaskRatingDimension.RequiredWork &&
-          !hasWorkRatePermission)
+        (rating.dimension === TaskRatingDimension.Complexity &&
+          !hasComplexityRatePermission)
       )
         return { err: 403 };
       if (rating.forCustomer !== undefined) {
@@ -104,7 +107,10 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
     ctx,
     Permission.TaskValueRate,
   );
-  const hasWorkRatePermission = userHasPermission(ctx, Permission.TaskWorkRate);
+  const hasComplexityRatePermission = userHasPermission(
+    ctx,
+    Permission.TaskComplexityRate,
+  );
   const hasEditOthersPermission = userHasPermission(
     ctx,
     Permission.TaskRatingEditOthers,
@@ -121,8 +127,8 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
       if (
         (rating.dimension === TaskRatingDimension.BusinessValue &&
           !hasValueRatePermission) ||
-        (rating.dimension === TaskRatingDimension.RequiredWork &&
-          !hasWorkRatePermission)
+        (rating.dimension === TaskRatingDimension.Complexity &&
+          !hasComplexityRatePermission)
       )
         return { err: 403 };
       return { rating, value, comment };
