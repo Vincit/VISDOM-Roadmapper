@@ -33,7 +33,7 @@ export const ResetPasswordPage = () => {
     err: errorState(useState('')),
   };
 
-  const handleReset = (e: FormEvent<HTMLFormElement>) => {
+  const handleReset = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (password !== confirmPassword) {
@@ -43,19 +43,18 @@ export const ResetPasswordPage = () => {
 
     if (!token) return;
 
-    dispatch(userActions.resetPassword({ token, password })).then((res) => {
-      if (userActions.resetPassword.rejected.match(res)) {
-        if (res.payload?.response?.status === 403)
-          setErrorMessage(t('Token expired'));
-        else if (res.payload?.response?.status === 404)
-          setErrorMessage(t('Token not found'));
-        else if (res.payload) {
-          setErrorMessage(t('Error message', { error: res.payload.message }));
-        }
-      } else {
-        setDone(true);
-      }
-    });
+    const res = await dispatch(userActions.resetPassword({ token, password }));
+    if (!userActions.resetPassword.rejected.match(res)) {
+      setDone(true);
+      return;
+    }
+
+    if (res.payload?.response?.status === 403)
+      setErrorMessage(t('Token expired'));
+    else if (res.payload?.response?.status === 404)
+      setErrorMessage(t('Token not found'));
+    else if (res.payload)
+      setErrorMessage(t('Error message', { error: res.payload.message }));
   };
 
   const resetPasswordView = () => (
