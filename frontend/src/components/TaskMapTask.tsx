@@ -67,6 +67,12 @@ const SingleTask: FC<
   const handle = (type: HandleType) => {
     const left = type === 'target';
     const key = left ? 'to' : 'from';
+    const connectable =
+      !isDragging &&
+      dragHandle &&
+      dragHandle.type !== type &&
+      !dragHandle.existingConnections.includes(taskId) &&
+      !unavailable.has(taskId);
     return (
       /* drag-n-drop is blocked for interactive elements such as buttons */
       <button type="button">
@@ -74,16 +80,12 @@ const SingleTask: FC<
           className={classes(left ? css.leftHandle : css.rightHandle, {
             [css.filled]: checked[key],
             [css.dragging]: isDragging,
-            [css.connectable]:
-              !isDragging &&
-              dragHandle &&
-              dragHandle.type !== type &&
-              !dragHandle.existingConnections.includes(taskId) &&
-              !unavailable.has(taskId),
+            [css.connectable]: connectable,
           })}
           id={`${key}-${taskId}`}
           type={type}
           position={left ? Position.Left : Position.Right}
+          isConnectable={connectable}
         />
       </button>
     );
