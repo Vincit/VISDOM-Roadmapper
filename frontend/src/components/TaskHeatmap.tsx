@@ -87,7 +87,7 @@ export const TaskHeatmap = () => {
         <p className={classes(css.yaxislabel)}>Value</p>
       </div>
       <p className={classes(css.xaxismin)}>1</p>
-      <p className={classes(css.xaxislabel)}>Work</p>
+      <p className={classes(css.xaxislabel)}>Complexity</p>
       <p className={classes(css.xaxismax)}>5</p>
     </div>
   );

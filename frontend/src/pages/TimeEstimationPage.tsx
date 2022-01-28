@@ -293,7 +293,7 @@ export const TimeEstimationPage = () => {
         selectedMilestoneId !== undefined &&
         milestoneDuration && (
           <Alert show variant="danger">
-            <Trans i18nKey="Unable to calculate work" />
+            <Trans i18nKey="Unable to calculate working days estimate" />
           </Alert>
         )}
       {calculatedDaysPerWork !== undefined && renderMilestoneTimeline()}

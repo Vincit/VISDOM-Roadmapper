@@ -191,7 +191,7 @@ export const PlannerChart: FC<{
               dy={20}
               className={classes(css.label)}
             >
-              Work
+              Complexity
             </Label>
           </XAxis>
           <CartesianGrid vertical={false} />

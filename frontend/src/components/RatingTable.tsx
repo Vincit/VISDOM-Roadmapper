@@ -68,7 +68,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   const [rowHeights, setRowHeights] = useState<number[]>([]);
   const [listHeight, setListHeight] = useState(0);
   const typeString =
-    type === TaskRatingDimension.BusinessValue ? 'value' : 'work';
+    type === TaskRatingDimension.BusinessValue ? 'value' : 'complexity';
 
   useEffect(() => {
     if (!divRef) return;

@@ -42,7 +42,7 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
       children: <BusinessIcon color={colors.black100} />,
     },
     {
-      label: i18n.t('Avg Work'),
+      label: i18n.t('Avg Complexity'),
       value: numFormat.format(complexity.avg),
       children: <WorkRoundIcon color={colors.black100} />,
     },

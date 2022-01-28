@@ -105,13 +105,15 @@ export const RoadmapGraphPage = () => {
       <BlockGraph
         title={
           <div className={classes(css.titleContainer)}>
-            <h2 className={classes(css.graphTitle)}>{t('workValueTitle')}</h2>
-            <InfoTooltip title={t('Planner workValue tooltip')}>
+            <h2 className={classes(css.graphTitle)}>
+              {t('complexityValueTitle')}
+            </h2>
+            <InfoTooltip title={t('Planner complexityValue tooltip')}>
               <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
             </InfoTooltip>
           </div>
         }
-        xLabel="Total work"
+        xLabel="Total complexity"
         yLabel="Total value"
         selected={selectedVersion}
         setSelected={setSelectedVersion}

@@ -47,7 +47,7 @@ export const RoadmapOverview = () => {
       children: <BusinessIcon color={colors.black100} />,
     },
     {
-      label: 'Avg Work',
+      label: 'Avg Complexity',
       metricsValue: numFormat.format(complexity),
       children: <WorkRoundIcon color={colors.black100} />,
     },

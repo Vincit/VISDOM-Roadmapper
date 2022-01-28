@@ -40,9 +40,12 @@ export const MilestoneRatingsSummary: FC<{
   return (
     <div className={classes(css.ratingSummary)}>
       <Rating title={t('Average value')} value={averageRatings.value} />
-      <Rating title={t('Average work')} value={averageRatings.complexity} />
+      <Rating
+        title={t('Average complexity')}
+        value={averageRatings.complexity}
+      />
       <Rating title={t('Total value')} value={totalRatings.value} />
-      <Rating title={t('Total work')} value={totalRatings.complexity} />
+      <Rating title={t('Total complexity')} value={totalRatings.complexity} />
     </div>
   );
 };

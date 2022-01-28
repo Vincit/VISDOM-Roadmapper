@@ -100,7 +100,7 @@ export const TaskTableUnrated = table({
     { label: 'Task title', width: 1.5, sorting: SortingTypes.SORT_NAME },
     { label: 'Current average value', sorting: SortingTypes.SORT_AVG_VALUE },
     {
-      label: 'Current average work',
+      label: 'Current average complexity',
       sorting: SortingTypes.SORT_AVG_COMPLEXITY,
     },
     { label: 'Waiting for ratings' },
