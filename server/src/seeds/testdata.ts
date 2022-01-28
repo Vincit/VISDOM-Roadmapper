@@ -144,15 +144,15 @@ const testRatings = async () => {
   return [
     {
       createdBy: { id: developer1Id },
-      dimension: TaskRatingDimension.RequiredWork,
+      dimension: TaskRatingDimension.Complexity,
       value: 2,
       comment: 'No big deal',
     },
     {
       createdBy: { id: developer2Id },
-      dimension: TaskRatingDimension.RequiredWork,
+      dimension: TaskRatingDimension.Complexity,
       value: 5,
-      comment: 'I would argue this requires more work',
+      comment: 'I would argue this is more demanding task',
     },
     {
       createdBy: { id: adminId },

@@ -8,7 +8,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Task } from '../redux/roadmaps/types';
 import {
   SortingTypes,
-  valueAndWorkSummary,
+  valueAndComplexitySummary,
   taskSort,
 } from '../utils/TaskUtils';
 import { table, TableRow } from './Table';
@@ -30,7 +30,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const { value, work } = valueAndWorkSummary(task);
+  const { value, complexity } = valueAndComplexitySummary(task);
   const type = useSelector(userRoleSelector, shallowEqual);
 
   const handleTaskDelete = (e: MouseEvent) => {
@@ -62,9 +62,9 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
           {task.name}
         </div>
         <div>{numFormat.format(value.avg)}</div>
-        <div>{numFormat.format(work.avg)}</div>
+        <div>{numFormat.format(complexity.avg)}</div>
         <div>{numFormat.format(value.total)}</div>
-        <div>{numFormat.format(work.total)}</div>
+        <div>{numFormat.format(complexity.total)}</div>
         <div>
           {task.completed ? (
             <span className={classes(css.statusComplete)}>
@@ -104,9 +104,9 @@ export const TaskTableRated = table({
       textAlign: 'center',
     },
     { label: 'Average value', sorting: SortingTypes.SORT_AVG_VALUE },
-    { label: 'Average work', sorting: SortingTypes.SORT_AVG_WORK },
+    { label: 'Average complexity', sorting: SortingTypes.SORT_AVG_COMPLEXITY },
     { label: 'Total value', sorting: SortingTypes.SORT_TOTAL_VALUE },
-    { label: 'Total work', sorting: SortingTypes.SORT_TOTAL_WORK },
+    { label: 'Total complexity', sorting: SortingTypes.SORT_TOTAL_COMPLEXITY },
     { label: 'Status', sorting: SortingTypes.SORT_STATUS },
     { label: '' },
   ],

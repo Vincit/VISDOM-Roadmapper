@@ -13,7 +13,7 @@ import { Roadmap, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { plannerTimeEstimatesSelector } from '../redux/versions/selectors';
 import { TimeEstimate } from '../redux/versions/types';
-import { totalValueAndWork } from '../utils/TaskUtils';
+import { totalValueAndComplexity } from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
 import css from './TimeEstimationPage.module.scss';
@@ -104,12 +104,12 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    const { work } = totalValueAndWork(selectedMilestone.tasks);
-    if (work <= 0) {
+    const { complexity } = totalValueAndComplexity(selectedMilestone.tasks);
+    if (complexity <= 0) {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    setCalculatedDaysPerWork(milestoneDuration / work);
+    setCalculatedDaysPerWork(milestoneDuration / complexity);
   }, [selectedMilestoneId, milestoneDuration, roadmap, roadmapsVersions]);
 
   const handleTooltipModal = () => {
@@ -202,8 +202,8 @@ export const TimeEstimationPage = () => {
                 </tr>
                 <tr>
                   {roadmapsVersions?.map((ver) => {
-                    const { work } = totalValueAndWork(ver.tasks);
-                    const duration = work * calculatedDaysPerWork!;
+                    const { complexity } = totalValueAndComplexity(ver.tasks);
+                    const duration = complexity * calculatedDaysPerWork!;
                     return (
                       <td
                         key={`graphItemDuration-${ver.id}`}
@@ -293,7 +293,7 @@ export const TimeEstimationPage = () => {
         selectedMilestoneId !== undefined &&
         milestoneDuration && (
           <Alert show variant="danger">
-            <Trans i18nKey="Unable to calculate work" />
+            <Trans i18nKey="Unable to calculate working days estimate" />
           </Alert>
         )}
       {calculatedDaysPerWork !== undefined && renderMilestoneTimeline()}

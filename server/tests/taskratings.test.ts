@@ -51,7 +51,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .type('json')
         .send([
           {
-            dimension: TaskRatingDimension.RequiredWork,
+            dimension: TaskRatingDimension.Complexity,
             value: 5,
           },
         ]);
@@ -75,7 +75,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
             .type('json')
             .send([
               {
-                dimension: TaskRatingDimension.RequiredWork,
+                dimension: TaskRatingDimension.Complexity,
                 value: 5,
               },
             ]),
@@ -96,7 +96,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .type('json')
         .send([
           {
-            dimension: TaskRatingDimension.RequiredWork,
+            dimension: TaskRatingDimension.Complexity,
             value: 6,
           },
         ]);
@@ -106,7 +106,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .type('json')
         .send([
           {
-            dimension: TaskRatingDimension.RequiredWork,
+            dimension: TaskRatingDimension.Complexity,
             value: -1,
           },
         ]);
