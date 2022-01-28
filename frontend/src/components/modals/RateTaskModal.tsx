@@ -97,7 +97,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       rating.createdByUser === userInfo?.id && rating.dimension === dimension,
   );
 
-  const workRatings: () => (TaskratingRequest & {
+  const complexityRatings: () => (TaskratingRequest & {
     customer?: Customer;
   })[] = () => [
     {
@@ -119,7 +119,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     })) || [];
 
   const ratings = (dimension === TaskRatingDimension.Complexity
-    ? workRatings()
+    ? complexityRatings()
     : valueRatings()
   )
     .map((rating) => {

@@ -3,7 +3,10 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Task } from '../redux/roadmaps/types';
 import css from './MilestoneRatingsSummary.module.scss';
-import { totalValueAndWork, averageValueAndWork } from '../utils/TaskUtils';
+import {
+  totalValueAndComplexity,
+  averageValueAndComplexity,
+} from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -32,14 +35,14 @@ export const MilestoneRatingsSummary: FC<{
   tasks: Task[];
 }> = ({ tasks }) => {
   const { t } = useTranslation();
-  const totalRatings = totalValueAndWork(tasks);
-  const averageRatings = averageValueAndWork(tasks);
+  const totalRatings = totalValueAndComplexity(tasks);
+  const averageRatings = averageValueAndComplexity(tasks);
   return (
     <div className={classes(css.ratingSummary)}>
       <Rating title={t('Average value')} value={averageRatings.value} />
-      <Rating title={t('Average work')} value={averageRatings.work} />
+      <Rating title={t('Average work')} value={averageRatings.complexity} />
       <Rating title={t('Total value')} value={totalRatings.value} />
-      <Rating title={t('Total work')} value={totalRatings.work} />
+      <Rating title={t('Total work')} value={totalRatings.complexity} />
     </div>
   );
 };

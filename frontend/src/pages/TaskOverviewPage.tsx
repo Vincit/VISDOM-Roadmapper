@@ -8,13 +8,16 @@ import { useParams, useHistory, Redirect } from 'react-router-dom';
 import { Permission } from '../../../shared/types/customTypes';
 import { roadmapsActions } from '../redux/roadmaps';
 import { StoreDispatchType } from '../redux/index';
-import { valueAndWorkSummary, getRatingsByType } from '../utils/TaskUtils';
+import {
+  valueAndComplexitySummary,
+  getRatingsByType,
+} from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { userRoleSelector } from '../redux/user/selectors';
 import { Task, TaskRequest } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
-import { RatingTableWork } from '../components/RatingTableWork';
+import { RatingTableComplexity } from '../components/RatingTableComplexity';
 import { RatingTableValue } from '../components/RatingTableValue';
 import { Overview, ArrowType } from '../components/Overview';
 import { hasPermission } from '../../../shared/utils/permission';
@@ -31,7 +34,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 export const getTaskOverviewData = (task: Task, editable: boolean) => {
-  const { value, work } = valueAndWorkSummary(task);
+  const { value, complexity } = valueAndComplexitySummary(task);
   const metrics = [
     {
       label: i18n.t('Avg Value'),
@@ -40,7 +43,7 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
     },
     {
       label: i18n.t('Avg Work'),
-      value: numFormat.format(work.avg),
+      value: numFormat.format(complexity.avg),
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
@@ -92,10 +95,11 @@ const TaskOverview: FC<{
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
-  const { value, work } = valueAndWorkSummary(task);
-  const { value: valueRatings, work: workRatings } = getRatingsByType(
-    task?.ratings || [],
-  );
+  const { value, complexity } = valueAndComplexitySummary(task);
+  const {
+    value: valueRatings,
+    complexity: complexityRatings,
+  } = getRatingsByType(task?.ratings || []);
   const hasEditPermission = hasPermission(role, Permission.RoadmapReadUsers);
   const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
 
@@ -153,10 +157,10 @@ const TaskOverview: FC<{
                 taskId={task.id}
               />
             )}
-            {workRatings.length > 0 && (
-              <RatingTableWork
-                ratings={workRatings}
-                avg={work.avg}
+            {complexityRatings.length > 0 && (
+              <RatingTableComplexity
+                ratings={complexityRatings}
+                avg={complexity.avg}
                 taskId={task.id}
               />
             )}

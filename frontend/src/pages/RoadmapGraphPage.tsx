@@ -7,7 +7,7 @@ import ListIcon from '@material-ui/icons/List';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
-import { totalWeightedValueAndWork } from '../utils/TaskUtils';
+import { totalWeightedValueAndComplexity } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
@@ -23,8 +23,8 @@ import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
-interface VersionWorkAndValues extends Version {
-  work: number;
+interface VersionComplexityAndValues extends Version {
+  complexity: number;
   value: number;
   totalValue: number;
 }
@@ -37,9 +37,9 @@ export const RoadmapGraphPage = () => {
     shallowEqual,
   );
   const [selectedVersion, setSelectedVersion] = useState(-1);
-  const [versions, setVersions] = useState<undefined | VersionWorkAndValues[]>(
-    undefined,
-  );
+  const [versions, setVersions] = useState<
+    undefined | VersionComplexityAndValues[]
+  >(undefined);
   const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
     chosenRoadmapSelector,
     shallowEqual,
@@ -74,7 +74,7 @@ export const RoadmapGraphPage = () => {
       setVersions(
         roadmapsVersions?.map((version) => ({
           ...version,
-          ...totalWeightedValueAndWork(version.tasks, currentRoadmap),
+          ...totalWeightedValueAndComplexity(version.tasks, currentRoadmap),
         })),
       );
   }, [currentRoadmap, roadmapsVersions]);
@@ -88,8 +88,8 @@ export const RoadmapGraphPage = () => {
     maximumFractionDigits: 1,
   });
 
-  const dimensions = ({ work, value }: VersionWorkAndValues) => ({
-    width: work,
+  const dimensions = ({ complexity, value }: VersionComplexityAndValues) => ({
+    width: complexity,
     height: value,
   });
 
@@ -123,7 +123,7 @@ export const RoadmapGraphPage = () => {
           a.current = e;
         }}
       >
-        {({ item: { name, value, work, tasks }, index }) => (
+        {({ item: { name, value, complexity, tasks }, index }) => (
           <>
             <div className={classes(css.versionData)}>
               <div className={classes(css.ratingDiv)}>
@@ -132,7 +132,7 @@ export const RoadmapGraphPage = () => {
               </div>
               <div className={classes(css.ratingDiv)}>
                 <WorkRoundIcon size="xxsmall" color={colors.azure} />
-                <p>{numFormat.format(work)}</p>
+                <p>{numFormat.format(complexity)}</p>
               </div>
               <div className={classes(css.dash)} />
               <div className={classes(css.ratingDiv)}>

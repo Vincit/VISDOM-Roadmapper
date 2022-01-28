@@ -2,7 +2,7 @@ import { FC } from 'react';
 import classNames from 'classnames';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { Task } from '../redux/roadmaps/types';
-import { averageValueAndWork } from '../utils/TaskUtils';
+import { averageValueAndComplexity } from '../utils/TaskUtils';
 import colors from '../colors.module.scss';
 
 import css from './TaskRatingsText.module.scss';
@@ -15,7 +15,7 @@ export const TaskRatingsText: FC<{
   largeIcons?: true;
   dragging?: boolean;
 }> = ({ task, selected, largeIcons, dragging }) => {
-  const { work, value } = averageValueAndWork([task]);
+  const { complexity, value } = averageValueAndComplexity([task]);
   const numFormat = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
@@ -33,7 +33,7 @@ export const TaskRatingsText: FC<{
       </div>
       <div className={classes(css.taskRating)}>
         <WorkRoundIcon size={largeIcons ? 'small' : 'xxsmall'} color={color} />
-        {numFormat.format(work)}
+        {numFormat.format(complexity)}
       </div>
     </div>
   );

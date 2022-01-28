@@ -9,7 +9,7 @@ import { Roadmap, Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import css from './RoadmapOverview.module.scss';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
-import { averageValueAndWork } from '../utils/TaskUtils';
+import { averageValueAndComplexity } from '../utils/TaskUtils';
 import { MetricsSummary } from './MetricsSummary';
 import colors from '../colors.module.scss';
 
@@ -26,7 +26,7 @@ export const RoadmapOverview = () => {
     shallowEqual,
   );
 
-  const { value, work } = averageValueAndWork(roadmap?.tasks ?? []);
+  const { value, complexity } = averageValueAndComplexity(roadmap?.tasks ?? []);
   const numFormat = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
@@ -48,7 +48,7 @@ export const RoadmapOverview = () => {
     },
     {
       label: 'Avg Work',
-      metricsValue: numFormat.format(work),
+      metricsValue: numFormat.format(complexity),
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];

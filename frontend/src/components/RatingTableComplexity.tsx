@@ -14,7 +14,12 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const TableWorkRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
+const TableComplexityRatingRow: RatingRow = ({
+  rating,
+  style,
+  userId,
+  onEdit,
+}) => {
   const user = useSelector(userSelector(rating.createdByUser));
   if (!user) return null;
 
@@ -41,7 +46,7 @@ const TableWorkRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   );
 };
 
-export const RatingTableWork = ratingTable({
+export const RatingTableComplexity = ratingTable({
   type: TaskRatingDimension.Complexity,
-  Row: TableWorkRatingRow,
+  Row: TableComplexityRatingRow,
 });

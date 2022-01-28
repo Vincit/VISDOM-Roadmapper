@@ -12,13 +12,13 @@ import css from './TaskValueCreatedVisualization.module.scss';
 
 const classes = classNames.bind(css);
 
-interface VersionWorkAndTotalValue extends Version {
-  work: number;
+interface VersionComplexityAndTotalValue extends Version {
+  complexity: number;
   totalValue: number;
 }
 
 export const TaskValueCreatedVisualization: FC<{
-  version: VersionWorkAndTotalValue;
+  version: VersionComplexityAndTotalValue;
   width: number;
 }> = ({ version, width }) => {
   const dispatch = useDispatch<StoreDispatchType>();
