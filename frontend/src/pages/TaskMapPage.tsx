@@ -197,22 +197,7 @@ export const TaskMapPage = () => {
     const from = Number(sourceHandle.split('-')[1]);
     const to = Number(targetHandle.split('-')[1]);
 
-    if (
-      // the connection would introduce a dependency cycle
-      from === to ||
-      unavailable.has(from) ||
-      unavailable.has(to) ||
-      // the relation already exists
-      taskRelations.some(({ dependencies }) =>
-        dependencies.some(
-          (x) =>
-            (to === x.from && from === x.to) ||
-            (to === x.to && from === x.from),
-        ),
-      )
-    )
-      return;
-
+    // the handle only accepts valid connections
     await dispatch(roadmapsActions.addTaskRelation({ from, to, type }));
     dispatch(roadmapsActions.getRoadmaps());
   };
