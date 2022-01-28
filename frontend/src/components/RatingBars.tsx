@@ -29,10 +29,10 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
         readOnly={readonly}
         value={initialValue}
         max={5}
-        onChange={(e, value) => {
+        onChange={(_, value) => {
           if (onChange && value) onChange(value);
         }}
-        onChangeActive={(e, value) => setHover(value)}
+        onChangeActive={(_, value) => setHover(value)}
         icon={
           dimension === TaskRatingDimension.BusinessValue ? (
             <BusinessIcon />

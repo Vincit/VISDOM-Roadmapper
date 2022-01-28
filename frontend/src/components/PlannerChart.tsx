@@ -17,7 +17,7 @@ import { Roadmap, Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import {
   weightedTaskPriority,
-  valueAndWorkSummary,
+  valueAndComplexitySummary,
   hasRatingsOnEachDimension,
 } from '../utils/TaskUtils';
 import { sort, SortingOrders, sortKeyNumeric } from '../utils/SortUtils';
@@ -33,7 +33,7 @@ enum DataKeys {
 }
 
 type DataPoint = {
-  workSum: number;
+  complexitySum: number;
   valueSum: number;
   [name: string]: number | undefined;
 };
@@ -64,10 +64,10 @@ export const PlannerChart: FC<{
     });
   }
   const versionDataPoints = () => {
-    let workSum = 0;
+    let complexitySum = 0;
     let valueSum = 0;
     let previousLineEnd = {
-      workSum: 0,
+      complexitySum: 0,
       valueSum: 0,
     };
     return graphTaskLists.reduce<DataPoint[]>((acc, version) => {
@@ -77,13 +77,13 @@ export const PlannerChart: FC<{
       const more = [
         Object.assign(previousLineEnd, { [name]: previousLineEnd.valueSum }),
         ...tasks.map((task) => {
-          const { value, work } = valueAndWorkSummary(task);
-          workSum += work.avg;
+          const { value, complexity } = valueAndComplexitySummary(task);
+          complexitySum += complexity.avg;
           valueSum += value.total;
 
           return {
             [name]: valueSum,
-            workSum,
+            complexitySum,
             valueSum,
           };
         }),
@@ -91,13 +91,13 @@ export const PlannerChart: FC<{
 
       // Resetting sums when the first ("optimal roadmap") chart has been drawn
       if (version.name === DataKeys.OptimalRoadmap) {
-        workSum = 0;
+        complexitySum = 0;
         valueSum = 0;
       }
       // Version charts are supposed to be in a series so that next versions chart starts from where the previous ended
       // Save last point of chart so next chart can begin there
       previousLineEnd = {
-        workSum,
+        complexitySum,
         valueSum,
       };
       return [...acc, ...more];
@@ -118,7 +118,7 @@ export const PlannerChart: FC<{
           !(DataKeys.OptimalRoadmap in data) && !(DataKeys.SavedData in data),
       )
       .map((data) => ({
-        workSum: data.workSum,
+        complexitySum: data.complexitySum,
         valueSum: data.valueSum,
         [DataKeys.SavedData]: data.valueSum,
       }));
@@ -126,17 +126,17 @@ export const PlannerChart: FC<{
   };
 
   // Calculating X and Y axis min and max values and tick count
-  const workSumMax = dataPoints.reduce(
-    (prevMax, dataPt) => Math.max(prevMax, dataPt.workSum),
+  const complexitySumMax = dataPoints.reduce(
+    (prevMax, dataPt) => Math.max(prevMax, dataPt.complexitySum),
     0,
   );
   const valueSumMax = dataPoints.reduce(
     (prevMax, dataPt) => Math.max(prevMax, dataPt.valueSum),
     0,
   );
-  const workDomainMax = Math.max(Math.ceil(workSumMax / 5) * 5, 10);
+  const complexityDomainMax = Math.max(Math.ceil(complexitySumMax / 5) * 5, 10);
   const valueDomainMax = Math.max(Math.ceil(valueSumMax / 5) * 5, 10);
-  const workAxisTicks = workDomainMax / 5 + 1;
+  const complexityAxisTicks = complexityDomainMax / 5 + 1;
   const valueAxisTicks = valueDomainMax / 5 + 1;
 
   return (
@@ -180,10 +180,10 @@ export const PlannerChart: FC<{
           ))}
 
           <XAxis
-            tickCount={workAxisTicks}
+            tickCount={complexityAxisTicks}
             type="number"
-            dataKey="workSum"
-            domain={[0, workDomainMax]}
+            dataKey="complexitySum"
+            domain={[0, complexityDomainMax]}
           >
             <Label
               position="insideLeft"
@@ -191,7 +191,7 @@ export const PlannerChart: FC<{
               dy={20}
               className={classes(css.label)}
             >
-              Work
+              Complexity
             </Label>
           </XAxis>
           <CartesianGrid vertical={false} />

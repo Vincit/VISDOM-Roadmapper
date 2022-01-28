@@ -26,11 +26,11 @@ export const TaskHeatmap = () => {
   if (currentRoadmap) {
     currentRoadmap.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
       const value = ratings.get(TaskRatingDimension.BusinessValue);
-      const work = ratings.get(TaskRatingDimension.RequiredWork);
-      if (value && work) {
+      const complexity = ratings.get(TaskRatingDimension.Complexity);
+      if (value && complexity) {
         const avgValue = Math.round(value.avg);
-        const avgWork = Math.round(work.avg);
-        frequencies[5 - avgValue][avgWork - 1] += 1;
+        const avgComplexity = Math.round(complexity.avg);
+        frequencies[5 - avgValue][avgComplexity - 1] += 1;
       }
     });
   }
@@ -87,7 +87,7 @@ export const TaskHeatmap = () => {
         <p className={classes(css.yaxislabel)}>Value</p>
       </div>
       <p className={classes(css.xaxismin)}>1</p>
-      <p className={classes(css.xaxislabel)}>Work</p>
+      <p className={classes(css.xaxislabel)}>Complexity</p>
       <p className={classes(css.xaxismax)}>5</p>
     </div>
   );

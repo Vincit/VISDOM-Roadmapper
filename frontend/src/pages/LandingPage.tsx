@@ -33,7 +33,7 @@ const cardData = [
     title: 'Keep track of progression',
     points: [
       'Track the completion of development tasks and milestones',
-      'Fine-tune work or values estimations based on retrospective analysis',
+      'Fine-tune complexity or value estimations based on retrospective analysis',
       'Keep the big picture of the development always at hand',
     ],
   },
@@ -166,7 +166,7 @@ export const LandingPage = () => {
               <li>
                 <strong>Planning tools - version milestones</strong> - A view
                 for planning the current scenario based on the ordered and rated
-                milestones. The graph represents how the estimated work
+                milestones. The graph represents how the estimated complexity
                 (developers) correlate to the estimated value produced
                 (customers). PO could arrange the upcoming milestones e.g. by
                 “most value created” - for all customers or just specific ones.
@@ -188,8 +188,8 @@ export const LandingPage = () => {
               <li>
                 <strong>Developer / customer expert evaluation</strong> - The
                 estimations are based on expert evaluation; developers rate
-                tasks by how work-heavy they see each of them, and the customers
-                by how much value it brings to them.
+                tasks by how complex they see each of them, and the customers by
+                how much value it brings to them.
               </li>
               <li>
                 <strong>Time estimation</strong> - Based on pure guesses or

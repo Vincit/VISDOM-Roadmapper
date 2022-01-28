@@ -18,7 +18,7 @@ import { RoleType } from '../../../shared/types/customTypes';
 import { getType } from '../utils/UserUtils';
 import css from './TaskTable.module.scss';
 import {
-  averageValueAndWork,
+  averageValueAndComplexity,
   SortingTypes,
   taskSort,
 } from '../utils/TaskUtils';
@@ -43,7 +43,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   );
   const type = getType(userInfo, roadmapId);
 
-  const { value, work } = averageValueAndWork([task]);
+  const { value, complexity } = averageValueAndComplexity([task]);
 
   const openModal = (payload: ShowModalPayload) => (e: SyntheticEvent) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
       <div style={style} className={classes(css.virtualizedTableRow)}>
         <div className={classes(css.taskTitle)}>{name}</div>
         <div>{numFormat.format(value)}</div>
-        <div>{numFormat.format(work)}</div>
+        <div>{numFormat.format(complexity)}</div>
         <div className={classes(css.missingRatings)}>
           <MissingRatings task={task} />
         </div>
@@ -99,7 +99,10 @@ export const TaskTableUnrated = table({
   header: [
     { label: 'Task title', width: 1.5, sorting: SortingTypes.SORT_NAME },
     { label: 'Current average value', sorting: SortingTypes.SORT_AVG_VALUE },
-    { label: 'Current average work', sorting: SortingTypes.SORT_AVG_WORK },
+    {
+      label: 'Current average complexity',
+      sorting: SortingTypes.SORT_AVG_COMPLEXITY,
+    },
     { label: 'Waiting for ratings' },
     { label: '', width: 2.5 },
   ],

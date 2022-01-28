@@ -5,7 +5,7 @@ export enum TaskRelationType {
 
 export enum TaskRatingDimension {
   BusinessValue = 0,
-  RequiredWork = 1,
+  Complexity = 1,
 }
 
 export enum Permission {
@@ -24,7 +24,7 @@ export enum Permission {
   TaskRatingEditOthers = 1 << 8,
 
   TaskValueRate = 1 << 9,
-  TaskWorkRate = 1 << 10,
+  TaskComplexityRate = 1 << 10,
 
   VersionCreate = 1 << 11,
   VersionEdit = 1 << 12,
@@ -50,7 +50,7 @@ export enum RoleType {
     Permission.TaskRate |
     Permission.TaskCreate |
     Permission.TaskRatingEdit |
-    Permission.TaskWorkRate |
+    Permission.TaskComplexityRate |
     Permission.VersionRead |
     Permission.RoadmapReadUsers,
   Business = Permission.TaskRead |

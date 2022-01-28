@@ -30,9 +30,9 @@ export enum SortingTypes {
   SORT_CREATEDAT,
   SORT_RATINGS,
   SORT_AVG_VALUE,
-  SORT_AVG_WORK,
+  SORT_AVG_COMPLEXITY,
   SORT_TOTAL_VALUE,
-  SORT_TOTAL_WORK,
+  SORT_TOTAL_COMPLEXITY,
 }
 
 class RatingsSummary {
@@ -68,41 +68,42 @@ const ratingsSummaryByDimensionInto = (
 export const ratingsSummaryByDimension = (task: Task) =>
   ratingsSummaryByDimensionInto(new Map(), task);
 
-export const valueAndWorkSummary = (task: Task) => {
+export const valueAndComplexitySummary = (task: Task) => {
   const ratings = ratingsSummaryByDimension(task);
   return {
     value:
       ratings.get(TaskRatingDimension.BusinessValue) ?? new RatingsSummary(),
-    work: ratings.get(TaskRatingDimension.RequiredWork) ?? new RatingsSummary(),
+    complexity:
+      ratings.get(TaskRatingDimension.Complexity) ?? new RatingsSummary(),
   };
 };
 
-export const totalValueAndWork = (tasks: Task[]) =>
+export const totalValueAndComplexity = (tasks: Task[]) =>
   tasks
-    .map((task) => valueAndWorkSummary(task))
+    .map((task) => valueAndComplexitySummary(task))
     .reduce(
-      ({ value, work }, ratings) => ({
+      ({ value, complexity }, ratings) => ({
         value: value + ratings.value.avg,
-        work: work + ratings.work.avg,
+        complexity: complexity + ratings.complexity.avg,
       }),
-      { value: 0, work: 0 },
+      { value: 0, complexity: 0 },
     );
 
-export const averageValueAndWork = (tasks: Task[]) => {
+export const averageValueAndComplexity = (tasks: Task[]) => {
   const ratings = tasks.reduce(ratingsSummaryByDimensionInto, new Map());
   return {
     value: ratings.get(TaskRatingDimension.BusinessValue)?.avg ?? 0,
-    work: ratings.get(TaskRatingDimension.RequiredWork)?.avg ?? 0,
+    complexity: ratings.get(TaskRatingDimension.Complexity)?.avg ?? 0,
   };
 };
 
 const calcTaskPriority = (task: Task) => {
   const ratings = ratingsSummaryByDimension(task);
   const value = ratings.get(TaskRatingDimension.BusinessValue);
-  const work = ratings.get(TaskRatingDimension.RequiredWork);
+  const complexity = ratings.get(TaskRatingDimension.Complexity);
   if (!value) return -2;
-  if (!work) return -1;
-  return value.avg / work.avg;
+  if (!complexity) return -1;
+  return value.avg / complexity.avg;
 };
 
 type Predicate<T> = (t: T) => boolean;
@@ -160,13 +161,15 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
     case SortingTypes.SORT_RATINGS:
       return sortKeyNumeric(calcTaskPriority);
     case SortingTypes.SORT_AVG_VALUE:
-      return sortKeyNumeric((t) => valueAndWorkSummary(t).value.avg);
-    case SortingTypes.SORT_AVG_WORK:
-      return sortKeyNumeric((t) => valueAndWorkSummary(t).work.avg);
+      return sortKeyNumeric((t) => valueAndComplexitySummary(t).value.avg);
+    case SortingTypes.SORT_AVG_COMPLEXITY:
+      return sortKeyNumeric((t) => valueAndComplexitySummary(t).complexity.avg);
     case SortingTypes.SORT_TOTAL_VALUE:
-      return sortKeyNumeric((t) => valueAndWorkSummary(t).value.total);
-    case SortingTypes.SORT_TOTAL_WORK:
-      return sortKeyNumeric((t) => valueAndWorkSummary(t).work.total);
+      return sortKeyNumeric((t) => valueAndComplexitySummary(t).value.total);
+    case SortingTypes.SORT_TOTAL_COMPLEXITY:
+      return sortKeyNumeric(
+        (t) => valueAndComplexitySummary(t).complexity.total,
+      );
     default:
       break;
   }
@@ -209,8 +212,11 @@ const taskWeightedValueSummary = (task: Task, roadmap: Roadmap) =>
     .map(ratingValueAndCreator(roadmap))
     .reduce((acc, rating) => acc.add(rating.value), new RatingsSummary());
 
-export const totalWeightedValueAndWork = (tasks: Task[], roadmap: Roadmap) => {
-  const { work } = totalValueAndWork(tasks);
+export const totalWeightedValueAndComplexity = (
+  tasks: Task[],
+  roadmap: Roadmap,
+) => {
+  const { complexity } = totalValueAndComplexity(tasks);
   const totalValues = tasks
     .map((task) => taskWeightedValueSummary(task, roadmap))
     .reduce(
@@ -220,18 +226,18 @@ export const totalWeightedValueAndWork = (tasks: Task[], roadmap: Roadmap) => {
       }),
       { sum: 0, total: 0 },
     );
-  return { value: totalValues.sum, totalValue: totalValues.total, work };
+  return { value: totalValues.sum, totalValue: totalValues.total, complexity };
 };
 
 export const weightedTaskPriority = (roadmap: Roadmap) => (task: Task) => {
   const weightedValue = taskWeightedValueSummary(task, roadmap).avg;
   if (!weightedValue) return -2;
 
-  const avgWorkRating = valueAndWorkSummary(task).work.avg;
+  const avgComplexityRating = valueAndComplexitySummary(task).complexity.avg;
 
-  if (!avgWorkRating) return -1;
+  if (!avgComplexityRating) return -1;
 
-  return weightedValue / avgWorkRating;
+  return weightedValue / avgComplexityRating;
 };
 
 export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
@@ -274,7 +280,7 @@ export const hasMissingRatings = ({ users = [], customers = [] }: Roadmap) => {
 export const hasRatingsOnEachDimension = (task: Task) =>
   [
     TaskRatingDimension.BusinessValue,
-    TaskRatingDimension.RequiredWork,
+    TaskRatingDimension.Complexity,
   ].every((dim) => task.ratings.some((rating) => rating.dimension === dim));
 
 /*
@@ -314,11 +320,11 @@ export const missingCustomer = (task: Task) => (customer: Customer) =>
   );
 
 export const getRatingsByType = (ratings: Taskrating[]) => {
-  const [value, work] = partition(
+  const [value, complexity] = partition(
     ratings,
     ({ dimension }) => dimension === TaskRatingDimension.BusinessValue,
   );
-  return { value, work };
+  return { value, complexity };
 };
 
 export const findTask = (taskId: number, roadmaps: Roadmap[]) =>

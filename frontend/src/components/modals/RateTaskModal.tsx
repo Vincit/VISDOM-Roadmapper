@@ -89,7 +89,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
 
   const dimension =
     getType(userInfo, currentRoadmap?.id) === RoleType.Developer
-      ? TaskRatingDimension.RequiredWork
+      ? TaskRatingDimension.Complexity
       : TaskRatingDimension.BusinessValue;
 
   const taskRatings = task.ratings.filter(
@@ -97,11 +97,11 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       rating.createdByUser === userInfo?.id && rating.dimension === dimension,
   );
 
-  const workRatings: () => (TaskratingRequest & {
+  const complexityRatings: () => (TaskratingRequest & {
     customer?: Customer;
   })[] = () => [
     {
-      dimension: TaskRatingDimension.RequiredWork,
+      dimension: TaskRatingDimension.Complexity,
       createdByUser: userInfo!.id,
       parentTask: task.id,
     },
@@ -118,8 +118,8 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       customer,
     })) || [];
 
-  const ratings = (dimension === TaskRatingDimension.RequiredWork
-    ? workRatings()
+  const ratings = (dimension === TaskRatingDimension.Complexity
+    ? complexityRatings()
     : valueRatings()
   )
     .map((rating) => {

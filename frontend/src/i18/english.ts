@@ -78,9 +78,9 @@ export const english = {
     'Change milestone name': 'Change milestone name',
     Stakeholders: 'Stakeholders',
     'Average value': 'Average value',
-    'Average work': 'Average work',
+    'Average complexity': 'Average complexity',
     'Avg Value': 'Avg. Value',
-    'Avg Work': 'Avg. Work',
+    'Avg Complexity': 'Avg. Complexity',
     'Your unrated tasks': 'Your unrated tasks',
     'Roadmap completion': 'Roadmap completion',
     Import: 'Import',
@@ -88,11 +88,13 @@ export const english = {
     'Unassigned tasks': 'Unassigned tasks',
     'Time Estimation': 'Time Estimation',
     'Total value': 'Total value',
-    'Total work': 'Total work',
+    'Total complexity': 'Total complexity',
     'Estimate milestone durations': 'Estimate milestone durations',
     'Milestone to be compared to': 'Milestone to be compared to',
     'Select a milestone': 'Select a milestone',
-    'Unable to calculate work': 'Unable to calculate work',
+    'Working days estimation': 'Working days estimation',
+    'Unable to calculate working days estimate':
+      'Unable to calculate working days estimate',
     'Predicted milestone durations': 'Predicted milestone durations',
     'Set different weighting for clients':
       'Set different weighting for clients',
@@ -218,7 +220,7 @@ export const english = {
       'No problem. You can always start by making a new project. With a new project, you can start filling in tasks, milestones, and related people to your project to succeed in your product development goals.',
     'First project info 2/2':
       'Another way to start using VISDOM is to get an invitation to another existing project. Contact your project’s product owner to invite you in.',
-    workValueTitle: 'Work / Value',
+    complexityValueTitle: 'Complexity / Value',
     customerStakesTitle: 'Clients receiving the most value',
     'No ratings': 'No ratings',
     unratedTaskMessage: 'Waiting for ratings',
@@ -290,9 +292,9 @@ export const english = {
       'Note: Don’t remove your account if you just want to change your email address.',
     'Remove account': 'Remove account',
     'Task list tooltip':
-      'Tasks are rated by client value and work amount. Rated tasks are used for planning and estimating future milestones by the PO.',
-    'Planner workValue tooltip':
-      'Roadmap shows a visual comparison of milestones’ total amount of work and average value',
+      'Tasks are rated by client value and complexity. Rated tasks are used for planning and estimating future milestones by the PO.',
+    'Planner complexityValue tooltip':
+      'Roadmap shows a visual comparison of milestones’ total complexity and average value',
     'Planner customerStakes tooltip':
       'Values are calculated using the average value of tasks for a client.',
     'Planner milestones tooltip':
