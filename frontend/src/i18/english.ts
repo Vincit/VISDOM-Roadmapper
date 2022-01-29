@@ -329,7 +329,7 @@ export const english = {
     'Reset password': 'Reset password',
     'We have sent an email':
       'We have sent an email to <strong>{{email}}</strong> for you to reset your password',
-    'Retry timer': 'Retry in {{time}}s',
+    'Retry timer': 'Try again in {{time}}s',
     'Password set success':
       '<strong>All done!</strong> Your new password has been set.',
     'Token not found': 'Token not found.',

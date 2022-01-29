@@ -29,15 +29,13 @@ export const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const confirmationError = {
-    err: errorState(useState('')),
-  };
+  const confirmationError = errorState(useState(''));
 
   const handleReset = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (password !== confirmPassword) {
-      confirmationError.err.setMessage(t('Password confirmation error'));
+      confirmationError.setMessage(t('Password confirmation error'));
       return;
     }
 
@@ -87,7 +85,7 @@ export const ResetPasswordPage = () => {
             type="password"
             placeholder={t('Confirm password')}
             value={confirmPassword}
-            error={confirmationError.err}
+            error={confirmationError}
             onChange={(e) => setConfirmPassword(e.currentTarget.value)}
           />
           <button className="button-large" type="submit">

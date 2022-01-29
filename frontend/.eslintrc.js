@@ -15,7 +15,6 @@ module.exports = {
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
-    NodeJS: true, // See: https://github.com/Chatie/eslint-config/issues/45
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
