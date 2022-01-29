@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, useMemo } from 'react';
+import { useState, useEffect, FormEvent, useRef } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -17,78 +17,49 @@ const classes = classNames.bind(css);
 
 export const ForgotPasswordPage = () => {
   const { t } = useTranslation();
-  const defaultDisableTime = 30; // Seconds
+  const defaultDisableSeconds = 30;
 
   const [linkSent, setLinkSent] = useState(false);
   const [email, setEmail] = useState('');
-  const [sendDisabled, setSendDisabled] = useState(false);
-  const [sendDisableTime, setSendDisableTime] = useState(
-    defaultDisableTime / 2,
-  );
   const [resendDisabled, setResendDisabled] = useState(false);
   const [resendDisableTime, setResendDisableTime] = useState(
-    defaultDisableTime,
+    defaultDisableSeconds,
   );
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  let timeoutArray = useMemo(() => {
-    const array: NodeJS.Timeout[] = [];
-    return array;
-  }, []);
+  const confirmationError = errorState(useState(''));
 
-  let intervalArray = useMemo(() => {
-    const array: NodeJS.Timeout[] = [];
-    return array;
-  }, []);
+  type Timeout = ReturnType<typeof setTimeout>;
+  const timeout = useRef<Timeout | null>(null);
+  const interval = useRef<Timeout | null>(null);
 
   // Cleanup timers after unmounting
   useEffect(
     () => () => {
-      timeoutArray.forEach((timeout) => {
-        clearTimeout(timeout);
-      });
-      intervalArray.forEach((interval) => {
-        clearInterval(interval);
-      });
+      if (timeout.current !== null) clearTimeout(timeout.current);
+      if (interval.current !== null) clearInterval(interval.current);
     },
-    [timeoutArray, intervalArray],
+    [],
   );
-
-  const confirmationError = {
-    err: errorState(useState('')),
-  };
 
   const sendEmailLink = () => {
     return api.sendPasswordResetLink(email);
   };
 
-  const createDisableTimer = (
-    setDisableTime: React.Dispatch<React.SetStateAction<number>>,
-    setDisabled: React.Dispatch<React.SetStateAction<boolean>>,
-    time: number,
-  ) => {
-    setDisabled(true);
+  const createDisableTimer = () => {
+    setResendDisableTime(defaultDisableSeconds);
+    setResendDisabled(true);
 
     const countdownInterval = setInterval(() => {
-      setDisableTime((previous) => previous - 1);
+      setResendDisableTime((previous) => previous - 1);
     }, 1000);
 
-    const disableTimer = setTimeout(() => {
+    setTimeout(() => {
       clearInterval(countdownInterval);
-
-      // Remove timeout and interval from the arrays after completing them
-      timeoutArray = timeoutArray.splice(timeoutArray.indexOf(disableTimer), 1);
-      intervalArray = intervalArray.splice(
-        intervalArray.indexOf(countdownInterval),
-        1,
-      );
-      setDisabled(false);
-      setDisableTime(time);
-    }, time * 1000);
-
-    timeoutArray.push(disableTimer);
-    intervalArray.push(countdownInterval);
+      setResendDisabled(false);
+      setResendDisableTime(defaultDisableSeconds);
+    }, defaultDisableSeconds * 1000);
   };
 
   const isUniqueError = (err: any) => err.response?.status === 404;
@@ -102,7 +73,7 @@ export const ForgotPasswordPage = () => {
       await sendEmailLink();
     } catch (err) {
       if (isUniqueError(err)) {
-        confirmationError.err.setMessage(t('This email doesn’t exist'));
+        confirmationError.setMessage(t('This email doesn’t exist'));
       } else {
         setErrorMessage(t('Email service error'));
       }
@@ -110,12 +81,7 @@ export const ForgotPasswordPage = () => {
       return;
     }
 
-    setResendDisableTime(defaultDisableTime / 2);
-    createDisableTimer(
-      setSendDisableTime,
-      setSendDisabled,
-      defaultDisableTime / 2,
-    );
+    createDisableTimer();
     setErrorMessage('');
     setIsLoading(false);
     setLinkSent(true);
@@ -123,12 +89,7 @@ export const ForgotPasswordPage = () => {
 
   const handleResend = () => {
     sendEmailLink();
-    setResendDisableTime(defaultDisableTime);
-    createDisableTimer(
-      setResendDisableTime,
-      setResendDisabled,
-      defaultDisableTime,
-    );
+    createDisableTimer();
   };
 
   const sendLinkView = () => (
@@ -150,7 +111,7 @@ export const ForgotPasswordPage = () => {
             type="email"
             placeholder={t('Email')}
             value={email}
-            error={confirmationError.err}
+            error={confirmationError}
             onChange={(e) => setEmail(e.currentTarget.value)}
           />
           <Alert
@@ -167,12 +128,12 @@ export const ForgotPasswordPage = () => {
             <button
               className="button-large"
               type="submit"
-              disabled={sendDisabled}
+              disabled={resendDisabled}
             >
-              {sendDisabled ? (
+              {resendDisabled ? (
                 <Trans
                   i18nKey="Retry timer"
-                  values={{ time: sendDisableTime }}
+                  values={{ time: resendDisableTime }}
                 />
               ) : (
                 <Trans i18nKey="Send link" />
