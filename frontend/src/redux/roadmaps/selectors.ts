@@ -53,6 +53,12 @@ export const userSelector = (id: number) =>
     users?.find((user) => user.id === id),
   );
 
+export const usersSelector = (ids: number[]) =>
+  createSelector(
+    roadmapUsersSelector,
+    (users) => users?.filter((user) => ids.includes(user.id)) || [],
+  );
+
 export const chosenIntegrationSelector = (name: string) =>
   createSelector(chosenRoadmapSelector, (roadmap) =>
     roadmap?.integrations.find((it) => it.name === name),

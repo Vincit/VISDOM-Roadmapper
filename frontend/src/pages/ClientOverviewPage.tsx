@@ -2,10 +2,12 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
+import classNames from 'classnames';
 import { paths } from '../routers/paths';
 import {
   allCustomersSelector,
   chosenRoadmapSelector,
+  usersSelector,
 } from '../redux/roadmaps/selectors';
 import { Customer, Roadmap } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
@@ -18,7 +20,11 @@ import { Overview, ArrowType } from '../components/Overview';
 import { BusinessIcon } from '../components/RoleIcons';
 import { Dot } from '../components/Dot';
 import { unratedTasksAmount, totalCustomerStakes } from '../utils/TaskUtils';
+import { RepresentativeTable } from '../components/RepresentativeTable';
 import colors from '../colors.module.scss';
+import css from './ClientOverviewPage.module.scss';
+
+const classes = classNames.bind(css);
 
 const ClientOverview: FC<{
   clients: Customer[];
@@ -31,6 +37,9 @@ const ClientOverview: FC<{
     chosenRoadmapSelector,
     shallowEqual,
   )!;
+  // select users as client's representatives does not include type
+  const representativeIds = client.representatives?.map(({ id }) => id);
+  const representatives = useSelector(usersSelector(representativeIds || []));
   const unratedTasks = unratedTasksAmount(client, currentRoadmap);
   const allCustomerStakes = totalCustomerStakes(
     currentRoadmap.tasks,
@@ -86,7 +95,7 @@ const ClientOverview: FC<{
         label: t('Contact'),
         keyName: 'email',
         value: (
-          <a className="green" href={`mailto:${client.email}`}>
+          <a className={classes(css.green)} href={`mailto:${client.email}`}>
             {client.email}
           </a>
         ),
@@ -105,7 +114,7 @@ const ClientOverview: FC<{
   ];
 
   return (
-    <div className="overviewContainer">
+    <div className={classes(css.overviewContainer)}>
       <Overview
         backHref={clientsListPage}
         overviewType={t('Client')}
@@ -115,6 +124,11 @@ const ClientOverview: FC<{
         metrics={metrics}
         data={clientData}
       />
+      {representatives.length > 0 && (
+        <div className={classes(css.representatives)}>
+          <RepresentativeTable items={representatives} />
+        </div>
+      )}
     </div>
   );
 };
