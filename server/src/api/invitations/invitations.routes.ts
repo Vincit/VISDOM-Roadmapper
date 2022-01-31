@@ -1,7 +1,6 @@
 import KoaRouter from '@koa/router';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Context } from 'koa';
-import { IKoaState } from '../../types/customTypes';
+import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import {
   getInvitations,
@@ -10,7 +9,7 @@ import {
   deleteInvitation,
 } from './invitations.controller';
 
-const invitationsRouter = new KoaRouter<IKoaState, Context>();
+const invitationsRouter = new KoaRouter<IKoaState, IKoaContext>();
 
 invitationsRouter.get(
   '/invitations',

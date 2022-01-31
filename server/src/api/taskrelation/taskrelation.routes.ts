@@ -6,10 +6,9 @@ import {
   addSynergies,
 } from './taskrelation.controller';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Context } from 'koa';
-import { IKoaState } from '../../types/customTypes';
+import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
-const taskrelationRouter = new KoaRouter<IKoaState, Context>();
+const taskrelationRouter = new KoaRouter<IKoaState, IKoaContext>();
 
 taskrelationRouter.get(
   '/relations',

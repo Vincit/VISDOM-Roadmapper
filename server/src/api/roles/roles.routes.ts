@@ -1,7 +1,6 @@
 import KoaRouter from '@koa/router';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Context } from 'koa';
-import { IKoaState } from '../../types/customTypes';
+import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import {
   deleteRoadmapUserRoles,
@@ -9,7 +8,7 @@ import {
   patchRoadmapUserRoles,
 } from './roles.controller';
 
-const rolesRouter = new KoaRouter<IKoaState, Context>();
+const rolesRouter = new KoaRouter<IKoaState, IKoaContext>();
 
 rolesRouter.post(
   '/inviteUser',
