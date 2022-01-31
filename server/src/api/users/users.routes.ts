@@ -19,10 +19,9 @@ import {
   sendPasswordResetLink,
   resetPassword,
 } from './users.controller';
-import { Context } from 'koa';
-import { IKoaState } from 'src/types/customTypes';
+import { IKoaContext, IKoaState } from 'src/types/customTypes';
 
-const userRouter = new KoaRouter<IKoaState, Context>({
+const userRouter = new KoaRouter<IKoaState, IKoaContext>({
   prefix: '/users',
 });
 

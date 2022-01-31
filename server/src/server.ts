@@ -14,8 +14,12 @@ import roadmapRouter from './api/roadmaps/roadmaps.routes';
 import userRouter from './api/users/users.routes';
 import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
-import { IKoaState } from './types/customTypes';
-import { Server } from 'socket.io';
+import {
+  IKoaState,
+  IExtendedKoaContext,
+  IKoaContext,
+} from './types/customTypes';
+import { Server, Socket } from 'socket.io';
 import http from 'http';
 import { socketIoAuth } from './utils/socketIoAuth';
 
@@ -33,7 +37,7 @@ const createServer = async () => {
     origin: process.env.CORS_ORIGIN!,
     credentials: true,
   };
-  const app = new Koa<IKoaState, Koa.DefaultContext>();
+  const app = new Koa<IKoaState, IExtendedKoaContext>();
   const httpServer = http.createServer(app.callback());
   const io = new Server<
     DefaultEventsMap,
@@ -73,7 +77,13 @@ const createServer = async () => {
     );
   });
 
-  const rootRouter = new KoaRouter<IKoaState, Context>();
+  // Make io accessible in route controllers through ctx
+  app.use((ctx, next) => {
+    ctx.io = io;
+    return next();
+  });
+
+  const rootRouter = new KoaRouter<IKoaState, IKoaContext>();
   rootRouter.get('/', (ctx) => {
     ctx.status = 200;
     ctx.body = '';
