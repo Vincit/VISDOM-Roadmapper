@@ -22,9 +22,7 @@ export const ForgotPasswordPage = () => {
   const [linkSent, setLinkSent] = useState(false);
   const [email, setEmail] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
-  const [resendDisableTime, setResendDisableTime] = useState(
-    defaultDisableSeconds,
-  );
+  const [resendDisableTime, setResendDisableTime] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,8 +45,8 @@ export const ForgotPasswordPage = () => {
     return api.sendPasswordResetLink(email);
   };
 
-  const createDisableTimer = () => {
-    setResendDisableTime(defaultDisableSeconds);
+  const createDisableTimer = (time: number) => {
+    setResendDisableTime(time);
     setResendDisabled(true);
 
     const countdownInterval = setInterval(() => {
@@ -58,8 +56,7 @@ export const ForgotPasswordPage = () => {
     setTimeout(() => {
       clearInterval(countdownInterval);
       setResendDisabled(false);
-      setResendDisableTime(defaultDisableSeconds);
-    }, defaultDisableSeconds * 1000);
+    }, time * 1000);
   };
 
   const isUniqueError = (err: any) => err.response?.status === 404;
@@ -81,7 +78,7 @@ export const ForgotPasswordPage = () => {
       return;
     }
 
-    createDisableTimer();
+    createDisableTimer(defaultDisableSeconds / 2);
     setErrorMessage('');
     setIsLoading(false);
     setLinkSent(true);
@@ -89,7 +86,7 @@ export const ForgotPasswordPage = () => {
 
   const handleResend = () => {
     sendEmailLink();
-    createDisableTimer();
+    createDisableTimer(defaultDisableSeconds);
   };
 
   const sendLinkView = () => (
