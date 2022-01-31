@@ -7,12 +7,11 @@ import {
   notifyUsers,
 } from './tasks.controller';
 import { requirePermission } from './../../utils/checkPermissions';
-import { Context } from 'koa';
-import { IKoaState } from '../../types/customTypes';
+import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import taskratingRouter from '../taskratings/taskratings.routes';
 import taskrelationRouter from '../taskrelation/taskrelation.routes';
-const tasksRouter = new KoaRouter<IKoaState, Context>();
+const tasksRouter = new KoaRouter<IKoaState, IKoaContext>();
 
 tasksRouter.use('/tasks', taskrelationRouter.routes());
 tasksRouter.use('/tasks', taskrelationRouter.allowedMethods());
