@@ -1,5 +1,4 @@
 import KoaRouter from '@koa/router';
-import { Context } from 'koa';
 
 import {
   postConfigurations,
@@ -17,7 +16,7 @@ import {
   registerIntegration,
 } from '../integration';
 import { requirePermission } from './../../utils/checkPermissions';
-import { IKoaState } from '../../types/customTypes';
+import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import { JiraIntegration } from '../jira/jiraIntegration';
 import { TrelloIntegration } from '../trello/trelloIntegration';
@@ -25,7 +24,7 @@ import { TrelloIntegration } from '../trello/trelloIntegration';
 registerIntegration('jira', JiraIntegration);
 registerIntegration('trello', TrelloIntegration);
 
-const integrationRouter = new KoaRouter<IKoaState, Context>({
+const integrationRouter = new KoaRouter<IKoaState, IKoaContext>({
   prefix: '/integrations',
 });
 

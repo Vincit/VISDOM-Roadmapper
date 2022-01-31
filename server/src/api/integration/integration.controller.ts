@@ -1,5 +1,4 @@
-import { Context } from 'koa';
-import { RouteHandlerFnc } from '../../types/customTypes';
+import { IKoaContext, RouteHandlerFnc } from '../../types/customTypes';
 import Integration from './integration.model';
 import Task from '../tasks/tasks.model';
 import Token from '../tokens/tokens.model';
@@ -32,7 +31,7 @@ const integrationTokens = async (config: Integration, userId: number) => {
   };
 };
 
-const integrationProvider = async (ctx: Context) => {
+const integrationProvider = async (ctx: IKoaContext) => {
   const { integrationName, roadmapId } = ctx.params;
   const { getIntegrationProvider } = getIntegration(integrationName);
   const config = await integrationConfig(integrationName, Number(roadmapId));
@@ -40,7 +39,7 @@ const integrationProvider = async (ctx: Context) => {
   return getIntegrationProvider(config, tokens);
 };
 
-const oAuthProvider = async (ctx: Context) => {
+const oAuthProvider = async (ctx: IKoaContext) => {
   const { roadmapId, integrationName } = ctx.params;
   const { getOAuthProvider } = getIntegration(integrationName);
   const config = await integrationConfig(integrationName, Number(roadmapId));
