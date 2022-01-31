@@ -1,3 +1,4 @@
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { validateEnv } from './utils/validateEnv';
 import cors from '@koa/cors';
 import KoaRouter from '@koa/router';
@@ -14,6 +15,9 @@ import userRouter from './api/users/users.routes';
 import { setupAuth } from './utils/auth';
 import { errorHandler } from './utils/errorhandler';
 import { IKoaState } from './types/customTypes';
+import { Server } from 'socket.io';
+import http from 'http';
+import { socketIoAuth } from './utils/socketIoAuth';
 
 Dotenv.config();
 if (!validateEnv()) {
@@ -25,7 +29,20 @@ export const knex = Knex(knexConfig);
 const createServer = async () => {
   console.log('Creating server');
   setupAuth();
-  const app = new Koa<Koa.DefaultState, Koa.DefaultContext>();
+  const corsOptions = {
+    origin: process.env.CORS_ORIGIN!,
+    credentials: true,
+  };
+  const app = new Koa<IKoaState, Koa.DefaultContext>();
+  const httpServer = http.createServer(app.callback());
+  const io = new Server<
+    DefaultEventsMap,
+    DefaultEventsMap,
+    DefaultEventsMap,
+    IKoaState
+  >(httpServer, {
+    cors: corsOptions,
+  });
   Model.knex(knex);
 
   app.keys = [process.env.SESSION_SECRET!];
@@ -42,16 +59,19 @@ const createServer = async () => {
       app,
     ),
   );
-  app.use(
-    cors({
-      origin: process.env.CORS_ORIGIN!,
-      credentials: true,
-    }),
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
+  const passportMiddleware = passport.initialize();
+  app.use(passportMiddleware);
+  app.use(cors(corsOptions));
+  const sessionMiddleware = passport.session();
+  app.use(sessionMiddleware);
   app.use(errorHandler);
   app.use(koaBodyParser());
+  io.use(socketIoAuth(app, passportMiddleware, sessionMiddleware));
+  io.on('connection', (socket) => {
+    console.log(
+      `New socket connection id: ${socket.id} user: ${socket.data.user}`,
+    );
+  });
 
   const rootRouter = new KoaRouter<IKoaState, Context>();
   rootRouter.get('/', (ctx) => {
@@ -66,10 +86,11 @@ const createServer = async () => {
   app.use(rootRouter.allowedMethods());
 
   const port = Number(process.env.SERVER_PORT);
-  const server = app.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log(`App listening on port ${port}`);
   });
-  return server;
+
+  return httpServer;
 };
 
 export const server = createServer();
