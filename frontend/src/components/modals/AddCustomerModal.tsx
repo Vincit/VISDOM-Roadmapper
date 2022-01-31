@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { BusinessIcon } from '../RoleIcons';
+import { RoleIcon } from '../RoleIcons';
 import { StoreDispatchType } from '../../redux';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { userActions } from '../../redux/user';
@@ -152,13 +151,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
               .map((rep) => (
                 <div key={rep.id} className={classes(css.rep)}>
                   {rep.email}
-                  <div className={classes(css[RoleType[rep.type]])}>
-                    {rep.type === RoleType.Admin ? (
-                      <StarSharpIcon fontSize="small" />
-                    ) : (
-                      <BusinessIcon size="xsmall" color={colors.azure} />
-                    )}
-                  </div>
+                  <RoleIcon type={rep.type} color={colors.azure} small />
                 </div>
               ))}
           </div>

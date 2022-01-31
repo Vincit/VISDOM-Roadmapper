@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
-import { BusinessIcon } from './RoleIcons';
+import { RoleIcon } from './RoleIcons';
 import { RoadmapRole, UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import css from './UserInfoCard.module.scss';
@@ -50,11 +48,7 @@ const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
     >
       <div className={classes(css.virtualizedTableRow)} style={style}>
         <div className={classes(css.roleColumn)}>
-          <div className={classes(css.memberIcon)}>
-            {type === RoleType.Admin && <StarSharpIcon />}
-            {type === RoleType.Developer && <BuildSharpIcon />}
-            {type === RoleType.Business && <BusinessIcon />}
-          </div>
+          <RoleIcon type={type} />
           <div>{t(RoleType[type])}</div>
         </div>
         <div>{roadmap?.name}</div>

@@ -1,9 +1,5 @@
 @import './../shared.scss';
 
-.memberIcon path {
-  fill: $COLOR_BLACK40;
-}
-
 .validIcon {
   color: $COLOR_EMERALD;
   &.notValid {

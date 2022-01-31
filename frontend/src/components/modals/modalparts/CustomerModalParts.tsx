@@ -1,14 +1,13 @@
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import { BusinessIcon } from '../../RoleIcons';
+import { RoleIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
 import { Checkbox } from '../../forms/Checkbox';
 import { CheckableUser } from '../../../redux/roadmaps/types';
-import { RoleType } from '../../../../../shared/types/customTypes';
 import { ColorPicker } from './ColorPicker';
 import { Input } from '../../forms/FormField';
+import colors from '../../../colors.module.scss';
 import css from './CustomerModalParts.module.scss';
 
 const classes = classNames.bind(css);
@@ -102,14 +101,11 @@ export const SelectRepresentatives: FC<{
             checked={rep.checked}
             onChange={(checked) => onRepresentativeChange(idx, checked)}
           />
-          <div
-            className={classes(css.icon, {
-              [css.active]: rep.checked,
-            })}
-          >
-            {rep.type === RoleType.Admin && <StarSharpIcon fontSize="small" />}
-            {rep.type === RoleType.Business && <BusinessIcon size="xsmall" />}
-          </div>
+          <RoleIcon
+            type={rep.type}
+            color={rep.checked ? colors.azure : colors.black40}
+            small
+          />
         </div>
       ))}
     </div>

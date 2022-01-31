@@ -2,15 +2,12 @@ import { MouseEvent } from 'react';
 import classNames from 'classnames';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { useDispatch } from 'react-redux';
 import { StoreDispatchType } from '../redux';
 import { DeleteButton, EditButton, MailButton } from './forms/SvgButton';
-import { BusinessIcon } from './RoleIcons';
+import { RoleIcon } from './RoleIcons';
 import { Invitation } from '../redux/roadmaps/types';
 import { TableRow } from './Table';
-import { RoleType } from '../../../shared/types/customTypes';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from './modals/types';
 import css from './TableInvitationRow.module.scss';
@@ -65,11 +62,7 @@ export const TableInvitationRow: TableRow<Invitation> = ({
 
   return (
     <div className={classes(css.virtualizedTableRow)} style={style}>
-      <div className={classes(css.memberIcon)}>
-        {type === RoleType.Admin && <StarSharpIcon />}
-        {type === RoleType.Developer && <BuildSharpIcon />}
-        {type === RoleType.Business && <BusinessIcon />}
-      </div>
+      <RoleIcon type={type} />
       <div>
         <a className="green" href={`mailto:${email}`}>
           {email}

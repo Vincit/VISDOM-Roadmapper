@@ -3,8 +3,6 @@ import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import classNames from 'classnames';
 import { ReactComponent as CornerPiece } from '../icons/corner_rounder.svg';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
@@ -13,9 +11,9 @@ import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
 import css from './NavBar.module.scss';
 import { findLoginNavBar } from './LoginNavBar';
 import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
-import { BusinessIcon } from './RoleIcons';
-import { RoleType } from '../../../shared/types/customTypes';
+import { RoleIcon } from './RoleIcons';
 import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -51,11 +49,9 @@ export const NavBar = () => {
         <div className={classes(css.navBarDivider)} />
         {userInfo && (
           <div className={classes(css.userInfoContainer)}>
-            <div className={classes(css.memberIcon)}>
-              {userRole === RoleType.Admin && <StarSharpIcon />}
-              {userRole === RoleType.Developer && <BuildSharpIcon />}
-              {userRole === RoleType.Business && <BusinessIcon />}
-            </div>
+            {userRole && (
+              <RoleIcon type={userRole} color={colors.black100} small />
+            )}
             {userInfo.email}
           </div>
         )}

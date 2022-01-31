@@ -27,3 +27,7 @@
   width: 20px;
   height: 20px;
 }
+
+.roleIcon path {
+  fill: var(--icon--color, $COLOR_BLACK40);
+}

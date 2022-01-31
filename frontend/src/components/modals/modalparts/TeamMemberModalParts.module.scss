@@ -18,13 +18,6 @@
     .memberIcon {
       position: relative;
       top: -4px;
-
-      path {
-        fill: $COLOR_BLACK40;
-      }
-    }
-    &.checked .memberIcon path {
-      fill: $COLOR_BLACK100;
     }
   }
 
@@ -84,10 +77,6 @@
     align-items: center;
     width: 21px;
     height: 21px;
-
-    path {
-      fill: $COLOR_FOREST;
-    }
   }
 }
 

@@ -1,21 +1,13 @@
 import { Trans } from 'react-i18next';
-import classNames from 'classnames';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
 import { RoadmapUser } from '../redux/roadmaps/types';
-import { RoleType } from '../../../shared/types/customTypes';
-import { BusinessIcon } from './RoleIcons';
+import { RoleIcon } from './RoleIcons';
 import { table, TableRow } from './Table';
 import { userSort, UserSortingTypes } from '../utils/SortRoadmapUserUtils';
-import css from './RepresentativeTable.module.scss';
-
-const classes = classNames.bind(css);
+import '../shared.scss';
 
 const RepresentativeRow: TableRow<RoadmapUser> = ({ item: user, style }) => (
-  <div style={style} className={classes(css.virtualizedTableRow)}>
-    <div className={classes(css.memberIcon)}>
-      {user.type === RoleType.Admin && <StarSharpIcon />}
-      {user.type === RoleType.Business && <BusinessIcon />}
-    </div>
+  <div style={style} className="virtualizedTableRow">
+    <RoleIcon type={user.type} />
     <div>
       <a className="green" href={`mailto:${user.email}`}>
         {user.email}

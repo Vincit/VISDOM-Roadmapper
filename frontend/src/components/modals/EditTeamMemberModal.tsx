@@ -3,9 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { useDispatch, shallowEqual, useSelector } from 'react-redux';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import { BusinessIcon } from '../RoleIcons';
+import { RoleIcon } from '../RoleIcons';
 import { StoreDispatchType } from '../../redux';
 import { RootState } from '../../redux/types';
 import { roadmapsActions } from '../../redux/roadmaps';
@@ -16,7 +14,7 @@ import {
   Invitation,
   RoadmapUser,
 } from '../../redux/roadmaps/types';
-import { RoleType, Permission } from '../../../../shared/types/customTypes';
+import { Permission } from '../../../../shared/types/customTypes';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -127,9 +125,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
       </ModalHeader>
       <ModalContent>
         <div className={classes(css.section, css.memberSection)}>
-          {selectedRole === RoleType.Admin && <StarSharpIcon />}
-          {selectedRole === RoleType.Developer && <BuildSharpIcon />}
-          {selectedRole === RoleType.Business && <BusinessIcon />}
+          <RoleIcon type={selectedRole} />
           {member.email}
         </div>
         <div className={classes(css.section)}>

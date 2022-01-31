@@ -1,11 +1,9 @@
 import { FC, useState, useRef, MouseEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { Alert } from 'react-bootstrap';
 import { Checkbox } from '../../forms/Checkbox';
-import { BusinessIcon } from '../../RoleIcons';
+import { RoleIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
 import { Input } from '../../forms/FormField';
 import { RoleType } from '../../../../../shared/types/customTypes';
@@ -15,6 +13,7 @@ import {
   CheckableCustomer,
   InviteRoadmapUser,
 } from '../../../redux/roadmaps/types';
+import colors from '../../../colors.module.scss';
 import css from './TeamMemberModalParts.module.scss';
 import { Dot } from '../../Dot';
 
@@ -33,10 +32,7 @@ export const SelectMemberRole: FC<{
       </label>
       <div id="role" className={classes(css.roleSelection)}>
         {[RoleType.Developer, RoleType.Business, RoleType.Admin].map((type) => (
-          <div
-            key={type}
-            className={classes(css.role, { [css.checked]: role === type })}
-          >
+          <div key={type} className={classes(css.role)}>
             <RadioButton
               label={t(RoleType[type])}
               value={RoleType[type]}
@@ -45,11 +41,11 @@ export const SelectMemberRole: FC<{
             />
             {!disableRoleIcons && (
               <div className={classes(css.memberIcon)}>
-                {type === RoleType.Admin && <StarSharpIcon fontSize="small" />}
-                {type === RoleType.Developer && (
-                  <BuildSharpIcon fontSize="small" />
-                )}
-                {type === RoleType.Business && <BusinessIcon size="small" />}
+                <RoleIcon
+                  type={type}
+                  color={role === type ? colors.black100 : colors.black40}
+                  small
+                />
               </div>
             )}
           </div>
@@ -116,11 +112,7 @@ export const DisplayInvitedMember: FC<{
   <div className={classes(css.displayMember)}>
     <div className={classes(css.leftSideDiv)}>
       <div className={classes(css.memberIcon)}>
-        {member.type === RoleType.Admin && <StarSharpIcon />}
-        {member.type === RoleType.Developer && (
-          <BuildSharpIcon fontSize="small" />
-        )}
-        {member.type === RoleType.Business && <BusinessIcon size="small" />}
+        <RoleIcon type={member.type} color={colors.forest} small />
       </div>
       <div className={classes(css.email)}>{member.email}</div>
     </div>

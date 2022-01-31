@@ -1,11 +1,9 @@
 import { FC, MouseEvent, useState, useEffect } from 'react';
 import classNames from 'classnames';
-import StarSharpIcon from '@material-ui/icons/StarSharp';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
 import { DeleteButton, EditButton } from './forms/SvgButton';
-import { BusinessIcon } from './RoleIcons';
+import { RoleIcon } from './RoleIcons';
 import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
@@ -73,11 +71,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
   return (
     <tr>
       <td className="styledTd">
-        <div className={classes(css.memberIcon)}>
-          {type === RoleType.Admin && <StarSharpIcon />}
-          {type === RoleType.Developer && <BuildSharpIcon />}
-          {type === RoleType.Business && <BusinessIcon />}
-        </div>
+        <RoleIcon type={type} />
       </td>
       <td className="styledTd">
         <a className="green" href={`mailto:${email}`}>
