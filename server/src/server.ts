@@ -1,10 +1,11 @@
+import { registerSocketCallbacks } from './utils/socketIoUtils';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { validateEnv } from './utils/validateEnv';
 import cors from '@koa/cors';
 import KoaRouter from '@koa/router';
 import Dotenv from 'dotenv';
 import Knex from 'knex';
-import Koa, { Context } from 'koa';
+import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import passport from 'koa-passport';
 import session from 'koa-session';
@@ -19,7 +20,7 @@ import {
   IExtendedKoaContext,
   IKoaContext,
 } from './types/customTypes';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import http from 'http';
 import { socketIoAuth } from './utils/socketIoAuth';
 
@@ -71,11 +72,7 @@ const createServer = async () => {
   app.use(errorHandler);
   app.use(koaBodyParser());
   io.use(socketIoAuth(app, passportMiddleware, sessionMiddleware));
-  io.on('connection', (socket) => {
-    console.log(
-      `New socket connection id: ${socket.id} user: ${socket.data.user}`,
-    );
-  });
+  registerSocketCallbacks(io);
 
   // Make io accessible in route controllers through ctx
   app.use((ctx, next) => {
