@@ -22,6 +22,7 @@ import { PlannerPageRouter } from './PlannerPageRouter';
 import { TasksPageRouter } from './TasksPageRouter';
 import '../shared.scss';
 import { usePrevious } from '../utils/usePrevious';
+import { userInfoSelector } from '../redux/user/selectors';
 
 const routes = [
   {
@@ -65,6 +66,7 @@ const RoadmapRouterComponent = () => {
   const { roadmapId: urlRoadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
+  const userInfo = useSelector(userInfoSelector);
   const selectedRoadmapId = useSelector(chosenRoadmapIdSelector);
   const previousRoadmapId = usePrevious<number | undefined>(selectedRoadmapId);
   const dispatch = useDispatch<StoreDispatchType>();
