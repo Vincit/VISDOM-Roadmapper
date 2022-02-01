@@ -54,6 +54,13 @@ export const SocketListener = () => {
         );
         dispatch(roadmapsActions.getRoadmapUsers(roadmapId));
       });
+
+      socket.current.on(ClientEvents.TASK_UPDATED, (roadmapId, taskId) => {
+        console.log(
+          `Event received: ${ClientEvents.TASK_UPDATED}, ${roadmapId}, ${taskId}`,
+        );
+        dispatch(roadmapsActions.getRoadmaps());
+      });
     }
   }, [userInfo, dispatch]);
 
