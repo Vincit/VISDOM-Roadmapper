@@ -1,3 +1,4 @@
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import Objection from 'objection';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import { userHasPermission } from './../../utils/checkPermissions';
@@ -6,6 +7,7 @@ import Task from './tasks.model';
 import User from '../users/users.model';
 import { sendEmail } from '../../utils/sendEmail';
 import { isNumberArray } from '../../utils/typeValidation';
+import { ClientEvents } from '../../../../shared/types/sockettypes';
 
 export const getTasks: RouteHandlerFnc = async (ctx) => {
   const { user, role } = ctx.state;
@@ -48,6 +50,13 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     createdByUser: Number(ctx.state.user.id),
   });
 
+  emitRoadmapEvent(
+    ctx.io,
+    Number(ctx.params.roadmapId),
+    ctx.state.user.id,
+    ClientEvents.TASK_UPDATED,
+    [Number(ctx.params.roadmapId), task.id],
+  );
   ctx.body = task;
 };
 
@@ -65,6 +74,15 @@ export const deleteTasks: RouteHandlerFnc = async (ctx) => {
     })
     .delete();
 
+  if (numDeleted != 1) {
+    emitRoadmapEvent(
+      ctx.io,
+      Number(ctx.params.roadmapId),
+      ctx.state.user.id,
+      ClientEvents.TASK_UPDATED,
+      [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+    );
+  }
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
 
@@ -86,6 +104,14 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
       task.createdByUser !== ctx.state.user!.id
     )
       return void (ctx.status = 403);
+
+    emitRoadmapEvent(
+      ctx.io,
+      Number(ctx.params.roadmapId),
+      ctx.state.user!.id,
+      ClientEvents.TASK_UPDATED,
+      [Number(ctx.params.roadmapId), id],
+    );
 
     return void (ctx.body = await task.$query(trx).patchAndFetch({
       name: name,
