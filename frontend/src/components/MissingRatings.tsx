@@ -9,10 +9,6 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import {
-  roadmapUsersSelector,
-  allCustomersSelector,
-} from '../redux/roadmaps/selectors';
 import { Dot } from './Dot';
 import { getType } from '../utils/UserUtils';
 import {
@@ -21,6 +17,7 @@ import {
   ratedByCustomer,
 } from '../utils/TaskUtils';
 import css from './MissingRatings.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -34,14 +31,8 @@ export const MissingRatings: FC<{
     shallowEqual,
   );
   const type = getType(userInfo, roadmapId);
-  const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
-    shallowEqual,
-  );
-  const allCustomers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
+  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const { data: allCustomers } = apiV2.useGetCustomersQuery(roadmapId);
   const [missingRatings, setMissingRatings] = useState<Customer[] | undefined>(
     undefined,
   );

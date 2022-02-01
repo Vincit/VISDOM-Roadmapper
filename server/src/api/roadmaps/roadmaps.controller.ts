@@ -13,7 +13,7 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
   const query = User.relatedQuery('roadmaps').for(user.id);
   if (ctx.query.eager) {
     const result = await query.withGraphFetched(
-      '[tasks.[ratings, relations], integrations]',
+      '[tasks.[ratings], integrations]',
     );
     (result as Roadmap[] | undefined)?.forEach((roadmap) => {
       const role = user.roles.find((role) => role.roadmapId === roadmap.id);

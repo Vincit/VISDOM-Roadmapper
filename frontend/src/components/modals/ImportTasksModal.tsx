@@ -3,11 +3,10 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
-import { api } from '../../api/api';
+import { apiV2 } from '../../api/api';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
-import { IntegrationBoard, RootState } from '../../redux/types';
+import { RootState } from '../../redux/types';
 import { userActions } from '../../redux/user';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
@@ -28,19 +27,30 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [boards, setBoards] = useState<IntegrationBoard[] | undefined>();
   const [selectedBoardId, setSelectedBoardId] = useState<string | undefined>();
-  const [availableLabels, setAvailableLabels] = useState<
-    string[] | undefined
-  >();
   const [selectedLabels, setSelectedLabels] = useState<Map<string, string[]>>(
     new Map(),
   );
-  const [loadedBoards, setLoadedBoards] = useState(false);
   const [tokenError, setTokenError] = useState(false);
-  const chosenRoadmapId = useSelector<RootState, number | undefined>(
-    chosenRoadmapIdSelector,
+  const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
+  const [
+    importIntegrationBoard,
+    importStatus,
+  ] = apiV2.useImportIntegrationBoardMutation();
+  const boards = apiV2.useGetIntegrationBoardsQuery(
+    {
+      name,
+      roadmapId: chosenRoadmapId!,
+    },
+    { skip: chosenRoadmapId === undefined },
+  );
+  const labels = apiV2.useGetIntegrationBoardLabelsQuery(
+    {
+      name,
+      boardId: selectedBoardId!,
+      roadmapId: chosenRoadmapId!,
+    },
+    { skip: !selectedBoardId || chosenRoadmapId === undefined },
   );
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -51,67 +61,33 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
     if (!userInfo) dispatch(userActions.getUserInfo());
   }, [userInfo, dispatch]);
 
-  const isTokenError = (err: any) =>
-    err.response?.data?.error === 'InvalidTokenError';
+  const isTokenError = (err: any) => err.data?.error === 'InvalidTokenError';
 
   useEffect(() => {
-    const getBoards = async () => {
-      try {
-        const newBoards = await api.getIntegrationBoards(name, {
-          roadmapId: chosenRoadmapId!,
-        });
-        setBoards(newBoards);
-      } catch (err) {
-        if (isTokenError(err)) {
-          setErrorMessage(t('Invalid Oauth token error'));
-          setTokenError(true);
-        } else {
-          setErrorMessage(t('Internal server error'));
-        }
-      }
-      setLoadedBoards(true);
-    };
-    getBoards();
-  }, [chosenRoadmapId, name, dispatch, closeModal, t]);
-
-  useEffect(() => {
-    const getLabels = async () => {
-      try {
-        const labels = await api.getIntegrationBoardLabels(name, {
-          roadmapId: chosenRoadmapId!,
-          boardId: selectedBoardId!,
-        });
-        setAvailableLabels(labels);
-      } catch (err) {
-        if (isTokenError(err)) {
-          setErrorMessage(t('Invalid Oauth token error'));
-          setTokenError(true);
-        } else {
-          setErrorMessage(t('Internal server error'));
-        }
-      }
-    };
-    if (selectedBoardId !== undefined) {
-      getLabels();
+    if (!boards.isError && !labels.isError) return;
+    const err = boards.error ?? labels.error;
+    if (isTokenError(err)) {
+      setTokenError(true);
+      setErrorMessage(t('Invalid Oauth token error'));
+    } else {
+      setErrorMessage(t('Internal server error'));
     }
-  }, [selectedBoardId, chosenRoadmapId, name, t]);
+  }, [boards, labels, t]);
 
   useEffect(() => {
-    if (boards?.length) {
-      setSelectedBoardId(boards[0].id);
+    if (boards.data?.length) {
+      setSelectedBoardId(boards.data[0].id);
     }
-  }, [boards]);
+  }, [boards.data]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
 
     if (form.checkValidity()) {
-      setIsLoading(true);
-
-      dispatch(
-        roadmapsActions.importIntegrationBoard({
+      try {
+        await importIntegrationBoard({
           name,
           boardId: selectedBoardId!,
           createdByUser: userInfo!.id,
@@ -119,17 +95,11 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           filters: {
             labels: selectedLabels.get(selectedBoardId!),
           },
-        }),
-      ).then((res) => {
-        setIsLoading(false);
-        if (roadmapsActions.importIntegrationBoard.rejected.match(res)) {
-          if (res.payload) {
-            setErrorMessage(res.payload.message);
-          }
-        } else {
-          closeModal();
-        }
-      });
+        }).unwrap();
+        closeModal();
+      } catch (err) {
+        setErrorMessage(err.data?.message ?? 'something went wrong');
+      }
     }
   };
 
@@ -153,7 +123,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
   };
 
   const modalBody = () => {
-    if (!loadedBoards) return <LoadingSpinner />;
+    if (boards.isLoading) return <LoadingSpinner />;
     if (tokenError) {
       return (
         <button
@@ -165,7 +135,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
         </button>
       );
     }
-    if (!boards) return null;
+    if (!boards.data) return null;
     return (
       <>
         <Select
@@ -173,20 +143,20 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           id="board"
           className="react-select"
           placeholder="No boards available"
-          isDisabled={boards.length === 0}
+          isDisabled={boards.data.length === 0}
           menuPortalTarget={document.body}
           onChange={(selected) =>
             selected && setSelectedBoardId(selected.value)
           }
           defaultValue={
-            boards.length > 0
+            boards.data.length > 0
               ? {
-                  value: boards[0].id,
-                  label: boards[0].name,
+                  value: boards.data[0].id,
+                  label: boards.data[0].name,
                 }
               : null
           }
-          options={boards.map((board) => ({
+          options={boards.data.map((board) => ({
             value: board.id,
             label: board.name,
           }))}
@@ -211,13 +181,11 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
               ),
             )
           }
-          isLoading={
-            selectedBoardId !== undefined && availableLabels === undefined
-          }
+          isLoading={selectedBoardId !== undefined && labels.isLoading}
           defaultValue={selectedLabels
             .get(selectedBoardId!)
             ?.map((label) => ({ value: label, label }))}
-          options={availableLabels?.map((label) => ({
+          options={labels.data?.map((label) => ({
             value: label,
             label,
           }))}
@@ -247,7 +215,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>
-          {isLoading ? (
+          {importStatus.isLoading ? (
             <LoadingSpinner />
           ) : (
             <button

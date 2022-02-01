@@ -1,31 +1,33 @@
 import { FC, MouseEvent, useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { getMarkerEnd, getBezierPath } from 'react-flow-renderer';
-import { StoreDispatchType } from '../redux';
-import { roadmapsActions } from '../redux/roadmaps';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './TaskMapEdge.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
   const [selected, setSelected] = useState<string | undefined>(undefined);
-  const dispatch = useDispatch<StoreDispatchType>();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
 
   // Should be given 'id' as param in the form: 'from-taskId-to-taskId'
   const deleteRelation = useCallback(
     async (tbdeleted: string) => {
+      if (roadmapId === undefined) return;
       const data = tbdeleted.split('-');
-      await dispatch(
-        roadmapsActions.removeTaskRelation({
+      await removeTaskRelation({
+        roadmapId,
+        relation: {
           from: Number(data[1]),
           to: Number(data[3]),
           type: 0,
-        }),
-      );
-      dispatch(roadmapsActions.getRoadmaps());
+        },
+      }).unwrap();
     },
-    [dispatch],
+    [removeTaskRelation, roadmapId],
   );
 
   useEffect(() => {
@@ -40,7 +42,7 @@ const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
     return () => {
       document.removeEventListener('keydown', handleBackspace);
     };
-  }, [deleteRelation, disableInteraction, dispatch, selected]);
+  }, [deleteRelation, disableInteraction, selected]);
 
   const handleMouseClick = (e: MouseEvent) => {
     if (disableInteraction) return;

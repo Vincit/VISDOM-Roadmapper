@@ -1,11 +1,12 @@
 import classNames from 'classnames';
 import BuildSharpIcon from '@material-ui/icons/BuildSharp';
 import { useSelector } from 'react-redux';
-import { userSelector } from '../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
 import { EditButton } from './forms/SvgButton';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -20,7 +21,9 @@ const TableComplexityRatingRow: RatingRow = ({
   userId,
   onEdit,
 }) => {
-  const user = useSelector(userSelector(rating.createdByUser));
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const user = data?.find(({ id }) => id === rating.createdByUser);
   if (!user) return null;
 
   return (

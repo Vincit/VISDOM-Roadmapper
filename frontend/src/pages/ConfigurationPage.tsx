@@ -1,20 +1,17 @@
-import { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../components/modals/types';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState, Integrations } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { requireVerifiedEmail } from '../utils/requirelogin';
 import { titleCase } from '../utils/string';
 import { getType } from '../utils/UserUtils';
-import { api } from '../api/api';
+import { apiV2 } from '../api/api';
 import { InfoTooltip } from '../components/InfoTooltip';
 
 import css from './ConfigurationPage.module.scss';
@@ -27,17 +24,19 @@ const RoadmapConfigurationPageComponent = ({
   userInfo: UserInfo;
 }) => {
   const { t } = useTranslation();
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  )!;
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
   const dispatch = useDispatch<StoreDispatchType>();
-  const userType = getType(userInfo, currentRoadmap?.id);
+  const userType = getType(userInfo, roadmapId);
+  const { data } = apiV2.useGetRoadmapsQuery();
+  const roadmap = data?.find(({ id }) => id === roadmapId);
+
+  const { data: integrations } = apiV2.useGetIntegrationsQuery(roadmapId);
 
   const onConfigurationClick = (target: string, fields: any[]) => (e: any) => {
     e.preventDefault();
 
-    const configuration = currentRoadmap.integrations.find(
+    if (!roadmap) return;
+    const configuration = roadmap.integrations.find(
       ({ name }) => name === target,
     );
     dispatch(
@@ -45,8 +44,8 @@ const RoadmapConfigurationPageComponent = ({
         modalType: ModalTypes.INTEGRATION_CONFIGURATION_MODAL,
         modalProps: {
           name: target,
-          roadmapId: currentRoadmap.id,
-          roadmapName: currentRoadmap.name,
+          roadmapId,
+          roadmapName: roadmap.name,
           configuration,
           fields,
         },
@@ -59,7 +58,7 @@ const RoadmapConfigurationPageComponent = ({
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.SETUP_OAUTH_MODAL,
-        modalProps: { name: target, roadmapId: currentRoadmap.id },
+        modalProps: { name: target, roadmapId },
       }),
     );
   };
@@ -78,28 +77,19 @@ const RoadmapConfigurationPageComponent = ({
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.DELETE_ROADMAP_MODAL,
-        modalProps: {
-          id: currentRoadmap.id,
-        },
+        modalProps: { id: roadmapId },
       }),
     );
   };
-
-  const [integrations, setIntegrations] = useState<Integrations>({});
-
-  useEffect(() => {
-    if (currentRoadmap)
-      api.getIntegrations(currentRoadmap.id).then(setIntegrations);
-  }, [currentRoadmap]);
 
   return (
     <div className={classes(css.configurationPage)}>
       {userType === RoleType.Admin && (
         <>
-          {Object.entries(integrations).flatMap(([name, fields]) => [
+          {Object.entries(integrations ?? {}).flatMap(([name, fields]) => [
             <div key={`config-${name}`} className={classes(css.layoutRow)}>
               <span className={classes(css.columnHeader)}>
-                {currentRoadmap.name} {titleCase(name)}{' '}
+                {roadmap!.name} {titleCase(name)}{' '}
                 <Trans i18nKey="configuration" />
                 <InfoTooltip title={t(`config-${name}-tooltip`)}>
                   <InfoIcon
@@ -118,7 +108,7 @@ const RoadmapConfigurationPageComponent = ({
             </div>,
             <div key={`oauth-${name}`} className={classes(css.layoutRow)}>
               <span className={classes(css.columnHeader)}>
-                {currentRoadmap.name} {titleCase(name)}{' '}
+                {roadmap!.name} {titleCase(name)}{' '}
                 <Trans i18nKey="authentication" />
                 <InfoTooltip title={t(`oauth-${name}-tooltip`)}>
                   <InfoIcon

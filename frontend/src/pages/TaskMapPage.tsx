@@ -14,7 +14,7 @@ import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { useTranslation } from 'react-i18next';
 import {
-  allTasksSelector,
+  chosenRoadmapIdSelector,
   taskmapPositionSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps';
@@ -37,6 +37,7 @@ import { move, partition } from '../utils/array';
 import { TaskGroup } from '../components/TaskMapTaskGroup';
 import css from './TaskMapPage.module.scss';
 import { InfoTooltip } from '../components/InfoTooltip';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -84,10 +85,18 @@ const isGroup = (x: Edge | Group): x is Group => x.type === 'special';
 
 export const TaskMapPage = () => {
   const { t } = useTranslation();
-  const tasks = useSelector(allTasksSelector, shallowEqual);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!, {
+    skip: roadmapId === undefined,
+  });
+  const { data: relations } = apiV2.useGetTaskRelationsQuery(roadmapId!, {
+    skip: roadmapId === undefined,
+  });
+  const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
+  const [addSynergy] = apiV2.useAddSynergyRelationsMutation();
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
-  const [taskRelations, setTaskRelations] = useState(groupTaskRelations(tasks));
+  const [taskRelations, setTaskRelations] = useState<GroupedRelation[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [disableDrag, setDisableDrag] = useState(false);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
@@ -98,6 +107,11 @@ export const TaskMapPage = () => {
     new Set(),
   );
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
+
+  useEffect(() => {
+    if (relations !== undefined && tasks !== undefined)
+      setTaskRelations(groupTaskRelations(tasks, relations));
+  }, [relations, tasks]);
 
   useEffect(() => {
     if (!mapPosition && flowInstance && flowElements.length) {
@@ -116,7 +130,7 @@ export const TaskMapPage = () => {
       let height = 40;
 
       relation.synergies.forEach((taskId) => {
-        const task = tasks.find(({ id }) => id === taskId);
+        const task = tasks?.find(({ id }) => id === taskId);
         if (!task) return;
         height += 40;
         // calculate text height
@@ -129,51 +143,57 @@ export const TaskMapPage = () => {
 
     const graph = getAutolayout(measuredRelations);
 
-    const groups: Group[] = measuredRelations.map(({ id, synergies }) => {
+    const groups: Group[] = measuredRelations.flatMap(({ id, synergies }) => {
       const node = graph.node(id);
-      return {
-        id,
-        type: 'special',
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-        draggable: false,
-        // dagre coordinates are in the center, calculate top left corner
-        position: { x: node.x - node.width / 2, y: node.y - node.height / 2 },
-        data: {
-          label: (
-            <TaskGroup
-              listId={id}
-              taskIds={synergies}
-              selectedTask={selectedTask}
-              setSelectedTask={setSelectedTask}
-              allDependencies={taskRelations.flatMap(
-                ({ dependencies }) => dependencies,
-              )}
-              disableDragging={disableDrag}
-              disableDrop={dropUnavailable.has(id)}
-              unavailable={unavailable}
-              dragHandle={dragHandle}
-            />
-          ),
+      if (!tasks) return [];
+      return [
+        {
+          id,
+          type: 'special',
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          draggable: false,
+          // dagre coordinates are in the center, calculate top left corner
+          position: { x: node.x - node.width / 2, y: node.y - node.height / 2 },
+          data: {
+            label: (
+              <TaskGroup
+                listId={id}
+                taskIds={synergies}
+                tasks={tasks}
+                selectedTask={selectedTask}
+                setSelectedTask={setSelectedTask}
+                allDependencies={taskRelations.flatMap(
+                  ({ dependencies }) => dependencies,
+                )}
+                disableDragging={disableDrag}
+                disableDrop={dropUnavailable.has(id)}
+                unavailable={unavailable}
+                dragHandle={dragHandle}
+              />
+            ),
+          },
         },
-      };
+      ];
     });
 
     const edges: Edge[] = measuredRelations.flatMap(({ dependencies }, idx) =>
-      dependencies.map(({ from, to }) => {
+      dependencies.flatMap(({ from, to }) => {
         const targetGroup = measuredRelations.find(({ synergies }) =>
           synergies.includes(to),
         );
-
-        return {
-          id: `from-${from}-to-${to}`,
-          source: String(idx),
-          sourceHandle: `from-${from}`,
-          target: targetGroup!.id,
-          targetHandle: `to-${to}`,
-          type: 'custom',
-          data: { disableInteraction: disableDrag },
-        };
+        if (!targetGroup) return [];
+        return [
+          {
+            id: `from-${from}-to-${to}`,
+            source: String(idx),
+            sourceHandle: `from-${from}`,
+            target: targetGroup.id,
+            targetHandle: `to-${to}`,
+            type: 'custom',
+            data: { disableInteraction: disableDrag },
+          },
+        ];
       }),
     );
 
@@ -198,17 +218,14 @@ export const TaskMapPage = () => {
     const to = Number(targetHandle.split('-')[1]);
 
     // the handle only accepts valid connections
-    await dispatch(roadmapsActions.addTaskRelation({ from, to, type }));
-    dispatch(roadmapsActions.getRoadmaps());
+    await addTaskRelation({
+      roadmapId: roadmapId!,
+      relation: { from, to, type },
+    }).unwrap();
   };
 
-  const addSynergyRelations = async (from: number, to: number[]) => {
-    const ok = await dispatch(
-      roadmapsActions.addSynergyRelations({ from, to }),
-    ).unwrap();
-    if (ok) dispatch(roadmapsActions.getRoadmaps());
-    return ok;
-  };
+  const addSynergyRelations = (from: number, to: number[]) =>
+    addSynergy({ roadmapId: roadmapId!, from, to }).unwrap();
 
   const onDragMoveOutside = async (draggedTaskId: number) => {
     const draggedIndex = taskRelations.findIndex(({ synergies }) =>

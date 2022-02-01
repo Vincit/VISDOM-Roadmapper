@@ -1,24 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RoleIcon } from '../RoleIcons';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
 import { userActions } from '../../redux/user';
-import {
-  allCustomersSelector,
-  roadmapUsersSelector,
-  chosenRoadmapSelector,
-} from '../../redux/roadmaps/selectors';
-import {
-  RoadmapUser,
-  Customer,
-  CheckableUser,
-  Roadmap,
-} from '../../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
+import { CheckableUser } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
-import { RootState } from '../../redux/types';
 import { Modal, ModalTypes } from './types';
 import {
   SelectCustomerInfo,
@@ -27,6 +16,7 @@ import {
 import { StepForm } from '../forms/StepForm';
 import { randomColor, getCheckedIds } from '../../utils/CustomerUtils';
 import { SummaryStepContent } from './modalparts/SummaryStepContent';
+import { apiV2 } from '../../api/api';
 import colors from '../../colors.module.scss';
 import css from './AddCustomerModal.module.scss';
 
@@ -37,18 +27,10 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
-  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const [addCustomerTrigger] = apiV2.useAddCustomerMutation();
+  const { data: roadmapUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
   const [colorType, setColorType] = useState('generate');
   const [formValues, setFormValues] = useState({
     name: '',
@@ -69,25 +51,19 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     );
   }, [roadmapUsers]);
 
-  useEffect(() => {
-    if (!roadmapUsers && currentRoadmap)
-      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
-  }, [currentRoadmap, dispatch, roadmapUsers]);
-
   const handleSubmit = async () => {
-    const res = await dispatch(
-      roadmapsActions.addCustomer({
-        name: formValues.name,
-        email: formValues.email,
-        color: formValues.color,
-        representatives: getCheckedIds(representatives),
-      }),
-    );
-
-    if (roadmapsActions.addCustomer.rejected.match(res)) {
-      return { message: res.payload?.message ?? '' };
+    try {
+      await addCustomerTrigger({
+        roadmapId,
+        customer: {
+          ...formValues,
+          representatives: getCheckedIds(representatives),
+        },
+      }).unwrap();
+      await dispatch(userActions.getUserInfo());
+    } catch (err) {
+      return { message: err.data?.message ?? 'something went wrong' };
     }
-    await dispatch(userActions.getUserInfo());
   };
 
   const handleColorTypeChange = (value: string) => {

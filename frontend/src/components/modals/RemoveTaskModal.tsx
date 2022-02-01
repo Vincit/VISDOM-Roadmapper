@@ -1,9 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -12,26 +9,25 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
+import { apiV2 } from '../../api/api';
 
 export const RemoveTaskModal: Modal<ModalTypes.REMOVE_TASK_MODAL> = ({
   closeModal,
   task,
 }) => {
-  const dispatch = useDispatch<StoreDispatchType>();
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [deleteTaskTrigger, { isLoading }] = apiV2.useDeleteTaskMutation();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setErrorMessage('');
-
-    setIsLoading(true);
-    const res = await dispatch(roadmapsActions.deleteTask(task));
-    setIsLoading(false);
-    if (roadmapsActions.deleteTask.rejected.match(res))
-      if (res.payload?.message) return setErrorMessage(res.payload.message);
-    closeModal();
+    try {
+      await deleteTaskTrigger({ roadmapId: task.roadmapId, task }).unwrap();
+      closeModal();
+    } catch (err) {
+      setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
+    }
   };
 
   return (

@@ -1,23 +1,12 @@
 import { FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
 import { userActions } from '../../redux/user';
-import {
-  allCustomersSelector,
-  roadmapUsersSelector,
-  chosenRoadmapSelector,
-} from '../../redux/roadmaps/selectors';
-import {
-  RoadmapUser,
-  Customer,
-  CheckableUser,
-  Roadmap,
-} from '../../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
+import { CheckableUser } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
-import { RootState } from '../../redux/types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -30,25 +19,20 @@ import {
   SelectCustomerInfo,
   SelectRepresentatives,
 } from './modalparts/CustomerModalParts';
+import { apiV2 } from '../../api/api';
 
 export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   closeModal,
   customer,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
-  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const [isLoading, setIsLoading] = useState(false);
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const { data: roadmapUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const [
+    patchCustomerTrigger,
+    patchCustomerStatus,
+  ] = apiV2.usePatchCustomerMutation();
   const [errorMessage, setErrorMessage] = useState('');
   const [colorType, setColorType] = useState('pick');
   const [formValues, setFormValues] = useState({
@@ -57,6 +41,17 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
     color: customer.color,
   });
   const [representatives, setRepresentatives] = useState<CheckableUser[]>([]);
+
+  useEffect(() => {
+    if (patchCustomerStatus.isError) {
+      setErrorMessage(
+        (patchCustomerStatus.error as any)?.data?.message ||
+          'something went wrong',
+      );
+    } else if (patchCustomerStatus.isSuccess) {
+      closeModal();
+    }
+  }, [closeModal, patchCustomerStatus]);
 
   useEffect(() => {
     if (!roadmapUsers) return;
@@ -74,31 +69,19 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
     );
   }, [roadmapUsers, customer.representatives]);
 
-  useEffect(() => {
-    if (!roadmapUsers && currentRoadmap)
-      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
-  }, [currentRoadmap, dispatch, roadmapUsers]);
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    setIsLoading(true);
-
-    const res = await dispatch(
-      roadmapsActions.patchCustomer({
+    patchCustomerTrigger({
+      roadmapId,
+      customer: {
         id: customer.id,
         name: formValues.name,
         email: formValues.email,
         color: colorType === 'pick' ? formValues.color : randomColor(customers),
         representatives: getCheckedIds(representatives),
-      }),
-    );
-    setIsLoading(false);
-    if (roadmapsActions.patchCustomer.rejected.match(res)) {
-      if (res.payload?.message) setErrorMessage(res.payload.message);
-      return;
-    }
-    closeModal();
+      },
+    });
     await dispatch(userActions.getUserInfo());
   };
 
@@ -145,7 +128,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>
-          {isLoading ? (
+          {patchCustomerStatus.isLoading ? (
             <LoadingSpinner />
           ) : (
             <button

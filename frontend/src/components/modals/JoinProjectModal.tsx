@@ -2,7 +2,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
 import { userActions } from '../../redux/user';
 import { RootState } from '../../redux/types';
 import { Modal, ModalTypes } from './types';
@@ -40,7 +39,6 @@ export const JoinProjectModal: Modal<ModalTypes.JOIN_PROJECT_MODAL> = ({
     );
     if (userActions.joinRoadmap.rejected.match(res))
       return { message: res.payload?.message ?? '' };
-    await dispatch(roadmapsActions.getRoadmaps());
     await dispatch(userActions.getUserInfo());
   };
 

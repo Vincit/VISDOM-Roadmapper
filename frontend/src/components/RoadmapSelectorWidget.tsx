@@ -1,41 +1,27 @@
 import { useEffect, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import {
-  roadmapsSelector,
-  chosenRoadmapSelector,
-} from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { paths } from '../routers/paths';
 import { Dropdown } from './forms/Dropdown';
 import css from './RoadmapSelectorWidget.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const RoadmapSelectorWidget = () => {
   const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
-  const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
-    roadmapsSelector,
-    shallowEqual,
-  );
-
-  const chosenRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const { data: roadmaps } = apiV2.useGetRoadmapsQuery();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const chosenRoadmap = roadmaps?.find(({ id }) => id === roadmapId);
 
   const [selectedRoadmap, setSelectedRoadmap] = useState<string>(
     'Select roadmap',
   );
-
-  useEffect(() => {
-    if (!roadmaps) dispatch(roadmapsActions.getRoadmaps());
-  }, [dispatch, roadmaps]);
 
   useEffect(() => {
     if (chosenRoadmap) {

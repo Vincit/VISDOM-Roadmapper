@@ -12,6 +12,7 @@ import { RoleType } from '../../../shared/types/customTypes';
 import { getType, representsCustomers } from '../utils/UserUtils';
 import { awaitsUserRatings } from '../utils/TaskUtils';
 import '../shared.scss';
+import { apiV2 } from '../api/api';
 
 export const TaskModalButtons: FC<{
   task: Task;
@@ -19,6 +20,7 @@ export const TaskModalButtons: FC<{
 }> = ({ task, overview }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { roadmapId } = task;
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -42,7 +44,7 @@ export const TaskModalButtons: FC<{
   });
 
   if (!userInfo) return null;
-  const awaitsRatings = awaitsUserRatings(userInfo, roadmapId)(task);
+  const awaitsRatings = awaitsUserRatings(userInfo, roadmapId, customers)(task);
   if (overview && !awaitsRatings) return null;
   return (
     <div>

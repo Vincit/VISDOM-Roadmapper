@@ -1,23 +1,20 @@
 import classNames from 'classnames';
 import Chart from 'react-apexcharts';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useSelector } from 'react-redux';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { useSelector } from 'react-redux';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { partition } from '../utils/array';
 import css from './RoadmapCompletionMeter.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const RoadmapCompletionMeter = () => {
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
 
   const [completed, uncompleted] = partition(
-    currentRoadmap?.tasks ?? [],
+    tasks ?? [],
     (t) => t.completed,
   ).map((a) => a.length);
 

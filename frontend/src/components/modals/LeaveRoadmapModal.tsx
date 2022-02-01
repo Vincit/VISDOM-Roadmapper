@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,10 +12,10 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
-import { idRoadmapSelector } from '../../redux/roadmaps/selectors';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { getType } from '../../utils/UserUtils';
+import { apiV2 } from '../../api/api';
 
 export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
   closeModal,
@@ -23,33 +23,20 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-  const [isLoadingRoadmaps, setIsLoadingRoadmaps] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector(userInfoSelector);
-  const roadmap = useSelector(idRoadmapSelector(roadmapId));
+  const { data } = apiV2.useGetRoadmapsQuery();
+  const roadmap = data?.find(({ id }) => id === roadmapId);
   const roadmapName = roadmap?.name;
-  const roadmapUsers = roadmap?.users;
+  const {
+    data: roadmapUsers,
+    isLoading: isLoadingUsers,
+  } = apiV2.useGetRoadmapUsersQuery(roadmapId);
   const role = getType(userInfo, roadmapId);
   const adminsCount =
     roadmapUsers?.filter((u) => u.type === RoleType.Admin).length ?? 0;
   const isLastAdmin = role === RoleType.Admin && adminsCount === 1;
-  const isLoadingRoadmapOrUsers = isLoadingUsers || isLoadingRoadmaps;
-
-  useEffect(() => {
-    if (!roadmap) {
-      setIsLoadingRoadmaps(true);
-      dispatch(roadmapsActions.getRoadmaps()).then(() => {
-        setIsLoadingRoadmaps(false);
-      });
-    }
-    if (!roadmapUsers) {
-      setIsLoadingUsers(true);
-      dispatch(roadmapsActions.getRoadmapUsers(roadmapId)).then(() => {
-        setIsLoadingUsers(false);
-      });
-    }
-  }, [dispatch, roadmapUsers, roadmapId, setIsLoadingUsers, roadmap]);
+  const isLoadingRoadmapOrUsers = isLoadingUsers;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

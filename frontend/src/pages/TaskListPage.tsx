@@ -8,7 +8,7 @@ import { Checkbox } from '../components/forms/Checkbox';
 import { StoreDispatchType } from '../redux/index';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../components/modals/types';
-import { Roadmap, Task } from '../redux/roadmaps/types';
+import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
@@ -17,18 +17,15 @@ import { FilterTypes, isUnrated, taskFilter } from '../utils/TaskUtils';
 import { partition } from '../utils/array';
 import { titleCase } from '../utils/string';
 import { TopBar } from '../components/TopBar';
-import {
-  chosenRoadmapSelector,
-  allTasksSelector,
-} from '../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { getType } from '../utils/UserUtils';
 import css from './TaskListPage.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const TaskListPage = () => {
   const { t } = useTranslation();
-  const tasks = useSelector(allTasksSelector, shallowEqual);
   const [checked, setChecked] = useState(true);
   const [searchString, setSearchString] = useState('');
   const [searchFilter, setSearchFilter] = useState(FilterTypes.SHOW_ALL);
@@ -38,17 +35,21 @@ export const TaskListPage = () => {
     userInfoSelector,
     shallowEqual,
   );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data } = apiV2.useGetRoadmapsQuery();
+  const roadmap = data?.find(({ id }) => id === roadmapId);
 
   const dispatch = useDispatch<StoreDispatchType>();
 
   useEffect(() => {
-    if (userInfo && currentRoadmap)
-      setTasks(partition(tasks, isUnrated(userInfo, currentRoadmap)));
-  }, [currentRoadmap, tasks, userInfo]);
+    if (userInfo && roadmapId && tasks !== undefined)
+      setTasks(
+        partition(tasks, isUnrated(userInfo, roadmapId, users, customers)),
+      );
+  }, [customers, roadmapId, tasks, userInfo, users]);
 
   const toggleCheckedClicked = () => {
     setChecked(!checked);
@@ -79,7 +80,7 @@ export const TaskListPage = () => {
   const renderImportButton = (name: string) => {
     // TODO: disable button if oauth is not completed
     // or maybe open the oauth modal first then
-    if (currentRoadmap?.integrations.some((it) => it.name === name)) {
+    if (roadmap?.integrations.some((it) => it.name === name)) {
       return (
         <button
           className={classes(css['button-small-filled'])}
@@ -114,7 +115,7 @@ export const TaskListPage = () => {
             onChange={toggleCheckedClicked}
             checked={checked}
           />
-          {getType(userInfo, currentRoadmap?.id) === RoleType.Admin && (
+          {getType(userInfo, roadmapId) === RoleType.Admin && (
             <>
               {renderImportButton('trello')}
               {renderImportButton('jira')}

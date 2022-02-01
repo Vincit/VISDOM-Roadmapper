@@ -5,7 +5,6 @@ import {
 } from '../../../../shared/types/customTypes';
 
 export interface RoadmapsState {
-  roadmaps: Roadmap[] | undefined;
   selectedRoadmapId?: number;
   taskmapPosition: TaskmapPosition | undefined;
 }
@@ -64,12 +63,8 @@ export interface Roadmap {
   id: number;
   name: string;
   description: string;
-  tasks: Task[];
-  users: RoadmapUser[] | undefined;
   invitations: Invitation[] | undefined;
-  customers: Customer[] | undefined;
   integrations: IntegrationConfiguration[];
-  versions: Version[] | undefined;
 }
 
 export interface RoadmapRequest {
@@ -93,7 +88,6 @@ export interface Task {
   createdAt: string;
   completed: boolean;
   ratings: Taskrating[];
-  relations?: TaskRelation[];
   createdByUser: number;
 }
 
@@ -134,14 +128,17 @@ export interface TaskRelation {
 
 export interface GetRoadmapBoardsRequest {
   roadmapId: number;
+  name: string;
 }
 
 export interface GetRoadmapBoardLabelsRequest {
   roadmapId: number;
+  name: string;
   boardId: string;
 }
 
 export interface ImportBoardRequest {
+  name: string;
   boardId: string;
   createdByUser: number;
   roadmapId: number;
@@ -188,7 +185,7 @@ export interface Version {
 }
 
 export interface VersionRequest {
-  roadmapId?: number;
+  roadmapId: number;
   id?: number;
   name?: string;
   tasks?: number[];

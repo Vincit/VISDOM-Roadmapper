@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import { roadmapsSelector } from '../redux/roadmaps/selectors';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { requireLogin } from '../utils/requirelogin';
 import { userActions } from '../redux/user';
@@ -12,7 +11,7 @@ import { paths } from '../routers/paths';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { Footer } from '../components/Footer';
-import { api } from '../api/api';
+import { api, apiV2 } from '../api/api';
 import { ReactComponent as MailIcon } from '../icons/mail_icon.svg';
 import { ReactComponent as MailIconChecked } from '../icons/mail_icon_checked.svg';
 import css from './VerifyEmailPage.module.scss';
@@ -21,7 +20,7 @@ const classes = classNames.bind(css);
 
 export const VerifyEmailPage = requireLogin(({ userInfo }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const roadmaps = useSelector(roadmapsSelector, shallowEqual);
+  const { data: roadmaps } = apiV2.useGetRoadmapsQuery();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');

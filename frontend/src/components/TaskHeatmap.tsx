@@ -1,11 +1,10 @@
 import classNames from 'classnames';
-import { shallowEqual, useSelector } from 'react-redux';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap } from '../redux/roadmaps/types';
+import { useSelector } from 'react-redux';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
-import { RootState } from '../redux/types';
 import { ratingsSummaryByDimension } from '../utils/TaskUtils';
 import css from './TaskHeatmap.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -17,23 +16,19 @@ const matrix2d = ({ rows, cols }: { rows: number; cols: number }): number[][] =>
     .map(() => Array(cols).fill(0));
 
 export const TaskHeatmap = () => {
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
 
   const frequencies = matrix2d({ rows: 5, cols: 5 });
-  if (currentRoadmap) {
-    currentRoadmap.tasks.map(ratingsSummaryByDimension).forEach((ratings) => {
-      const value = ratings.get(TaskRatingDimension.BusinessValue);
-      const complexity = ratings.get(TaskRatingDimension.Complexity);
-      if (value && complexity) {
-        const avgValue = Math.round(value.avg);
-        const avgComplexity = Math.round(complexity.avg);
-        frequencies[5 - avgValue][avgComplexity - 1] += 1;
-      }
-    });
-  }
+  tasks?.map(ratingsSummaryByDimension).forEach((ratings) => {
+    const value = ratings.get(TaskRatingDimension.BusinessValue);
+    const complexity = ratings.get(TaskRatingDimension.Complexity);
+    if (value && complexity) {
+      const avgValue = Math.round(value.avg);
+      const avgComplexity = Math.round(complexity.avg);
+      frequencies[5 - avgValue][avgComplexity - 1] += 1;
+    }
+  });
 
   const [minFreq, median, maxFreq] = (() => {
     const nonZero = frequencies

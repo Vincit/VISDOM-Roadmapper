@@ -11,15 +11,15 @@ import { RoadmapSelectorWidget } from './RoadmapSelectorWidget';
 import css from './NavBar.module.scss';
 import { findLoginNavBar } from './LoginNavBar';
 import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { RoleIcon } from './RoleIcons';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
 import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
 export const NavBar = () => {
   const { search, pathname } = useLocation();
-  const currentRoadmap = useSelector(chosenRoadmapSelector, shallowEqual);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
   const userInfo = useSelector(userInfoSelector, shallowEqual);
   const userRole = useSelector(userRoleSelector, shallowEqual);
   const loggedIn = !!userInfo;
@@ -36,7 +36,7 @@ export const NavBar = () => {
           <VisdomLogo />
         </div>
       )}
-      {pathname.startsWith(paths.userInfo) && !currentRoadmap && (
+      {pathname.startsWith(paths.userInfo) && roadmapId === undefined && (
         <Link to={paths.overview} className={classes(css.logo)}>
           <VisdomLogo />
         </Link>

@@ -5,11 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import classNames from 'classnames';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
-import {
-  allCustomersSelector,
-  roadmapUsersSelector,
-  taskSelector,
-} from '../../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
@@ -19,7 +15,7 @@ import { Checkbox } from '../forms/Checkbox';
 import { RootState } from '../../redux/types';
 import { UserInfo } from '../../redux/user/types';
 import { userInfoSelector } from '../../redux/user/selectors';
-import { Customer, RoadmapUser } from '../../redux/roadmaps/types';
+import { RoadmapUser } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 import css from './NotifyUsersModal.module.scss';
 import { getType } from '../../utils/UserUtils';
@@ -28,6 +24,7 @@ import { missingDeveloper } from '../../utils/TaskUtils';
 import { TextArea } from '../forms/FormField';
 import { RoleIcon } from '../RoleIcons';
 import colors from '../../colors.module.scss';
+import { apiV2 } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -40,20 +37,24 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
   taskId,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const task = useSelector(taskSelector(taskId))!;
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { task } = apiV2.useGetTasksQuery(roadmapId!, {
+    skip: roadmapId === undefined,
+    selectFromResult: ({ data }) => ({
+      task: data?.find(({ id }) => id === taskId),
+    }),
+  });
   const [isLoading, setIsLoading] = useState(false);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
-  const allUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
-    shallowEqual,
-  );
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!, {
+    skip: roadmapId === undefined,
+  });
+  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId!, {
+    skip: roadmapId === undefined,
+  });
   const [missingUsers, setMissingUsers] = useState<CheckableUser[] | undefined>(
     [],
   );
@@ -66,7 +67,8 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
 
   useEffect(() => {
     if (
-      getType(userInfo, task.roadmapId) === RoleType.Admin &&
+      task &&
+      getType(userInfo, roadmapId) === RoleType.Admin &&
       customers &&
       allUsers
     ) {
@@ -104,7 +106,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
         ...missingDevelopers,
       ]);
     }
-  }, [allUsers, customers, task, userInfo]);
+  }, [allUsers, customers, roadmapId, task, userInfo]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

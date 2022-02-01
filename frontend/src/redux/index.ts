@@ -8,12 +8,14 @@ import { modalsSlice } from './modals';
 import { roadmapsSlice } from './roadmaps';
 import { userSlice, userActions } from './user';
 import { versionsSlice } from './versions';
+import { apiV2 } from '../api/api';
 
 const appReducer = combineReducers({
   user: userSlice.reducer,
   roadmaps: roadmapsSlice.reducer,
   modals: modalsSlice.reducer,
   versions: versionsSlice.reducer,
+  apiV2: apiV2.reducer,
 });
 
 const rootReducer: typeof appReducer = (state, action) => {
@@ -37,9 +39,12 @@ const stateSyncConfig = {
 export const store = configureStore({
   reducer: withReduxStateSync(rootReducer),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(createStateSyncMiddleware(stateSyncConfig)),
+    getDefaultMiddleware().concat(
+      apiV2.middleware as any,
+      createStateSyncMiddleware(stateSyncConfig),
+    ),
 });
 
 initStateWithPrevTab(store);
 
-export type StoreDispatchType = typeof store.dispatch;
+export type StoreDispatchType = any; // typeof store.dispatch;

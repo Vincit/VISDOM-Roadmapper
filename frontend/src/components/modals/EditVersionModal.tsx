@@ -2,10 +2,9 @@ import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
-import { roadmapsActions } from '../../redux/roadmaps';
-import { StoreDispatchType } from '../../redux';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -14,6 +13,7 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Input } from '../forms/FormField';
 import css from './EditVersionModal.module.scss';
+import { apiV2 } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -23,24 +23,21 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
   name,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<StoreDispatchType>();
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [newName, setNewName] = useState(name);
+  const [patchVersion, { isLoading }] = apiV2.usePatchVersionMutation();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    setIsLoading(true);
-    const res = await dispatch(
-      roadmapsActions.patchVersion({ id, name: newName }),
-    );
-    setIsLoading(false);
-    if (roadmapsActions.patchVersion.rejected.match(res)) {
-      if (res.payload?.message) setErrorMessage(res.payload.message);
-      return;
+    if (roadmapId === undefined) return;
+    try {
+      await patchVersion({ roadmapId, id, name: newName }).unwrap();
+      closeModal();
+    } catch (err) {
+      setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
-    closeModal();
   };
 
   return (

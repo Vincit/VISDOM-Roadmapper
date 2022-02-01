@@ -1,7 +1,6 @@
 import { Model, QueryContext, AnyQueryBuilder } from 'objection';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
-import { TaskRelation } from '../taskrelation/taskrelation.model';
 import User from '../users/users.model';
 
 export default class Task extends Model {
@@ -17,7 +16,6 @@ export default class Task extends Model {
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
   createdBy?: User;
-  relations?: TaskRelation[];
 
   createdByUser?: number;
 
@@ -80,14 +78,6 @@ export default class Task extends Model {
         join: {
           from: 'tasks.createdByUser',
           to: 'users.id',
-        },
-      },
-      relations: {
-        relation: Model.HasManyRelation,
-        modelClass: TaskRelation,
-        join: {
-          from: 'tasks.id',
-          to: 'taskrelation.from',
         },
       },
     };

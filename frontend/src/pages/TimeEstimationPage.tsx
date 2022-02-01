@@ -4,12 +4,8 @@ import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
-import { roadmapsActions } from '../redux/roadmaps';
-import {
-  chosenRoadmapSelector,
-  roadmapsVersionsSelector,
-} from '../redux/roadmaps/selectors';
-import { Roadmap, Version } from '../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { plannerTimeEstimatesSelector } from '../redux/versions/selectors';
 import { TimeEstimate } from '../redux/versions/types';
@@ -22,20 +18,15 @@ import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
 import { Dropdown } from '../components/forms/Dropdown';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const TimeEstimationPage = () => {
   const { t } = useTranslation();
   const durationInput = useRef<HTMLInputElement>(null);
-  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector,
-    shallowEqual,
-  );
-  const roadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId!);
   const dispatch = useDispatch<StoreDispatchType>();
   const timeEstimates = useSelector<RootState, TimeEstimate[]>(
     plannerTimeEstimatesSelector,
@@ -51,11 +42,6 @@ export const TimeEstimationPage = () => {
   const [calculatedDaysPerWork, setCalculatedDaysPerWork] = useState<
     undefined | number
   >(undefined);
-
-  useEffect(() => {
-    if (roadmap && !roadmapsVersions)
-      dispatch(roadmapsActions.getVersions(roadmap.id));
-  }, [dispatch, roadmap, roadmapsVersions]);
 
   const handleMilestoneChange = (version: Version) => {
     if (timeEstimates.filter((e) => e.id === version.id).length === 0) {
@@ -73,10 +59,10 @@ export const TimeEstimationPage = () => {
   const onDurationChange = (duration: string) => {
     const milestone = selectedMilestoneId;
     const time = parseFloat(duration);
-    if (milestone !== undefined && roadmap) {
+    if (milestone !== undefined && roadmapId) {
       dispatch(
         versionsActions.setTimeEstimate({
-          roadmapId: roadmap.id,
+          roadmapId,
           id: milestone,
           estimate: time > 0 ? time : undefined,
         }),
@@ -85,15 +71,15 @@ export const TimeEstimationPage = () => {
   };
 
   const milestoneDuration =
-    roadmap && selectedMilestoneId !== undefined
+    roadmapId && selectedMilestoneId !== undefined
       ? timeEstimates.find(
-          ({ roadmapId, id }) =>
-            roadmapId === roadmap.id && id === selectedMilestoneId,
+          ({ roadmapId: roadmap, id }) =>
+            roadmapId === roadmap && id === selectedMilestoneId,
         )?.estimate
       : undefined;
 
   useEffect(() => {
-    if (!roadmapsVersions || !roadmap) {
+    if (!roadmapsVersions || !roadmapId) {
       setCalculatedDaysPerWork(undefined);
       return;
     }
@@ -110,7 +96,7 @@ export const TimeEstimationPage = () => {
       return;
     }
     setCalculatedDaysPerWork(milestoneDuration / complexity);
-  }, [selectedMilestoneId, milestoneDuration, roadmap, roadmapsVersions]);
+  }, [selectedMilestoneId, milestoneDuration, roadmapId, roadmapsVersions]);
 
   const handleTooltipModal = () => {
     dispatch(

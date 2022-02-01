@@ -1,15 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
-import { shallowEqual, useSelector } from 'react-redux';
 import { Task, Version } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './SortableTask.module.scss';
-import {
-  allTasksSelector,
-  roadmapsVersionsSelector,
-} from '../redux/roadmaps/selectors';
-import { RootState } from '../redux/types';
+import { apiV2 } from '../api/api';
 
 interface VersionListsObject {
   [K: string]: Task[];
@@ -20,11 +15,8 @@ export const SortableTask: FC<{
   index: number;
   disableDragging: boolean;
 }> = ({ task, index, disableDragging }) => {
-  const tasks = useSelector(allTasksSelector, shallowEqual);
-  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector,
-    shallowEqual,
-  );
+  const { data: tasks } = apiV2.useGetTasksQuery(task.roadmapId);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(task.roadmapId);
   const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
     undefined | Version[]
   >(undefined);
@@ -37,7 +29,7 @@ export const SortableTask: FC<{
   useEffect(() => {
     if (roadmapsVersionsLocal === undefined) return;
     const newVersionLists: VersionListsObject = {};
-    const unversioned = new Map(tasks.map((t) => [t.id, t]));
+    const unversioned = new Map(tasks?.map((t) => [t.id, t]));
     roadmapsVersionsLocal.forEach((v) => {
       newVersionLists[v.id] = v.tasks;
       v.tasks.forEach((t) => unversioned.delete(t.id));

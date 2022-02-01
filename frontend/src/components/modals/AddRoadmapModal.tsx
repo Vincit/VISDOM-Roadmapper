@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
 import { InviteRoadmapUser } from '../../redux/roadmaps/types';
 import { userActions } from '../../redux/user';
 import { Modal, ModalTypes } from './types';
@@ -20,6 +19,7 @@ import {
   SkipMemberAddition,
 } from './modalparts/TeamMemberModalParts';
 import css from './AddRoadmapModal.module.scss';
+import { apiV2 } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -46,31 +46,28 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
   const [createdRoadmapId, setCreatedRoadmapId] = useState<undefined | number>(
     undefined,
   );
+  const [addRoadmap] = apiV2.useAddRoadmapMutation();
+  const [sendInvitation] = apiV2.useSendInvitationMutation();
 
   const handleSubmit = async () => {
-    const res = await dispatch(
-      roadmapsActions.addRoadmap({
+    try {
+      const { id } = await addRoadmap({
         name: formValues.name,
         description: formValues.description,
-      }),
-    );
+      }).unwrap();
+      const promises = members.map((member) =>
+        sendInvitation({
+          roadmapId: id,
+          invitation: { ...member, roadmapId: id },
+        }).unwrap(),
+      );
 
-    if (roadmapsActions.addRoadmap.rejected.match(res)) {
-      return { message: res.payload?.message ?? t('Internal server error') };
+      await Promise.all(promises);
+      await dispatch(userActions.getUserInfo());
+      setCreatedRoadmapId(id);
+    } catch (err) {
+      return { message: err.data?.message ?? t('Internal server error') };
     }
-
-    const promises = members.map((member) =>
-      dispatch(
-        roadmapsActions.sendInvitation({
-          ...member,
-          roadmapId: res.payload.id,
-        }),
-      ),
-    );
-
-    await Promise.all(promises);
-    await dispatch(userActions.getUserInfo());
-    setCreatedRoadmapId(res.payload.id);
   };
 
   const steps = [

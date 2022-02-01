@@ -6,11 +6,10 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { Trans, useTranslation } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { Link } from 'react-router-dom';
-import { roadmapsActions } from '../redux/roadmaps';
 import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
@@ -19,13 +18,8 @@ import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from '../components/modals/types';
-import {
-  allTasksSelector,
-  chosenRoadmapSelector,
-  allCustomersSelector,
-} from '../redux/roadmaps/selectors';
-import { Customer, Roadmap, Task, Version } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Task, Version } from '../redux/roadmaps/types';
 import {
   weightedTaskPriority,
   hasRatingsOnEachDimension,
@@ -34,6 +28,7 @@ import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './MilestonesEditor.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -57,19 +52,14 @@ const ROADMAP_LIST_ID = '-1';
 
 export const MilestonesEditor = () => {
   const { t } = useTranslation();
-  const tasks = useSelector(allTasksSelector, shallowEqual);
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  )!;
-  const roadmapsVersions = currentRoadmap?.versions;
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId);
+  const [patchVersion] = apiV2.usePatchVersionMutation();
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId);
   const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
     undefined | Version[]
   >(undefined);
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [disableUpdates, setDisableUpdates] = useState(false);
@@ -82,35 +72,23 @@ export const MilestonesEditor = () => {
   }, [roadmapsVersions]);
 
   useEffect(() => {
-    if (!roadmapsVersionsLocal && currentRoadmap)
-      dispatch(roadmapsActions.getVersions(currentRoadmap.id));
-  }, [currentRoadmap, dispatch, roadmapsVersionsLocal]);
-
-  useEffect(() => {
     if (disableUpdates) return;
     if (roadmapsVersionsLocal === undefined) return;
     const newVersionLists: VersionListsObject = {};
     const unversioned = new Map(
-      tasks.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
+      tasks?.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
     );
     roadmapsVersionsLocal.forEach((v) => {
       newVersionLists[v.id] = v.tasks;
       v.tasks.forEach((task) => unversioned.delete(task.id));
     });
     newVersionLists[ROADMAP_LIST_ID] = sort(
-      sortKeyNumeric(weightedTaskPriority(currentRoadmap)),
+      sortKeyNumeric(weightedTaskPriority(customers)),
       SortingOrders.DESCENDING,
     )(Array.from(unversioned.values()));
 
     setVersionLists(newVersionLists);
-  }, [
-    dispatch,
-    roadmapsVersionsLocal,
-    tasks,
-    disableUpdates,
-    customers,
-    currentRoadmap,
-  ]);
+  }, [customers, disableUpdates, roadmapsVersionsLocal, tasks]);
 
   const addVersion = () => {
     dispatch(
@@ -127,7 +105,7 @@ export const MilestonesEditor = () => {
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.DELETE_VERSION_MODAL,
-        modalProps: { id, roadmapId: currentRoadmap.id },
+        modalProps: { id, roadmapId },
       }),
     );
   };
@@ -147,6 +125,15 @@ export const MilestonesEditor = () => {
     setDisableDrag(true);
   };
 
+  const versionPayload = (versions?: Version[], id?: number) => {
+    const version = versions?.find((ver) => ver.id === id);
+    if (!version) throw new Error('Version not found!');
+    return {
+      ...version,
+      tasks: version.tasks.map((task) => task.id),
+    };
+  };
+
   const onDragReorder = async (result: DropWithDestination) => {
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
@@ -156,12 +143,11 @@ export const MilestonesEditor = () => {
 
     setVersionLists(copyLists);
     if (destination.droppableId !== ROADMAP_LIST_ID) {
-      await dispatch(
-        roadmapsActions.patchVersion({
-          id: +source.droppableId,
-          tasks: copyLists[source.droppableId].map((task) => task.id),
-        }),
-      ).unwrap();
+      await patchVersion({
+        roadmapId,
+        id: +source.droppableId,
+        tasks: copyLists[source.droppableId].map((task) => task.id),
+      }).unwrap();
     }
   };
 
@@ -176,27 +162,21 @@ export const MilestonesEditor = () => {
 
     if (destination.droppableId !== ROADMAP_LIST_ID) {
       // If moving to another version -> add to new version
-      await dispatch(
-        roadmapsActions.addTaskToVersion({
-          version: { id: +destination.droppableId },
-          task: {
-            id: +result.draggableId,
-          },
-          index: destination.index,
-        }),
-      ).unwrap();
+      const payload = versionPayload(
+        roadmapsVersions,
+        +destination.droppableId,
+      );
+      payload.tasks.splice(destination.index, 0, +result.draggableId);
+      await patchVersion(payload).unwrap();
     }
 
     if (source.droppableId !== ROADMAP_LIST_ID) {
       // If moving from another version -> remove from previous version
-      await dispatch(
-        roadmapsActions.removeTaskFromVersion({
-          version: { id: +source.droppableId },
-          task: {
-            id: +result.draggableId,
-          },
-        }),
-      ).unwrap();
+      const payload = versionPayload(roadmapsVersions, +source.droppableId);
+      payload.tasks = payload.tasks.filter(
+        (taskId) => taskId !== +result.draggableId,
+      );
+      await patchVersion(payload).unwrap();
     }
   };
 
@@ -245,13 +225,12 @@ export const MilestonesEditor = () => {
     const versionTasks = versionsCopy[destination.index].tasks.map(
       (task) => task.id,
     );
-    await dispatch(
-      roadmapsActions.patchVersion({
-        id: dragVersionId,
-        sortingRank: destination.index,
-        tasks: versionTasks,
-      }),
-    );
+    await patchVersion({
+      roadmapId,
+      id: dragVersionId,
+      sortingRank: destination.index,
+      tasks: versionTasks,
+    }).unwrap();
   };
 
   const onDragEnd = async (result: DropResult) => {
@@ -335,7 +314,7 @@ export const MilestonesEditor = () => {
                         onClick={deleteVersionClicked(version.id)}
                         href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
                           id: version.id,
-                          roadmapId: currentRoadmap.id,
+                          roadmapId,
                         })}
                       />
                       <SettingsButton
@@ -377,9 +356,7 @@ export const MilestonesEditor = () => {
           <div>
             <Trans i18nKey="Planner milestones tooltip">
               Milestones create your project’s
-              <Link to={`/roadmap/${currentRoadmap.id}/planner/graph`}>
-                roadmap.
-              </Link>
+              <Link to={`/roadmap/${roadmapId}/planner/graph`}>roadmap.</Link>
             </Trans>
           </div>
         }

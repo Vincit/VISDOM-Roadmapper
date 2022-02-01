@@ -1,5 +1,5 @@
 import dagre from 'dagre';
-import { Task } from '../redux/roadmaps/types';
+import { Task, TaskRelation } from '../redux/roadmaps/types';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 
 export enum TaskRelationTableType {
@@ -27,15 +27,19 @@ const existingSynergyIdxs = (subgroup: number[], groups: GroupedRelation[]) => {
   return idxs;
 };
 
-export const groupTaskRelations = (tasks: Task[]) => {
+export const groupTaskRelations = (
+  tasks: Task[],
+  relations: TaskRelation[],
+) => {
   const groups: GroupedRelation[] = [];
-  tasks.forEach(({ id, relations }) => {
+  tasks.forEach(({ id }) => {
     const subgroup: GroupedRelation = {
       synergies: [id],
       dependencies: [],
     };
 
-    relations?.forEach(({ from, to, type }) => {
+    relations.forEach(({ from, to, type }) => {
+      if (from !== id) return;
       if (type === TaskRelationType.Synergy) subgroup.synergies.push(to);
       if (type === TaskRelationType.Dependency)
         subgroup.dependencies.push({ from, to });
@@ -117,33 +121,34 @@ export const blockedGroups = (task: number, graph: GroupedRelation[]) => {
       if (from !== task && to !== task) return;
       const start = from === task ? to : from;
       const direction = from === task ? 'target' : 'source';
-      reachable(start, graph, direction).forEach((x) =>
-        visited.add(taskToGroup.get(x)!.toString()),
-      );
+      reachable(start, graph, direction).forEach((x) => {
+        const node = taskToGroup.get(x);
+        if (node) visited.add(node.toString());
+      });
     });
   });
   return visited;
 };
 
 export const getTaskRelations = (
-  task: Task,
+  task: number,
+  relations: TaskRelation[],
   tableType: TaskRelationTableType,
-  tasks?: Task[],
 ) => {
-  if (tableType === TaskRelationTableType.Contributes)
-    return task.relations
-      ?.filter(({ type }) => type === TaskRelationType.Synergy)
-      .map(({ to }) => to);
-  if (tableType === TaskRelationTableType.Precedes)
-    return task.relations
-      ?.filter(({ type }) => type === TaskRelationType.Dependency)
-      .map(({ to }) => to);
-  return tasks
-    ?.filter(({ relations }) =>
-      relations?.some(
-        ({ to, type }) =>
-          to === task.id && type === TaskRelationType.Dependency,
-      ),
-    )
-    .map(({ id }) => id);
+  let predicate: (_: TaskRelation) => boolean;
+  if (tableType === TaskRelationTableType.Contributes) {
+    predicate = ({ from, to, type }) =>
+      (from === task || to === task) && type === TaskRelationType.Synergy;
+  } else if (tableType === TaskRelationTableType.Precedes) {
+    predicate = ({ from, type }) =>
+      from === task && type === TaskRelationType.Dependency;
+  } else {
+    predicate = ({ to, type }) =>
+      to === task && type === TaskRelationType.Dependency;
+  }
+  const ids = new Set(
+    relations.filter(predicate).flatMap(({ from, to }) => [from, to]),
+  );
+  ids.delete(task);
+  return ids;
 };

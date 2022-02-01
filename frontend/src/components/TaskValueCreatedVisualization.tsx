@@ -1,14 +1,12 @@
 import { FC, useEffect, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { StoreDispatchType } from '../redux/index';
-import { roadmapsActions } from '../redux/roadmaps';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, Version, CustomerStakes } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Version, CustomerStakes } from '../redux/roadmaps/types';
 import { totalCustomerStakes } from '../utils/TaskUtils';
 import { CustomerStakesVisualization } from './CustomerStakesVisualization';
 import css from './TaskValueCreatedVisualization.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -21,20 +19,14 @@ export const TaskValueCreatedVisualization: FC<{
   version: VersionComplexityAndTotalValue;
   width: number;
 }> = ({ version, width }) => {
-  const dispatch = useDispatch<StoreDispatchType>();
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
   const [data, setData] = useState<CustomerStakes[]>([]);
 
   useEffect(() => {
-    if (!currentRoadmap) {
-      dispatch(roadmapsActions.getRoadmaps());
-      return;
-    }
+    if (!roadmapId) return;
 
-    const customerStakes = totalCustomerStakes(version.tasks, currentRoadmap);
+    const customerStakes = totalCustomerStakes(version.tasks, customers);
     setData(
       Array.from(customerStakes)
         .filter((a) => a[1] > 0)
@@ -46,7 +38,7 @@ export const TaskValueCreatedVisualization: FC<{
           color,
         })),
     );
-  }, [dispatch, currentRoadmap, version.tasks]);
+  }, [roadmapId, version.tasks, customers]);
 
   const largestValue = (stakes: CustomerStakes[]) => {
     if (!stakes.length) return undefined;

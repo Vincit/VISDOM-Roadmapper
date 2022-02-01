@@ -1,9 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -12,33 +9,31 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as MailIcon } from '../../icons/mail_icon.svg';
 import '../../shared.scss';
+import { apiV2 } from '../../api/api';
 
 export const SendInvitationModal: Modal<ModalTypes.SEND_INVITATION_MODAL> = ({
   closeModal,
   invitation,
 }) => {
-  const dispatch = useDispatch<StoreDispatchType>();
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [sendInvitation, { isLoading }] = apiV2.useSendInvitationMutation();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
-    setIsLoading(true);
-    const res = await dispatch(
-      roadmapsActions.sendInvitation({
-        email: invitation.email,
-        type: invitation.type,
-      }),
-    );
-    setIsLoading(false);
-    if (roadmapsActions.sendInvitation.rejected.match(res)) {
-      if (res.payload?.message) setErrorMessage(res.payload.message);
-      return;
+    try {
+      await sendInvitation({
+        roadmapId: invitation.roadmapId,
+        invitation: {
+          email: invitation.email,
+          type: invitation.type,
+        },
+      }).unwrap();
+      closeModal();
+    } catch (err) {
+      setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
-    dispatch(roadmapsActions.getInvitations());
-    closeModal();
   };
 
   return (

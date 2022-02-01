@@ -7,9 +7,8 @@ import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from './modals/types';
-import { Customer, Roadmap } from '../redux/roadmaps/types';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { RootState } from '../redux/types';
+import { Customer } from '../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { userRoleSelector } from '../redux/user/selectors';
 import { RoleType } from '../../../shared/types/customTypes';
 import { unratedTasksAmount } from '../utils/TaskUtils';
@@ -17,6 +16,7 @@ import { TableRow } from './Table';
 import css from './TableCustomerRow.module.scss';
 import { Dot } from './Dot';
 import { paths } from '../routers/paths';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -28,18 +28,20 @@ export const TableCustomerRow: TableRow<Customer> = ({
   const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
   const role = useSelector(userRoleSelector, shallowEqual);
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [unratedAmount, setUnratedAmount] = useState(0);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
 
   useEffect(() => {
-    if (currentRoadmap?.tasks)
-      setUnratedAmount(unratedTasksAmount(customer, currentRoadmap));
-  }, [currentRoadmap, customer]);
+    if (roadmapId !== undefined && tasks)
+      setUnratedAmount(
+        unratedTasksAmount(customer, roadmapId, tasks, users, customers),
+      );
+  }, [customer, customers, roadmapId, tasks, users]);
 
-  if (!currentRoadmap) return null;
+  if (!roadmapId) return null;
 
   const deleteUserClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -69,7 +71,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
     );
   };
 
-  const linkTarget = `${paths.roadmapHome}/${currentRoadmap.id}${paths.roadmapRelative.clients}/${id}`;
+  const linkTarget = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.clients}/${id}`;
 
   return (
     <div

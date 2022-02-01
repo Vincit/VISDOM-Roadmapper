@@ -1,15 +1,13 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { api } from '../../api/api';
+import { api, apiV2 } from '../../api/api';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
-import { chosenIntegrationSelector } from '../../redux/roadmaps/selectors';
 import { titleCase } from '../../utils/string';
 import { Input } from '../forms/FormField';
 import '../../shared.scss';
@@ -24,8 +22,10 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [retry, setRetry] = useState(0);
-
-  const currentConfiguration = useSelector(chosenIntegrationSelector(name));
+  const { data } = apiV2.useGetRoadmapsQuery();
+  const currentConfiguration = data
+    ?.find(({ id }) => id === roadmapId)
+    ?.integrations.find((it) => it.name === name);
 
   const [formValues, setFormValues] = useState({
     token: '',
