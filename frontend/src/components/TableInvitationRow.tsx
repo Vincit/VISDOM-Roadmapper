@@ -62,7 +62,9 @@ export const TableInvitationRow: TableRow<Invitation> = ({
 
   return (
     <div className={classes(css.virtualizedTableRow)} style={style}>
-      <RoleIcon type={type} />
+      <div className="layout-row">
+        <RoleIcon type={type} tooltip />
+      </div>
       <div>
         <a className="green" href={`mailto:${email}`}>
           {email}

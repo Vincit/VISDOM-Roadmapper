@@ -112,7 +112,7 @@ export const DisplayInvitedMember: FC<{
   <div className={classes(css.displayMember)}>
     <div className={classes(css.leftSideDiv)}>
       <div className={classes(css.memberIcon)}>
-        <RoleIcon type={member.type} color={colors.forest} small />
+        <RoleIcon type={member.type} color={colors.forest} small tooltip />
       </div>
       <div className={classes(css.email)}>{member.email}</div>
     </div>

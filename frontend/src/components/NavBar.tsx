@@ -50,7 +50,7 @@ export const NavBar = () => {
         {userInfo && (
           <div className={classes(css.userInfoContainer)}>
             {userRole && (
-              <RoleIcon type={userRole} color={colors.black100} small />
+              <RoleIcon type={userRole} color={colors.black100} small tooltip />
             )}
             {userInfo.email}
           </div>

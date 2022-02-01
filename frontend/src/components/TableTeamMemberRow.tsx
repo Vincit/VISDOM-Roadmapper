@@ -71,7 +71,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
   return (
     <tr>
       <td className="styledTd">
-        <RoleIcon type={type} />
+        <RoleIcon type={type} tooltip />
       </td>
       <td className="styledTd">
         <a className="green" href={`mailto:${email}`}>

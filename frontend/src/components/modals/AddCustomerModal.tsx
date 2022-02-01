@@ -151,7 +151,12 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
               .map((rep) => (
                 <div key={rep.id} className={classes(css.rep)}>
                   {rep.email}
-                  <RoleIcon type={rep.type} color={colors.azure} small />
+                  <RoleIcon
+                    type={rep.type}
+                    color={colors.azure}
+                    small
+                    tooltip
+                  />
                 </div>
               ))}
           </div>

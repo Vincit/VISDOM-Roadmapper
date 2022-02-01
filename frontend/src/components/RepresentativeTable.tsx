@@ -7,7 +7,9 @@ import '../shared.scss';
 
 const RepresentativeRow: TableRow<RoadmapUser> = ({ item: user, style }) => (
   <div style={style} className="virtualizedTableRow">
-    <RoleIcon type={user.type} />
+    <div className="layout-row">
+      <RoleIcon type={user.type} tooltip />
+    </div>
     <div>
       <a className="green" href={`mailto:${user.email}`}>
         {user.email}

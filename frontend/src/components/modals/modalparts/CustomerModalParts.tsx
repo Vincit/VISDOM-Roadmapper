@@ -105,6 +105,7 @@ export const SelectRepresentatives: FC<{
             type={rep.type}
             color={rep.checked ? colors.azure : colors.black40}
             small
+            tooltip
           />
         </div>
       ))}
