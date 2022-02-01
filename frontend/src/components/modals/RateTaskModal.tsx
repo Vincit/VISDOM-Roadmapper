@@ -1,19 +1,13 @@
 import { FC, FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
-import {
-  taskSelector,
-  chosenRoadmapSelector,
-} from '../../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import {
   Customer,
   Taskrating,
   TaskratingRequest,
-  Roadmap,
 } from '../../redux/roadmaps/types';
 import {
   TaskRatingDimension,
@@ -32,6 +26,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Dot } from '../Dot';
 import { getType } from '../../utils/UserUtils';
 import css from './RateTaskModal.module.scss';
+import { apiV2 } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -74,56 +69,65 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   taskId,
   edit,
 }) => {
-  const task = useSelector(taskSelector(taskId))!;
-  const dispatch = useDispatch<StoreDispatchType>();
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+
+  const [patchTaskratings, patchStatus] = apiV2.usePatchTaskratingsMutation();
+  const [addTaskratings, addStatus] = apiV2.useAddTaskratingsMutation();
+
+  const { task } = apiV2.useGetTasksQuery(roadmapId!, {
+    skip: roadmapId === undefined,
+    selectFromResult: ({ data }) => ({
+      task: data?.find(({ id }) => id === taskId),
+    }),
+  });
 
   const dimension =
-    getType(userInfo, currentRoadmap?.id) === RoleType.Developer
+    getType(userInfo, roadmapId) === RoleType.Developer
       ? TaskRatingDimension.Complexity
       : TaskRatingDimension.BusinessValue;
 
-  const taskRatings = task.ratings.filter(
+  const taskRatings = task?.ratings.filter(
     (rating) =>
       rating.createdByUser === userInfo?.id && rating.dimension === dimension,
   );
 
   const complexityRatings: () => (TaskratingRequest & {
     customer?: Customer;
-  })[] = () => [
-    {
-      dimension: TaskRatingDimension.Complexity,
-      createdByUser: userInfo!.id,
-      parentTask: task.id,
-    },
-  ];
+  })[] = () =>
+    task
+      ? [
+          {
+            dimension: TaskRatingDimension.Complexity,
+            createdByUser: userInfo!.id,
+            parentTask: task.id,
+          },
+        ]
+      : [];
 
   const valueRatings: () => (TaskratingRequest & {
     customer?: Customer;
   })[] = () =>
-    userInfo?.representativeFor?.map((customer) => ({
-      dimension: TaskRatingDimension.BusinessValue,
-      createdByUser: userInfo.id,
-      forCustomer: customer.id,
-      parentTask: task.id,
-      customer,
-    })) || [];
+    (task &&
+      userInfo?.representativeFor?.map((customer) => ({
+        dimension: TaskRatingDimension.BusinessValue,
+        createdByUser: userInfo.id,
+        forCustomer: customer.id,
+        parentTask: task.id,
+        customer,
+      }))) ||
+    [];
 
   const ratings = (dimension === TaskRatingDimension.Complexity
     ? complexityRatings()
     : valueRatings()
   )
     .map((rating) => {
-      const previous = taskRatings.find(
+      const previous = taskRatings?.find(
         ({ forCustomer, createdByUser }) =>
           (!forCustomer || forCustomer === rating.customer?.id) &&
           createdByUser === userInfo?.id,
@@ -137,7 +141,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     })
     .filter(
       (rating) =>
-        !rating.customer || rating.customer.roadmapId === task.roadmapId,
+        !rating.customer || rating.customer.roadmapId === task?.roadmapId,
     )
     // show only new or existing ratings depending on edit value
     .filter(({ value }) => (edit ? value : !value));
@@ -146,13 +150,13 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   const [businessRatingModified, setBusinessRatingModified] = useState(false);
 
   useEffect(() => {
-    const modified = ratings.some(({ id, comment, value }) => {
-      return !!businessValueRatings.find(
+    const modified = ratings.some(({ id, comment, value }) =>
+      businessValueRatings.some(
         (rating) =>
           rating.id === id &&
           (rating.comment !== comment || rating.value !== value),
-      );
-    });
+      ),
+    );
     setBusinessRatingModified(modified);
   }, [businessValueRatings, ratings]);
 
@@ -160,28 +164,28 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     event.preventDefault();
     event.stopPropagation();
 
-    setIsLoading(true);
     const changed = businessValueRatings.filter((rating) => rating.changed);
-    const action = edit
-      ? roadmapsActions.patchTaskratings
-      : roadmapsActions.addTaskratings;
-    const res = await dispatch(action({ ratings: changed, taskId }));
-    const error = action.rejected.match(res) && res.payload?.message;
-    setIsLoading(false);
-
-    if (error) setErrorMessage(error);
-    else closeModal();
+    const action = edit ? patchTaskratings : addTaskratings;
+    if (roadmapId === undefined || changed.length === 0) return;
+    try {
+      await action({ roadmapId, ratings: changed, taskId }).unwrap();
+      closeModal();
+    } catch (err) {
+      setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
+    }
   };
 
   const onBusinessRatingChange = (
     idx: number,
     forCustomer?: number,
   ) => (rating: { value: number; comment: string | undefined }) => {
-    const copy = [...businessValueRatings];
-    const original = idx < 0 ? { forCustomer } : copy[idx];
-    copy[idx] = { ...original, ...rating, changed: true };
+    const copy = [...ratings];
+    const original = copy[idx];
+    copy[idx] = { ...original, ...rating, forCustomer, changed: true };
     setBusinessValueRatings(copy);
   };
+
+  if (!task) return null;
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -237,7 +241,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>
-          {isLoading ? (
+          {patchStatus.isLoading || addStatus.isLoading ? (
             <LoadingSpinner />
           ) : (
             <button

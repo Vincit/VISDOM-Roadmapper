@@ -1,6 +1,6 @@
 import { SyntheticEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -10,11 +10,10 @@ import { RoleType } from '../../../shared/types/customTypes';
 import css from './UserInfoCard.module.scss';
 import { EditableTextWithButtons } from './EditableText';
 import { table, TableRow } from './Table';
-import { idRoadmapSelector } from '../redux/roadmaps/selectors';
 import { StoreDispatchType } from '../redux';
 import { ModalTypes } from './modals/types';
 import { modalsActions } from '../redux/modals';
-import { api } from '../api/api';
+import { api, apiV2 } from '../api/api';
 import { paths } from '../routers/paths';
 import { ExitButton } from './forms/SvgButton';
 
@@ -24,7 +23,8 @@ const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { roadmapId, type } = roadmapRole;
-  const roadmap = useSelector(idRoadmapSelector(roadmapId));
+  const { data } = apiV2.useGetRoadmapsQuery();
+  const roadmap = data?.find(({ id }) => id === roadmapId);
 
   const leaveProject = useCallback(
     (event: SyntheticEvent) => {

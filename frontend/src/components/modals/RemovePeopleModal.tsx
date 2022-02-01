@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { userActions } from '../../redux/user';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
@@ -13,6 +13,7 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
+import { apiV2 } from '../../api/api';
 
 export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   closeModal,
@@ -23,29 +24,44 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [deleteCustomerTrigger] = apiV2.useDeleteCustomerMutation();
+  const [deleteInvitationTrigger] = apiV2.useDeleteInvitationMutation();
+  const [deleteRoadmapUser] = apiV2.useDeleteRoadmapUserMutation();
+
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
 
   const deleteCustomer = async () => {
-    const res = await dispatch(
-      roadmapsActions.deleteCustomer({ id: id as number }),
-    );
+    try {
+      await deleteCustomerTrigger({
+        roadmapId,
+        customer: { id: id as number },
+      }).unwrap();
+    } catch (err) {
+      return err.data?.message;
+    }
     await dispatch(userActions.getUserInfo());
-    if (roadmapsActions.deleteCustomer.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
   };
 
   const deleteTeamMember = async () => {
-    const res = await dispatch(
-      roadmapsActions.deleteRoadmapUser({ id: id as number }),
-    );
-    if (roadmapsActions.deleteRoadmapUser.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
+    try {
+      await deleteRoadmapUser({
+        roadmapId,
+        user: { id: id as number },
+      }).unwrap();
+    } catch (err) {
+      return err.data?.message;
+    }
   };
 
   const deleteInvitation = async () => {
-    const res = await dispatch(roadmapsActions.deleteInvitation(id as string));
-    setIsLoading(false);
-    if (roadmapsActions.deleteInvitation.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
+    try {
+      await deleteInvitationTrigger({
+        roadmapId,
+        id: id as string,
+      }).unwrap();
+    } catch (err) {
+      return err.data?.message;
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

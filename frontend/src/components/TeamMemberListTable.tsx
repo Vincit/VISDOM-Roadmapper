@@ -1,18 +1,13 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TableTeamMemberRow } from './TableTeamMemberRow';
-import { StoreDispatchType } from '../redux/index';
-import { roadmapsActions } from '../redux/roadmaps';
-import {
-  roadmapUsersSelector,
-  chosenRoadmapSelector,
-} from '../redux/roadmaps/selectors';
-import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { RoadmapUser } from '../redux/roadmaps/types';
 import { SortingArrow } from './SortingArrow';
 import { useSorting } from '../utils/SortUtils';
 import { UserSortingTypes, userSort } from '../utils/SortRoadmapUserUtils';
+import { apiV2 } from '../api/api';
 
 interface TeamMemberTableHeader {
   label: string;
@@ -24,24 +19,20 @@ export const TeamMemberList: FC<{
   search: string;
 }> = ({ search }) => {
   const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
-  const teamMembers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const dispatch = useDispatch<StoreDispatchType>();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: teamMembers } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
 
   const [sort, sorting] = useSorting(
-    useMemo(() => userSort(currentRoadmap), [currentRoadmap]),
+    useMemo(() => userSort(roadmapId, tasks, users, customers), [
+      customers,
+      roadmapId,
+      tasks,
+      users,
+    ]),
   );
-
-  useEffect(() => {
-    if (!teamMembers && currentRoadmap)
-      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id));
-  }, [currentRoadmap, dispatch, teamMembers]);
 
   useEffect(() => {
     // Filter, search, sort team members

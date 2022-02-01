@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { LockFill, UnlockFill } from 'react-bootstrap-icons';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   CartesianGrid,
   Label,
@@ -12,9 +12,8 @@ import {
   YAxis,
 } from 'recharts';
 import classNames from 'classnames';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, Task } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Task } from '../redux/roadmaps/types';
 import {
   weightedTaskPriority,
   valueAndComplexitySummary,
@@ -22,6 +21,7 @@ import {
 } from '../utils/TaskUtils';
 import { sort, SortingOrders, sortKeyNumeric } from '../utils/SortUtils';
 import css from './PlannerChart.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -42,10 +42,9 @@ export const PlannerChart: FC<{
   versions: { name: string; tasks: Task[] }[];
   hideButtons?: boolean;
 }> = ({ versions, hideButtons }) => {
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  )!;
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const { data: roadmapTasks } = apiV2.useGetTasksQuery(roadmapId);
   const [savedData, setSavedData] = useState<DataPoint[] | undefined>(
     undefined,
   );
@@ -58,9 +57,9 @@ export const PlannerChart: FC<{
     graphTaskLists.unshift({
       name: DataKeys.OptimalRoadmap,
       tasks: sort(
-        sortKeyNumeric(weightedTaskPriority(currentRoadmap)),
+        sortKeyNumeric(weightedTaskPriority(customers)),
         SortingOrders.DESCENDING,
-      )(currentRoadmap.tasks.filter(hasRatingsOnEachDimension)),
+      )(roadmapTasks?.filter(hasRatingsOnEachDimension) ?? []),
     });
   }
   const versionDataPoints = () => {

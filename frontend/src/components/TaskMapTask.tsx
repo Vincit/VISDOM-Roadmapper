@@ -1,12 +1,9 @@
 import { FC, MouseEvent } from 'react';
 import ReactDOM from 'react-dom';
-import { shallowEqual, useSelector } from 'react-redux';
 import { Handle, HandleType } from 'react-flow-renderer';
 import { Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
-import { RootState } from '../redux/types';
-import { taskSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './TaskMapTask.module.scss';
@@ -23,6 +20,7 @@ export enum Position {
 
 export interface TaskProps {
   taskId: number;
+  tasks: Task[];
   selected?: boolean;
   setSelectedTask?: any;
   checked: { from: boolean; to: boolean };
@@ -42,6 +40,7 @@ const SingleTask: FC<
   }
 > = ({
   taskId,
+  tasks,
   setSelectedTask,
   selected,
   checked,
@@ -52,10 +51,7 @@ const SingleTask: FC<
   dragHandle,
 }) => {
   const { isDragging } = snapshot;
-  const task = useSelector<RootState, Task | undefined>(
-    taskSelector(taskId),
-    shallowEqual,
-  );
+  const task = tasks.find(({ id }) => id === taskId);
 
   const selectTask = (e: MouseEvent) => {
     e.stopPropagation();

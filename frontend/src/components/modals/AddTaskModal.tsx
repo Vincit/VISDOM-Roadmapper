@@ -5,7 +5,6 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals';
 import { ModalTypes, Modal } from './types';
-import { roadmapsActions } from '../../redux/roadmaps/index';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { TaskRequest } from '../../redux/roadmaps/types';
 import { RootState } from '../../redux/types';
@@ -20,6 +19,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Input, TextArea } from '../forms/FormField';
 import { representsCustomers } from '../../utils/UserUtils';
 import '../../shared.scss';
+import { apiV2 } from '../../api/api';
 
 export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   closeModal,
@@ -31,7 +31,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
     description: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [addTaskTrigger, { isLoading }] = apiV2.useAddTaskMutation();
   const chosenRoadmapId = useSelector<RootState, number | undefined>(
     chosenRoadmapIdSelector,
   );
@@ -50,7 +50,6 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
     event.stopPropagation();
 
     if (form.checkValidity()) {
-      setIsLoading(true);
       const req: TaskRequest = {
         name: formValues.name,
         description: formValues.description,
@@ -58,23 +57,25 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
         createdByUser: userInfo?.id,
       };
 
-      const res = await dispatch(roadmapsActions.addTask(req));
-      setIsLoading(false);
-      if (roadmapsActions.addTask.rejected.match(res)) {
-        if (res.payload) setErrorMessage(res.payload.message);
-        return;
+      try {
+        const res = await addTaskTrigger({
+          roadmapId: chosenRoadmapId!,
+          task: req,
+        }).unwrap();
+        closeModal();
+        if (!representsCustomers(userInfo!, chosenRoadmapId!)) return;
+        dispatch(
+          modalsActions.showModal({
+            modalType: ModalTypes.RATE_TASK_MODAL,
+            modalProps: {
+              taskId: res.id,
+              edit: false,
+            },
+          }),
+        );
+      } catch (err) {
+        setErrorMessage(err.data?.message);
       }
-      closeModal();
-      if (!representsCustomers(userInfo!, chosenRoadmapId!)) return;
-      dispatch(
-        modalsActions.showModal({
-          modalType: ModalTypes.RATE_TASK_MODAL,
-          modalProps: {
-            taskId: res.payload.id,
-            edit: false,
-          },
-        }),
-      );
     }
   };
 

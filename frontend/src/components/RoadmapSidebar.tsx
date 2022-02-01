@@ -12,7 +12,7 @@ import { ReactComponent as DashboardIcon } from '../icons/dashboard_icon.svg';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import css from './RoadmapSidebar.module.scss';
 import { userRoleSelector } from '../redux/user/selectors';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { RoleType } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
@@ -20,11 +20,11 @@ const classes = classNames.bind(css);
 export const RoadmapSidebar: FC = () => {
   const { pathname } = useLocation();
   const role = useSelector(userRoleSelector, shallowEqual);
-  const currentRoadmap = useSelector(chosenRoadmapSelector, shallowEqual);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
 
-  if (!currentRoadmap) return null;
+  if (roadmapId === undefined) return null;
 
-  const url = `/roadmap/${currentRoadmap.id}`;
+  const url = `/roadmap/${roadmapId}`;
 
   const renderButtons = () => {
     return (

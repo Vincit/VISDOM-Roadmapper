@@ -1,24 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
 import { RoadmapOverview } from '../components/RoadmapOverview';
 import { TaskHeatmap } from '../components/TaskHeatmap';
 import { TaskTableUnrated } from '../components/TaskTableUnrated';
-import { StoreDispatchType } from '../redux';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
-import { Roadmap, Task } from '../redux/roadmaps/types';
-import { roadmapsActions } from '../redux/roadmaps';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { RoleType, Permission } from '../../../shared/types/customTypes';
+import { RoleType } from '../../../shared/types/customTypes';
 import { awaitsUserRatings } from '../utils/TaskUtils';
 import { getType } from '../utils/UserUtils';
-import { hasPermission } from '../../../shared/utils/permission';
 import css from './DashboardPage.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -28,17 +26,16 @@ interface VersionListsObject {
 const ROADMAP_LIST_ID = '-1';
 
 export const DashboardPage = () => {
-  const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const type = getType(userInfo, currentRoadmap?.id);
-  const roadmapsVersions = currentRoadmap?.versions;
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const { data: roadmapTasks } = apiV2.useGetTasksQuery(roadmapId);
+  const type = getType(userInfo, roadmapId);
+  // FIXME: check permission: hasPermission(type, Permission.VersionRead)
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
   const [chartVersionLists, setChartVersionLists] = useState<
     {
       name: string;
@@ -47,15 +44,6 @@ export const DashboardPage = () => {
     }[]
   >([]);
   const [unratedTasks, setUnratedTasks] = useState<Task[]>([]);
-
-  useEffect(() => {
-    if (
-      !roadmapsVersions &&
-      currentRoadmap &&
-      hasPermission(type, Permission.VersionRead)
-    )
-      dispatch(roadmapsActions.getVersions(currentRoadmap.id));
-  }, [currentRoadmap, dispatch, roadmapsVersions, type]);
 
   // TODO move duplicate version organizing / charting logic into custom hook
   useEffect(() => {
@@ -83,17 +71,15 @@ export const DashboardPage = () => {
       .sort((a, b) => a.sortingRank - b.sortingRank);
 
     setChartVersionLists(chartVersions);
-  }, [dispatch, roadmapsVersions, currentRoadmap]);
+  }, [roadmapsVersions, roadmapId]);
 
   useEffect(() => {
-    if (userInfo && currentRoadmap) {
+    if (userInfo && roadmapId && roadmapTasks !== undefined) {
       setUnratedTasks(
-        currentRoadmap.tasks.filter(
-          awaitsUserRatings(userInfo, currentRoadmap),
-        ),
+        roadmapTasks.filter(awaitsUserRatings(userInfo, roadmapId, customers)),
       );
     }
-  }, [currentRoadmap, userInfo]);
+  }, [customers, roadmapId, roadmapTasks, userInfo]);
 
   return (
     <>

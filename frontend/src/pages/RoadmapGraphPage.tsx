@@ -1,25 +1,20 @@
 import { useEffect, useState, useRef } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import ListIcon from '@material-ui/icons/List';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
-import { StoreDispatchType } from '../redux';
-import { RootState } from '../redux/types';
 import { totalWeightedValueAndComplexity } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { BlockGraph, BlockView } from '../components/BlockGraph';
-import {
-  chosenRoadmapSelector,
-  roadmapsVersionsSelector,
-} from '../redux/roadmaps/selectors';
-import { Roadmap, Version } from '../redux/roadmaps/types';
-import { roadmapsActions } from '../redux/roadmaps';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Version } from '../redux/roadmaps/types';
 import colors from '../colors.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -30,20 +25,14 @@ interface VersionComplexityAndValues extends Version {
 }
 
 export const RoadmapGraphPage = () => {
-  const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
-  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector,
-    shallowEqual,
-  );
   const [selectedVersion, setSelectedVersion] = useState(-1);
   const [versions, setVersions] = useState<
     undefined | VersionComplexityAndValues[]
   >(undefined);
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
 
   const a = useRef<HTMLDivElement | null>(null);
   const b = useRef<HTMLDivElement>(null);
@@ -61,23 +50,13 @@ export const RoadmapGraphPage = () => {
   }, []);
 
   useEffect(() => {
-    if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
-  }, [dispatch, currentRoadmap]);
-
-  useEffect(() => {
-    if (currentRoadmap && roadmapsVersions === undefined)
-      dispatch(roadmapsActions.getVersions(currentRoadmap.id));
-  }, [dispatch, currentRoadmap, roadmapsVersions]);
-
-  useEffect(() => {
-    if (currentRoadmap)
-      setVersions(
-        roadmapsVersions?.map((version) => ({
-          ...version,
-          ...totalWeightedValueAndComplexity(version.tasks, currentRoadmap),
-        })),
-      );
-  }, [currentRoadmap, roadmapsVersions]);
+    setVersions(
+      roadmapsVersions?.map((version) => ({
+        ...version,
+        ...totalWeightedValueAndComplexity(version.tasks, customers),
+      })),
+    );
+  }, [customers, roadmapsVersions]);
 
   useEffect(() => {
     if (selectedVersion < 0 && roadmapsVersions?.length) setSelectedVersion(0);

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Popover from '@material-ui/core/Popover';
@@ -6,7 +6,6 @@ import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { StoreDispatchType } from '../redux';
-import { roadmapsActions } from '../redux/roadmaps';
 import { Customer, Roadmap, RoadmapUser } from '../redux/roadmaps/types';
 import { MetricsSummary } from './MetricsSummary';
 import { MoreButton } from './forms/SvgButton';
@@ -21,6 +20,7 @@ import { UserInfo } from '../redux/user/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { userActions } from '../redux/user';
 import { hasPermission } from '../../../shared/utils/permission';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -118,23 +118,17 @@ export const ProjectSummary: FC<{
   const [anchorEl, setAnchorEl] = useState<
     (EventTarget & HTMLDivElement) | null
   >(null);
-  const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
   const type = getType(userInfo, roadmap.id);
-
-  useEffect(() => {
-    if (!roadmap.customers && hasPermission(type, Permission.RoadmapReadUsers))
-      dispatch(roadmapsActions.getCustomers(roadmap.id));
-
-    if (!roadmap.users && hasPermission(type, Permission.RoadmapReadUsers))
-      dispatch(roadmapsActions.getRoadmapUsers(roadmap.id));
-
-    if (!roadmap.versions && hasPermission(type, Permission.VersionRead))
-      dispatch(roadmapsActions.getVersions(roadmap.id));
-  }, [dispatch, roadmap, type]);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmap.id);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmap.id);
+  const { data: versions } = apiV2.useGetVersionsQuery(roadmap.id);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmap.id, {
+    skip: !hasPermission(type, Permission.RoadmapReadUsers),
+  });
 
   return (
     <div className={classes(css.roadmapSummary)}>
@@ -165,18 +159,11 @@ export const ProjectSummary: FC<{
         )}
       </div>
       <div className={classes(css.metrics)}>
-        <MetricsSummary label={t('Tasks')} value={roadmap.tasks.length} />
-        <MetricsSummary
-          label={t('Milestones')}
-          value={roadmap.versions?.length ?? 0}
-        />
+        <MetricsSummary label={t('Tasks')} value={tasks?.length ?? 0} />
+        <MetricsSummary label={t('Milestones')} value={versions?.length ?? 0} />
       </div>
-      {!!roadmap.customers?.length && (
-        <PeopleList label="Clients" people={roadmap.customers} />
-      )}
-      {!!roadmap.users?.length && (
-        <PeopleList label="Team members" people={roadmap.users} />
-      )}
+      {!!customers?.length && <PeopleList label="Clients" people={customers} />}
+      {!!users?.length && <PeopleList label="Team members" people={users} />}
       <Link
         className={classes(css.openButton)}
         to={`${paths.roadmapHome}/${roadmap.id}${paths.roadmapRelative.dashboard}`}

@@ -4,12 +4,8 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
 import { paths } from '../routers/paths';
-import {
-  allCustomersSelector,
-  chosenRoadmapSelector,
-  usersSelector,
-} from '../redux/roadmaps/selectors';
-import { Customer, Roadmap } from '../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Customer } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import {
   userInfoCustomersSelector,
@@ -23,6 +19,7 @@ import { unratedTasksAmount, totalCustomerStakes } from '../utils/TaskUtils';
 import { RepresentativeTable } from '../components/RepresentativeTable';
 import colors from '../colors.module.scss';
 import css from './ClientOverviewPage.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -33,19 +30,24 @@ const ClientOverview: FC<{
 }> = ({ clients, client, clientIdx }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  )!;
+  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
   // select users as client's representatives does not include type
   const representativeIds = client.representatives?.map(({ id }) => id);
-  const representatives = useSelector(usersSelector(representativeIds || []));
-  const unratedTasks = unratedTasksAmount(client, currentRoadmap);
-  const allCustomerStakes = totalCustomerStakes(
-    currentRoadmap.tasks,
-    currentRoadmap,
+  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const representatives =
+    allUsers?.filter(({ id }) => representativeIds?.includes(id)) ?? [];
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const unratedTasks = unratedTasksAmount(
+    client,
+    roadmapId,
+    tasks!,
+    users,
+    customers,
   );
-  const clientsListPage = `${paths.roadmapHome}/${currentRoadmap.id}${paths.roadmapRelative.clients}`;
+  const allCustomerStakes = totalCustomerStakes(tasks!, customers);
+  const clientsListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.clients}`;
 
   const siblingClients = [
     {
@@ -67,7 +69,7 @@ const ClientOverview: FC<{
     },
     {
       label: t('Tasks rated'),
-      value: currentRoadmap.tasks.length - unratedTasks,
+      value: tasks!.length - unratedTasks,
     },
     {
       label: t('Unrated tasks'),
@@ -134,19 +136,19 @@ const ClientOverview: FC<{
 };
 
 export const ClientOverviewPage = () => {
-  const { clientId } = useParams<{ clientId: string | undefined }>();
+  const { roadmapId, clientId } = useParams<{
+    roadmapId: string | undefined;
+    clientId: string | undefined;
+  }>();
 
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  )!;
+  const { data: customers } = apiV2.useGetCustomersQuery(Number(roadmapId));
   const userInfoCustomers = useSelector<RootState, Customer[]>(
     userInfoCustomersSelector,
     shallowEqual,
   );
   const role = useSelector(userRoleSelector, shallowEqual);
 
-  const clients = role === RoleType.Admin ? customers : userInfoCustomers;
+  const clients = role === RoleType.Admin ? customers! : userInfoCustomers;
   const clientIdx = clients.findIndex(({ id }) => Number(clientId) === id);
   const client =
     clientIdx !== undefined && clientIdx >= 0 ? clients[clientIdx] : undefined;

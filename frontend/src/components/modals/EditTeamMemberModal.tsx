@@ -2,15 +2,11 @@ import { FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import { useDispatch, shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RoleIcon } from '../RoleIcons';
-import { StoreDispatchType } from '../../redux';
-import { RootState } from '../../redux/types';
-import { roadmapsActions } from '../../redux/roadmaps';
-import { allCustomersSelector } from '../../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import {
   CheckableCustomer,
-  Customer,
   Invitation,
   RoadmapUser,
 } from '../../redux/roadmaps/types';
@@ -28,6 +24,7 @@ import {
 import { getCheckedIds } from '../../utils/CustomerUtils';
 import { hasPermission } from '../../../../shared/utils/permission';
 import css from './EditTeamMemberModal.module.scss';
+import { apiV2 } from '../../api/api';
 
 const isInvitation = (member: Invitation | RoadmapUser): member is Invitation =>
   'updatedAt' in member;
@@ -38,17 +35,16 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   closeModal,
   member,
 }) => {
-  const dispatch = useDispatch<StoreDispatchType>();
-  const roadmapCustomers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: roadmapCustomers } = apiV2.useGetCustomersQuery(roadmapId!);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedRole, setSelectedRole] = useState(member.type);
   const [customers, setCustomers] = useState<CheckableCustomer[]>([]);
   const [hasRepresentPermission, setHasRepresentPermission] = useState(false);
   const memberIsInvitation = isInvitation(member);
+  const [patchInvitation] = apiV2.usePatchInvitationMutation();
+  const [patchRoadmapUser] = apiV2.usePatchRoadmapUsersMutation();
 
   useEffect(() => {
     if (!roadmapCustomers || !isInvitation(member)) return;
@@ -62,40 +58,43 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   }, [member, roadmapCustomers]);
 
   useEffect(() => {
-    if (!roadmapCustomers) dispatch(roadmapsActions.getCustomers());
-  }, [dispatch, roadmapCustomers]);
-
-  useEffect(() => {
     setHasRepresentPermission(
       hasPermission(selectedRole, Permission.CustomerRepresent),
     );
   }, [selectedRole]);
 
   const editInvitation = async () => {
-    const res = await dispatch(
-      roadmapsActions.patchInvitation({
-        id: member.id as string,
-        type: selectedRole,
-        ...(hasRepresentPermission && {
-          representativeFor: getCheckedIds(customers),
-        }),
-      }),
-    );
-    if (roadmapsActions.patchInvitation.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
+    if (roadmapId === undefined) return;
+    try {
+      await patchInvitation({
+        roadmapId,
+        invitation: {
+          id: member.id as string,
+          type: selectedRole,
+          ...(hasRepresentPermission && {
+            representativeFor: getCheckedIds(customers),
+          }),
+        },
+      }).unwrap();
+    } catch (err) {
+      return err.data?.message;
+    }
   };
 
   const editTeamMember = async () => {
-    if (member.type === selectedRole) return;
+    if (roadmapId === undefined || member.type === selectedRole) return;
 
-    const res = await dispatch(
-      roadmapsActions.patchRoadmapUser({
-        id: member.id as number,
-        type: selectedRole,
-      }),
-    );
-    if (roadmapsActions.patchRoadmapUser.rejected.match(res))
-      if (res.payload?.message) return res.payload.message;
+    try {
+      await patchRoadmapUser({
+        roadmapId,
+        user: {
+          id: member.id as number,
+          type: selectedRole,
+        },
+      }).unwrap();
+    } catch (err) {
+      return err.data?.message;
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

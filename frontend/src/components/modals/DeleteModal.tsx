@@ -3,10 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/DeleteSharp';
-import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps/index';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -15,6 +12,7 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import css from './DeleteModal.module.scss';
 import { paths } from '../../routers/paths';
+import { apiV2 } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -24,7 +22,6 @@ const DeleteModalContent: FC<{
   payload: any;
   closeModal: (success?: boolean) => void;
 }> = ({ header, action, payload, closeModal, children }) => {
-  const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -32,13 +29,14 @@ const DeleteModalContent: FC<{
     event.preventDefault();
     event.stopPropagation();
     setIsLoading(true);
-    const res = await dispatch(action(payload));
-    setIsLoading(false);
-    if (action.rejected.match(res)) {
-      if (res.payload?.message) setErrorMessage(res.payload.message);
-      return;
+    try {
+      await action(payload).unwrap();
+      closeModal(true);
+    } catch (err) {
+      setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
+    } finally {
+      setIsLoading(false);
     }
-    closeModal(true);
   };
 
   return (
@@ -80,10 +78,11 @@ export const DeleteVersionModal: Modal<ModalTypes.DELETE_VERSION_MODAL> = ({
   ...payload
 }) => {
   const { t } = useTranslation();
+  const [deleteVersion] = apiV2.useDeleteVersionMutation();
   return (
     <DeleteModalContent
       header={t('Delete milestone')}
-      action={roadmapsActions.deleteVersion}
+      action={deleteVersion}
       payload={payload}
       closeModal={closeModal}
     >
@@ -98,10 +97,11 @@ export const DeleteRoadmapModal: Modal<ModalTypes.DELETE_ROADMAP_MODAL> = ({
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
+  const [deleteRoadmap] = apiV2.useDeleteRoadmapMutation();
   return (
     <DeleteModalContent
       header={t('Delete project')}
-      action={roadmapsActions.deleteRoadmap}
+      action={deleteRoadmap}
       payload={{ id }}
       closeModal={(success) => {
         closeModal(success);

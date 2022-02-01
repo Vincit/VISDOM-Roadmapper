@@ -1,9 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { roadmapsActions } from '../../redux/roadmaps';
-import { StoreDispatchType } from '../../redux';
+import { useSelector } from 'react-redux';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -12,39 +11,29 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Input } from '../forms/FormField';
 import '../../shared.scss';
+import { apiV2 } from '../../api/api';
 
 export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<StoreDispatchType>();
-  const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [versionName, setVersionName] = useState('');
+  const [addVersion, { isLoading }] = apiV2.useAddVersionMutation();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
 
-    if (form.checkValidity()) {
-      setIsLoading(true);
-      dispatch(
-        roadmapsActions.addVersion({
-          name: versionName,
-        }),
-      ).then((res) => {
-        setIsLoading(false);
-        if (roadmapsActions.addVersion.rejected.match(res)) {
-          setHasError(true);
-          if (res.payload) {
-            setErrorMessage(res.payload.message);
-          }
-        } else {
-          closeModal();
-        }
-      });
+    if (!form.checkValidity() || roadmapId === undefined) return;
+
+    try {
+      await addVersion({ roadmapId, name: versionName }).unwrap();
+      closeModal();
+    } catch (err) {
+      setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
   };
 
@@ -72,10 +61,10 @@ export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
           onChange={(e) => onNameChange(e.currentTarget.value)}
         />
         <Alert
-          show={hasError}
+          show={errorMessage.length > 0}
           variant="danger"
           dismissible
-          onClose={() => setHasError(false)}
+          onClose={() => setErrorMessage('')}
         >
           {errorMessage}
         </Alert>

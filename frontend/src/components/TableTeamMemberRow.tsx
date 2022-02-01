@@ -4,10 +4,10 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
 import { DeleteButton, EditButton } from './forms/SvgButton';
 import { RoleIcon } from './RoleIcons';
-import { RoadmapUser, Roadmap } from '../redux/roadmaps/types';
+import { RoadmapUser } from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { chosenRoadmapSelector } from '../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './TableTeamMemberRow.module.scss';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
@@ -15,6 +15,7 @@ import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from './modals/types';
 import { getType } from '../utils/UserUtils';
 import { unratedTasksAmount } from '../utils/TaskUtils';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -29,16 +30,18 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
     userInfoSelector,
     shallowEqual,
   );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [unratedAmount, setUnratedAmount] = useState(0);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
 
   useEffect(() => {
-    if (currentRoadmap?.tasks)
-      setUnratedAmount(unratedTasksAmount(member, currentRoadmap));
-  }, [currentRoadmap, member]);
+    if (roadmapId && tasks)
+      setUnratedAmount(
+        unratedTasksAmount(member, roadmapId, tasks, users, customers),
+      );
+  }, [customers, member, roadmapId, tasks, users]);
 
   const deleteUserClicked = (e: MouseEvent) => {
     e.preventDefault();
@@ -85,7 +88,7 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
         <b>{unratedAmount || ' '}</b>
       </td>
       <td className="styledTd nowrap textAlignEnd">
-        {getType(userInfo, currentRoadmap?.id) === RoleType.Admin &&
+        {getType(userInfo, roadmapId) === RoleType.Admin &&
           id !== userInfo?.id && (
             <div className={classes(css.editMember)}>
               <EditButton

@@ -1,4 +1,5 @@
-import Axios, { AxiosRequestConfig } from 'axios';
+import { createApi, BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import Axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import dotenv from 'dotenv';
 import {
   ImportBoardRequest,
@@ -43,105 +44,360 @@ const axiosConfig: AxiosRequestConfig = {
 
 const axios = Axios.create(axiosConfig);
 
-const getRoadmaps = async () => {
-  const response = await axios.get('/roadmaps?eager=1');
-  return response.data as Roadmap[];
+export const axiosBaseQuery: BaseQueryFn<
+  {
+    url: string;
+    method: AxiosRequestConfig['method'];
+    data?: AxiosRequestConfig['data'];
+  },
+  unknown,
+  { status: number | undefined; data: any }
+> = async (query) => {
+  try {
+    const { data } = await axios(query);
+    return { data };
+  } catch (axiosError) {
+    const err = axiosError as AxiosError;
+    return {
+      error: { status: err.response?.status, data: err.response?.data },
+    };
+  }
 };
 
-const addRoadmap = async (roadmap: RoadmapRequest) => {
-  const response = await axios.post('/roadmaps', roadmap);
-  if (!response.data.tasks) response.data.tasks = [];
-  if (!response.data.integrations) response.data.integrations = [];
-  return response.data as Roadmap;
-};
+export const apiV2 = createApi({
+  reducerPath: 'apiV2',
+  baseQuery: axiosBaseQuery,
+  tagTypes: [
+    'Customers',
+    'Tasks',
+    'Taskratings',
+    'Versions',
+    'Roadmaps',
+    'Invitations',
+    'Integrations',
+    'Users',
+    'Taskrelations',
+  ],
+  endpoints: (build) => ({
+    getCustomers: build.query<Customer[], number>({
+      providesTags: ['Customers'],
+      query: (roadmapId) => ({
+        url: `roadmaps/${roadmapId}/customers`,
+        method: 'get',
+      }),
+    }),
+    deleteCustomer: build.mutation<
+      void,
+      { roadmapId: number; customer: CustomerRequest }
+    >({
+      invalidatesTags: ['Customers'],
+      query: ({ roadmapId, customer }) => ({
+        url: `roadmaps/${roadmapId}/customers/${customer.id}`,
+        method: 'delete',
+      }),
+    }),
+    patchCustomer: build.mutation<
+      Customer,
+      { roadmapId: number; customer: CustomerRequest }
+    >({
+      invalidatesTags: ['Customers'],
+      query: ({ roadmapId, customer }) => ({
+        url: `roadmaps/${roadmapId}/customers/${customer.id}`,
+        method: 'patch',
+        data: customer,
+      }),
+    }),
+    addCustomer: build.mutation<
+      Customer,
+      { roadmapId: number; customer: CustomerRequest }
+    >({
+      invalidatesTags: ['Customers'],
+      query: ({ roadmapId, customer }) => ({
+        url: `roadmaps/${roadmapId}/customers/`,
+        method: 'post',
+        data: customer,
+      }),
+    }),
+    getTasks: build.query<Task[], number>({
+      providesTags: ['Tasks'],
+      query: (roadmapId) => ({
+        url: `roadmaps/${roadmapId}/tasks?eager=1`,
+        method: 'get',
+      }),
+    }),
+    deleteTask: build.mutation<void, { roadmapId: number; task: TaskRequest }>({
+      invalidatesTags: ['Tasks'],
+      query: ({ roadmapId, task }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${task.id}`,
+        method: 'delete',
+      }),
+    }),
+    patchTask: build.mutation<Task, { roadmapId: number; task: TaskRequest }>({
+      invalidatesTags: ['Tasks'],
+      query: ({ roadmapId, task }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${task.id}`,
+        method: 'patch',
+        data: task,
+      }),
+    }),
+    addTask: build.mutation<Task, { roadmapId: number; task: TaskRequest }>({
+      invalidatesTags: ['Tasks'],
+      query: ({ roadmapId, task }) => ({
+        url: `roadmaps/${roadmapId}/tasks/`,
+        method: 'post',
+        data: task,
+      }),
+    }),
+    deleteTaskrating: build.mutation<
+      void,
+      { roadmapId: number; rating: TaskratingRequest }
+    >({
+      invalidatesTags: ['Taskratings', 'Tasks'],
+      query: ({ roadmapId, rating }) => ({
+        url: `/roadmaps/${roadmapId}/tasks/${rating.parentTask}/taskratings/${rating.id}`,
+        method: 'delete',
+      }),
+    }),
+    patchTaskratings: build.mutation<
+      Taskrating[],
+      { roadmapId: number; taskId: number; ratings: TaskratingRequest[] }
+    >({
+      invalidatesTags: ['Taskratings', 'Tasks'],
+      query: ({ roadmapId, taskId, ratings }) => ({
+        url: `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
+        method: 'patch',
+        data: ratings,
+      }),
+    }),
+    addTaskratings: build.mutation<
+      Taskrating[],
+      { roadmapId: number; taskId: number; ratings: TaskratingRequest[] }
+    >({
+      invalidatesTags: ['Taskratings', 'Tasks'],
+      query: ({ roadmapId, taskId, ratings }) => ({
+        url: `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
+        method: 'post',
+        data: ratings,
+      }),
+    }),
+    getVersions: build.query<Version[], number>({
+      providesTags: ['Versions'],
+      query: (roadmapId) => ({
+        url: `roadmaps/${roadmapId}/versions`,
+        method: 'get',
+      }),
+      transformResponse: (res: Version[]) =>
+        res.sort((a, b) => a.sortingRank - b.sortingRank),
+    }),
+    deleteVersion: build.mutation<void, VersionRequest>({
+      invalidatesTags: ['Versions'],
+      query: (version) => ({
+        url: `/roadmaps/${version.roadmapId}/versions/${version.id}`,
+        method: 'delete',
+      }),
+    }),
+    patchVersion: build.mutation<Version, VersionRequest>({
+      invalidatesTags: ['Versions'],
+      query: ({ roadmapId, id, name, tasks, sortingRank }) => ({
+        url: `/roadmaps/${roadmapId}/versions/${id}/`,
+        method: 'patch',
+        data: { name, tasks, sortingRank },
+      }),
+    }),
+    addVersion: build.mutation<Version, VersionRequest>({
+      invalidatesTags: ['Versions'],
+      query: (version) => ({
+        url: `/roadmaps/${version.roadmapId}/versions/`,
+        method: 'post',
+        data: version,
+      }),
+    }),
+    getRoadmaps: build.query<Roadmap[], void>({
+      providesTags: ['Roadmaps'],
+      query: () => ({ url: `roadmaps?eager=1`, method: 'get' }),
+    }),
+    deleteRoadmap: build.mutation<void, RoadmapRequest>({
+      invalidatesTags: ['Roadmaps'],
+      query: (roadmap) => ({
+        url: `/roadmaps/${roadmap.id}`,
+        method: 'delete',
+      }),
+    }),
+    addRoadmap: build.mutation<Roadmap, RoadmapRequest>({
+      invalidatesTags: ['Roadmaps'],
+      query: (roadmap) => ({ url: '/roadmaps', method: 'post', data: roadmap }),
+      transformResponse: ({ integrations, ...rest }: Roadmap) => ({
+        integrations: integrations ?? [],
+        ...rest,
+      }),
+    }),
+    getInvitations: build.query<Invitation[], number>({
+      providesTags: ['Invitations'],
+      query: (roadmapId) => ({
+        url: `roadmaps/${roadmapId}/invitations/`,
+        method: 'get',
+      }),
+    }),
+    sendInvitation: build.mutation<
+      Invitation,
+      { roadmapId: number; invitation: NewInvitation }
+    >({
+      invalidatesTags: ['Invitations'],
+      query: ({ roadmapId, invitation }) => ({
+        url: `roadmaps/${roadmapId}/invitations/`,
+        method: 'post',
+        data: invitation,
+      }),
+    }),
+    patchInvitation: build.mutation<
+      Invitation,
+      { roadmapId: number; invitation: InvitationRequest }
+    >({
+      invalidatesTags: ['Invitations'],
+      query: ({ roadmapId, invitation }) => ({
+        url: `roadmaps/${roadmapId}/invitations/${invitation.id}`,
+        method: 'patch',
+        data: invitation,
+      }),
+    }),
+    deleteInvitation: build.mutation<void, { roadmapId: number; id: string }>({
+      invalidatesTags: ['Invitations'],
+      query: ({ roadmapId, id }) => ({
+        url: `roadmaps/${roadmapId}/invitations/${id}`,
+        method: 'delete',
+      }),
+    }),
+    addIntegrationConfiguration: build.mutation<
+      IntegrationConfiguration,
+      IntegrationConfigurationRequest
+    >({
+      invalidatesTags: ['Integrations', 'Roadmaps'],
+      query: (configuration) => ({
+        url: `roadmaps/${configuration.roadmapId}/integrations/${configuration.name}/configuration`,
+        method: 'post',
+        data: configuration,
+      }),
+    }),
+    patchIntegrationConfiguration: build.mutation<
+      IntegrationConfiguration,
+      IntegrationConfigurationRequest
+    >({
+      invalidatesTags: ['Integrations', 'Roadmaps'],
+      query: ({ roadmapId, name, id, host, consumerkey, privatekey }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/configuration/${id}`,
+        method: 'patch',
+        data: { host, consumerkey, privatekey },
+      }),
+    }),
+    getIntegrations: build.query<Integrations, number>({
+      providesTags: ['Integrations'],
+      query: (roadmapId) => ({
+        url: `roadmaps/${roadmapId}/integrations/`,
+        method: 'get',
+      }),
+    }),
+    getIntegrationBoards: build.query<
+      IntegrationBoard[],
+      GetRoadmapBoardsRequest
+    >({
+      providesTags: ['Integrations'],
+      query: ({ name, roadmapId }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/boards`,
+        method: 'get',
+      }),
+    }),
+    getIntegrationBoardLabels: build.query<
+      string[],
+      GetRoadmapBoardLabelsRequest
+    >({
+      providesTags: ['Integrations'],
+      query: ({ name, roadmapId, boardId }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/boards/${boardId}/labels`,
+        method: 'get',
+      }),
+    }),
+    importIntegrationBoard: build.mutation<void, ImportBoardRequest>({
+      invalidatesTags: ['Integrations', 'Tasks'],
+      query: (request) => ({
+        url: `roadmaps/${request.roadmapId}/integrations/${request.name}/boards/${request.boardId}/import`,
+        method: 'post',
+        data: request,
+      }),
+    }),
+    getRoadmapUsers: build.query<RoadmapUser[], number>({
+      providesTags: ['Users'],
+      query: (roadmapId) => ({
+        url: `roadmaps/${roadmapId}/users`,
+        method: 'get',
+      }),
+    }),
+    patchRoadmapUsers: build.mutation<
+      RoadmapRoleResponse,
+      { roadmapId: number; user: RoadmapUserRequest }
+    >({
+      invalidatesTags: ['Users'],
+      query: ({ roadmapId, user }) => ({
+        url: `roadmaps/${roadmapId}/users/${user.id}/roles`,
+        method: 'patch',
+        data: user,
+      }),
+    }),
+    deleteRoadmapUser: build.mutation<
+      void,
+      { roadmapId: number; user: RoadmapUserRequest }
+    >({
+      invalidatesTags: ['Users'],
+      query: ({ roadmapId, user }) => ({
+        url: `roadmaps/${roadmapId}/users/${user.id}/roles`,
+        method: 'delete',
+      }),
+    }),
+    getTaskRelations: build.query<TaskRelation[], number>({
+      providesTags: ['Taskrelations'],
+      query: (roadmapId) => ({
+        url: `/roadmaps/${roadmapId}/tasks/relations`,
+        method: 'get',
+      }),
+    }),
+    addTaskRelation: build.mutation<
+      void,
+      { roadmapId: number; relation: TaskRelation }
+    >({
+      invalidatesTags: ['Taskrelations'],
+      query: ({ roadmapId, relation }) => ({
+        url: `/roadmaps/${roadmapId}/tasks/relations`,
+        method: 'post',
+        data: relation,
+      }),
+    }),
+    removeTaskRelation: build.mutation<
+      void,
+      { roadmapId: number; relation: TaskRelation }
+    >({
+      invalidatesTags: ['Taskrelations'],
+      query: ({ roadmapId, relation }) => ({
+        url: `/roadmaps/${roadmapId}/tasks/relations`,
+        method: 'delete',
+        data: relation,
+      }),
+    }),
+    addSynergyRelations: build.mutation<
+      void,
+      { roadmapId: number; from: number; to: number[] }
+    >({
+      invalidatesTags: ['Taskrelations'],
+      query: ({ roadmapId, from, to }) => ({
+        url: `/roadmaps/${roadmapId}/tasks/relations/synergies`,
+        method: 'post',
+        data: { from, to },
+      }),
+    }),
+  }),
+});
 
-const deleteRoadmap = async (roadmap: RoadmapRequest) => {
-  await axios.delete(`/roadmaps/${roadmap.id}`);
-  return roadmap;
-};
-
-const addTask = async (task: TaskRequest) => {
-  const response = await axios.post(`/roadmaps/${task.roadmapId}/tasks`, task);
-  if (!response.data.ratings) response.data.ratings = [];
-  return response.data as Task;
-};
-
-const patchTask = async (task: TaskRequest, roadmapId: number) => {
-  const response = await axios.patch(
-    `/roadmaps/${roadmapId}/tasks/${task.id}`,
-    {
-      name: task.name,
-      description: task.description,
-      completed: task.completed,
-    },
-  );
-  return response.data as Task;
-};
-
-const deleteTask = async (task: TaskRequest) => {
-  await axios.delete(`/roadmaps/${task.roadmapId}/tasks/${task.id}`);
-  return task;
-};
-
-const addTaskratings = async (
-  taskratings: TaskratingRequest[],
-  taskId: number,
-  roadmapId: number,
-) => {
-  const response = await axios.post(
-    `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
-    taskratings,
-  );
-  return response.data as Taskrating[];
-};
-
-const deleteTaskrating = async (
-  taskrating: TaskratingRequest,
-  roadmapId: number,
-) => {
-  await axios.delete(
-    `/roadmaps/${roadmapId}/tasks/${taskrating.parentTask}/taskratings/${taskrating.id}`,
-  );
-
-  return taskrating;
-};
-
-const patchTaskratings = async (
-  taskratings: TaskratingRequest[],
-  taskId: number,
-  roadmapId: number,
-) => {
-  const response = await axios.patch(
-    `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
-    taskratings,
-  );
-  return response.data as Taskrating[];
-};
-
-const getCustomers = async (roadmapId: number) => {
-  const response = await axios.get(`roadmaps/${roadmapId}/customers`);
-  return response.data as Customer[];
-};
-
-const addCustomer = async (customer: CustomerRequest, roadmapId: number) => {
-  const response = await axios.post(
-    `roadmaps/${roadmapId}/customers/`,
-    customer,
-  );
-  return response.data as Customer;
-};
-
-const deleteCustomer = async (customer: CustomerRequest, roadmapId: number) => {
-  await axios.delete(`roadmaps/${roadmapId}/customers/${customer.id}`);
-  return customer;
-};
-
-const patchCustomer = async (customer: CustomerRequest, roadmapId: number) => {
-  const response = await axios.patch(
-    `roadmaps/${roadmapId}/customers/${customer.id}`,
-    customer,
-  );
-  return response.data as Customer;
+const getInvitation = async (invitationId: string) => {
+  const response = await axios.get(`users/join/${invitationId}`);
+  return response.data as Invitation;
 };
 
 /** Checks if the given `status` code is in the successful 2xx range */
@@ -194,96 +450,6 @@ const deleteUser = async (userDelete: UserDeleteRequest) => {
   return response.status === 200;
 };
 
-const getRoadmapUsers = async (roadmapId: number) => {
-  const response = await axios.get(`roadmaps/${roadmapId}/users`);
-  return response.data as RoadmapUser[];
-};
-
-const patchRoadmapUser = async (
-  user: RoadmapUserRequest,
-  roadmapId: number,
-) => {
-  const response = await axios.patch(
-    `roadmaps/${roadmapId}/users/${user.id}/roles`,
-    user,
-  );
-  return response.data as RoadmapRoleResponse;
-};
-
-const deleteRoadmapUser = async (
-  user: RoadmapUserRequest,
-  roadmapId: number,
-) => {
-  await axios.delete(`roadmaps/${roadmapId}/users/${user.id}/roles`);
-  return user;
-};
-
-const getVersions = async (roadmapId: number) => {
-  const response = await axios.get(`/roadmaps/${roadmapId}/versions`);
-  return response.data as Version[];
-};
-
-const addVersion = async (version: VersionRequest) => {
-  const response = await axios.post(
-    `/roadmaps/${version.roadmapId}/versions`,
-    version,
-  );
-  return response.data as Version;
-};
-
-const deleteVersion = async (version: VersionRequest) => {
-  await axios.delete(`/roadmaps/${version.roadmapId}/versions/${version.id}`);
-  return version;
-};
-
-const patchVersion = async (version: VersionRequest) => {
-  const response = await axios.patch(
-    `/roadmaps/${version.roadmapId}/versions/${version.id}`,
-    {
-      name: version.name,
-      tasks: version.tasks,
-      sortingRank: version.sortingRank,
-    },
-  );
-  return response.data as Version;
-};
-
-const getIntegrations = async (roadmapId: number) => {
-  const response = await axios.get(`roadmaps/${roadmapId}/integrations`);
-  return response.data as Integrations;
-};
-
-const getIntegrationBoards = async (
-  name: string,
-  request: GetRoadmapBoardsRequest,
-) => {
-  const response = await axios.get(
-    `/roadmaps/${request.roadmapId}/integrations/${name}/boards`,
-  );
-  return response.data as IntegrationBoard[];
-};
-
-const getIntegrationBoardLabels = async (
-  name: string,
-  request: GetRoadmapBoardLabelsRequest,
-) => {
-  const response = await axios.get(
-    `/roadmaps/${request.roadmapId}/integrations/${name}/boards/${request.boardId}/labels`,
-  );
-  return response.data as string[];
-};
-
-const importIntegrationBoard = async (
-  name: string,
-  request: ImportBoardRequest,
-) => {
-  await axios.post(
-    `/roadmaps/${request.roadmapId}/integrations/${name}/boards/${request.boardId}/import`,
-    request,
-  );
-  return true;
-};
-
 const getIntegrationOauthURL = async (name: string, roadmapId: number) => {
   const response = await axios.get(
     `/roadmaps/${roadmapId}/integrations/${name}/oauth/authorizationurl`,
@@ -303,31 +469,6 @@ const swapIntegrationOAuthToken = async (
   return true;
 };
 
-const addIntegrationConfiguration = async (
-  name: string,
-  configuration: IntegrationConfigurationRequest,
-  roadmapId: number,
-) => {
-  const response = await axios.post(
-    `roadmaps/${roadmapId}/integrations/${name}/configuration`,
-    configuration,
-  );
-  return response.data as IntegrationConfiguration;
-};
-
-const patchIntegrationConfiguration = async (
-  name: string,
-  configuration: IntegrationConfigurationRequest,
-  roadmapId: number,
-) => {
-  const { host, consumerkey, privatekey } = configuration;
-  const response = await axios.patch(
-    `roadmaps/${roadmapId}/integrations/${name}/configuration/${configuration.id}`,
-    { host, consumerkey, privatekey },
-  );
-  return response.data as IntegrationConfiguration;
-};
-
 const sendNotification = async (
   users: number[],
   task: Task,
@@ -338,40 +479,6 @@ const sendNotification = async (
     { users, message },
   );
   return successful(response.status);
-};
-
-const getInvitations = async (roadmapId: number) => {
-  const response = await axios.get(`roadmaps/${roadmapId}/invitations/`);
-  return response.data as Invitation[];
-};
-
-const getInvitation = async (invitationId: string) => {
-  const response = await axios.get(`users/join/${invitationId}`);
-  return response.data as Invitation;
-};
-
-const sendInvitation = async (roadmapId: number, invitation: NewInvitation) => {
-  const response = await axios.post(
-    `roadmaps/${roadmapId}/invitations/`,
-    invitation,
-  );
-  return successful(response.status);
-};
-
-const patchInvitation = async (
-  roadmapId: number,
-  invitation: InvitationRequest,
-) => {
-  const response = await axios.patch(
-    `roadmaps/${roadmapId}/invitations/${invitation.id}`,
-    invitation,
-  );
-  return response.data as Invitation;
-};
-
-const deleteInvitation = async (roadmapId: number, id: string) => {
-  await axios.delete(`roadmaps/${roadmapId}/invitations/${id}`);
-  return id;
 };
 
 const patchDefaultRoadmap = async (userId: number, roadmapId?: number) => {
@@ -400,38 +507,6 @@ const sendEmailVerificationLink = async (user: UserInfo) => {
   return successful(response.status);
 };
 
-const addTaskRelation = async (roadmapId: number, relation: TaskRelation) => {
-  const response = await axios.post(`/roadmaps/${roadmapId}/tasks/relations`, {
-    from: relation.from,
-    to: relation.to,
-    type: relation.type,
-  });
-  return successful(response.status);
-};
-
-const removeTaskRelation = async (
-  roadmapId: number,
-  relation: TaskRelation,
-) => {
-  const response = await axios.delete(
-    `/roadmaps/${roadmapId}/tasks/relations`,
-    { data: relation },
-  );
-  return successful(response.status);
-};
-
-const addSynergyRelations = async (
-  roadmapId: number,
-  from: number,
-  to: number[],
-) => {
-  const response = await axios.post(
-    `/roadmaps/${roadmapId}/tasks/relations/synergies`,
-    { from, to },
-  );
-  return successful(response.status);
-};
-
 const leaveRoadmap = async (roadmapId: number) => {
   const response = await axios.post(`/roadmaps/${roadmapId}/leaveRoadmap`, {
     roadmapId,
@@ -455,13 +530,6 @@ const resetPassword = async (token: string, password: string) => {
 };
 
 export const api = {
-  getRoadmaps,
-  addRoadmap,
-  deleteRoadmap,
-  addTask,
-  deleteTask,
-  addTaskratings,
-  deleteTaskrating,
   login,
   logout,
   register,
@@ -471,40 +539,14 @@ export const api = {
   getCurrentUserToken,
   generateCurrentUserToken,
   deleteCurrentUserToken,
-  patchTask,
-  getCustomers,
-  addCustomer,
-  deleteCustomer,
-  deleteRoadmapUser,
-  patchCustomer,
-  patchRoadmapUser,
-  getRoadmapUsers,
-  patchTaskratings,
-  getVersions,
-  addVersion,
-  patchVersion,
-  deleteVersion,
-  getIntegrations,
-  getIntegrationBoards,
-  getIntegrationBoardLabels,
-  importIntegrationBoard,
   getIntegrationOauthURL,
   swapIntegrationOAuthToken,
-  addIntegrationConfiguration,
-  patchIntegrationConfiguration,
   sendNotification,
   patchDefaultRoadmap,
-  getInvitations,
   getInvitation,
-  sendInvitation,
-  patchInvitation,
-  deleteInvitation,
   joinRoadmap,
   verifyEmail,
   sendEmailVerificationLink,
-  addTaskRelation,
-  removeTaskRelation,
-  addSynergyRelations,
   leaveRoadmap,
   sendPasswordResetLink,
   resetPassword,

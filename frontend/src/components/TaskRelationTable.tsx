@@ -1,5 +1,6 @@
 import { FC, CSSProperties, useRef, useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import { VariableSizeList } from 'react-window';
@@ -9,12 +10,15 @@ import ClockIcon from '@material-ui/icons/Schedule';
 import CheckIcon from '@material-ui/icons/Check';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Task } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
 import { paths } from '../routers/paths';
-import { tasksByRelationSelector } from '../redux/roadmaps/selectors';
-import { TaskRelationTableType } from '../utils/TaskRelationUtils';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import {
+  TaskRelationTableType,
+  getTaskRelations,
+} from '../utils/TaskRelationUtils';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './TaskRelationTable.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -54,14 +58,23 @@ const RelationRow: FC<{
 const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   type,
 }) => ({ task, height = 500 }) => {
-  const tasks = useSelector<RootState, Task[]>(
-    tasksByRelationSelector(task.id, type),
-    shallowEqual,
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: relations } = apiV2.useGetTaskRelationsQuery(
+    roadmapId ?? skipToken,
   );
+  const { data: allTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const listRef = useRef<VariableSizeList<any> | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [rowHeights, setRowHeights] = useState<number[]>([]);
   const [listHeight, setListHeight] = useState(0);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    if (relations && allTasks) {
+      const ids = getTaskRelations(task.id, relations, type);
+      setTasks(allTasks.filter(({ id }) => ids.has(id)));
+    }
+  }, [relations, allTasks, task.id]);
 
   useEffect(() => {
     if (!divRef || !tasks.length) return;

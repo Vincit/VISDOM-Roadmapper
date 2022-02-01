@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Redirect,
   Route,
@@ -8,7 +8,6 @@ import {
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
-import { LoadingSpinner } from '../components/LoadingSpinner';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
 import { TeamListPage } from '../pages/TeamListPage';
@@ -16,22 +15,11 @@ import { ClientsListPage } from '../pages/ClientsListPage';
 import { ClientOverviewPage } from '../pages/ClientOverviewPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import { UserInfo } from '../redux/user/types';
-import { getType } from '../utils/UserUtils';
-import { Permission } from '../../../shared/types/customTypes';
-import {
-  chosenRoadmapSelector,
-  roadmapUsersSelector,
-  allCustomersSelector,
-  chosenRoadmapIdSelector,
-} from '../redux/roadmaps/selectors';
-import { RoadmapUser, Customer, Roadmap } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { requireVerifiedEmail } from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
 import { TasksPageRouter } from './TasksPageRouter';
-import { hasPermission } from '../../../shared/utils/permission';
 import '../shared.scss';
 import { usePrevious } from '../utils/usePrevious';
 
@@ -71,7 +59,7 @@ const routes = [
   },
 ];
 
-const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
+const RoadmapRouterComponent = () => {
   const { path } = useRouteMatch();
   const history = useHistory();
   const { roadmapId: urlRoadmapId } = useParams<{
@@ -80,23 +68,6 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
   const selectedRoadmapId = useSelector(chosenRoadmapIdSelector);
   const previousRoadmapId = usePrevious<number | undefined>(selectedRoadmapId);
   const dispatch = useDispatch<StoreDispatchType>();
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const type = getType(userInfo, currentRoadmap?.id);
-  const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-  const [useEffectFinished, setUseEffectFinished] = useState(false);
-  const roadmapUsers = useSelector<RootState, RoadmapUser[] | undefined>(
-    roadmapUsersSelector,
-    shallowEqual,
-  );
-  const [isLoadingCustomers, setIsLoadingCustomers] = useState(false);
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
 
   useEffect(() => {
     // Try to select roadmap given in route parameters
@@ -123,7 +94,6 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
     }
     history.push(`${newPath}${history.location.search}`);
   }, [
-    dispatch,
     selectedRoadmapId,
     previousRoadmapId,
     history.location.pathname,
@@ -131,45 +101,12 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
     urlRoadmapId,
   ]);
 
-  useEffect(() => {
-    if (!currentRoadmap) {
-      setIsLoadingRoadmap(true);
-      dispatch(roadmapsActions.getRoadmaps()).then(() => {
-        setIsLoadingRoadmap(false);
-      });
-    }
-    if (
-      !roadmapUsers &&
-      currentRoadmap &&
-      hasPermission(type, Permission.RoadmapReadUsers)
-    ) {
-      setIsLoadingUsers(true);
-      dispatch(roadmapsActions.getRoadmapUsers(currentRoadmap.id)).then(() => {
-        setIsLoadingUsers(false);
-      });
-    }
-    if (
-      !customers &&
-      currentRoadmap &&
-      hasPermission(type, Permission.RoadmapReadUsers)
-    ) {
-      setIsLoadingCustomers(true);
-      dispatch(roadmapsActions.getCustomers(currentRoadmap.id)).then(() => {
-        setIsLoadingCustomers(false);
-      });
-    }
-    setUseEffectFinished(true);
-  }, [currentRoadmap, urlRoadmapId, dispatch, roadmapUsers, customers, type]);
-
-  if (!useEffectFinished) return null;
-  if (!isLoadingRoadmap && !currentRoadmap)
+  if (!selectedRoadmapId)
     return (
       <div className="layoutRow">
         <div className="layoutCol">Roadmap not found!</div>
       </div>
     );
-  if (isLoadingRoadmap || isLoadingUsers || isLoadingCustomers)
-    return <LoadingSpinner />;
 
   return (
     <div className="layoutRow overflowYAuto">

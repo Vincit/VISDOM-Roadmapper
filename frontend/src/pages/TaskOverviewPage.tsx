@@ -3,19 +3,16 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 // useTranslation is a hook and thus can't be used in a function
 import i18n from 'i18next';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 import { Permission } from '../../../shared/types/customTypes';
-import { roadmapsActions } from '../redux/roadmaps';
-import { StoreDispatchType } from '../redux/index';
 import {
   valueAndComplexitySummary,
   getRatingsByType,
 } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
-import { allTasksSelector } from '../redux/roadmaps/selectors';
 import { userRoleSelector } from '../redux/user/selectors';
-import { Task, TaskRequest } from '../redux/roadmaps/types';
+import { Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableComplexity } from '../components/RatingTableComplexity';
 import { RatingTableValue } from '../components/RatingTableValue';
@@ -30,6 +27,7 @@ import colors from '../colors.module.scss';
 import css from './TaskOverviewPage.module.scss';
 import { MissingRatings } from '../components/MissingRatings';
 import { TaskModalButtons } from '../components/TaskModalButtons';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -95,7 +93,6 @@ const TaskOverview: FC<{
 }> = ({ tasks, task, taskIdx }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const dispatch = useDispatch<StoreDispatchType>();
   const role = useSelector(userRoleSelector, shallowEqual);
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
@@ -107,6 +104,7 @@ const TaskOverview: FC<{
   } = getRatingsByType(task?.ratings || []);
   const hasEditPermission = hasPermission(role, Permission.RoadmapReadUsers);
   const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
+  const [patchTaskTrigger] = apiV2.usePatchTaskMutation();
 
   const siblingTasks = [
     {
@@ -120,16 +118,16 @@ const TaskOverview: FC<{
   ];
 
   const handleEditConfirm = async (newValue: string, fieldId: string) => {
-    const req: TaskRequest = {
-      id: task.id,
-      [fieldId]: newValue,
-    };
-
-    const res = await dispatch(roadmapsActions.patchTask(req));
-    if (roadmapsActions.patchTask.rejected.match(res)) {
-      if (res.payload) {
-        return res.payload.message;
-      }
+    try {
+      await patchTaskTrigger({
+        roadmapId: Number(roadmapId),
+        task: {
+          id: task.id,
+          [fieldId]: newValue,
+        },
+      }).unwrap();
+    } catch (err) {
+      return err.data.message;
     }
   };
 
@@ -187,13 +185,13 @@ const TaskOverview: FC<{
 };
 
 export const TaskOverviewPage = () => {
-  const { taskId } = useParams<{
+  const { roadmapId, taskId } = useParams<{
+    roadmapId: string | undefined;
     taskId: string | undefined;
   }>();
-  const tasks = useSelector(allTasksSelector, shallowEqual);
-  const taskIdx = tasks.findIndex(({ id }) => Number(taskId) === id);
-  const task = taskIdx >= 0 ? tasks[taskIdx] : undefined;
-
-  if (!task) return <Redirect to={paths.notFound} />;
-  return <TaskOverview tasks={tasks} task={task} taskIdx={taskIdx} />;
+  const { data: tasks } = apiV2.useGetTasksQuery(Number(roadmapId));
+  const taskIdx = tasks?.findIndex(({ id }) => Number(taskId) === id);
+  if (!tasks || taskIdx === undefined || taskIdx < 0)
+    return <Redirect to={paths.notFound} />;
+  return <TaskOverview tasks={tasks} task={tasks[taskIdx]} taskIdx={taskIdx} />;
 };

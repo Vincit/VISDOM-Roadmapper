@@ -1,47 +1,29 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { TableCustomerRow } from './TableCustomerRow';
 import { table } from './Table';
-import { StoreDispatchType } from '../redux/index';
-import { roadmapsActions } from '../redux/roadmaps';
-import {
-  allCustomersSelector,
-  chosenRoadmapSelector,
-} from '../redux/roadmaps/selectors';
-import { Customer, Roadmap } from '../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { Customer } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoCustomersSelector } from '../redux/user/selectors';
 import { CustomerSortingTypes, customerSort } from '../utils/SortCustomerUtils';
 import { RoleType } from '../../../shared/types/customTypes';
+import { apiV2 } from '../api/api';
 
 export const CustomerList: FC<{
   search: string;
   role: RoleType;
 }> = ({ search, role }) => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
-  const customers = useSelector<RootState, Customer[] | undefined>(
-    allCustomersSelector,
-    shallowEqual,
-  );
-  const currentRoadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
   const userInfoCustomers = useSelector<RootState, Customer[]>(
     userInfoCustomersSelector,
     shallowEqual,
   );
-  const dispatch = useDispatch<StoreDispatchType>();
-
-  useEffect(() => {
-    if (!customers && currentRoadmap)
-      dispatch(roadmapsActions.getCustomers(currentRoadmap.id));
-  }, [dispatch, customers, currentRoadmap]);
-
-  useEffect(() => {
-    if (!currentRoadmap) dispatch(roadmapsActions.getRoadmaps());
-  }, [dispatch, currentRoadmap]);
 
   useEffect(() => {
     // Filter, search, sort customers
@@ -61,7 +43,7 @@ export const CustomerList: FC<{
             <Trans i18nKey="Clients" />
           </h2>
         ),
-        getSort: customerSort(currentRoadmap),
+        getSort: customerSort(roadmapId, tasks, users, customers),
         Row: TableCustomerRow,
         header: [
           {
@@ -87,7 +69,7 @@ export const CustomerList: FC<{
           { label: '', width: role === RoleType.Admin ? 1 : 0.5 },
         ],
       }),
-    [currentRoadmap, role],
+    [customers, roadmapId, role, tasks, users],
   );
 
   return selectedCustomers.length > 0 ? (

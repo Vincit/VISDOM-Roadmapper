@@ -1,32 +1,23 @@
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import {
-  chosenRoadmapSelector,
-  roadmapsVersionsSelector,
-} from '../redux/roadmaps/selectors';
-import { Roadmap, Version } from '../redux/roadmaps/types';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './RoadmapOverview.module.scss';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { averageValueAndComplexity } from '../utils/TaskUtils';
 import { MetricsSummary } from './MetricsSummary';
 import colors from '../colors.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const RoadmapOverview = () => {
   const { t } = useTranslation();
-  const roadmap = useSelector<RootState, Roadmap | undefined>(
-    chosenRoadmapSelector,
-    shallowEqual,
-  );
-  const roadmapsVersions = useSelector<RootState, Version[] | undefined>(
-    roadmapsVersionsSelector,
-    shallowEqual,
-  );
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
 
-  const { value, complexity } = averageValueAndComplexity(roadmap?.tasks ?? []);
+  const { value, complexity } = averageValueAndComplexity(tasks ?? []);
   const numFormat = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
@@ -35,7 +26,7 @@ export const RoadmapOverview = () => {
   const metrics = [
     {
       label: 'Tasks',
-      metricsValue: roadmap?.tasks.length ?? 0,
+      metricsValue: tasks?.length ?? 0,
     },
     {
       label: 'Milestones',

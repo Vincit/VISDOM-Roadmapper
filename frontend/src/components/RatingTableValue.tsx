@@ -1,11 +1,12 @@
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import { userSelector, customerSelector } from '../redux/roadmaps/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
 import { EditButton } from './forms/SvgButton';
 import { Dot } from './Dot';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -15,8 +16,11 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
-  const user = useSelector(userSelector(rating.createdByUser));
-  const customer = useSelector(customerSelector(rating.forCustomer));
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const user = users?.find(({ id }) => id === rating.createdByUser);
+  const { data } = apiV2.useGetCustomersQuery(roadmapId!);
+  const customer = data?.find(({ id }) => id === rating.forCustomer);
   if (!user || !customer) return null;
 
   return (

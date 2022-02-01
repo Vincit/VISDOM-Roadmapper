@@ -1,6 +1,5 @@
 import {
   Customer,
-  Roadmap,
   RoadmapUser,
   Task,
   Taskrating,
@@ -175,12 +174,11 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
   }
 };
 
-const ratingValueAndCreator = (roadmap: Roadmap, unweighted?: true) => (
-  rating: Taskrating,
-) => {
-  const ratingCreator = roadmap.customers?.find(
-    ({ id }) => id === rating.forCustomer,
-  );
+const ratingValueAndCreator = (
+  customers: Customer[] | undefined,
+  unweighted?: true,
+) => (rating: Taskrating) => {
+  const ratingCreator = customers?.find(({ id }) => id === rating.forCustomer);
   const creatorWeight = unweighted ? 1 : ratingCreator?.weight ?? 0;
   return {
     value: rating.value * creatorWeight,
@@ -188,13 +186,13 @@ const ratingValueAndCreator = (roadmap: Roadmap, unweighted?: true) => (
   };
 };
 
-const taskRatingsCustomerStakes = (roadmap: Roadmap) => (
+const taskRatingsCustomerStakes = (customers: Customer[] | undefined) => (
   result: Map<Customer, number>,
   task: Task,
 ) =>
   task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValueAndCreator(roadmap, true))
+    .map(ratingValueAndCreator(customers, true))
     .reduce((acc, rating) => {
       if (!rating.customer) return acc;
       const previousVal = acc.get(rating.customer) || 0;
@@ -203,22 +201,27 @@ const taskRatingsCustomerStakes = (roadmap: Roadmap) => (
 
 // Calculate total sum of task values in the milestone
 // And map values of how much each user has rated in these tasks
-export const totalCustomerStakes = (tasks: Task[], roadmap: Roadmap) =>
-  tasks.reduce(taskRatingsCustomerStakes(roadmap), new Map());
+export const totalCustomerStakes = (
+  tasks: Task[],
+  customers: Customer[] | undefined,
+) => tasks.reduce(taskRatingsCustomerStakes(customers), new Map());
 
-const taskWeightedValueSummary = (task: Task, roadmap: Roadmap) =>
+const taskWeightedValueSummary = (
+  task: Task,
+  customers: Customer[] | undefined,
+) =>
   task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValueAndCreator(roadmap))
+    .map(ratingValueAndCreator(customers))
     .reduce((acc, rating) => acc.add(rating.value), new RatingsSummary());
 
 export const totalWeightedValueAndComplexity = (
   tasks: Task[],
-  roadmap: Roadmap,
+  customers: Customer[] | undefined,
 ) => {
   const { complexity } = totalValueAndComplexity(tasks);
   const totalValues = tasks
-    .map((task) => taskWeightedValueSummary(task, roadmap))
+    .map((task) => taskWeightedValueSummary(task, customers))
     .reduce(
       (acc, summary) => ({
         sum: acc.sum + summary.avg,
@@ -229,8 +232,10 @@ export const totalWeightedValueAndComplexity = (
   return { value: totalValues.sum, totalValue: totalValues.total, complexity };
 };
 
-export const weightedTaskPriority = (roadmap: Roadmap) => (task: Task) => {
-  const weightedValue = taskWeightedValueSummary(task, roadmap).avg;
+export const weightedTaskPriority = (customers: Customer[] | undefined) => (
+  task: Task,
+) => {
+  const weightedValue = taskWeightedValueSummary(task, customers).avg;
   if (!weightedValue) return -2;
 
   const avgComplexityRating = valueAndComplexitySummary(task).complexity.avg;
@@ -242,35 +247,41 @@ export const weightedTaskPriority = (roadmap: Roadmap) => (task: Task) => {
 
 export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
   user: T,
-  roadmap: T extends UserInfo ? number | Roadmap : Roadmap,
+  roadmapId: number,
+  customers: Customer[] | undefined,
 ) => {
-  const roadmapId = typeof roadmap === 'number' ? roadmap : roadmap.id;
   const userType = getType(user, roadmapId);
 
   // Admins and business users represent customers. Separate logic for determining need for ratings.
   if (userType === RoleType.Admin || userType === RoleType.Business) {
-    const customers = isUserInfo(user)
+    const filteredCustomers = isUserInfo(user)
       ? user.representativeFor?.filter(
           (customer) => customer.roadmapId === roadmapId,
         )
-      : (roadmap as Roadmap).customers?.filter((customer) =>
+      : customers?.filter((customer) =>
           customer.representatives?.some((rep) => rep.id === user.id),
         );
 
     // If user represents no customers, always return false
-    if (!customers || customers.length === 0) return () => false;
+    if (!filteredCustomers || filteredCustomers.length === 0)
+      return () => false;
 
     // Otherwise filter for tasks that lack ratings from at least one represented customer
     return (task: Task) =>
       task.roadmapId === roadmapId &&
-      !customers.every((customer) => ratedByCustomer(customer, user)(task));
+      !filteredCustomers.every((customer) =>
+        ratedByCustomer(customer, user)(task),
+      );
   }
 
   // For other user types just look for missing ratings by them
   return not(ratedByUser(user));
 };
 
-export const hasMissingRatings = ({ users = [], customers = [] }: Roadmap) => {
+export const hasMissingRatings = (
+  users: RoadmapUser[] = [],
+  customers: Customer[] = [],
+) => {
   const devs = users.filter((user) => user.type === RoleType.Developer);
   const reps = customers.map((customer) => customer.representatives ?? []);
   const shouldHaveRated = devs.concat(...reps);
@@ -291,22 +302,27 @@ export const hasRatingsOnEachDimension = (task: Task) =>
 */
 export const isUnrated = (
   user: RoadmapUser | Customer | UserInfo,
-  roadmap: Roadmap,
+  roadmapId: number,
+  users: RoadmapUser[] | undefined,
+  customers: Customer[] | undefined,
 ): ((task: Task) => boolean) => {
   if (isCustomer(user))
     return (task) =>
       !!user.representatives?.some((rep) => !ratedByCustomer(user, rep)(task));
 
-  const baseCondition = awaitsUserRatings(user, roadmap);
-  if (getType(user, roadmap.id) === RoleType.Admin)
-    return or(baseCondition, hasMissingRatings(roadmap));
+  const baseCondition = awaitsUserRatings(user, roadmapId, customers);
+  if (getType(user, roadmapId) === RoleType.Admin)
+    return or(baseCondition, hasMissingRatings(users, customers));
   return baseCondition;
 };
 
 export const unratedTasksAmount = (
   user: RoadmapUser | Customer | UserInfo,
-  roadmap: Roadmap,
-) => roadmap.tasks.filter(isUnrated(user, roadmap)).length;
+  roadmapId: number,
+  tasks: Task[],
+  users: RoadmapUser[] | undefined,
+  customers: Customer[] | undefined,
+) => tasks.filter(isUnrated(user, roadmapId, users, customers)).length;
 
 export const missingDeveloper = (task: Task) => {
   const ratedBy = hasUserRating(task);
@@ -326,10 +342,3 @@ export const getRatingsByType = (ratings: Taskrating[]) => {
   );
   return { value, complexity };
 };
-
-export const findTask = (taskId: number, roadmaps: Roadmap[]) =>
-  roadmaps.reduce<Task | undefined>(
-    (found, roadmap) =>
-      found ?? roadmap.tasks.find((task) => task.id === taskId),
-    undefined,
-  );

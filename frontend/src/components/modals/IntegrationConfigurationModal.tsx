@@ -1,9 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { StoreDispatchType } from '../../redux';
-import { roadmapsActions } from '../../redux/roadmaps/index';
 import { IntegrationConfigurationRequest } from '../../redux/roadmaps/types';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -13,6 +10,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { titleCase } from '../../utils/string';
 import { Input } from '../forms/FormField';
 import '../../shared.scss';
+import { apiV2 } from '../../api/api';
 
 export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGURATION_MODAL> = ({
   closeModal,
@@ -23,8 +21,8 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
   configuration,
 }) => {
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch<StoreDispatchType>();
+  const patch = apiV2.usePatchIntegrationConfigurationMutation();
+  const add = apiV2.useAddIntegrationConfigurationMutation();
 
   const config: IntegrationConfigurationRequest = configuration || {
     name,
@@ -35,28 +33,20 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
   };
   const [formValues, setFormValues] = useState(config);
 
-  const action = configuration
-    ? roadmapsActions.patchIntegrationConfiguration
-    : roadmapsActions.addIntegrationConfiguration;
+  const [action, { isLoading }] = configuration ? patch : add;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
 
     if (form.checkValidity()) {
-      setIsLoading(true);
-
-      dispatch(action(formValues)).then((res) => {
-        setIsLoading(false);
-        if (action.rejected.match(res)) {
-          if (res.payload) {
-            setErrorMessage(res.payload.message);
-          }
-        } else {
-          closeModal();
-        }
-      });
+      try {
+        action(formValues).unwrap();
+        closeModal();
+      } catch (err) {
+        setErrorMessage(err.data?.message ?? 'something went wrong');
+      }
     }
   };
 

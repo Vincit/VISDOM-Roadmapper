@@ -1,29 +1,24 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { paths } from '../routers/paths';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { Footer } from '../components/Footer';
-import { RootState } from '../redux/types';
 import css from './CreateProjectPage.module.scss';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
-import { Roadmap } from '../redux/roadmaps/types';
-import { roadmapsSelector } from '../redux/roadmaps/selectors';
 import { requireVerifiedEmail } from '../utils/requirelogin';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const CreateProjectPage = requireVerifiedEmail(({ userInfo }) => {
   const { t } = useTranslation();
-  const roadmaps = useSelector<RootState, Roadmap[] | undefined>(
-    roadmapsSelector,
-    shallowEqual,
-  );
+  const { data: roadmaps } = apiV2.useGetRoadmapsQuery();
   const dispatch = useDispatch<StoreDispatchType>();
 
   const addRoadmapClicked = (e: React.MouseEvent) => {

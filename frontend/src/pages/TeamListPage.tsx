@@ -1,18 +1,16 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, MouseEvent } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { modalsActions } from '../redux/modals';
 import { StoreDispatchType } from '../redux/index';
-import { allInvitationsSelector } from '../redux/roadmaps/selectors';
-import { Invitation } from '../redux/roadmaps/types';
-import { roadmapsActions } from '../redux/roadmaps';
-import { RootState } from '../redux/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ModalTypes } from '../components/modals/types';
 import { TeamMemberList } from '../components/TeamMemberListTable';
 import { InvitationList } from '../components/InvitationListTable';
 import { TopBar } from '../components/TopBar';
 import css from './TeamListPage.module.scss';
+import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -20,14 +18,8 @@ export const TeamListPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [searchString, setSearchString] = useState('');
-  const invitations = useSelector<RootState, Invitation[] | undefined>(
-    allInvitationsSelector,
-    shallowEqual,
-  );
-
-  useEffect(() => {
-    if (!invitations) dispatch(roadmapsActions.getInvitations());
-  }, [dispatch, invitations]);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: invitations } = apiV2.useGetInvitationsQuery(roadmapId!);
 
   const addTeamMemberClicked = (e: MouseEvent) => {
     e.preventDefault();
