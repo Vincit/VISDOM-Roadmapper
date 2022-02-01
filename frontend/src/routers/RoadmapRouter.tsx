@@ -16,7 +16,6 @@ import { ClientsListPage } from '../pages/ClientsListPage';
 import { ClientOverviewPage } from '../pages/ClientOverviewPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import { UserInfo } from '../redux/user/types';
 import { getType } from '../utils/UserUtils';
 import { Permission } from '../../../shared/types/customTypes';
 import {
@@ -34,6 +33,7 @@ import { TasksPageRouter } from './TasksPageRouter';
 import { hasPermission } from '../../../shared/utils/permission';
 import '../shared.scss';
 import { usePrevious } from '../utils/usePrevious';
+import { userInfoSelector } from '../redux/user/selectors';
 
 const routes = [
   {
@@ -71,12 +71,13 @@ const routes = [
   },
 ];
 
-const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
+const RoadmapRouterComponent = () => {
   const { path } = useRouteMatch();
   const history = useHistory();
   const { roadmapId: urlRoadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
+  const userInfo = useSelector(userInfoSelector);
   const selectedRoadmapId = useSelector(chosenRoadmapIdSelector);
   const previousRoadmapId = usePrevious<number | undefined>(selectedRoadmapId);
   const dispatch = useDispatch<StoreDispatchType>();
@@ -132,6 +133,7 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
   ]);
 
   useEffect(() => {
+    if (!userInfo) return;
     if (!currentRoadmap) {
       setIsLoadingRoadmap(true);
       dispatch(roadmapsActions.getRoadmaps()).then(() => {
@@ -159,7 +161,15 @@ const RoadmapRouterComponent = ({ userInfo }: { userInfo: UserInfo }) => {
       });
     }
     setUseEffectFinished(true);
-  }, [currentRoadmap, urlRoadmapId, dispatch, roadmapUsers, customers, type]);
+  }, [
+    currentRoadmap,
+    urlRoadmapId,
+    dispatch,
+    roadmapUsers,
+    customers,
+    type,
+    userInfo,
+  ]);
 
   if (!useEffectFinished) return null;
   if (!isLoadingRoadmap && !currentRoadmap)
