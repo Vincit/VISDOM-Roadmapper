@@ -19,6 +19,7 @@ import {
   IKoaState,
   IExtendedKoaContext,
   IKoaContext,
+  ExtendedServer,
 } from './types/customTypes';
 import { Server } from 'socket.io';
 import http from 'http';
@@ -40,7 +41,7 @@ const createServer = async () => {
   };
   const app = new Koa<IKoaState, IExtendedKoaContext>();
   const httpServer = http.createServer(app.callback());
-  const io = new Server<
+  const io: ExtendedServer = new Server<
     DefaultEventsMap,
     DefaultEventsMap,
     DefaultEventsMap,
