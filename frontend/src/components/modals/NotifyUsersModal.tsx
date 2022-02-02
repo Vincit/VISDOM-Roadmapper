@@ -117,7 +117,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
       ?.filter((user) => user.checked)
       .map((user) => user.id);
 
-    if (usersToNotify) {
+    if (task && usersToNotify) {
       const res = await dispatch(
         roadmapsActions.notifyUsers({
           users: usersToNotify,

@@ -37,14 +37,16 @@ const stateSyncConfig = {
 };
 
 export const store = configureStore({
-  reducer: withReduxStateSync(rootReducer),
+  reducer: (withReduxStateSync(rootReducer) as unknown) as typeof appReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      apiV2.middleware as any,
-      createStateSyncMiddleware(stateSyncConfig),
+      (createStateSyncMiddleware(stateSyncConfig) as unknown) as ReturnType<
+        typeof getDefaultMiddleware
+      >[0],
+      apiV2.middleware,
     ),
 });
 
 initStateWithPrevTab(store);
 
-export type StoreDispatchType = any; // typeof store.dispatch;
+export type StoreDispatchType = typeof store.dispatch;
