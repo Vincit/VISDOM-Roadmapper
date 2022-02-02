@@ -24,7 +24,7 @@ export const roadmapsSlice = createSlice({
   },
 });
 
-export const roadmapsActions: any = {
+export const roadmapsActions = {
   ...roadmapsSlice.actions,
   notifyUsers,
   leaveRoadmap,
