@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { PlannerChart } from '../components/PlannerChart';
 import { RoadmapCompletionMeter } from '../components/RoadmapCompletionMeter';
@@ -12,7 +13,8 @@ import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
-import { RoleType } from '../../../shared/types/customTypes';
+import { RoleType, Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
 import { awaitsUserRatings } from '../utils/TaskUtils';
 import { getType } from '../utils/UserUtils';
 import css from './DashboardPage.module.scss';
@@ -30,12 +32,16 @@ export const DashboardPage = () => {
     userInfoSelector,
     shallowEqual,
   );
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
-  const { data: roadmapTasks } = apiV2.useGetTasksQuery(roadmapId);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: roadmapTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const type = getType(userInfo, roadmapId);
-  // FIXME: check permission: hasPermission(type, Permission.VersionRead)
-  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
+    roadmapId ?? skipToken,
+    { skip: !hasPermission(type, Permission.VersionRead) },
+  );
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [chartVersionLists, setChartVersionLists] = useState<
     {
       name: string;

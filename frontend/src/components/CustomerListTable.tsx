@@ -1,6 +1,7 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { TableCustomerRow } from './TableCustomerRow';
 import { table } from './Table';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
@@ -17,9 +18,11 @@ export const CustomerList: FC<{
 }> = ({ search, role }) => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const userInfoCustomers = useSelector<RootState, Customer[]>(
     userInfoCustomersSelector,
     shallowEqual,

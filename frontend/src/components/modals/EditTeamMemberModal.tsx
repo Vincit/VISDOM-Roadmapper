@@ -3,6 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { RoleIcon } from '../RoleIcons';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import {
@@ -36,7 +37,9 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   member,
 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: roadmapCustomers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: roadmapCustomers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedRole, setSelectedRole] = useState(member.type);

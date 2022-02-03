@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
@@ -31,8 +32,12 @@ export const RoadmapGraphPage = () => {
     undefined | VersionComplexityAndValues[]
   >(undefined);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId!);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
 
   const a = useRef<HTMLDivElement | null>(null);
   const b = useRef<HTMLDivElement>(null);

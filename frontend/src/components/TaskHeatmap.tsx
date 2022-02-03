@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { ratingsSummaryByDimension } from '../utils/TaskUtils';
@@ -17,7 +18,7 @@ const matrix2d = ({ rows, cols }: { rows: number; cols: number }): number[][] =>
 
 export const TaskHeatmap = () => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
   const frequencies = matrix2d({ rows: 5, cols: 5 });
   tasks?.map(ratingsSummaryByDimension).forEach((ratings) => {

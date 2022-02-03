@@ -1,4 +1,5 @@
 import { FC, MouseEvent, useState, useEffect } from 'react';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { StoreDispatchType } from '../redux';
@@ -32,9 +33,11 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
   );
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [unratedAmount, setUnratedAmount] = useState(0);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
 
   useEffect(() => {
     if (roadmapId && tasks)

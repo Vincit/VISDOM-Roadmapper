@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Version, CustomerStakes } from '../redux/roadmaps/types';
@@ -20,7 +21,9 @@ export const TaskValueCreatedVisualization: FC<{
   width: number;
 }> = ({ version, width }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [data, setData] = useState<CustomerStakes[]>([]);
 
   useEffect(() => {

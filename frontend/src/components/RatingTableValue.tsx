@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
 import { EditButton } from './forms/SvgButton';
@@ -17,9 +18,9 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const user = users?.find(({ id }) => id === rating.createdByUser);
-  const { data } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data } = apiV2.useGetCustomersQuery(roadmapId ?? skipToken);
   const customer = data?.find(({ id }) => id === rating.forCustomer);
   if (!user || !customer) return null;
 

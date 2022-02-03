@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
@@ -16,9 +17,11 @@ import { apiV2 } from '../api/api';
 const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
 
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [patchCustomerTrigger] = apiV2.usePatchCustomerMutation();
 
   const [localCustomers, setLocalCustomers] = useState(customers);
@@ -38,7 +41,8 @@ export const PlannerWeightsPage = () => {
   };
 
   const saveWeight = async (customerId: number, weight: number) => {
-    patchCustomerTrigger({ roadmapId, customer: { id: customerId, weight } });
+    if (roadmapId !== undefined)
+      patchCustomerTrigger({ roadmapId, customer: { id: customerId, weight } });
   };
 
   return (

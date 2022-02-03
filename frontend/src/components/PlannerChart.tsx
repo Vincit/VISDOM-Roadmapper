@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { LockFill, UnlockFill } from 'react-bootstrap-icons';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import {
   CartesianGrid,
   Label,
@@ -42,9 +43,11 @@ export const PlannerChart: FC<{
   versions: { name: string; tasks: Task[] }[];
   hideButtons?: boolean;
 }> = ({ versions, hideButtons }) => {
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
-  const { data: roadmapTasks } = apiV2.useGetTasksQuery(roadmapId);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: roadmapTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const [savedData, setSavedData] = useState<DataPoint[] | undefined>(
     undefined,
   );

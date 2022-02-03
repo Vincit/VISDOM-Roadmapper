@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
@@ -38,8 +39,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { task } = apiV2.useGetTasksQuery(roadmapId!, {
-    skip: roadmapId === undefined,
+  const { task } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
     selectFromResult: ({ data }) => ({
       task: data?.find(({ id }) => id === taskId),
     }),
@@ -49,12 +49,12 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
     userInfoSelector,
     shallowEqual,
   );
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!, {
-    skip: roadmapId === undefined,
-  });
-  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId!, {
-    skip: roadmapId === undefined,
-  });
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+  );
   const [missingUsers, setMissingUsers] = useState<CheckableUser[] | undefined>(
     [],
   );
