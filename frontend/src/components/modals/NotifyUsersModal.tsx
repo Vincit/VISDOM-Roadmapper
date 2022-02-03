@@ -26,6 +26,8 @@ import { getType } from '../../utils/UserUtils';
 import { Modal, ModalTypes } from './types';
 import { missingDeveloper } from '../../utils/TaskUtils';
 import { TextArea } from '../forms/FormField';
+import { RoleIcon } from '../RoleIcons';
+import colors from '../../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -68,28 +70,27 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
       customers &&
       allUsers
     ) {
-      const missingRepresentatives = new Map<number, CheckableUser>();
+      const missingRepresentativeIds = new Set<number>();
 
-      // Find representatives who haven't given ratings
       customers.forEach((customer) => {
         const ratingsForTask = task.ratings
           .filter((rating) => rating.forCustomer === customer.id)
           .map((e) => e.createdByUser);
 
-        customer.representatives?.forEach((rep) => {
+        customer.representatives?.forEach(({ id }) => {
           if (
             // skip logged in user, so they won't send email to themselves
-            rep.id !== userInfo?.id &&
+            id !== userInfo?.id &&
             // skip representatives who have given a rating
-            !ratingsForTask.includes(rep.id) &&
-            !missingRepresentatives.has(rep.id)
+            !ratingsForTask.includes(id)
           )
-            missingRepresentatives.set(rep.id, {
-              ...rep,
-              checked: false,
-            });
+            missingRepresentativeIds.add(id);
         });
       });
+
+      const missingRepresentatives = allUsers
+        .filter(({ id }) => missingRepresentativeIds.has(id))
+        .map((user) => ({ ...user, checked: false }));
 
       const missingDevelopers = allUsers
         .filter(missingDeveloper(task))
@@ -168,12 +169,15 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
         />
         <hr />
         {missingUsers?.map((user, idx) => (
-          <Checkbox
-            key={user.id}
-            label={user.email}
-            checked={user.checked}
-            onChange={(checked) => checkUser(checked, idx)}
-          />
+          <div className={classes(css.missingUser)}>
+            <Checkbox
+              key={user.id}
+              label={user.email}
+              checked={user.checked}
+              onChange={(checked) => checkUser(checked, idx)}
+            />
+            <RoleIcon type={user.type} small tooltip color={colors.azure} />
+          </div>
         ))}
         <p className={classes(css.message)}>
           <Trans i18nKey="Optional message" />

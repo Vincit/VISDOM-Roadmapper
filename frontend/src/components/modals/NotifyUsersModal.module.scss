@@ -14,3 +14,13 @@ hr {
   color: $COLOR_BLACK5;
   width: 458px;
 }
+
+.missingUser {
+  @extend .layout-row;
+  align-items: center;
+
+  > :last-child {
+    position: relative;
+    top: -4px;
+  }
+}
