@@ -40,4 +40,8 @@
   @extend .singleTask;
   margin-top: 4px;
   margin-bottom: 4px;
+
+  &:hover {
+    background-color: adjust-color($COLOR_SKY, $lightness: 11%);
+  }
 }

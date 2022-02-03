@@ -1,5 +1,6 @@
 import { FC, CSSProperties, useRef, useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import { VariableSizeList } from 'react-window';
 import classNames from 'classnames';
@@ -9,6 +10,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import { Task } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
+import { paths } from '../routers/paths';
 import { tasksByRelationSelector } from '../redux/roadmaps/selectors';
 import { TaskRelationTableType } from '../utils/TaskRelationUtils';
 import { TaskRatingsText } from './TaskRatingsText';
@@ -28,15 +30,26 @@ type RelationTableProps = {
 const RelationRow: FC<{
   task: Task;
   style?: CSSProperties;
-}> = ({ task, style }) => (
-  <div style={style} className={classes(css.task)}>
-    {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
-    <div className={classes(css.taskName)}>{task.name}</div>
-    <div className={classes(css.taskRatingTexts)}>
-      <TaskRatingsText task={task} largeIcons />
+}> = ({ task, style }) => {
+  const history = useHistory();
+  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/task/${task.id}`;
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => history.push(toTask)}
+      onKeyPress={() => history.push(toTask)}
+      style={style}
+      className={classes(css.task)}
+    >
+      {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
+      <div className={classes(css.taskName)}>{task.name}</div>
+      <div className={classes(css.taskRatingTexts)}>
+        <TaskRatingsText task={task} largeIcons />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   type,
