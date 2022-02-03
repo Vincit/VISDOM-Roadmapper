@@ -11,7 +11,7 @@
   gap: 30px;
 }
 
-.ratingsHeader {
+.header {
   @extend .layout-column;
   gap: 15px;
   text-align: left;
@@ -28,5 +28,11 @@
 .ratings {
   @extend .content;
   gap: 10%;
+  flex-wrap: wrap;
+}
+
+.relations {
+  @extend .content;
+  gap: 4%;
   flex-wrap: wrap;
 }

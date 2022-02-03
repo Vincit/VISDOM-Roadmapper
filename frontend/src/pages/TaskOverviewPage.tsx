@@ -19,6 +19,11 @@ import { Task, TaskRequest } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableComplexity } from '../components/RatingTableComplexity';
 import { RatingTableValue } from '../components/RatingTableValue';
+import {
+  RelationTableRequires,
+  RelationTableContributes,
+  RelationTablePrecedes,
+} from '../components/TaskRelationTable';
 import { Overview, ArrowType } from '../components/Overview';
 import { hasPermission } from '../../../shared/utils/permission';
 import colors from '../colors.module.scss';
@@ -140,9 +145,19 @@ const TaskOverview: FC<{
         key={task.id}
         {...getTaskOverviewData(task, hasEditPermission)}
       />
+      <div className={classes(css.section)}>
+        <div className={classes(css.header)}>
+          <h2>{t('Relations')}</h2>
+        </div>
+        <div className={classes(css.relations)}>
+          <RelationTableRequires task={task} />
+          <RelationTableContributes task={task} />
+          <RelationTablePrecedes task={task} />
+        </div>
+      </div>
       {hasEditPermission && (
         <div className={classes(css.section)}>
-          <div className={classes(css.ratingsHeader)}>
+          <div className={classes(css.header)}>
             <h2>{t('Ratings')}</h2>
             <div className={classes(css.missingRatings)}>
               <MissingRatings task={task} label />

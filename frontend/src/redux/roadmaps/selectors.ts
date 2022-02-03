@@ -1,4 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  getTaskRelations,
+  TaskRelationTableType,
+} from '../../utils/TaskRelationUtils';
 import { RootState } from '../types';
 import { Roadmap } from './types';
 
@@ -27,6 +31,20 @@ export const taskSelector = (id: number) =>
   createSelector(chosenRoadmapSelector, (roadmap) =>
     roadmap?.tasks.find((task) => task.id === id),
   );
+
+export const tasksByRelationSelector = (
+  id: number,
+  type: TaskRelationTableType,
+) =>
+  createSelector(chosenRoadmapSelector, (roadmap) => {
+    const task = roadmap?.tasks.find(({ id: taskId }) => taskId === id);
+    if (!task) return [];
+    const relations = getTaskRelations(task, type, roadmap?.tasks) || [];
+    return (
+      roadmap?.tasks.filter(({ id: taskId }) => relations.includes(taskId)) ||
+      []
+    );
+  });
 
 export const allTasksSelector = createSelector(
   chosenRoadmapSelector,

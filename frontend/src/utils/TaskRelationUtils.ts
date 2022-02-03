@@ -2,6 +2,12 @@ import dagre from 'dagre';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 
+export enum TaskRelationTableType {
+  Requires,
+  Precedes,
+  Contributes,
+}
+
 export interface GroupedRelation {
   synergies: number[];
   dependencies: { from: number; to: number }[];
@@ -117,4 +123,27 @@ export const blockedGroups = (task: number, graph: GroupedRelation[]) => {
     });
   });
   return visited;
+};
+
+export const getTaskRelations = (
+  task: Task,
+  tableType: TaskRelationTableType,
+  tasks?: Task[],
+) => {
+  if (tableType === TaskRelationTableType.Contributes)
+    return task.relations
+      ?.filter(({ type }) => type === TaskRelationType.Synergy)
+      .map(({ to }) => to);
+  if (tableType === TaskRelationTableType.Precedes)
+    return task.relations
+      ?.filter(({ type }) => type === TaskRelationType.Dependency)
+      .map(({ to }) => to);
+  return tasks
+    ?.filter(({ relations }) =>
+      relations?.some(
+        ({ to, type }) =>
+          to === task.id && type === TaskRelationType.Dependency,
+      ),
+    )
+    .map(({ id }) => id);
 };
