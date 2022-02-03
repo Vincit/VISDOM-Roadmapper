@@ -42,8 +42,11 @@ export const TaskListPage = () => {
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
-  const { data } = apiV2.useGetRoadmapsQuery();
-  const roadmap = data?.find(({ id }) => id === roadmapId);
+  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      roadmap: data?.find(({ id }) => id === roadmapId),
+    }),
+  });
 
   const dispatch = useDispatch<StoreDispatchType>();
 

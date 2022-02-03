@@ -18,10 +18,16 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
-  const user = users?.find(({ id }) => id === rating.createdByUser);
-  const { data } = apiV2.useGetCustomersQuery(roadmapId ?? skipToken);
-  const customer = data?.find(({ id }) => id === rating.forCustomer);
+  const { user } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken, {
+    selectFromResult: ({ data }) => ({
+      user: data?.find(({ id }) => id === rating.createdByUser),
+    }),
+  });
+  const { customer } = apiV2.useGetCustomersQuery(roadmapId ?? skipToken, {
+    selectFromResult: ({ data }) => ({
+      customer: data?.find(({ id }) => id === rating.forCustomer),
+    }),
+  });
   if (!user || !customer) return null;
 
   return (

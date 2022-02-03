@@ -25,8 +25,11 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector(userInfoSelector);
-  const { data } = apiV2.useGetRoadmapsQuery();
-  const roadmap = data?.find(({ id }) => id === roadmapId);
+  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      roadmap: data?.find(({ id }) => id === roadmapId),
+    }),
+  });
   const roadmapName = roadmap?.name;
   const {
     data: roadmapUsers,
