@@ -28,8 +28,11 @@ const RoadmapConfigurationPageComponent = ({
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const dispatch = useDispatch<StoreDispatchType>();
   const userType = getType(userInfo, roadmapId);
-  const { data } = apiV2.useGetRoadmapsQuery();
-  const roadmap = data?.find(({ id }) => id === roadmapId);
+  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      roadmap: data?.find(({ id }) => id === roadmapId),
+    }),
+  });
 
   const { data: integrations } = apiV2.useGetIntegrationsQuery(
     roadmapId ?? skipToken,

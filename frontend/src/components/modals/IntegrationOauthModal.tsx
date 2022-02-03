@@ -22,10 +22,14 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [retry, setRetry] = useState(0);
-  const { data } = apiV2.useGetRoadmapsQuery();
-  const currentConfiguration = data
-    ?.find(({ id }) => id === roadmapId)
-    ?.integrations.find((it) => it.name === name);
+  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      roadmap: data?.find(({ id }) => id === roadmapId),
+    }),
+  });
+  const currentConfiguration = roadmap?.integrations.find(
+    (it) => it.name === name,
+  );
 
   const [formValues, setFormValues] = useState({
     token: '',

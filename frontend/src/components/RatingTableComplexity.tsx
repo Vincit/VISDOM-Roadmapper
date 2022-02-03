@@ -23,8 +23,11 @@ const TableComplexityRatingRow: RatingRow = ({
   onEdit,
 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
-  const user = data?.find(({ id }) => id === rating.createdByUser);
+  const { user } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken, {
+    selectFromResult: ({ data }) => ({
+      user: data?.find(({ id }) => id === rating.createdByUser),
+    }),
+  });
   if (!user) return null;
 
   return (
