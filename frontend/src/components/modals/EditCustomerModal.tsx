@@ -2,6 +2,7 @@ import { FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { StoreDispatchType } from '../../redux';
 import { userActions } from '../../redux/user';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
@@ -26,9 +27,13 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   customer,
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
-  const { data: roadmapUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: roadmapUsers } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [
     patchCustomerTrigger,
     patchCustomerStatus,
@@ -72,6 +77,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (roadmapId === undefined) return;
     patchCustomerTrigger({
       roadmapId,
       customer: {

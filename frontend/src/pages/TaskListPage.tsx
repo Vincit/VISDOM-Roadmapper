@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { TaskTableRated } from '../components/TaskTableRated';
 import { TaskTableUnrated } from '../components/TaskTableUnrated';
@@ -36,9 +37,11 @@ export const TaskListPage = () => {
     shallowEqual,
   );
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const { data } = apiV2.useGetRoadmapsQuery();
   const roadmap = data?.find(({ id }) => id === roadmapId);
 

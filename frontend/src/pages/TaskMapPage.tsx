@@ -1,5 +1,6 @@
 import { ReactNode, FC, useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import ReactFlow, {
   Controls,
   OnLoadParams,
@@ -86,12 +87,10 @@ const isGroup = (x: Edge | Group): x is Group => x.type === 'special';
 export const TaskMapPage = () => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!, {
-    skip: roadmapId === undefined,
-  });
-  const { data: relations } = apiV2.useGetTaskRelationsQuery(roadmapId!, {
-    skip: roadmapId === undefined,
-  });
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: relations } = apiV2.useGetTaskRelationsQuery(
+    roadmapId ?? skipToken,
+  );
   const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
   const [addSynergy] = apiV2.useAddSynergyRelationsMutation();
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);

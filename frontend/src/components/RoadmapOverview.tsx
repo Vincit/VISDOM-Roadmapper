@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
@@ -14,8 +15,10 @@ const classes = classNames.bind(css);
 export const RoadmapOverview = () => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId!);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
   const { value, complexity } = averageValueAndComplexity(tasks ?? []);
   const numFormat = new Intl.NumberFormat(undefined, {

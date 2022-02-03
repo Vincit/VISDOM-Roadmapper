@@ -3,6 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { RoleType, Permission } from '../../../../shared/types/customTypes';
 import { ModalTypes, Modal } from './types';
@@ -30,7 +31,9 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
 }) => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: roadmapCustomers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: roadmapCustomers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [errorMessage, setErrorMessage] = useState('');
   const [openInfo, setOpenInfo] = useState(true);
   const [formValues, setFormValues] = useState({

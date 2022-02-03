@@ -2,6 +2,7 @@ import { useState, MouseEvent } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { modalsActions } from '../redux/modals';
 import { StoreDispatchType } from '../redux/index';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
@@ -19,7 +20,9 @@ export const TeamListPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [searchString, setSearchString] = useState('');
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: invitations } = apiV2.useGetInvitationsQuery(roadmapId!);
+  const { data: invitations } = apiV2.useGetInvitationsQuery(
+    roadmapId ?? skipToken,
+  );
 
   const addTeamMemberClicked = (e: MouseEvent) => {
     e.preventDefault();

@@ -2,6 +2,7 @@ import { FC, FormEvent, useState, useEffect } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import {
@@ -79,8 +80,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   const [patchTaskratings, patchStatus] = apiV2.usePatchTaskratingsMutation();
   const [addTaskratings, addStatus] = apiV2.useAddTaskratingsMutation();
 
-  const { task } = apiV2.useGetTasksQuery(roadmapId!, {
-    skip: roadmapId === undefined,
+  const { task } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
     selectFromResult: ({ data }) => ({
       task: data?.find(({ id }) => id === taskId),
     }),

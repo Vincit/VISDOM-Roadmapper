@@ -1,6 +1,7 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { TableTeamMemberRow } from './TableTeamMemberRow';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { RoadmapUser } from '../redux/roadmaps/types';
@@ -20,10 +21,14 @@ export const TeamMemberList: FC<{
 }> = ({ search }) => {
   const [sortedMembers, setSortedMembers] = useState<RoadmapUser[]>([]);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: teamMembers } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: teamMembers } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+  );
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
 
   const [sort, sorting] = useSorting(
     useMemo(() => userSort(roadmapId, tasks, users, customers), [

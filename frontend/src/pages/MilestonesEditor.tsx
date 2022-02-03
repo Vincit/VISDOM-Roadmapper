@@ -7,6 +7,7 @@ import {
 } from 'react-beautiful-dnd';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { Link } from 'react-router-dom';
@@ -52,14 +53,18 @@ const ROADMAP_LIST_ID = '-1';
 
 export const MilestonesEditor = () => {
   const { t } = useTranslation();
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const [patchVersion] = apiV2.usePatchVersionMutation();
-  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
+    roadmapId ?? skipToken,
+  );
   const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
     undefined | Version[]
   >(undefined);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [disableUpdates, setDisableUpdates] = useState(false);
@@ -102,6 +107,7 @@ export const MilestonesEditor = () => {
   const deleteVersionClicked = (id: number) => (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (roadmapId === undefined) return;
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.DELETE_VERSION_MODAL,
@@ -135,6 +141,7 @@ export const MilestonesEditor = () => {
   };
 
   const onDragReorder = async (result: DropWithDestination) => {
+    if (roadmapId === undefined) return;
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
 
@@ -202,9 +209,10 @@ export const MilestonesEditor = () => {
   };
 
   const onVersionDragEnd = async (result: DropWithDestination) => {
+    if (roadmapId === undefined || roadmapsVersionsLocal === undefined) return;
     const { source, destination, draggableId } = result;
     const dragVersionId = parseInt(draggableId.match(/\d+/)![0], 10);
-    const versionsCopy = roadmapsVersionsLocal!
+    const versionsCopy = roadmapsVersionsLocal
       .map((ver) => {
         if (ver.sortingRank > source.index) {
           return { ...ver, sortingRank: ver.sortingRank - 1 };
@@ -314,7 +322,7 @@ export const MilestonesEditor = () => {
                         onClick={deleteVersionClicked(version.id)}
                         href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
                           id: version.id,
-                          roadmapId,
+                          roadmapId: roadmapId!,
                         })}
                       />
                       <SettingsButton

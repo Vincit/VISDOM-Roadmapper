@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { RoleIcon } from '../RoleIcons';
@@ -27,10 +28,14 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const [addCustomerTrigger] = apiV2.useAddCustomerMutation();
-  const { data: roadmapUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const { data: roadmapUsers } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+  );
   const [colorType, setColorType] = useState('generate');
   const [formValues, setFormValues] = useState({
     name: '',
@@ -52,6 +57,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
   }, [roadmapUsers]);
 
   const handleSubmit = async () => {
+    if (roadmapId === undefined) return;
     try {
       await addCustomerTrigger({
         roadmapId,

@@ -1,5 +1,6 @@
 import { MouseEvent, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -30,9 +31,11 @@ export const TableCustomerRow: TableRow<Customer> = ({
   const role = useSelector(userRoleSelector, shallowEqual);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [unratedAmount, setUnratedAmount] = useState(0);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId!);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId!);
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId!);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
 
   useEffect(() => {
     if (roadmapId !== undefined && tasks)

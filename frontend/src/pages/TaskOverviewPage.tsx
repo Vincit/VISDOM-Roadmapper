@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 // useTranslation is a hook and thus can't be used in a function
 import i18n from 'i18next';
 import { useSelector, shallowEqual } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 import { Permission } from '../../../shared/types/customTypes';
 import {
@@ -12,6 +13,7 @@ import {
 } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { userRoleSelector } from '../redux/user/selectors';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableComplexity } from '../components/RatingTableComplexity';
@@ -185,11 +187,9 @@ const TaskOverview: FC<{
 };
 
 export const TaskOverviewPage = () => {
-  const { roadmapId, taskId } = useParams<{
-    roadmapId: string | undefined;
-    taskId: string | undefined;
-  }>();
-  const { data: tasks } = apiV2.useGetTasksQuery(Number(roadmapId));
+  const { taskId } = useParams<{ taskId: string | undefined }>();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const taskIdx = tasks?.findIndex(({ id }) => Number(taskId) === id);
   if (!tasks || taskIdx === undefined || taskIdx < 0)
     return <Redirect to={paths.notFound} />;

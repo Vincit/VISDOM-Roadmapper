@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
@@ -26,7 +27,9 @@ export const TimeEstimationPage = () => {
   const { t } = useTranslation();
   const durationInput = useRef<HTMLInputElement>(null);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(roadmapId!);
+  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
+    roadmapId ?? skipToken,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const timeEstimates = useSelector<RootState, TimeEstimate[]>(
     plannerTimeEstimatesSelector,

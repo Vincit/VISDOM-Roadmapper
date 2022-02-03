@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
 import { paths } from '../routers/paths';
@@ -30,23 +31,31 @@ const ClientOverview: FC<{
 }> = ({ clients, client, clientIdx }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const roadmapId = useSelector(chosenRoadmapIdSelector)!;
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
   // select users as client's representatives does not include type
   const representativeIds = client.representatives?.map(({ id }) => id);
-  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+  );
   const representatives =
     allUsers?.filter(({ id }) => representativeIds?.includes(id)) ?? [];
-  const { data: customers } = apiV2.useGetCustomersQuery(roadmapId);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
+  const { tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
+    selectFromResult: ({ data }) => ({ tasks: data ?? [] }),
+  });
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
+
+  if (roadmapId === undefined) return null;
   const unratedTasks = unratedTasksAmount(
     client,
     roadmapId,
-    tasks!,
+    tasks,
     users,
     customers,
   );
-  const allCustomerStakes = totalCustomerStakes(tasks!, customers);
+  const allCustomerStakes = totalCustomerStakes(tasks, customers);
   const clientsListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.clients}`;
 
   const siblingClients = [
@@ -69,7 +78,7 @@ const ClientOverview: FC<{
     },
     {
       label: t('Tasks rated'),
-      value: tasks!.length - unratedTasks,
+      value: tasks.length - unratedTasks,
     },
     {
       label: t('Unrated tasks'),
@@ -136,19 +145,18 @@ const ClientOverview: FC<{
 };
 
 export const ClientOverviewPage = () => {
-  const { roadmapId, clientId } = useParams<{
-    roadmapId: string | undefined;
-    clientId: string | undefined;
-  }>();
-
-  const { data: customers } = apiV2.useGetCustomersQuery(Number(roadmapId));
+  const { clientId } = useParams<{ clientId: string | undefined }>();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
   const userInfoCustomers = useSelector<RootState, Customer[]>(
     userInfoCustomersSelector,
     shallowEqual,
   );
   const role = useSelector(userRoleSelector, shallowEqual);
 
-  const clients = role === RoleType.Admin ? customers! : userInfoCustomers;
+  const clients = role === RoleType.Admin ? customers ?? [] : userInfoCustomers;
   const clientIdx = clients.findIndex(({ id }) => Number(clientId) === id);
   const client =
     clientIdx !== undefined && clientIdx >= 0 ? clients[clientIdx] : undefined;
