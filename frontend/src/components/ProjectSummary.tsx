@@ -125,7 +125,9 @@ export const ProjectSummary: FC<{
   const type = getType(userInfo, roadmap.id);
   const { data: customers } = apiV2.useGetCustomersQuery(roadmap.id);
   const { data: tasks } = apiV2.useGetTasksQuery(roadmap.id);
-  const { data: versions } = apiV2.useGetVersionsQuery(roadmap.id);
+  const { data: versions } = apiV2.useGetVersionsQuery(roadmap.id, {
+    skip: !hasPermission(type, Permission.VersionRead),
+  });
   const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmap.id, {
     skip: !hasPermission(type, Permission.RoadmapReadUsers),
   });

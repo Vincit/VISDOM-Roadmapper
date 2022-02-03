@@ -41,6 +41,7 @@ export const DashboardPage = () => {
   );
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
+    { skip: !hasPermission(type, Permission.RoadmapReadUsers) },
   );
   const [chartVersionLists, setChartVersionLists] = useState<
     {
