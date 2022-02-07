@@ -8,6 +8,7 @@ import PasswordReset from '../passwordReset/passwordReset.model';
 import { sendVerificationLink } from '../emailVerification/emailVerification.controller';
 import { Role } from '../roles/roles.model';
 import { sendEmail } from '../../utils/sendEmail';
+import { forgotPasswordEmail } from '../../utils/emailMessages';
 import { daysAgo } from '../../../../shared/utils/date';
 
 export const getUsers: RouteHandlerFnc = async (ctx) => {
@@ -276,6 +277,7 @@ export const sendPasswordResetLink: RouteHandlerFnc = async (ctx) => {
       email,
       'Reset your password',
       `Please reset your password using the link:\r\n${BASE_URL}/resetPassword/${created.uuid}`,
+      forgotPasswordEmail(BASE_URL, created.uuid),
     );
     return 200;
   });

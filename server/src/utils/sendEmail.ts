@@ -50,7 +50,7 @@ export const sendEmail = async (
         ...(html && {
           Html: {
             Charset: 'UTF-8',
-            Data: text,
+            Data: html,
           },
         }),
       },
