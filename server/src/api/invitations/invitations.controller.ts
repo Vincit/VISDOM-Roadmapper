@@ -2,12 +2,14 @@ import { RouteHandlerFnc } from 'src/types/customTypes';
 import Invitation from './invitations.model';
 import User from '../users/users.model';
 import Customer from '../customer/customer.model';
+import Roadmap from '../roadmaps/roadmaps.model';
 import uuid from 'uuid';
 import { sendEmail } from '../../utils/sendEmail';
 import { daysAgo } from '../../../../shared/utils/date';
 import { hasPermission } from '../../../../shared/utils/permission';
-import { Permission } from '../../../../shared/types/customTypes';
+import { Permission, RoleType } from '../../../../shared/types/customTypes';
 import { difference } from '../../utils/array';
+import { projectInvitationEmail } from '../../utils/emailMessages';
 
 // should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
 const BASE_URL = process.env.FRONTEND_BASE_URL!;
@@ -68,10 +70,20 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
         .relate(customers);
     return invitation;
   });
+
+  const invationRoadmap = await Roadmap.query().findById(ctx.params.roadmapId);
   await sendEmail(
     email,
     'Invitation to roadmap',
     `You have been invited to a roadmap, here is a link:\r\n${BASE_URL}/join/${created.id}`,
+    projectInvitationEmail(
+      BASE_URL,
+      created.id,
+      invationRoadmap.name,
+      RoleType[type] === RoleType[RoleType.Business]
+        ? 'Sales representative'
+        : RoleType[type],
+    ),
   );
   return void (ctx.body = created);
 };
