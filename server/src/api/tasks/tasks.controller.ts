@@ -8,6 +8,7 @@ import User from '../users/users.model';
 import { sendEmail } from '../../utils/sendEmail';
 import { isNumberArray } from '../../utils/typeValidation';
 import { ClientEvents } from '../../../../shared/types/sockettypes';
+import { notifyUsersEmail } from '../../utils/emailMessages';
 
 export const getTasks: RouteHandlerFnc = async (ctx) => {
   const { user, role } = ctx.state;
@@ -124,11 +125,13 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
   return res;
 };
 
+const BASE_URL = process.env.FRONTEND_BASE_URL!;
 export const notifyUsers: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
   const roadmapId = Number(ctx.params.roadmapId);
+  const senderEmail = ctx.state.user.email;
   const { users: userIds, message, ...rest } = ctx.request.body;
   if (Object.keys(rest).length || !isNumberArray(userIds)) {
     ctx.status = 400;
@@ -141,10 +144,23 @@ export const notifyUsers: RouteHandlerFnc = async (ctx) => {
     ctx.status = 400;
     return;
   }
-  // TODO: link to the actual task, where the user can give the rating
-  const messageBody = `${ctx.state.user.email} has requested your rating for the task ${ctx.params.taskId}.\r\n\r\n${message}`;
+  const task = await Task.query().findById(ctx.params.taskId);
+
+  const taskUrl = `${BASE_URL}/roadmap/${roadmapId}/tasks/task/${ctx.params.taskId}`;
+  const messageBody = `${senderEmail} has requested your rating for the task ${task.name} at ${taskUrl}.\r\n\r\n${message}`;
   users.forEach(({ email }) => {
-    sendEmail(email, 'Task rating notification', messageBody);
+    sendEmail(
+      email,
+      'Task rating notification',
+      messageBody,
+      notifyUsersEmail({
+        baseUrl: BASE_URL,
+        taskUrl,
+        taskName: task.name,
+        senderEmail,
+        message: message ? `"${message}"` : '',
+      }),
+    );
   });
   ctx.status = 200;
 };
