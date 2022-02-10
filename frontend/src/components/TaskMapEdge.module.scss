@@ -1,23 +1,23 @@
 @import '../shared.scss';
 
 .firstStop {
-  stop-color: $COLOR_FOREST;
+  stop-color: $COLOR_FOREST !important;
 }
 .secondStop {
-  stop-color: $COLOR_ORANGE;
+  stop-color: $COLOR_ORANGE !important;
 }
 
 .invisiblePath {
-  stroke: $COLOR_AZURE;
-  pointer-events: all;
-  stroke-width: 15;
-  opacity: 0;
-  cursor: pointer;
+  stroke: $COLOR_AZURE !important;
+  pointer-events: all !important;
+  stroke-width: 15 !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
   &:hover {
-    opacity: 0.1;
+    opacity: 0.1 !important;
   }
   &.disableInteraction {
-    cursor: -webkit-grabbing;
-    stroke: transparent;
+    cursor: -webkit-grabbing !important;
+    stroke: transparent !important;
   }
 }
