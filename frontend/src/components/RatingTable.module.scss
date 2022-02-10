@@ -1,7 +1,8 @@
 @import '../shared.scss';
 
 .ratingContainer {
-  min-width: 550px;
+  min-width: 450px;
+  flex-grow: 1;
   hr {
     width: 100%;
   }

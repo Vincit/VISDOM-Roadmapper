@@ -2,7 +2,8 @@
 
 .singleTask {
   @extend .layout-row;
-  width: 360px;
+  width: 96%;
+  min-width: 330px;
   min-height: 40px;
   max-height: 90px;
   background-color: $COLOR_WHITE;

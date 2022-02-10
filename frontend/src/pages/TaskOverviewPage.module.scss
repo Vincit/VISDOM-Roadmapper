@@ -3,6 +3,7 @@
 .content {
   @extend .layout-row;
   width: 100%;
+  flex-grow: 1;
 }
 
 .section {
@@ -28,11 +29,9 @@
 .ratings {
   @extend .content;
   gap: 10%;
-  flex-wrap: wrap;
 }
 
 .relations {
   @extend .content;
   gap: 4%;
-  flex-wrap: wrap;
 }
