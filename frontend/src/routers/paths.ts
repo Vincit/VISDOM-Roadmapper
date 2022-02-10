@@ -17,6 +17,7 @@ export const paths = {
   forgotPassword: '/forgotpassword',
   resetPassword: `/resetPassword/:token(${uuidPattern})`,
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
+  emailTest1: '/emailTest1',
   roadmapRelative: {
     dashboard: '/dashboard',
     clients: '/clients',

@@ -26,6 +26,7 @@ import {
 } from '../pages/VerifyEmailPage';
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage';
 import { ResetPasswordPage } from '../pages/ResetPasswordPage';
+import { ResetPasswordEmail } from '../components/emails/ResetPasswordEmail';
 
 const Home = () => {
   const loggedInUser = useSelector<RootState, UserInfo | undefined>(
@@ -104,6 +105,11 @@ const routes = [
   {
     path: paths.resetPassword,
     component: () => <NavLayout Content={ResetPasswordPage} />,
+    exact: false,
+  },
+  {
+    path: paths.emailTest1,
+    component: () => <NavLayout Content={ResetPasswordEmail} />,
     exact: false,
   },
   {
