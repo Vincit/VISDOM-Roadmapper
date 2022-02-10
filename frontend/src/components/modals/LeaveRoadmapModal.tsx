@@ -15,7 +15,7 @@ import '../../shared.scss';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { userInfoSelector } from '../../redux/user/selectors';
 import { getType } from '../../utils/UserUtils';
-import { apiV2 } from '../../api/api';
+import { apiV2, selectById } from '../../api/api';
 
 export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
   closeModal,
@@ -25,11 +25,10 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector(userInfoSelector);
-  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      roadmap: data?.find(({ id }) => id === roadmapId),
-    }),
-  });
+  const { data: roadmap } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(roadmapId),
+  );
   const roadmapName = roadmap?.name;
   const {
     data: roadmapUsers,

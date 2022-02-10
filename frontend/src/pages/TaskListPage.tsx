@@ -21,7 +21,7 @@ import { TopBar } from '../components/TopBar';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { getType } from '../utils/UserUtils';
 import css from './TaskListPage.module.scss';
-import { apiV2 } from '../api/api';
+import { apiV2, selectById } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -42,11 +42,10 @@ export const TaskListPage = () => {
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
-  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      roadmap: data?.find(({ id }) => id === roadmapId),
-    }),
-  });
+  const { data: roadmap } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(roadmapId),
+  );
 
   const dispatch = useDispatch<StoreDispatchType>();
 

@@ -7,7 +7,7 @@ import { EditButton } from './forms/SvgButton';
 import { Dot } from './Dot';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
-import { apiV2 } from '../api/api';
+import { apiV2, selectById } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -18,16 +18,15 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { user } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken, {
-    selectFromResult: ({ data }) => ({
-      user: data?.find(({ id }) => id === rating.createdByUser),
-    }),
-  });
-  const { customer } = apiV2.useGetCustomersQuery(roadmapId ?? skipToken, {
-    selectFromResult: ({ data }) => ({
-      customer: data?.find(({ id }) => id === rating.forCustomer),
-    }),
-  });
+  const { data: user } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+    selectById(rating.createdByUser),
+  );
+  const { data: customer } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+    selectById(rating.forCustomer),
+  );
+
   if (!user || !customer) return null;
 
   return (

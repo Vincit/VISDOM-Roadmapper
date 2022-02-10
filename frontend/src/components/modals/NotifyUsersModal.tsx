@@ -25,7 +25,7 @@ import { missingDeveloper } from '../../utils/TaskUtils';
 import { TextArea } from '../forms/FormField';
 import { RoleIcon } from '../RoleIcons';
 import colors from '../../colors.module.scss';
-import { apiV2 } from '../../api/api';
+import { apiV2, selectById } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -39,11 +39,10 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { task } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
-    selectFromResult: ({ data }) => ({
-      task: data?.find(({ id }) => id === taskId),
-    }),
-  });
+  const { data: task } = apiV2.useGetTasksQuery(
+    roadmapId ?? skipToken,
+    selectById(taskId),
+  );
   const [isLoading, setIsLoading] = useState(false);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,

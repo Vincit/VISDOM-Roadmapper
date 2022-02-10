@@ -7,7 +7,7 @@ import { ratingTable, RatingRow } from './RatingTable';
 import { EditButton } from './forms/SvgButton';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
-import { apiV2 } from '../api/api';
+import { apiV2, selectById } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -23,11 +23,11 @@ const TableComplexityRatingRow: RatingRow = ({
   onEdit,
 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { user } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken, {
-    selectFromResult: ({ data }) => ({
-      user: data?.find(({ id }) => id === rating.createdByUser),
-    }),
-  });
+  const { data: user } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+    selectById(rating.createdByUser),
+  );
+
   if (!user) return null;
 
   return (

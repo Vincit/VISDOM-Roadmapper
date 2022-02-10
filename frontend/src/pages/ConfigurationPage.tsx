@@ -12,7 +12,7 @@ import { RoleType } from '../../../shared/types/customTypes';
 import { requireVerifiedEmail } from '../utils/requirelogin';
 import { titleCase } from '../utils/string';
 import { getType } from '../utils/UserUtils';
-import { apiV2 } from '../api/api';
+import { apiV2, selectById } from '../api/api';
 import { InfoTooltip } from '../components/InfoTooltip';
 
 import css from './ConfigurationPage.module.scss';
@@ -28,11 +28,10 @@ const RoadmapConfigurationPageComponent = ({
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const dispatch = useDispatch<StoreDispatchType>();
   const userType = getType(userInfo, roadmapId);
-  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      roadmap: data?.find(({ id }) => id === roadmapId),
-    }),
-  });
+  const { data: roadmap } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(roadmapId),
+  );
 
   const { data: integrations } = apiV2.useGetIntegrationsQuery(
     roadmapId ?? skipToken,
