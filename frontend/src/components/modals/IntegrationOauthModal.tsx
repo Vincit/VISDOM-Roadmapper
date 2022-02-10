@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
-import { api, apiV2 } from '../../api/api';
+import { api, apiV2, selectById } from '../../api/api';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -22,11 +22,10 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   const [oauthURL, setOAuthURL] = useState<null | URL>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [retry, setRetry] = useState(0);
-  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      roadmap: data?.find(({ id }) => id === roadmapId),
-    }),
-  });
+  const { data: roadmap } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(roadmapId),
+  );
   const currentConfiguration = roadmap?.integrations.find(
     (it) => it.name === name,
   );

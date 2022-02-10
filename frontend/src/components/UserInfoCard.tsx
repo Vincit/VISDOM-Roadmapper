@@ -13,7 +13,7 @@ import { table, TableRow } from './Table';
 import { StoreDispatchType } from '../redux';
 import { ModalTypes } from './modals/types';
 import { modalsActions } from '../redux/modals';
-import { api, apiV2 } from '../api/api';
+import { api, apiV2, selectById } from '../api/api';
 import { paths } from '../routers/paths';
 import { ExitButton } from './forms/SvgButton';
 
@@ -23,11 +23,10 @@ const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { roadmapId, type } = roadmapRole;
-  const { roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      roadmap: data?.find(({ id }) => id === roadmapId),
-    }),
-  });
+  const { data: roadmap } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(roadmapId),
+  );
 
   const leaveProject = useCallback(
     (event: SyntheticEvent) => {

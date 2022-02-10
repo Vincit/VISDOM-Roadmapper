@@ -64,6 +64,15 @@ export const axiosBaseQuery: BaseQueryFn<
   }
 };
 
+export const selectById = <Id, T extends { id: Id }, Rest>(
+  idToFind: Id | undefined,
+) => ({
+  selectFromResult: ({ data, ...rest }: { data?: T[] } & Rest) => ({
+    ...rest,
+    data: data?.find(({ id }) => id === idToFind),
+  }),
+});
+
 export const apiV2 = createApi({
   reducerPath: 'apiV2',
   baseQuery: axiosBaseQuery,

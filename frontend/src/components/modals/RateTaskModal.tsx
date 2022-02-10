@@ -27,7 +27,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Dot } from '../Dot';
 import { getType } from '../../utils/UserUtils';
 import css from './RateTaskModal.module.scss';
-import { apiV2 } from '../../api/api';
+import { apiV2, selectById } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -80,11 +80,10 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   const [patchTaskratings, patchStatus] = apiV2.usePatchTaskratingsMutation();
   const [addTaskratings, addStatus] = apiV2.useAddTaskratingsMutation();
 
-  const { task } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
-    selectFromResult: ({ data }) => ({
-      task: data?.find(({ id }) => id === taskId),
-    }),
-  });
+  const { data: task } = apiV2.useGetTasksQuery(
+    roadmapId ?? skipToken,
+    selectById(taskId),
+  );
 
   const dimension =
     getType(userInfo, roadmapId) === RoleType.Developer
