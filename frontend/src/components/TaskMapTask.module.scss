@@ -63,10 +63,10 @@
 .handle {
   visibility: visible;
   position: absolute;
-  border-radius: 50%;
-  height: 17px;
-  width: 17px;
-  background-color: $COLOR_WHITE;
+  border-radius: 50% !important;
+  height: 17px !important;
+  width: 17px !important;
+  background-color: $COLOR_WHITE !important;
 
   &.dragging {
     height: calc(17px * #{$ZOOM});
@@ -78,28 +78,28 @@
 .leftHandle {
   @extend .handle;
   left: -3%;
-  border: 2px solid $COLOR_ORANGE;
+  border: 2px solid $COLOR_ORANGE !important;
 
   &.filled {
-    background-color: lighten($COLOR_ORANGE, 20%);
+    background-color: lighten($COLOR_ORANGE, 20%) !important;
   }
 
   &.connectable {
-    box-shadow: 0 0 10px 4px $COLOR_ORANGE;
+    box-shadow: 0 0 10px 4px $COLOR_ORANGE !important;
   }
 }
 
 .rightHandle {
   @extend .handle;
   left: 97%;
-  border: 2px solid $COLOR_FOREST;
+  border: 2px solid $COLOR_FOREST !important;
 
   &.filled {
-    background-color: lighten($COLOR_FOREST, 20%);
+    background-color: lighten($COLOR_FOREST, 20%) !important;
   }
 
   &.connectable {
-    box-shadow: 0 0 10px 4px $COLOR_FOREST;
+    box-shadow: 0 0 10px 4px $COLOR_FOREST !important;
   }
 }
 
