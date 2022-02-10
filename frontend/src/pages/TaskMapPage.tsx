@@ -39,6 +39,8 @@ import { TaskGroup } from '../components/TaskMapTaskGroup';
 import css from './TaskMapPage.module.scss';
 import { InfoTooltip } from '../components/InfoTooltip';
 import { apiV2 } from '../api/api';
+import { SortableTaskList } from '../components/SortableTaskList';
+import { ExpandableColumn } from '../components/ExpandableColumn';
 
 const classes = classNames.bind(css);
 
@@ -96,6 +98,8 @@ export const TaskMapPage = () => {
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
   const dispatch = useDispatch<StoreDispatchType>();
   const [taskRelations, setTaskRelations] = useState<GroupedRelation[]>([]);
+  const [stagedTasks, setStagedTasks] = useState<number[]>([]);
+  const [unstagedTasks, setUnstagedTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [disableDrag, setDisableDrag] = useState(false);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
@@ -107,10 +111,34 @@ export const TaskMapPage = () => {
   );
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
 
+  const [expandUnstaged, setExpandUnstaged] = useState(false);
+
   useEffect(() => {
-    if (relations !== undefined && tasks !== undefined)
-      setTaskRelations(groupTaskRelations(tasks, relations));
-  }, [relations, tasks]);
+    if (relations === undefined) return;
+    const ids = relations.flatMap(({ from, to }) => [from, to]);
+    setStagedTasks((prev) => Array.from(new Set(ids.concat(prev))));
+  }, [relations]);
+
+  useEffect(() => {
+    setUnstagedTasks(
+      tasks?.filter(({ id }) => !stagedTasks.includes(id)) ?? [],
+    );
+  }, [tasks, stagedTasks]);
+
+  useEffect(() => {
+    if (relations === undefined || tasks === undefined) return;
+    const groups = groupTaskRelations(relations);
+    const ids = new Set(relations.flatMap(({ from, to }) => [from, to]));
+    const staged = stagedTasks.filter((id) => !ids.has(id));
+    setTaskRelations(
+      groups.concat(
+        staged.map((id) => ({
+          synergies: [id],
+          dependencies: [],
+        })),
+      ),
+    );
+  }, [relations, tasks, stagedTasks]);
 
   useEffect(() => {
     if (!mapPosition && flowInstance && flowElements.length) {
@@ -230,8 +258,12 @@ export const TaskMapPage = () => {
     const draggedIndex = taskRelations.findIndex(({ synergies }) =>
       synergies.includes(draggedTaskId),
     );
-    if (draggedIndex < 0 || taskRelations[draggedIndex].synergies.length === 1)
+    if (draggedIndex < 0) {
+      // staging a task with no relations
+      setStagedTasks((prev) => [...prev, draggedTaskId]);
       return;
+    }
+    if (taskRelations[draggedIndex].synergies.length === 1) return;
     const newList = copyRelationList(taskRelations);
     // remove dragged task from synergy list
     newList[draggedIndex].synergies = newList[draggedIndex].synergies.filter(
@@ -255,6 +287,16 @@ export const TaskMapPage = () => {
   ) => {
     const destinationId = Number(destination.droppableId);
     const sourceId = Number(source.droppableId);
+
+    if (sourceId === -1) {
+      // unstaged task added to existing group
+      await addSynergyRelations(
+        draggedTaskId,
+        taskRelations[destinationId].synergies,
+      );
+      return;
+    }
+
     const copyList = copyRelationList(taskRelations);
 
     move()
@@ -293,26 +335,40 @@ export const TaskMapPage = () => {
   };
 
   return (
-    <div className={classes(css['layout-row'], css.grow)}>
-      <div
-        id="taskmap"
-        className={classes(css.taskmap, css.grow)}
-        style={{
-          ['--zoom' as any]: mapPosition?.zoom || 1,
+    <div
+      id="taskmap"
+      className={classes(css.taskmap, css.grow)}
+      style={{
+        ['--zoom' as any]: mapPosition?.zoom || 1,
+      }}
+    >
+      <DragDropContext
+        onDragEnd={onDragEnd}
+        onDragStart={({ draggableId }) => {
+          setDropUnavailable(blockedGroups(Number(draggableId), taskRelations));
+          setDisableDrag(true);
         }}
       >
-        <DragDropContext
-          onDragEnd={onDragEnd}
-          onDragStart={({ draggableId }) => {
-            setDropUnavailable(
-              blockedGroups(Number(draggableId), taskRelations),
-            );
-            setDisableDrag(true);
-          }}
-        >
+        <div className={classes(css.flowContainer)}>
+          <ExpandableColumn
+            expanded={expandUnstaged}
+            onToggle={() => setExpandUnstaged((prev) => !prev)}
+            title={
+              <div>
+                {t('Unstaged tasks')} ({unstagedTasks.length})
+              </div>
+            }
+          >
+            <SortableTaskList
+              listId="-1"
+              tasks={unstagedTasks}
+              disableDragging={disableDrag}
+              isDropDisabled
+              showRatings
+            />
+          </ExpandableColumn>
           <ReactFlowProvider>
             <ReactFlow
-              className={classes(css.flowContainer)}
               connectionLineComponent={ConnectionLine}
               elements={flowElements}
               nodeTypes={{
@@ -360,14 +416,14 @@ export const TaskMapPage = () => {
               </Controls>
             </ReactFlow>
           </ReactFlowProvider>
+        </div>
+        {selectedTask && (
           <div className={classes(css.taskOverviewContainer)}>
-            {selectedTask && (
-              <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
-            )}
+            <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
           </div>
-        </DragDropContext>
-        <div ref={setDivRef} className={classes(css.measureTaskName)} />
-      </div>
+        )}
+      </DragDropContext>
+      <div ref={setDivRef} className={classes(css.measureTaskName)} />
     </div>
   );
 };
