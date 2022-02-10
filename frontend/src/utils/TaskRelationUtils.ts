@@ -1,5 +1,5 @@
 import dagre from 'dagre';
-import { Task, TaskRelation } from '../redux/roadmaps/types';
+import { TaskRelation } from '../redux/roadmaps/types';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 
 export enum TaskRelationTableType {
@@ -27,12 +27,10 @@ const existingSynergyIdxs = (subgroup: number[], groups: GroupedRelation[]) => {
   return idxs;
 };
 
-export const groupTaskRelations = (
-  tasks: Task[],
-  relations: TaskRelation[],
-) => {
+export const groupTaskRelations = (relations: TaskRelation[]) => {
   const groups: GroupedRelation[] = [];
-  tasks.forEach(({ id }) => {
+  const ids = new Set(relations.flatMap(({ from, to }) => [from, to]));
+  ids.forEach((id) => {
     const subgroup: GroupedRelation = {
       synergies: [id],
       dependencies: [],
