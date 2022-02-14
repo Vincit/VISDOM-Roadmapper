@@ -1,13 +1,21 @@
-import { FC } from 'react';
+import { useState, FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
+import { Alert } from 'react-bootstrap';
 import { RoleIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
 import { Checkbox } from '../../forms/Checkbox';
-import { CheckableUser } from '../../../redux/roadmaps/types';
+import {
+  CheckableUser,
+  InviteRoadmapUser,
+  RoadmapCreationCustomer,
+} from '../../../redux/roadmaps/types';
 import { ColorPicker } from './ColorPicker';
 import { Input } from '../../forms/FormField';
 import colors from '../../../colors.module.scss';
+import { randomColor } from '../../../utils/CustomerUtils';
+import { Permission } from '../../../../../shared/types/customTypes';
+import { hasPermission } from '../../../../../shared/utils/permission';
 import css from './CustomerModalParts.module.scss';
 
 const classes = classNames.bind(css);
@@ -53,7 +61,7 @@ export const SelectCustomerInfo: FC<{
           id="email"
           type="email"
           value={email}
-          placeholder={t('Example email', { localPart: 'customername' })}
+          placeholder={t('Example email', { localPart: 'clientname' })}
           onChange={(e) => onEmailChange(e.currentTarget.value)}
         />
       </div>
@@ -86,7 +94,9 @@ export const SelectCustomerInfo: FC<{
 };
 
 export const SelectRepresentatives: FC<{
-  representatives: CheckableUser[];
+  representatives:
+    | CheckableUser[]
+    | (InviteRoadmapUser & { checked: boolean })[];
   onRepresentativeChange: (idx: number, checked: boolean) => void;
 }> = ({ representatives, onRepresentativeChange }) => (
   <div className={classes(css.section)}>
@@ -95,7 +105,7 @@ export const SelectRepresentatives: FC<{
     </label>
     <div id="representatives" className={classes(css.representatives)}>
       {representatives.map((rep, idx) => (
-        <div key={rep.id} className={classes(css.representative)}>
+        <div key={rep.email} className={classes(css.representative)}>
           <Checkbox
             label={rep.email}
             checked={rep.checked}
@@ -112,3 +122,104 @@ export const SelectRepresentatives: FC<{
     </div>
   </div>
 );
+
+export const AddOrModifyCustomer: FC<{
+  customers: RoadmapCreationCustomer[];
+  members: InviteRoadmapUser[];
+  initialCustomer?: RoadmapCreationCustomer;
+  error: boolean;
+  onSubmit: (customer: RoadmapCreationCustomer) => void;
+  onCancel: () => void;
+  onCloseError: () => void;
+}> = ({
+  customers,
+  members,
+  initialCustomer,
+  error,
+  onSubmit,
+  onCancel,
+  onCloseError,
+}) => {
+  const [colorType, setColorType] = useState(
+    initialCustomer ? 'pick' : 'generate',
+  );
+  const [customer, setCustomer] = useState(
+    initialCustomer || {
+      name: '',
+      email: '',
+      color: randomColor(customers),
+    },
+  );
+  const [representatives, setRepresentatives] = useState(
+    members
+      .filter(({ type }) => hasPermission(type, Permission.CustomerRepresent))
+      .map((member) => ({
+        ...member,
+        checked: initialCustomer
+          ? !!initialCustomer.representatives.find(
+              ({ email, checked }) => email === member.email && checked,
+            )
+          : false,
+      })),
+  );
+
+  const handleColorTypeChange = (value: string) => {
+    setColorType(value);
+    if (value === 'generate')
+      setCustomer({ ...customer, color: randomColor(customers) });
+  };
+
+  return (
+    <div className={classes(css.addOrEditMember)}>
+      <SelectCustomerInfo
+        name={customer.name}
+        email={customer.email}
+        colorType={colorType}
+        color={customer.color}
+        onNameChange={(name) => setCustomer({ ...customer, name })}
+        onEmailChange={(email) => setCustomer({ ...customer, email })}
+        onColorTypeChange={handleColorTypeChange}
+        onColorChange={(color) => setCustomer({ ...customer, color })}
+      />
+      {representatives.length > 0 && (
+        <SelectRepresentatives
+          representatives={representatives}
+          onRepresentativeChange={(idx, checked) => {
+            const copy = [...representatives];
+            copy[idx].checked = checked;
+            setRepresentatives(copy);
+          }}
+        />
+      )}
+      <Alert
+        show={error}
+        variant="danger"
+        dismissible
+        onClose={() => onCloseError()}
+      >
+        <Trans i18nKey="The combination of name and email should be unique" />
+      </Alert>
+      <div className={classes(css.buttons)}>
+        <button
+          className="button-small-filled"
+          type="button"
+          disabled={!customer.name || !customer.email}
+          onClick={() => onSubmit({ ...customer, representatives })}
+        >
+          {initialCustomer ? (
+            <Trans i18nKey="Edit customer" />
+          ) : (
+            <Trans i18nKey="Add client" />
+          )}
+        </button>
+        <button
+          className="button-small-outlined"
+          type="button"
+          onClick={() => onCancel()}
+        >
+          <Trans i18nKey="Cancel" />
+        </button>
+      </div>
+    </div>
+  );
+};

@@ -180,13 +180,21 @@ export const english = {
     'Team members': 'Team members',
     members: 'members',
     'Add members': 'Add members',
+    'Add clients': 'Add clients',
+    'Add client': 'Add client',
     'The email should be unique': 'The email should be unique.',
-    'Skip adding members 1/3':
-      'Adding members at this point is optional. You can',
-    'Skip adding members 2/3': 'skip it',
-    'Skip adding members 3/3': 'if you want to.',
+    'The combination of name and email should be unique':
+      'The combination of name and email should be unique',
+    'Remove member warning':
+      'If you remove this member, a new representative must be selected for the clients of this member in the next section. <1>Remove anyway</1>',
+    'No representatives warning':
+      'This client has no representatives: add at least one to progress',
+    'Skip adding 1/3': 'Adding {{type}} at this point is optional. You can',
+    'Skip adding 2/3': 'skip it',
+    'Skip adding 3/3': 'if you want to.',
     'Skip warning': 'Created list will be lost if you skip. <1>Skip anyway</1>',
-    'Members summary': '<strong>Members:</strong>',
+    'members summary': '<strong>Members:</strong>',
+    'clients summary': '<strong>Clients:</strong>',
     'Add member': 'Add member',
     'Edit member': 'Edit member',
     'Add a team member': 'Add a team member',

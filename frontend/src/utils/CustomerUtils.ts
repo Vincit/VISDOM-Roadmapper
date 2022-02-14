@@ -1,5 +1,9 @@
 import convert from 'color-convert';
-import { Customer, RoadmapUser } from '../redux/roadmaps/types';
+import {
+  Customer,
+  RoadmapCreationCustomer,
+  RoadmapUser,
+} from '../redux/roadmaps/types';
 import { UserInfo } from '../redux/user/types';
 
 export const isCustomer = (
@@ -10,7 +14,7 @@ const difference = (first: number, second: number) =>
   180 - Math.abs(Math.abs(first - second) - 180);
 
 export const randomColor = (
-  customers: Customer[] | undefined,
+  customers: Customer[] | RoadmapCreationCustomer[] | undefined,
   tries: number = 1,
 ): string => {
   const hue = Math.random() * 360;

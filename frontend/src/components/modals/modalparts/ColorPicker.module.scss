@@ -5,14 +5,16 @@
 }
 
 .saturation {
-  width: 418px;
+  min-width: 338px;
+  max-width: 418px;
   height: 230px;
   margin-bottom: 20px;
   position: relative;
 }
 
 .hue {
-  width: 418px;
+  min-width: 338px;
+  max-width: 418px;
   height: 20px;
   position: relative;
 }

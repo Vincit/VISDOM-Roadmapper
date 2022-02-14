@@ -1,6 +1,6 @@
 @import '../../shared.scss';
 
-.addMembersStep {
+.addPeopleStep {
   @extend .layout-column;
   width: 458px;
   gap: 15px;
@@ -13,14 +13,14 @@
   min-height: 390px;
   padding: 20px;
 
-  .members {
+  .people {
     overflow: auto;
     height: 300px;
     // hide member list scrollbar
     @extend .hide-scrollbar;
   }
 
-  .addMemberButton {
+  .addButton {
     @extend .layout-row;
     &.bottomItem {
       margin-top: auto;
@@ -33,7 +33,7 @@
   gap: 13px;
 }
 
-.summaryMembers {
+.summaryList {
   margin-left: 13px;
 }
 

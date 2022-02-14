@@ -28,6 +28,13 @@ export interface CustomerRequest {
   representatives?: number[];
 }
 
+export interface RoadmapCreationCustomer {
+  name: string;
+  email: string;
+  color: string;
+  representatives: (InviteRoadmapUser & { checked: boolean })[];
+}
+
 export interface CustomerStakes {
   id: number;
   name: string;
@@ -76,6 +83,12 @@ export interface RoadmapRequest {
   name?: string;
   description?: string;
   tasks?: Task[];
+}
+
+export interface RoadmapCreation {
+  roadmap: RoadmapRequest;
+  invitations: InviteRoadmapUser[];
+  customers: RoadmapCreationCustomer[];
 }
 
 export interface RoadmapRoleResponse {

@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, FC } from 'react';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { StoreDispatchType } from '../../redux';
-import { InviteRoadmapUser } from '../../redux/roadmaps/types';
+import { RootState } from '../../redux/types';
+import {
+  InviteRoadmapUser,
+  RoadmapCreationCustomer,
+} from '../../redux/roadmaps/types';
 import { userActions } from '../../redux/user';
+import { UserInfo } from '../../redux/user/types';
+import { userInfoSelector } from '../../redux/user/selectors';
 import { Modal, ModalTypes } from './types';
 import { StepForm } from '../forms/StepForm';
 import { Input, TextArea } from '../forms/FormField';
@@ -16,12 +22,77 @@ import {
   AddTeamMemberInfo,
   DisplayInvitedMember,
   AddOrModifyMember,
-  SkipMemberAddition,
+  SkipPeopleAddition,
+  isInviteUser,
 } from './modalparts/TeamMemberModalParts';
+import { AddOrModifyCustomer } from './modalparts/CustomerModalParts';
+import { Permission } from '../../../../shared/types/customTypes';
 import css from './AddRoadmapModal.module.scss';
 import { apiV2 } from '../../api/api';
+import { hasPermission } from '../../../../shared/utils/permission';
 
 const classes = classNames.bind(css);
+
+const removeRepresentative = (
+  customers: RoadmapCreationCustomer[],
+  member: InviteRoadmapUser,
+) =>
+  customers.map((customer) => ({
+    ...customer,
+    representatives: customer.representatives.filter(
+      ({ email }) => email !== member.email,
+    ),
+  }));
+
+const getKey = (person: InviteRoadmapUser | RoadmapCreationCustomer) =>
+  isInviteUser(person) ? person.email : `${person.name}-${person.email}`;
+
+const AddPeopleList: FC<{
+  type: 'member' | 'client';
+  people: InviteRoadmapUser[] | RoadmapCreationCustomer[];
+  onAdd: () => void;
+  onEdit: (person: RoadmapCreationCustomer | InviteRoadmapUser) => void;
+  onDelete: (person: InviteRoadmapUser | RoadmapCreationCustomer) => void;
+}> = ({ type, people, onAdd, onEdit, onDelete }) => (
+  <>
+    <div className={classes({ [css.people]: people.length > 0 })}>
+      {people.map((person) => (
+        <DisplayInvitedMember
+          key={getKey(person)}
+          member={person}
+          onDelete={() => onDelete(person)}
+          onEdit={() => onEdit(person)}
+        />
+      ))}
+    </div>
+    <div
+      className={classes(css.addButton, {
+        [css.bottomItem]: people.length > 0,
+      })}
+    >
+      <AddButton onClick={() => onAdd()}>
+        <Trans i18nKey={`Add ${type}`} />
+      </AddButton>
+    </div>
+  </>
+);
+
+const DisplayPeople: FC<{
+  type: 'members' | 'clients';
+  people: InviteRoadmapUser[] | RoadmapCreationCustomer[];
+}> = ({ type, people }) => (
+  <>
+    <div className={classes(css.summaryItem)}>
+      <Trans i18nKey={`${type} summary`} />
+      {people.length === 0 && '-'}
+    </div>
+    <div className={classes(css.summaryList)}>
+      {people.map((person) => (
+        <DisplayInvitedMember key={getKey(person)} member={person} readonly />
+      ))}
+    </div>
+  </>
+);
 
 export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
   closeModal,
@@ -29,6 +100,10 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
   const history = useHistory();
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  )!;
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
@@ -38,38 +113,59 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
     info: true,
     tooltip: false,
     addMember: false,
+    addCustomer: false,
   });
   const [editMember, setEditMember] = useState<undefined | InviteRoadmapUser>(
     undefined,
   );
-  const [emailError, setEmailError] = useState(false);
+  const [uniqueMemberError, setUniqueMemberError] = useState(false);
+  const [uniqueCustomerError, setUniqueCustomerError] = useState(false);
+  const [customers, setCustomers] = useState<RoadmapCreationCustomer[]>([]);
+  const [editCustomer, setEditCustomer] = useState<
+    undefined | RoadmapCreationCustomer
+  >(undefined);
   const [createdRoadmapId, setCreatedRoadmapId] = useState<undefined | number>(
     undefined,
   );
   const [addRoadmap] = apiV2.useAddRoadmapMutation();
-  const [sendInvitation] = apiV2.useSendInvitationMutation();
 
-  const emailExists = (email: string, oldEmail?: string) => {
+  const memberExists = (email: string, oldEmail?: string) => {
     const alreadyExists = members.find(
       (member) => member.email === email && member.email !== oldEmail,
     );
     return alreadyExists || userInfo.email === email;
   };
 
+  const customerExists = (
+    customer: RoadmapCreationCustomer,
+    oldCustomer?: RoadmapCreationCustomer,
+  ) =>
+    customers.find(
+      ({ name, email }) =>
+        name === customer.name &&
+        email === customer.email &&
+        (oldCustomer?.name !== customer.name ||
+          oldCustomer?.email !== customer.email),
+    );
+
   const handleSubmit = async () => {
     try {
       const { id } = await addRoadmap({
-        name: formValues.name,
-        description: formValues.description,
+        roadmap: {
+          name: formValues.name,
+          description: formValues.description,
+        },
+        customers,
+        invitations: members.map((member) => ({
+          ...member,
+          representativeFor: customers.filter(({ representatives }) =>
+            representatives.find(
+              ({ email, checked }) => email === member.email && checked,
+            ),
+          ),
+        })),
       }).unwrap();
-      const promises = members.map((member) =>
-        sendInvitation({
-          roadmapId: id,
-          invitation: { ...member, roadmapId: id },
-        }).unwrap(),
-      );
 
-      await Promise.all(promises);
       await dispatch(userActions.getUserInfo());
       setCreatedRoadmapId(id);
     } catch (err) {
@@ -119,69 +215,59 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
     {
       description: 'Add members',
       component: () => (
-        <div className={css.addMembersStep}>
+        <div className={css.addPeopleStep}>
           <AddTeamMemberInfo
             open={open.info}
             onChange={(info) => setOpen({ ...open, info })}
           />
           <div className={classes(css.addBox)}>
             {!open.addMember && !editMember && (
-              <>
-                <div className={classes({ [css.members]: members.length > 0 })}>
-                  {members.map((member) => (
-                    <DisplayInvitedMember
-                      key={member.email}
-                      member={member}
-                      onDelete={() =>
-                        setMembers(
-                          members.filter(({ email }) => email !== member.email),
-                        )
-                      }
-                      onEdit={() => {
-                        setEditMember(member);
-                        setEmailError(false);
-                      }}
-                    />
-                  ))}
-                </div>
-                <div
-                  className={classes(css.addMemberButton, {
-                    [css.bottomItem]: members.length > 0,
-                  })}
-                >
-                  <AddButton
-                    onClick={() => {
-                      setOpen({ ...open, addMember: true });
-                      setEmailError(false);
-                    }}
-                  >
-                    <Trans i18nKey="Add member" />
-                  </AddButton>
-                </div>
-              </>
+              <AddPeopleList
+                type="member"
+                people={members}
+                onAdd={() => {
+                  setOpen({ ...open, addMember: true });
+                  setUniqueMemberError(false);
+                }}
+                onEdit={(member) => {
+                  setEditMember(member as InviteRoadmapUser);
+                  setUniqueMemberError(false);
+                }}
+                onDelete={(member) => {
+                  setMembers(
+                    members.filter(({ email }) => email !== member.email),
+                  );
+                  setCustomers(
+                    removeRepresentative(
+                      customers,
+                      member as InviteRoadmapUser,
+                    ),
+                  );
+                }}
+              />
             )}
             {open.addMember && (
               <AddOrModifyMember
-                error={emailError}
+                error={uniqueMemberError}
                 onSubmit={(member) => {
-                  if (emailExists(member.email)) {
-                    setEmailError(true);
+                  if (memberExists(member.email)) {
+                    setUniqueMemberError(true);
                     return;
                   }
                   setMembers([...members, member]);
                   setOpen({ ...open, addMember: false });
                 }}
                 onCancel={() => setOpen({ ...open, addMember: false })}
-                onCloseError={() => setEmailError(false)}
+                onCloseError={() => setUniqueMemberError(false)}
               />
             )}
             {editMember && (
               <AddOrModifyMember
-                error={emailError}
+                error={uniqueMemberError}
                 initialMember={editMember}
                 onSubmit={(member) => {
-                  if (emailExists(member.email, editMember.email)) {
-                    setEmailError(true);
+                  if (memberExists(member.email, editMember.email)) {
+                    setUniqueMemberError(true);
                     return;
                   }
                   setMembers(
@@ -191,16 +277,113 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                         : { email, type },
                     ),
                   );
+                  if (
+                    !hasPermission(member.type, Permission.CustomerRepresent)
+                  ) {
+                    setCustomers(removeRepresentative(customers, editMember));
+                    return;
+                  }
+                  // update email and role
+                  setCustomers(
+                    customers.map((customer) => ({
+                      ...customer,
+                      representatives: customer.representatives.map((rep) =>
+                        rep.email === editMember.email
+                          ? { ...member, checked: rep.checked }
+                          : rep,
+                      ),
+                    })),
+                  );
                   setEditMember(undefined);
                 }}
                 onCancel={() => setEditMember(undefined)}
-                onCloseError={() => setEmailError(false)}
+                onCloseError={() => setUniqueMemberError(false)}
               />
             )}
           </div>
-          <SkipMemberAddition
+          <SkipPeopleAddition
+            type="members"
             extraStep={!!members.length}
             onSkip={() => setMembers([])}
+          />
+        </div>
+      ),
+    },
+    {
+      description: 'Add clients',
+      component: () => (
+        <div className={css.addPeopleStep}>
+          <div className={classes(css.addBox)}>
+            {!open.addCustomer && !editCustomer && (
+              <AddPeopleList
+                type="client"
+                people={customers}
+                onAdd={() => {
+                  setOpen({ ...open, addCustomer: true });
+                  setUniqueCustomerError(false);
+                }}
+                onEdit={(customer) => {
+                  setEditCustomer(customer as RoadmapCreationCustomer);
+                  setUniqueCustomerError(false);
+                }}
+                onDelete={(customer) =>
+                  setCustomers(
+                    customers.filter(
+                      ({ name, email }) =>
+                        name !== (customer as RoadmapCreationCustomer).name ||
+                        email !== customer.email,
+                    ),
+                  )
+                }
+              />
+            )}
+            {open.addCustomer && (
+              <AddOrModifyCustomer
+                error={uniqueCustomerError}
+                onSubmit={(customer) => {
+                  if (customerExists(customer)) {
+                    setUniqueCustomerError(true);
+                    return;
+                  }
+                  setCustomers([...customers, customer]);
+                  setOpen({ ...open, addCustomer: false });
+                }}
+                onCancel={() => setOpen({ ...open, addCustomer: false })}
+                customers={customers}
+                members={members}
+                onCloseError={() => setUniqueCustomerError(false)}
+              />
+            )}
+            {editCustomer && (
+              <AddOrModifyCustomer
+                error={uniqueCustomerError}
+                initialCustomer={editCustomer}
+                onSubmit={(customer) => {
+                  if (customerExists(customer, editCustomer)) {
+                    setUniqueCustomerError(true);
+                    return;
+                  }
+                  setCustomers(
+                    customers.map((existing) =>
+                      existing.name === editCustomer.name &&
+                      existing.email === editCustomer.email
+                        ? customer
+                        : existing,
+                    ),
+                  );
+                  setEditCustomer(undefined);
+                }}
+                onCancel={() => setEditCustomer(undefined)}
+                customers={customers}
+                members={members}
+                onCloseError={() => setUniqueCustomerError(false)}
+              />
+            )}
+          </div>
+          <SkipPeopleAddition
+            type="clients"
+            extraStep={!!customers.length}
+            onSkip={() => setCustomers([])}
           />
         </div>
       ),
@@ -212,19 +395,8 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
           description="All done roadmap description"
           formValues={formValues}
         >
-          <div className={classes(css.summaryItem)}>
-            <Trans i18nKey="Members summary" />
-            {members.length === 0 && '-'}
-          </div>
-          <div className={classes(css.summaryMembers)}>
-            {members.map((member) => (
-              <DisplayInvitedMember
-                key={`${member.email}-${member.type}`}
-                member={member}
-                readonly
-              />
-            ))}
-          </div>
+          <DisplayPeople type="members" people={members} />
+          <DisplayPeople type="clients" people={customers} />
         </SummaryStepContent>
       ),
     },

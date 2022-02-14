@@ -26,6 +26,7 @@ import {
   InvitationRequest,
   TaskRelation,
   NewInvitation,
+  RoadmapCreation,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -231,7 +232,7 @@ export const apiV2 = createApi({
         method: 'delete',
       }),
     }),
-    addRoadmap: build.mutation<Roadmap, RoadmapRequest>({
+    addRoadmap: build.mutation<Roadmap, RoadmapCreation>({
       invalidatesTags: ['Roadmaps'],
       query: (roadmap) => ({ url: '/roadmaps', method: 'post', data: roadmap }),
       transformResponse: ({ integrations, ...rest }: Roadmap) => ({

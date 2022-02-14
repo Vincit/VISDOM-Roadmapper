@@ -12,6 +12,7 @@ import { ControlledTooltip } from '../../ControlledTooltip';
 import {
   CheckableCustomer,
   InviteRoadmapUser,
+  RoadmapCreationCustomer,
 } from '../../../redux/roadmaps/types';
 import colors from '../../../colors.module.scss';
 import css from './TeamMemberModalParts.module.scss';
@@ -103,22 +104,34 @@ export const AddTeamMemberInfo: FC<{
   </div>
 );
 
+export const isInviteUser = (
+  user: InviteRoadmapUser | RoadmapCreationCustomer,
+): user is InviteRoadmapUser => 'type' in user;
+
 export const DisplayInvitedMember: FC<{
-  member: InviteRoadmapUser;
+  member: InviteRoadmapUser | RoadmapCreationCustomer;
   readonly?: true;
-  onEdit?: (member: InviteRoadmapUser) => void;
-  onDelete?: (member: InviteRoadmapUser) => void;
+  onEdit?: (member: InviteRoadmapUser | RoadmapCreationCustomer) => void;
+  onDelete?: (member: InviteRoadmapUser | RoadmapCreationCustomer) => void;
 }> = ({ member, readonly, onEdit, onDelete }) => (
   <div className={classes(css.displayMember)}>
     <div className={classes(css.leftSideDiv)}>
       <div className={classes(css.memberIcon)}>
-        <RoleIcon type={member.type} color={colors.forest} small tooltip />
+        {isInviteUser(member) ? (
+          <RoleIcon type={member.type} color={colors.forest} small tooltip />
+        ) : (
+          <Dot fill={member.color} />
+        )}
       </div>
-      <div className={classes(css.email)}>{member.email}</div>
+      <div className={classes(css.email)}>
+        {isInviteUser(member) ? member.email : member.name}
+      </div>
     </div>
     {!readonly && onEdit && onDelete && (
       <div className={classes(css.rightSideDiv)}>
-        <EditButton fontSize="medium" onClick={() => onEdit(member)} />
+        <div className={classes(css.edit)}>
+          <EditButton fontSize="medium" onClick={() => onEdit(member)} />
+        </div>
         <DeleteButton onClick={() => onDelete(member)} />
       </div>
     )}
@@ -193,10 +206,11 @@ export const AddOrModifyMember: FC<{
   );
 };
 
-export const SkipMemberAddition: FC<{
+export const SkipPeopleAddition: FC<{
+  type: 'clients' | 'members';
   extraStep: Boolean;
   onSkip: () => void;
-}> = ({ extraStep, onSkip }) => {
+}> = ({ type, extraStep, onSkip }) => {
   const [openTooltip, setOpenTooltip] = useState(false);
   // tooltip button's submitEvent won't bubble to the correct handler
   const submitButton = useRef<HTMLButtonElement>(null);
@@ -213,7 +227,7 @@ export const SkipMemberAddition: FC<{
 
   return (
     <div className={classes(css.skip)}>
-      <Trans i18nKey="Skip adding members 1/3" />{' '}
+      <Trans i18nKey="Skip adding 1/3" values={{ type }} />{' '}
       <ControlledTooltip
         content={
           <div className={classes(css.skipTooltip)}>
@@ -232,10 +246,10 @@ export const SkipMemberAddition: FC<{
         onClose={() => setOpenTooltip(false)}
       >
         <button type="submit" onClick={handleSkip} ref={submitButton}>
-          <Trans i18nKey="Skip adding members 2/3" />
+          <Trans i18nKey="Skip adding 2/3" />
         </button>
       </ControlledTooltip>{' '}
-      <Trans i18nKey="Skip adding members 3/3" />
+      <Trans i18nKey="Skip adding 3/3" />
     </div>
   );
 };
