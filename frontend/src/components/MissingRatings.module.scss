@@ -22,3 +22,17 @@
   gap: 25px;
   align-items: center;
 }
+
+.titleHeader {
+  text-decoration: underline;
+}
+
+.emailList {
+  text-align: left;
+  div {
+    margin-bottom: 4px;
+    span {
+      color: $COLOR_AZURE;
+    }
+  }
+}

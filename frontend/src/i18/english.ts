@@ -337,5 +337,6 @@ export const english = {
     'Error message': 'Error: {{error}}.',
     'Email service error': 'Email service error',
     'This email doesn’t exist': 'This email doesn’t exist',
+    You: 'You',
   },
 };
