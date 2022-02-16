@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
@@ -24,17 +24,17 @@ export const PlannerWeightsPage = () => {
   );
   const [patchCustomerTrigger] = apiV2.usePatchCustomerMutation();
 
-  const [localCustomers, setLocalCustomers] = useState(customers);
+  const [localCustomers, setLocalCustomers] = useState<Customer[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const customerWeight = (
-    { id, weight }: Customer,
-    locals: Customer[] | undefined,
-  ) => locals?.find((customer) => customer.id === id)?.weight ?? weight;
+  useEffect(() => {
+    if (customers)
+      setLocalCustomers([...customers].sort((a, b) => a.id - b.id));
+  }, [customers]);
 
   const handleSliderChange = async (customerId: number, weight: number) => {
     setLocalCustomers((previous) =>
-      previous!.map((customer) =>
+      previous.map((customer) =>
         customer.id === customerId ? { ...customer, weight } : customer,
       ),
     );
@@ -68,7 +68,7 @@ export const PlannerWeightsPage = () => {
           <Trans i18nKey="Weighting description" />
         </p>
       </div>
-      {customers?.map((customer) => (
+      {localCustomers.map((customer) => (
         <div className={classes(css.userRow)} key={customer.id}>
           <div className={classes(css.customerDot)}>
             <Dot fill={customer.color} />
@@ -80,16 +80,15 @@ export const PlannerWeightsPage = () => {
             className={classes(css.slider)}
             min={0}
             max={2}
-            value={customerWeight(customer, localCustomers)}
-            defaultValue={customer.weight}
+            value={customer.weight}
             step={0.25}
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => percent().format(value)}
             marks
-            onChangeCommitted={(e, value) =>
+            onChangeCommitted={(_, value) =>
               saveWeight(customer.id, Number(value))
             }
-            onChange={(e, value) =>
+            onChange={(_, value) =>
               handleSliderChange(customer.id, Number(value))
             }
           />
