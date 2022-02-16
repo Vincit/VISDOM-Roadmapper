@@ -1,3 +1,5 @@
+@import '../shared.scss';
+
 .highlight {
   box-shadow: 0px 0px 20px rgba(0, 60, 250, 0.15);
   background-color: rgba(0, 60, 250, 0.045) !important;
@@ -10,4 +12,16 @@
   overflow-y: visible;
   background-color: transparent;
   width: 100%;
+}
+
+.sortableListWrapper {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100px;
+  height: inherit;
+  padding: 16px;
+  scrollbar-width: thin;
+
+  @extend .typography-body-small;
 }

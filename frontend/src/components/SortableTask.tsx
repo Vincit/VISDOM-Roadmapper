@@ -1,67 +1,35 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
-import { Task, Version } from '../redux/roadmaps/types';
+import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './SortableTask.module.scss';
-import { apiV2 } from '../api/api';
-
-interface VersionListsObject {
-  [K: string]: Task[];
-}
 
 export const SortableTask: FC<{
   task: Task;
   index: number;
   disableDragging: boolean;
-}> = ({ task, index, disableDragging }) => {
-  const { data: tasks } = apiV2.useGetTasksQuery(task.roadmapId);
-  const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(task.roadmapId);
-  const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
-    undefined | Version[]
-  >(undefined);
-  const [unversionedTasks, setUnversionedTasks] = useState<Task[]>();
-
-  useEffect(() => {
-    setRoadmapsVersionsLocal(roadmapsVersions);
-  }, [roadmapsVersions]);
-
-  useEffect(() => {
-    if (roadmapsVersionsLocal === undefined) return;
-    const newVersionLists: VersionListsObject = {};
-    const unversioned = new Map(tasks?.map((t) => [t.id, t]));
-    roadmapsVersionsLocal.forEach((v) => {
-      newVersionLists[v.id] = v.tasks;
-      v.tasks.forEach((t) => unversioned.delete(t.id));
-    });
-    setUnversionedTasks(Array.from(unversioned.values()));
-  }, [roadmapsVersionsLocal, tasks]);
-
-  return (
-    <Draggable
-      key={task.id}
-      draggableId={`${task.id}`}
-      index={index}
-      isDragDisabled={disableDragging}
-    >
-      {(provided) => (
-        <div
-          className={css.taskDiv}
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <div className={css.leftSideDiv}>{task.name}</div>
-          <div className={css.rightSideDiv}>
-            <div>
-              {unversionedTasks?.some((obj) => obj.id === task.id) && (
-                <TaskRatingsText task={task} />
-              )}
-            </div>
-            <DragIndicatorIcon fontSize="small" />
-          </div>
+  showRatings: boolean;
+}> = ({ task, index, disableDragging, showRatings }) => (
+  <Draggable
+    key={task.id}
+    draggableId={`${task.id}`}
+    index={index}
+    isDragDisabled={disableDragging}
+  >
+    {(provided) => (
+      <div
+        className={css.taskDiv}
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+        <div className={css.leftSideDiv}>{task.name}</div>
+        <div className={css.rightSideDiv}>
+          {showRatings && <TaskRatingsText task={task} />}
+          <DragIndicatorIcon fontSize="small" />
         </div>
-      )}
-    </Draggable>
-  );
-};
+      </div>
+    )}
+  </Draggable>
+);
