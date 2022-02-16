@@ -15,6 +15,7 @@ import {
   missingCustomer,
   missingDeveloper,
   ratedByCustomer,
+  getMissingRepresentatives,
 } from '../utils/TaskUtils';
 import css from './MissingRatings.module.scss';
 import { apiV2 } from '../api/api';
@@ -74,7 +75,26 @@ export const MissingRatings: FC<{
             tooltip: classes(css.tooltip),
           }}
           key={customer.id}
-          title={customer.name}
+          title={
+            <div>
+              <p className={classes(css.titleHeader)}>{customer.name}</p>
+              <div className={classes(css.emailList)}>
+                {allUsers &&
+                  getMissingRepresentatives(customer, allUsers, task)?.map(
+                    (rep) => (
+                      <div key={`${rep.id}-${customer.id}-${task.id}`}>
+                        {rep.email}{' '}
+                        {rep.email === userInfo?.email && (
+                          <span>
+                            (<Trans i18nKey="You" />)
+                          </span>
+                        )}
+                      </div>
+                    ),
+                  )}
+              </div>
+            </div>
+          }
           placement="top"
           arrow
         >
