@@ -34,6 +34,7 @@
     border-radius: calc(5px * #{$ZOOM});
     padding: calc(10px * #{$ZOOM}) calc(16px * #{$ZOOM});
     width: calc(360px * #{$ZOOM});
+    min-width: 0px;
     min-height: calc(40px * #{$ZOOM});
     max-height: calc(90px * #{$ZOOM});
 
@@ -70,9 +71,9 @@
   background-color: $COLOR_WHITE !important;
 
   &.dragging {
-    height: calc(17px * #{$ZOOM});
-    width: calc(17px * #{$ZOOM});
-    border-width: calc(2px * #{$ZOOM});
+    height: calc(17px * #{$ZOOM}) !important;
+    width: calc(17px * #{$ZOOM}) !important;
+    border-width: calc(2px * #{$ZOOM}) !important;
   }
 }
 
