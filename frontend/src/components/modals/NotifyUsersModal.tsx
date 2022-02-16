@@ -21,7 +21,10 @@ import { RoleType } from '../../../../shared/types/customTypes';
 import css from './NotifyUsersModal.module.scss';
 import { getType } from '../../utils/UserUtils';
 import { Modal, ModalTypes } from './types';
-import { missingDeveloper } from '../../utils/TaskUtils';
+import {
+  missingDeveloper,
+  getMissingRepresentatives,
+} from '../../utils/TaskUtils';
 import { TextArea } from '../forms/FormField';
 import { RoleIcon } from '../RoleIcons';
 import colors from '../../colors.module.scss';
@@ -72,25 +75,20 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
       allUsers
     ) {
       const missingRepresentativeIds = new Set<number>();
-
       customers.forEach((customer) => {
-        const ratingsForTask = task.ratings
-          .filter((rating) => rating.forCustomer === customer.id)
-          .map((e) => e.createdByUser);
-
-        customer.representatives?.forEach(({ id }) => {
-          if (
-            // skip logged in user, so they won't send email to themselves
-            id !== userInfo?.id &&
-            // skip representatives who have given a rating
-            !ratingsForTask.includes(id)
-          )
-            missingRepresentativeIds.add(id);
-        });
+        getMissingRepresentatives(
+          customer,
+          allUsers,
+          task,
+        ).forEach((representative) =>
+          missingRepresentativeIds.add(representative.id),
+        );
       });
 
       const missingRepresentatives = allUsers
-        .filter(({ id }) => missingRepresentativeIds.has(id))
+        .filter(
+          ({ id }) => userInfo!.id !== id && missingRepresentativeIds.has(id),
+        )
         .map((user) => ({ ...user, checked: false }));
 
       const missingDevelopers = allUsers

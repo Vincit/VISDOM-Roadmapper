@@ -342,3 +342,19 @@ export const getRatingsByType = (ratings: Taskrating[]) => {
   );
   return { value, complexity };
 };
+
+export const getMissingRepresentatives = (
+  customer: Customer,
+  allUsers: RoadmapUser[],
+  task: Task,
+) => {
+  const missingRepresentativeIds = new Set<number>();
+  const ratingsForTask = task.ratings
+    .filter((rating) => rating.forCustomer === customer.id)
+    .map((e) => e.createdByUser);
+
+  customer.representatives?.forEach(({ id }) => {
+    if (!ratingsForTask.includes(id)) missingRepresentativeIds.add(id);
+  });
+  return allUsers.filter(({ id }) => missingRepresentativeIds.has(id));
+};
