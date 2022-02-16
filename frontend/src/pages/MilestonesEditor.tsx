@@ -299,18 +299,12 @@ export const MilestonesEditor = () => {
                       {version.name}
                     </div>
 
-                    <div
-                      className={classes(
-                        css.sortableListWrapper,
-                        css.milestone,
-                      )}
-                    >
-                      <SortableTaskList
-                        listId={`${version.id}`}
-                        tasks={versionLists[version.id] || []}
-                        disableDragging={disableDrag}
-                      />
-                    </div>
+                    <SortableTaskList
+                      listId={`${version.id}`}
+                      tasks={versionLists[version.id] || []}
+                      disableDragging={disableDrag}
+                      className={classes(css.milestone)}
+                    />
                     <div className={classes(css.ratingsSummaryWrapper)}>
                       <MilestoneRatingsSummary
                         tasks={versionLists[version.id] || []}
@@ -385,13 +379,12 @@ export const MilestonesEditor = () => {
             </div>
           }
         >
-          <div className={classes(css.sortableListWrapper)}>
-            <SortableTaskList
-              listId={ROADMAP_LIST_ID}
-              tasks={versionLists[ROADMAP_LIST_ID] || []}
-              disableDragging={disableDrag}
-            />
-          </div>
+          <SortableTaskList
+            listId={ROADMAP_LIST_ID}
+            tasks={versionLists[ROADMAP_LIST_ID] || []}
+            disableDragging={disableDrag}
+            showRatings
+          />
         </ExpandableColumn>
         {roadmapsVersionsLocal && renderMilestones()}
       </div>

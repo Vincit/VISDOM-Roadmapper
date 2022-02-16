@@ -11,8 +11,10 @@ export const SortableTaskList: FC<{
   listId: string;
   tasks: Task[];
   disableDragging: boolean;
-}> = ({ listId, tasks, disableDragging }) => {
-  return (
+  showRatings?: boolean;
+  className?: string;
+}> = ({ listId, tasks, disableDragging, showRatings, className }) => (
+  <div className={classes(css.sortableListWrapper, className)}>
     <Droppable droppableId={listId} type="TASKS">
       {(provided, snapshot) => (
         <div
@@ -29,11 +31,12 @@ export const SortableTaskList: FC<{
               task={task}
               index={index}
               disableDragging={disableDragging}
+              showRatings={!!showRatings}
             />
           ))}
           {provided.placeholder}
         </div>
       )}
     </Droppable>
-  );
-};
+  </div>
+);
