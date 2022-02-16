@@ -81,11 +81,6 @@ type Edge = {
   };
 };
 
-/* eslint-disable */
-const isEdge = (x: Edge | Group): x is Edge => x.type === 'custom';
-const isGroup = (x: Edge | Group): x is Group => x.type === 'special';
-/* eslint-enable */
-
 export const TaskMapPage = () => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
@@ -170,39 +165,41 @@ export const TaskMapPage = () => {
 
     const graph = getAutolayout(measuredRelations);
 
-    const groups: Group[] = measuredRelations.flatMap(({ id, synergies }) => {
-      const node = graph.node(id);
-      if (!tasks) return [];
-      return [
-        {
-          id,
-          type: 'special',
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-          draggable: false,
-          // dagre coordinates are in the center, calculate top left corner
-          position: { x: node.x - node.width / 2, y: node.y - node.height / 2 },
-          data: {
-            label: (
-              <TaskGroup
-                listId={id}
-                taskIds={synergies}
-                tasks={tasks}
-                selectedTask={selectedTask}
-                setSelectedTask={setSelectedTask}
-                allDependencies={taskRelations.flatMap(
-                  ({ dependencies }) => dependencies,
-                )}
-                disableDragging={disableDrag}
-                disableDrop={dropUnavailable.has(id)}
-                unavailable={unavailable}
-                dragHandle={dragHandle}
-              />
-            ),
-          },
-        },
-      ];
-    });
+    const groups: Group[] = !tasks
+      ? []
+      : measuredRelations.map(({ id, synergies }) => {
+          const node = graph.node(id);
+          return {
+            id,
+            type: 'special',
+            sourcePosition: Position.Right,
+            targetPosition: Position.Left,
+            draggable: false,
+            // dagre coordinates are in the center, calculate top left corner
+            position: {
+              x: node.x - node.width / 2,
+              y: node.y - node.height / 2,
+            },
+            data: {
+              label: (
+                <TaskGroup
+                  listId={id}
+                  taskIds={synergies}
+                  tasks={tasks}
+                  selectedTask={selectedTask}
+                  setSelectedTask={setSelectedTask}
+                  allDependencies={taskRelations.flatMap(
+                    ({ dependencies }) => dependencies,
+                  )}
+                  disableDragging={disableDrag}
+                  disableDrop={dropUnavailable.has(id)}
+                  unavailable={unavailable}
+                  dragHandle={dragHandle}
+                />
+              ),
+            },
+          };
+        });
 
     const edges: Edge[] = measuredRelations.flatMap(({ dependencies }, idx) =>
       dependencies.flatMap(({ from, to }) => {
