@@ -13,9 +13,8 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { Link } from 'react-router-dom';
 import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
+import { ExpandableColumn } from '../components/ExpandableColumn';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
-import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
-import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from '../components/modals/types';
@@ -288,7 +287,7 @@ export const MilestonesEditor = () => {
             >
               {(draggableProvided) => (
                 <div
-                  className={classes(css.layoutCol, css.milestoneCol)}
+                  className={classes(css.milestoneCol)}
                   ref={draggableProvided.innerRef}
                   {...draggableProvided.draggableProps}
                 >
@@ -338,7 +337,7 @@ export const MilestonesEditor = () => {
               )}
             </Draggable>
           ))}
-          <div className={classes(css.layoutCol, css.milestoneCol)}>
+          <div className={classes(css.milestoneCol)}>
             <div
               className={classes(css.milestoneWrapper, css.addNewBtnWrapper)}
               onClick={addVersion}
@@ -374,43 +373,26 @@ export const MilestonesEditor = () => {
         </div>
       </InfoTooltip>
       <div className={classes(css.layoutRow, css.overflowYAuto)}>
-        <div
-          className={classes(css.layoutCol, css.unorderedTasksCol, {
-            [css.minimized]: !expandUnordered,
-          })}
-        >
-          <div
-            className={classes(css.unorderedTasksWrapper, {
-              [css.minimized]: !expandUnordered,
-            })}
-          >
-            <div
-              className={classes(css.unorderedTasksHeader, {
-                [css.minimized]: !expandUnordered,
-              })}
-              onClick={() => setExpandUnordered(!expandUnordered)}
-              onKeyPress={() => setExpandUnordered(!expandUnordered)}
-              role="button"
-              tabIndex={0}
-            >
-              {expandUnordered ? <ExpandLess /> : <ExpandMore />}
-              <div>
-                {`${t('Unordered tasks')} (${
-                  versionLists[ROADMAP_LIST_ID]?.length ?? 0
-                })`}
-              </div>
+        <ExpandableColumn
+          className={classes(css.unorderedCol)}
+          expanded={expandUnordered}
+          onToggle={() => setExpandUnordered((prev) => !prev)}
+          title={
+            <div>
+              {`${t('Unordered tasks')} (${
+                versionLists[ROADMAP_LIST_ID]?.length ?? 0
+              })`}
             </div>
-            {expandUnordered && (
-              <div className={classes(css.sortableListWrapper)}>
-                <SortableTaskList
-                  listId={ROADMAP_LIST_ID}
-                  tasks={versionLists[ROADMAP_LIST_ID] || []}
-                  disableDragging={disableDrag}
-                />
-              </div>
-            )}
+          }
+        >
+          <div className={classes(css.sortableListWrapper)}>
+            <SortableTaskList
+              listId={ROADMAP_LIST_ID}
+              tasks={versionLists[ROADMAP_LIST_ID] || []}
+              disableDragging={disableDrag}
+            />
           </div>
-        </div>
+        </ExpandableColumn>
         {roadmapsVersionsLocal && renderMilestones()}
       </div>
     </DragDropContext>

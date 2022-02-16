@@ -138,29 +138,6 @@ form {
   &.roadmapPageContainer {
     padding: 0 23px 0 20px;
   }
-  &.unorderedTasksCol {
-    flex: 1;
-    flex-grow: 0;
-    width: 366px;
-    overflow-y: visible;
-    overflow-x: visible;
-    margin-bottom: 16px;
-    background-color: transparent;
-    &.minimized {
-      width: 65px;
-    }
-  }
-  &.milestoneCol {
-    justify-content: flex-start;
-    flex-grow: 0;
-    width: 200px;
-    overflow-y: visible;
-    overflow-x: visible;
-    background-color: transparent;
-    border-radius: 8px;
-    margin-left: 20px;
-    margin-bottom: 16px;
-  }
 }
 
 .plannerPagecontainer {

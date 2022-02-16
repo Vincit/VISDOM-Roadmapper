@@ -1,0 +1,44 @@
+@import '../shared.scss';
+
+.expandableContentWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 366px;
+  overflow-y: auto;
+  background-color: $COLOR_BLACK10;
+  border-radius: 10px;
+  padding-bottom: 10px;
+  &.minimized {
+    width: 65px;
+  }
+}
+
+.expandableHeader {
+  display: flex;
+  align-items: center;
+  margin: 16px;
+  margin-bottom: 10px;
+
+  @extend .typography-pre-title;
+  text-align: left;
+  cursor: pointer;
+
+  svg {
+    margin-right: 11px;
+  }
+  &.minimized {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  &.minimized > div {
+    white-space: nowrap;
+    margin-right: 16px;
+    transform: rotate(-90deg);
+    transform-origin: right;
+  }
+  &.minimized > svg {
+    margin-right: 0;
+    margin-bottom: 11px;
+  }
+}
