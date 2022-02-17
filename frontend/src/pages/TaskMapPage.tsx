@@ -287,6 +287,12 @@ export const TaskMapPage = () => {
 
     if (sourceId === -1) {
       // unstaged task added to existing group
+      setStagedTasks((prev) => [...prev, draggedTaskId]);
+      setUnstagedTasks((prev) => prev.filter(({ id }) => id !== draggedTaskId));
+      setTaskRelations((prev) => [
+        ...prev,
+        { synergies: [draggedTaskId], dependencies: [] },
+      ]);
       await addSynergyRelations(
         draggedTaskId,
         taskRelations[destinationId].synergies,
@@ -322,15 +328,17 @@ export const TaskMapPage = () => {
   };
 
   const onDragEnd = async (result: DropResult) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, reason } = result;
     const draggedTaskId = Number(draggableId);
     const backupList = copyRelationList(taskRelations);
     setDropUnavailable(new Set());
 
     try {
-      if (!destination) await onDragMoveOutside(draggedTaskId);
-      else if (source.droppableId !== destination.droppableId)
-        await onDragMoveToGroup(source, destination, draggedTaskId);
+      if (reason === 'DROP') {
+        if (!destination) await onDragMoveOutside(draggedTaskId);
+        else if (source.droppableId !== destination.droppableId)
+          await onDragMoveToGroup(source, destination, draggedTaskId);
+      }
     } catch (err) {
       setTaskRelations(backupList);
     } finally {
@@ -377,6 +385,7 @@ export const TaskMapPage = () => {
                 )
               }
               showRatings
+              showSearch
             />
           </ExpandableColumn>
           <ReactFlowProvider>

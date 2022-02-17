@@ -6,8 +6,7 @@
 }
 
 .sortableList {
-  display: flex;
-  flex-direction: column;
+  @extend .layout-column;
   flex-grow: 1;
   overflow-y: visible;
   background-color: transparent;
@@ -15,13 +14,23 @@
 }
 
 .sortableListWrapper {
+  @extend .layout-column;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
   min-height: 100px;
   height: inherit;
   padding: 16px;
+  padding-top: 0px;
   scrollbar-width: thin;
 
   @extend .typography-body-small;
+}
+
+.searchField {
+  @extend .searchBarContainer;
+  @extend .layout-column;
+  background-color: $COLOR_BLACK10;
+  padding: 10px 0px;
+  gap: 10px;
+  position: sticky;
+  top: 0;
 }

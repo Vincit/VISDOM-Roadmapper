@@ -356,6 +356,7 @@ export const MilestonesEditor = () => {
             tasks={versionLists[ROADMAP_LIST_ID] || []}
             disableDragging={disableDrag}
             showRatings
+            showSearch
           />
         </ExpandableColumn>
         {versionLists && renderMilestones()}
