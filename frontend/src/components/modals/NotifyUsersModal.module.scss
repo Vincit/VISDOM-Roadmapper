@@ -17,10 +17,22 @@ hr {
 
 .missingUser {
   @extend .layout-row;
-  align-items: center;
 
-  > :last-child {
+  > :not(:first-child) {
     position: relative;
     top: -4px;
   }
+}
+
+.customerContainer {
+  @extend .layout-row;
+  flex-wrap: wrap;
+  max-width: 135px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  gap: 3px;
+}
+
+.checkboxDiv {
+  margin-top: -11px;
 }
