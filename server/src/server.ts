@@ -20,6 +20,7 @@ import {
   IExtendedKoaContext,
   IKoaContext,
   ExtendedServer,
+  ISocketData,
 } from './types/customTypes';
 import { Server } from 'socket.io';
 import http from 'http';
@@ -45,7 +46,7 @@ const createServer = async () => {
     DefaultEventsMap,
     DefaultEventsMap,
     DefaultEventsMap,
-    IKoaState
+    ISocketData
   >(httpServer, {
     cors: corsOptions,
   });

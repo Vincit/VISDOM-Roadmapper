@@ -15,6 +15,10 @@ export interface IKoaState {
   role?: RoleType;
 }
 
+export interface ISocketData {
+  user: Pick<User, 'id'>;
+}
+
 export interface IExtendedKoaContext extends Koa.DefaultContext {
   io?: Server;
 }
@@ -27,12 +31,12 @@ export type ExtendedServer = Server<
   ServerEventsMap,
   ClientEventsMap,
   DefaultEventsMap,
-  IKoaState
+  ISocketData
 >;
 
 export type ExtendedSocket = Socket<
   ServerEventsMap,
   ClientEventsMap,
   DefaultEventsMap,
-  IKoaState
+  ISocketData
 >;
