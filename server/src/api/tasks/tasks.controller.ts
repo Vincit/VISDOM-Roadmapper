@@ -50,13 +50,14 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     createdByUser: Number(ctx.state.user.id),
   });
 
-  emitRoadmapEvent(
-    ctx.io,
-    Number(ctx.params.roadmapId),
-    ctx.state.user.id,
-    ClientEvents.TASK_UPDATED,
-    [Number(ctx.params.roadmapId), task.id],
-  );
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: Number(ctx.params.roadmapId),
+    dontEmitToUserId: ctx.state.user!.id,
+    requirePermission: Permission.TaskRead,
+    event: ClientEvents.TASK_UPDATED,
+    eventParams: [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+  });
+
   ctx.body = task;
 };
 
@@ -75,13 +76,13 @@ export const deleteTasks: RouteHandlerFnc = async (ctx) => {
     .delete();
 
   if (numDeleted != 1) {
-    emitRoadmapEvent(
-      ctx.io,
-      Number(ctx.params.roadmapId),
-      ctx.state.user.id,
-      ClientEvents.TASK_UPDATED,
-      [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
-    );
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.TaskRead,
+      event: ClientEvents.TASK_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+    });
   }
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
@@ -93,7 +94,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
   const { id, name, description, completed, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
-  return await Task.transaction(async (trx) => {
+  const res = await Task.transaction(async (trx) => {
     const task = await Task.query(trx)
       .findById(ctx.params.taskId)
       .where({ roadmapId: Number(ctx.params.roadmapId) });
@@ -105,20 +106,22 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
     )
       return void (ctx.status = 403);
 
-    emitRoadmapEvent(
-      ctx.io,
-      Number(ctx.params.roadmapId),
-      ctx.state.user!.id,
-      ClientEvents.TASK_UPDATED,
-      [Number(ctx.params.roadmapId), id],
-    );
-
     return void (ctx.body = await task.$query(trx).patchAndFetch({
       name: name,
       description: description,
       completed: completed,
     }));
   });
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: Number(ctx.params.roadmapId),
+    dontEmitToUserId: ctx.state.user!.id,
+    requirePermission: Permission.TaskRead,
+    event: ClientEvents.TASK_UPDATED,
+    eventParams: [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+  });
+
+  return res;
 };
 
 export const notifyUsers: RouteHandlerFnc = async (ctx) => {

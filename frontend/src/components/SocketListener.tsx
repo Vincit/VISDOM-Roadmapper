@@ -10,13 +10,16 @@ import {
 import { userInfoSelector } from '../redux/user/selectors';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { StoreDispatchType } from '../redux';
-import { roadmapsActions } from '../redux/roadmaps';
+import { apiV2 } from '../api/api';
 
 export const SocketListener = () => {
   const userInfo = useSelector(userInfoSelector);
   const currentRoadmapId = useSelector(chosenRoadmapIdSelector);
   const socket = useRef<Socket<ClientEventsMap, ServerEventsMap> | null>(null);
   const dispatch = useDispatch<StoreDispatchType>();
+  const [refetchTasks] = apiV2.useRefetchTasksMutation();
+  const [refetchRoadmaps] = apiV2.useRefetchRoadmapsMutation();
+  const [refetchUsers] = apiV2.useRefetchUsersMutation();
 
   useEffect(() => {
     if (!userInfo) {
@@ -45,24 +48,24 @@ export const SocketListener = () => {
         console.log(
           `Event received: ${ClientEvents.ROADMAP_UPDATED}, ${roadmapId}`,
         );
-        dispatch(roadmapsActions.getRoadmaps());
+        refetchRoadmaps(null);
       });
 
       socket.current.on(ClientEvents.USERS_UPDATED, (roadmapId) => {
         console.log(
           `Event received: ${ClientEvents.USERS_UPDATED}, ${roadmapId}`,
         );
-        dispatch(roadmapsActions.getRoadmapUsers(roadmapId));
+        refetchUsers(null);
       });
 
       socket.current.on(ClientEvents.TASK_UPDATED, (roadmapId, taskId) => {
         console.log(
           `Event received: ${ClientEvents.TASK_UPDATED}, ${roadmapId}, ${taskId}`,
         );
-        dispatch(roadmapsActions.getRoadmaps());
+        refetchTasks(null);
       });
     }
-  }, [userInfo, dispatch]);
+  }, [userInfo, dispatch, refetchRoadmaps, refetchUsers, refetchTasks]);
 
   useEffect(() => {
     if (!socket.current) return;
