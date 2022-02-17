@@ -44,7 +44,7 @@
 
 .bottomStepRow {
   @extend .typography-body-bold;
-  width: 110px;
+  max-width: 110px;
   transition: 150ms ease-out;
 
   .stepLabel {
