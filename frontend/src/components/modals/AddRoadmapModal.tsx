@@ -49,6 +49,13 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
   const [addRoadmap] = apiV2.useAddRoadmapMutation();
   const [sendInvitation] = apiV2.useSendInvitationMutation();
 
+  const emailExists = (email: string, oldEmail?: string) => {
+    const alreadyExists = members.find(
+      (member) => member.email === email && member.email !== oldEmail,
+    );
+    return alreadyExists || userInfo.email === email;
+  };
+
   const handleSubmit = async () => {
     try {
       const { id } = await addRoadmap({
@@ -157,10 +164,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
               <AddOrModifyMember
                 error={emailError}
                 onSubmit={(member) => {
-                  const alreadyExists = members.find(
-                    ({ email }) => email === member.email,
-                  );
-                  if (alreadyExists) {
+                  if (emailExists(member.email)) {
                     setEmailError(true);
                     return;
                   }
@@ -176,11 +180,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                 error={emailError}
                 initialMember={editMember}
                 onSubmit={(member) => {
-                  const alreadyExists = members.find(
-                    ({ email }) =>
-                      email !== editMember.email && email === member.email,
-                  );
-                  if (alreadyExists) {
+                  if (emailExists(member.email, editMember.email)) {
                     setEmailError(true);
                     return;
                   }
