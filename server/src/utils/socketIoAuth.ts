@@ -1,3 +1,4 @@
+import { ISocketData } from './../types/customTypes';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import Koa from 'koa';
 import http from 'http';
@@ -15,7 +16,7 @@ export const socketIoAuth = (
       DefaultEventsMap,
       DefaultEventsMap,
       DefaultEventsMap,
-      IKoaState
+      ISocketData
     >,
     next: (err?: ExtendedError | undefined) => void,
   ) => {
@@ -26,10 +27,11 @@ export const socketIoAuth = (
     );
     passportMiddleware(ctx, async () => {
       sessionMiddleware(ctx, async () => {
-        socket.data = ctx.state;
-        if (!socket.data.user) {
+        if (!ctx.state.user) {
           const socketError: ExtendedError = new Error('Unauthenticated');
           return next(socketError);
+        } else {
+          socket.data.user = { id: ctx.state.user.id };
         }
         next();
       });

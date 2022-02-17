@@ -401,6 +401,30 @@ export const apiV2 = createApi({
         data: { from, to },
       }),
     }),
+    refetchTasks: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Tasks'],
+    }),
+    refetchRoadmaps: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Roadmaps'],
+    }),
+    refetchUsers: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Users'],
+    }),
+    refetchCustomers: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Customers'],
+    }),
+    refetchTaskratings: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Taskratings'],
+    }),
+    refetchTaskrelations: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Taskrelations'],
+    }),
   }),
 });
 
