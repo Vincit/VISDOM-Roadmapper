@@ -96,7 +96,7 @@ export const TaskMapPage = () => {
   const [stagedTasks, setStagedTasks] = useState<number[]>([]);
   const [unstagedTasks, setUnstagedTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
-  const [disableDrag, setDisableDrag] = useState(false);
+  const [draggedTask, setDraggedTask] = useState<number | undefined>();
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
@@ -191,7 +191,7 @@ export const TaskMapPage = () => {
                   allDependencies={taskRelations.flatMap(
                     ({ dependencies }) => dependencies,
                   )}
-                  disableDragging={disableDrag}
+                  disableDragging={draggedTask !== undefined}
                   disableDrop={dropUnavailable.has(id)}
                   unavailable={unavailable}
                   dragHandle={dragHandle}
@@ -215,7 +215,7 @@ export const TaskMapPage = () => {
             target: targetGroup.id,
             targetHandle: `to-${to}`,
             type: 'custom',
-            data: { disableInteraction: disableDrag },
+            data: { disableInteraction: draggedTask !== undefined },
           },
         ];
       }),
@@ -224,7 +224,7 @@ export const TaskMapPage = () => {
     setFlowElements([...groups, ...edges]);
   }, [
     unavailable,
-    disableDrag,
+    draggedTask,
     divRef,
     dragHandle,
     selectedTask,
@@ -294,6 +294,13 @@ export const TaskMapPage = () => {
       return;
     }
 
+    if (destinationId === -1) {
+      // staged task is unstaged
+      setStagedTasks((prev) => prev.filter((id) => id !== draggedTaskId));
+      await addSynergyRelations(draggedTaskId, []);
+      return;
+    }
+
     const copyList = copyRelationList(taskRelations);
 
     move()
@@ -327,7 +334,7 @@ export const TaskMapPage = () => {
     } catch (err) {
       setTaskRelations(backupList);
     } finally {
-      setDisableDrag(false);
+      setDraggedTask(undefined);
     }
   };
 
@@ -342,8 +349,9 @@ export const TaskMapPage = () => {
       <DragDropContext
         onDragEnd={onDragEnd}
         onDragStart={({ draggableId }) => {
-          setDropUnavailable(blockedGroups(Number(draggableId), taskRelations));
-          setDisableDrag(true);
+          const id = Number(draggableId);
+          setDropUnavailable(blockedGroups(id, taskRelations));
+          setDraggedTask(id);
         }}
       >
         <div className={classes(css.flowContainer)}>
@@ -359,8 +367,15 @@ export const TaskMapPage = () => {
             <SortableTaskList
               listId="-1"
               tasks={unstagedTasks}
-              disableDragging={disableDrag}
-              isDropDisabled
+              disableDragging={draggedTask !== undefined}
+              isDropDisabled={
+                draggedTask !== undefined &&
+                relations?.some(
+                  ({ from, to, type }) =>
+                    (from === draggedTask || to === draggedTask) &&
+                    type === TaskRelationType.Dependency,
+                )
+              }
               showRatings
             />
           </ExpandableColumn>
