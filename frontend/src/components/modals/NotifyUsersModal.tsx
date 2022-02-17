@@ -4,6 +4,7 @@ import { Trans } from 'react-i18next';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
+import Tooltip from '@material-ui/core/Tooltip';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
@@ -16,7 +17,7 @@ import { Checkbox } from '../forms/Checkbox';
 import { RootState } from '../../redux/types';
 import { UserInfo } from '../../redux/user/types';
 import { userInfoSelector } from '../../redux/user/selectors';
-import { RoadmapUser } from '../../redux/roadmaps/types';
+import { Customer, RoadmapUser } from '../../redux/roadmaps/types';
 import { RoleType } from '../../../../shared/types/customTypes';
 import css from './NotifyUsersModal.module.scss';
 import { getType } from '../../utils/UserUtils';
@@ -27,6 +28,7 @@ import {
 } from '../../utils/TaskUtils';
 import { TextArea } from '../forms/FormField';
 import { RoleIcon } from '../RoleIcons';
+import { Dot } from '../Dot';
 import colors from '../../colors.module.scss';
 import { apiV2, selectById } from '../../api/api';
 
@@ -34,6 +36,7 @@ const classes = classNames.bind(css);
 
 interface CheckableUser extends RoadmapUser {
   checked: boolean;
+  customers?: Customer[];
 }
 
 export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
@@ -74,22 +77,25 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
       customers &&
       allUsers
     ) {
-      const missingRepresentativeIds = new Set<number>();
+      const usersWithCustomers: CheckableUser[] = [];
       customers.forEach((customer) => {
-        getMissingRepresentatives(
-          customer,
-          allUsers,
-          task,
-        ).forEach((representative) =>
-          missingRepresentativeIds.add(representative.id),
+        getMissingRepresentatives(customer, allUsers, task).forEach(
+          (representative) => {
+            if (representative.id === userInfo!.id) return;
+
+            const foundIndex = usersWithCustomers.findIndex(
+              (user) => user.id === representative.id,
+            );
+            if (foundIndex === -1)
+              usersWithCustomers.push({
+                ...representative,
+                customers: [customer],
+                checked: false,
+              });
+            else usersWithCustomers[foundIndex].customers?.push(customer);
+          },
         );
       });
-
-      const missingRepresentatives = allUsers
-        .filter(
-          ({ id }) => userInfo!.id !== id && missingRepresentativeIds.has(id),
-        )
-        .map((user) => ({ ...user, checked: false }));
 
       const missingDevelopers = allUsers
         .filter(missingDeveloper(task))
@@ -98,10 +104,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
           checked: false,
         }));
 
-      setMissingUsers([
-        ...Array.from(missingRepresentatives.values()),
-        ...missingDevelopers,
-      ]);
+      setMissingUsers([...usersWithCustomers, ...missingDevelopers]);
     }
   }, [allUsers, customers, roadmapId, task, userInfo]);
 
@@ -168,14 +171,34 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
         />
         <hr />
         {missingUsers?.map((user, idx) => (
-          <div className={classes(css.missingUser)}>
-            <Checkbox
-              key={user.id}
-              label={user.email}
-              checked={user.checked}
-              onChange={(checked) => checkUser(checked, idx)}
-            />
+          <div className={classes(css.missingUser)} key={user.id}>
+            <div className={classes(css.checkboxDiv)}>
+              <Checkbox
+                key={user.id}
+                label={user.email}
+                checked={user.checked}
+                onChange={(checked) => checkUser(checked, idx)}
+              />
+            </div>
             <RoleIcon type={user.type} small tooltip color={colors.azure} />
+            <div className={classes(css.customerContainer)}>
+              {user.customers?.map((customer) => (
+                <Tooltip
+                  classes={{
+                    arrow: classes(css.tooltipArrow),
+                    tooltip: classes(css.tooltip),
+                  }}
+                  key={customer.id}
+                  title={<div>{customer.name}</div>}
+                  placement="top"
+                  arrow
+                >
+                  <div className={classes(css.dotContainer)}>
+                    <Dot fill={customer.color} />
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
           </div>
         ))}
         <p className={classes(css.message)}>
