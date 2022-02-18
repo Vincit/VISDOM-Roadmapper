@@ -21,7 +21,6 @@ describe('Test /roadmaps/ api', function () {
         'id',
         'name',
         'description',
-        'tasks',
         'daysPerWorkCalibration',
       );
     });
@@ -38,24 +37,8 @@ describe('Test /roadmaps/ api', function () {
         'id',
         'name',
         'description',
-        'tasks',
         'daysPerWorkCalibration',
         'integrations',
-      );
-      expect(
-        res.body.find((rm: any) => rm.tasks.length > 0)?.tasks[0],
-      ).to.have.keys(
-        'id',
-        'name',
-        'description',
-        'completed',
-        'createdAt',
-        'importedFrom',
-        'externalId',
-        'externalLink',
-        'ratings',
-        'createdByUser',
-        'roadmapId',
       );
     });
   });
