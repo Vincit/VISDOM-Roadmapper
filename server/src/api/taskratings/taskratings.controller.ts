@@ -1,3 +1,5 @@
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import { userHasPermission } from './../../utils/checkPermissions';
 import {
@@ -76,6 +78,15 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
       ),
     ),
   );
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: Number(ctx.params.roadmapId),
+    dontEmitToUserId: ctx.state.user!.id,
+    requirePermission: Permission.TaskRatingRead,
+    event: ClientEvents.TASK_UPDATED,
+    eventParams: [Number(ctx.params.roadmapId)],
+  });
+
   return void (ctx.body = newRatings);
 };
 
@@ -92,6 +103,15 @@ export const deleteTaskrating: RouteHandlerFnc = async (ctx) => {
     })
     .delete();
 
+  if (numDeleted === 1) {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.TaskRatingRead,
+      event: ClientEvents.TASK_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
+  }
   ctx.status = numDeleted == 1 ? 200 : 404;
 };
 
@@ -147,5 +167,14 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
       ),
     ),
   );
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: Number(ctx.params.roadmapId),
+    dontEmitToUserId: ctx.state.user!.id,
+    requirePermission: Permission.TaskRatingRead,
+    event: ClientEvents.TASK_UPDATED,
+    eventParams: [Number(ctx.params.roadmapId)],
+  });
+
   return void (ctx.body = updated);
 };

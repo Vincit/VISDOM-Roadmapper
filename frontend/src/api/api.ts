@@ -79,7 +79,6 @@ export const apiV2 = createApi({
   tagTypes: [
     'Customers',
     'Tasks',
-    'Taskratings',
     'Versions',
     'Roadmaps',
     'Invitations',
@@ -161,7 +160,7 @@ export const apiV2 = createApi({
       void,
       { roadmapId: number; rating: TaskratingRequest }
     >({
-      invalidatesTags: ['Taskratings', 'Tasks'],
+      invalidatesTags: ['Tasks'],
       query: ({ roadmapId, rating }) => ({
         url: `/roadmaps/${roadmapId}/tasks/${rating.parentTask}/taskratings/${rating.id}`,
         method: 'delete',
@@ -171,7 +170,7 @@ export const apiV2 = createApi({
       Taskrating[],
       { roadmapId: number; taskId: number; ratings: TaskratingRequest[] }
     >({
-      invalidatesTags: ['Taskratings', 'Tasks'],
+      invalidatesTags: ['Tasks'],
       query: ({ roadmapId, taskId, ratings }) => ({
         url: `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
         method: 'patch',
@@ -182,7 +181,7 @@ export const apiV2 = createApi({
       Taskrating[],
       { roadmapId: number; taskId: number; ratings: TaskratingRequest[] }
     >({
-      invalidatesTags: ['Taskratings', 'Tasks'],
+      invalidatesTags: ['Tasks'],
       query: ({ roadmapId, taskId, ratings }) => ({
         url: `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
         method: 'post',
@@ -417,13 +416,13 @@ export const apiV2 = createApi({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Customers'],
     }),
-    refetchTaskratings: build.mutation<null, null>({
-      queryFn: () => ({ data: null }),
-      invalidatesTags: ['Taskratings'],
-    }),
     refetchTaskrelations: build.mutation<null, null>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Taskrelations'],
+    }),
+    refetchVersions: build.mutation<null, null>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Versions'],
     }),
   }),
 });
