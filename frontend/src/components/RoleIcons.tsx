@@ -12,13 +12,13 @@ import { InfoTooltip } from './InfoTooltip';
 const classes = classNames.bind(css);
 
 interface IconProps {
-  size?: 'xxsmall' | 'xsmall' | 'small' | 'default' | 'large';
+  size?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large';
   color?: string;
 }
 
 const svgIcon = (Icon: FC): FC<IconProps> => ({ size, color }) => (
   <div
-    className={classes(css.icon, css[size || 'default'])}
+    className={classes(css.icon, css[size || 'medium'])}
     style={{ ['--icon--color' as any]: color }}
   >
     <Icon />
@@ -42,13 +42,13 @@ export const RoleIcon: FC<{
         style={{ ['--icon--color' as any]: color }}
       >
         {type === RoleType.Admin && (
-          <StarIcon fontSize={small ? 'small' : 'default'} />
+          <StarIcon fontSize={small ? 'small' : 'medium'} />
         )}
         {type === RoleType.Developer && (
-          <BuildIcon fontSize={small ? 'small' : 'default'} />
+          <BuildIcon fontSize={small ? 'small' : 'medium'} />
         )}
         {type === RoleType.Business && (
-          <BusinessIcon size={small ? 'xsmall' : 'default'} />
+          <BusinessIcon size={small ? 'xsmall' : 'medium'} />
         )}
       </div>
     </div>
