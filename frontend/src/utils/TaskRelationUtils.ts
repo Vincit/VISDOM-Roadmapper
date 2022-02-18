@@ -123,7 +123,7 @@ export const blockedGroups = (task: number, graph: GroupedRelation[]) => {
       const direction = from === task ? 'target' : 'source';
       reachable(start, graph, direction).forEach((x) => {
         const node = taskToGroup.get(x);
-        if (node) visited.add(node.toString());
+        if (node !== undefined) visited.add(node.toString());
       });
     });
   });
