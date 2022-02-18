@@ -1,3 +1,6 @@
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { Permission } from './../../../../shared/types/customTypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { Transaction } from 'knex';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Task from '../tasks/tasks.model';
@@ -96,6 +99,15 @@ export const addRelation: RouteHandlerFnc = async (ctx) => {
         await TaskRelation.query(trx).insert({ from, to, type });
         const res = await relations(roadmapId, trx);
         validateRelations(res);
+
+        await emitRoadmapEvent(ctx.io, {
+          roadmapId: Number(ctx.params.roadmapId),
+          dontEmitToUserId: ctx.state.user!.id,
+          requirePermission: Permission.TaskRead,
+          event: ClientEvents.TASKRELATION_UPDATED,
+          eventParams: [Number(ctx.params.roadmapId)],
+        });
+
         ctx.body = res;
       });
     } catch (err) {
@@ -132,11 +144,25 @@ export const addSynergies: RouteHandlerFnc = async (ctx) => {
       ]);
       if (!synergies.length) {
         ctx.body = await relations(roadmapId, trx);
+        await emitRoadmapEvent(ctx.io, {
+          roadmapId: Number(ctx.params.roadmapId),
+          dontEmitToUserId: ctx.state.user!.id,
+          requirePermission: Permission.TaskRead,
+          event: ClientEvents.TASKRELATION_UPDATED,
+          eventParams: [Number(ctx.params.roadmapId)],
+        });
         return;
       }
       await TaskRelation.query(trx).insert(synergies);
       const res = await relations(roadmapId, trx);
       validateRelations(res);
+      await emitRoadmapEvent(ctx.io, {
+        roadmapId: Number(ctx.params.roadmapId),
+        dontEmitToUserId: ctx.state.user!.id,
+        requirePermission: Permission.TaskRead,
+        event: ClientEvents.TASKRELATION_UPDATED,
+        eventParams: [Number(ctx.params.roadmapId)],
+      });
       ctx.body = res;
     });
   } catch (err) {
@@ -150,5 +176,15 @@ export const deleteRelation: RouteHandlerFnc = async (ctx) => {
   const deleted =
     (await tasksInRoadmap(Number(ctx.params.roadmapId), [from, to])) &&
     (await TaskRelation.query().where({ from, to, type }).delete());
+
+  if (deleted === 1) {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.TaskRead,
+      event: ClientEvents.TASKRELATION_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
+  }
   ctx.status = deleted === 1 ? 200 : 404;
 };

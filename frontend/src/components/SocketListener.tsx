@@ -20,6 +20,9 @@ export const SocketListener = () => {
   const [refetchTasks] = apiV2.useRefetchTasksMutation();
   const [refetchRoadmaps] = apiV2.useRefetchRoadmapsMutation();
   const [refetchUsers] = apiV2.useRefetchUsersMutation();
+  const [refetchTaskrelations] = apiV2.useRefetchTaskrelationsMutation();
+  const [refetchCustomers] = apiV2.useRefetchCustomersMutation();
+  const [refetchVersions] = apiV2.useRefetchVersionsMutation();
 
   useEffect(() => {
     if (!userInfo) {
@@ -51,21 +54,58 @@ export const SocketListener = () => {
         refetchRoadmaps(null);
       });
 
-      socket.current.on(ClientEvents.USERS_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.USER_UPDATED, (roadmapId) => {
         console.log(
-          `Event received: ${ClientEvents.USERS_UPDATED}, ${roadmapId}`,
+          `Event received: ${ClientEvents.USER_UPDATED}, ${roadmapId}`,
         );
         refetchUsers(null);
       });
 
-      socket.current.on(ClientEvents.TASK_UPDATED, (roadmapId, taskId) => {
+      socket.current.on(ClientEvents.TASK_UPDATED, (roadmapId) => {
         console.log(
-          `Event received: ${ClientEvents.TASK_UPDATED}, ${roadmapId}, ${taskId}`,
+          `Event received: ${ClientEvents.TASK_UPDATED}, ${roadmapId}`,
         );
         refetchTasks(null);
       });
+
+      socket.current.on(ClientEvents.TASKRELATION_UPDATED, (roadmapId) => {
+        console.log(
+          `Event received: ${ClientEvents.TASKRELATION_UPDATED}, ${roadmapId}`,
+        );
+        refetchTaskrelations(null);
+      });
+
+      socket.current.on(ClientEvents.TASKRATING_UPDATED, (roadmapId) => {
+        console.log(
+          `Event received: ${ClientEvents.TASKRATING_UPDATED}, ${roadmapId}`,
+        );
+        refetchTasks(null);
+      });
+
+      socket.current.on(ClientEvents.CUSTOMER_UPDATED, (roadmapId) => {
+        console.log(
+          `Event received: ${ClientEvents.CUSTOMER_UPDATED}, ${roadmapId}`,
+        );
+        refetchCustomers(null);
+      });
+
+      socket.current.on(ClientEvents.VERSION_UPDATED, (roadmapId) => {
+        console.log(
+          `Event received: ${ClientEvents.VERSION_UPDATED}, ${roadmapId}`,
+        );
+        refetchVersions(null);
+      });
     }
-  }, [userInfo, dispatch, refetchRoadmaps, refetchUsers, refetchTasks]);
+  }, [
+    userInfo,
+    dispatch,
+    refetchRoadmaps,
+    refetchUsers,
+    refetchTasks,
+    refetchTaskrelations,
+    refetchCustomers,
+    refetchVersions,
+  ]);
 
   useEffect(() => {
     if (!socket.current) return;

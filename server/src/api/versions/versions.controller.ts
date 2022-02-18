@@ -1,5 +1,8 @@
-import { RouteHandlerFnc } from 'src/types/customTypes';
+import { Permission } from './../../../../shared/types/customTypes';
+import { RouteHandlerFnc } from '../../types/customTypes';
 import Version from './versions.model';
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 
 export const getVersions: RouteHandlerFnc = async (ctx) => {
   const query = Version.query()
@@ -45,6 +48,15 @@ export const postVersions: RouteHandlerFnc = async (ctx) => {
       roadmapId: Number(ctx.params.roadmapId),
     });
   });
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: Number(ctx.params.roadmapId),
+    dontEmitToUserId: ctx.state.user!.id,
+    requirePermission: Permission.VersionRead,
+    event: ClientEvents.VERSION_UPDATED,
+    eventParams: [Number(ctx.params.roadmapId)],
+  });
+
   ctx.body = inserted;
 };
 
@@ -64,7 +76,17 @@ export const deleteVersions: RouteHandlerFnc = async (ctx) => {
     }
     return numDeleted;
   });
-  ctx.status = numDeleted == 1 ? 200 : 404;
+
+  if (numDeleted === 1) {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.VersionRead,
+      event: ClientEvents.VERSION_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
+  }
+  ctx.status = numDeleted === 1 ? 200 : 404;
 };
 
 export const patchVersions: RouteHandlerFnc = async (ctx) => {
@@ -123,6 +145,14 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
       Number(ctx.params.versionId),
       { name: name, sortingRank: sortingRank },
     );
+
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.VersionRead,
+      event: ClientEvents.VERSION_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
 
     return patched || tasks;
   });

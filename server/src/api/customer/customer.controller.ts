@@ -1,3 +1,5 @@
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { userHasPermission } from './../../utils/checkPermissions';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Customer from './customer.model';
@@ -35,6 +37,15 @@ export const postCustomer: RouteHandlerFnc = async (ctx) => {
     }
     return await customer.$query(trx).withGraphFetched('representatives');
   });
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: Number(ctx.params.roadmapId),
+    dontEmitToUserId: ctx.state.user!.id,
+    requirePermission: Permission.RoadmapReadUsers,
+    event: ClientEvents.CUSTOMER_UPDATED,
+    eventParams: [Number(ctx.params.roadmapId)],
+  });
+
   ctx.body = inserted;
 };
 
@@ -96,6 +107,14 @@ export const patchCustomer: RouteHandlerFnc = async (ctx) => {
   if (!updated) {
     return void (ctx.status = 404);
   } else {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.RoadmapReadUsers,
+      event: ClientEvents.CUSTOMER_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
+
     return void (ctx.body = updated);
   }
 };
@@ -106,5 +125,15 @@ export const deleteCustomer: RouteHandlerFnc = async (ctx) => {
     .where('roadmapId', Number(ctx.params.roadmapId))
     .delete();
 
-  ctx.status = numDeleted == 1 ? 200 : 404;
+  if (numDeleted === 1) {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      requirePermission: Permission.RoadmapReadUsers,
+      event: ClientEvents.CUSTOMER_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
+  }
+
+  ctx.status = numDeleted === 1 ? 200 : 404;
 };

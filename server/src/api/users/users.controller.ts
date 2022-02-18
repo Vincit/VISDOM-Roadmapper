@@ -1,3 +1,6 @@
+import { Permission } from './../../../../shared/types/customTypes';
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import passport from 'passport';
 import uuid from 'uuid';
 import { RouteHandlerFnc } from '../../types/customTypes';
@@ -86,6 +89,18 @@ export const deleteUsers: RouteHandlerFnc = async (ctx) => {
     if (!(await user.verifyPassword(currentPassword))) return 400;
 
     const numDeleted = await user.$query(trx).delete();
+
+    if (numDeleted === 1) {
+      const usersRoadmaps = await User.relatedQuery('roadmaps').for(user.id);
+      for (const userRoadmap of usersRoadmaps) {
+        emitRoadmapEvent(ctx.io, {
+          roadmapId: userRoadmap.id,
+          event: ClientEvents.USER_UPDATED,
+          requirePermission: Permission.RoadmapReadUsers,
+          eventParams: [userRoadmap.id],
+        });
+      }
+    }
     return numDeleted == 1 ? 200 : 500;
   });
 };
