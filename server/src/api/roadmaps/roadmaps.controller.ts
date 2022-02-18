@@ -12,24 +12,9 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
 
   const query = User.relatedQuery('roadmaps').for(user.id);
   if (ctx.query.eager) {
-    const result = await query.withGraphFetched(
-      '[tasks.[ratings], integrations]',
-    );
-    (result as Roadmap[] | undefined)?.forEach((roadmap) => {
-      const role = user.roles.find((role) => role.roadmapId === roadmap.id);
-      if (!role) {
-        throw new Error('Should only get roadmaps where the user has a role');
-      }
-      roadmap.tasks?.forEach((task) => {
-        task.ratings = task.ratings?.filter((rating) =>
-          rating.visibleFor(user, role.type),
-        );
-      });
-    });
-    ctx.body = result;
-  } else {
-    ctx.body = await query.withGraphFetched('[tasks(selectTaskId)]');
+    query.withGraphFetched('[integrations]');
   }
+  ctx.body = await query;
 };
 
 export const getRoadmapsUsers: RouteHandlerFnc = async (ctx) => {

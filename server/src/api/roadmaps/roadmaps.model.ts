@@ -11,8 +11,8 @@ export default class Roadmap extends Model {
   description!: string;
   daysPerWorkCalibration?: number;
 
-  customers!: Customer[];
-  roles!: Role[];
+  customers?: Customer[];
+  roles?: Role[];
   tasks?: Task[];
   integrations?: Integration[];
 
