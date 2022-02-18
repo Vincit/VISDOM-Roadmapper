@@ -1,3 +1,6 @@
+import { Permission } from './../../../../shared/types/customTypes';
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { IKoaContext, RouteHandlerFnc } from '../../types/customTypes';
 import Integration from './integration.model';
 import Task from '../tasks/tasks.model';
@@ -159,6 +162,14 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
         importedTasks.push(imported);
       }
     }
+  });
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId: roadmapId,
+    event: ClientEvents.TASK_UPDATED,
+    dontEmitToUserId: ctx.state.user.id,
+    requirePermission: Permission.TaskRead,
+    eventParams: [roadmapId],
   });
 
   ctx.body = importedTasks.length + ' tasks imported';

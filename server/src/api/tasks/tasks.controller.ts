@@ -55,7 +55,7 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     dontEmitToUserId: ctx.state.user!.id,
     requirePermission: Permission.TaskRead,
     event: ClientEvents.TASK_UPDATED,
-    eventParams: [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+    eventParams: [Number(ctx.params.roadmapId)],
   });
 
   ctx.body = task;
@@ -75,16 +75,16 @@ export const deleteTasks: RouteHandlerFnc = async (ctx) => {
     })
     .delete();
 
-  if (numDeleted != 1) {
+  if (numDeleted === 1) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
       dontEmitToUserId: ctx.state.user!.id,
       requirePermission: Permission.TaskRead,
       event: ClientEvents.TASK_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+      eventParams: [Number(ctx.params.roadmapId)],
     });
   }
-  ctx.status = numDeleted == 1 ? 200 : 404;
+  ctx.status = numDeleted === 1 ? 200 : 404;
 };
 
 export const patchTasks: RouteHandlerFnc = async (ctx) => {
@@ -118,7 +118,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
     dontEmitToUserId: ctx.state.user!.id,
     requirePermission: Permission.TaskRead,
     event: ClientEvents.TASK_UPDATED,
-    eventParams: [Number(ctx.params.roadmapId), Number(ctx.params.taskId)],
+    eventParams: [Number(ctx.params.roadmapId)],
   });
 
   return res;

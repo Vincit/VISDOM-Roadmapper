@@ -1,5 +1,7 @@
+import { ClientEvents } from './../../../../shared/types/sockettypes';
+import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { RouteHandlerFnc } from '../../types/customTypes';
-import { RoleType } from '../../../../shared/types/customTypes';
+import { Permission, RoleType } from '../../../../shared/types/customTypes';
 import Roadmap from './roadmaps.model';
 import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
@@ -41,7 +43,7 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
     throw new Error('User is required');
   }
 
-  ctx.body = await Roadmap.transaction(async (trx) => {
+  const res = await Roadmap.transaction(async (trx) => {
     const roadmap = await Roadmap.query(trx).insertAndFetch(ctx.request.body);
     await Role.query(trx).insert({
       userId: ctx.state.user!.id,
@@ -50,6 +52,8 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
     });
     return roadmap;
   });
+
+  ctx.body = res;
 };
 
 export const patchRoadmaps: RouteHandlerFnc = async (ctx) => {
@@ -70,6 +74,12 @@ export const patchRoadmaps: RouteHandlerFnc = async (ctx) => {
   if (!updated) {
     return void (ctx.status = 404);
   } else {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      event: ClientEvents.ROADMAP_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
     return void (ctx.body = updated);
   }
 };
@@ -79,7 +89,15 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx) => {
     .findById(ctx.params.roadmapId)
     .delete();
 
-  ctx.status = numDeleted == 1 ? 200 : 404;
+  if (numDeleted === 1) {
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      dontEmitToUserId: ctx.state.user!.id,
+      event: ClientEvents.ROADMAP_UPDATED,
+      eventParams: [Number(ctx.params.roadmapId)],
+    });
+  }
+  ctx.status = numDeleted === 1 ? 200 : 404;
 };
 
 export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
@@ -109,6 +127,15 @@ export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
     }
 
     const numDeleted = await userRole.$query(trx).delete();
+    if (numDeleted === 1) {
+      await emitRoadmapEvent(ctx.io, {
+        roadmapId: Number(ctx.params.roadmapId),
+        dontEmitToUserId: ctx.state.user!.id,
+        requirePermission: Permission.RoadmapReadUsers,
+        event: ClientEvents.USER_UPDATED,
+        eventParams: [Number(ctx.params.roadmapId)],
+      });
+    }
     ctx.status = numDeleted == 1 ? 200 : 500;
     return;
   });
