@@ -55,45 +55,40 @@ export const MilestonesEditor = () => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
-  const [patchVersion] = apiV2.usePatchVersionMutation();
+  const [
+    patchVersion,
+    { isLoading: disableDrag, isError },
+  ] = apiV2.usePatchVersionMutation();
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
   );
-  const [roadmapsVersionsLocal, setRoadmapsVersionsLocal] = useState<
-    undefined | Version[]
-  >(undefined);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
-  const [disableUpdates, setDisableUpdates] = useState(false);
-  const [disableDrag, setDisableDrag] = useState(false);
   const [expandUnordered, setExpandUnordered] = useState(true);
 
   useEffect(() => {
-    // Keeping a local copy of versions so we can immediately update this state on drag&drop, then get backend updated state from redux later
-    setRoadmapsVersionsLocal(roadmapsVersions);
-  }, [roadmapsVersions]);
+    if (!roadmapsVersions) return;
 
-  useEffect(() => {
-    if (disableUpdates) return;
-    if (roadmapsVersionsLocal === undefined) return;
     const newVersionLists: VersionListsObject = {};
-    const unversioned = new Map(
+    const ratedTasks = new Map(
       tasks?.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
     );
-    roadmapsVersionsLocal.forEach((v) => {
-      newVersionLists[v.id] = v.tasks;
-      v.tasks.forEach((task) => unversioned.delete(task.id));
+
+    roadmapsVersions.forEach((version) => {
+      newVersionLists[version.id] = version.tasks;
+      version.tasks.forEach((task) => ratedTasks.delete(task.id));
     });
+
     newVersionLists[ROADMAP_LIST_ID] = sort(
       sortKeyNumeric(weightedTaskPriority(customers)),
       SortingOrders.DESCENDING,
-    )(Array.from(unversioned.values()));
+    )(Array.from(ratedTasks.values()));
 
     setVersionLists(newVersionLists);
-  }, [customers, disableUpdates, roadmapsVersionsLocal, tasks]);
+  }, [customers, tasks, roadmapsVersions, isError]);
 
   const addVersion = () => {
     dispatch(
@@ -125,10 +120,6 @@ export const MilestonesEditor = () => {
         modalProps: { id, name },
       }),
     );
-  };
-
-  const onDragStart = () => {
-    setDisableDrag(true);
   };
 
   const versionPayload = (versions?: Version[], id?: number) => {
@@ -167,8 +158,16 @@ export const MilestonesEditor = () => {
       .to(copyLists[destination.droppableId], destination.index);
     setVersionLists(copyLists);
 
-    if (destination.droppableId !== ROADMAP_LIST_ID) {
+    if (destination.droppableId === ROADMAP_LIST_ID) {
+      // If moving to unversioned-list, just remove it from source version
+      const payload = versionPayload(roadmapsVersions, +source.droppableId);
+      payload.tasks = payload.tasks.filter(
+        (taskId) => taskId !== +result.draggableId,
+      );
+      await patchVersion(payload).unwrap();
+    } else {
       // If moving to another version -> add to new version
+      // Backend deletes tasks from previous version automatically
       const payload = versionPayload(
         roadmapsVersions,
         +destination.droppableId,
@@ -176,43 +175,22 @@ export const MilestonesEditor = () => {
       payload.tasks.splice(destination.index, 0, +result.draggableId);
       await patchVersion(payload).unwrap();
     }
-
-    if (source.droppableId !== ROADMAP_LIST_ID) {
-      // If moving from another version -> remove from previous version
-      const payload = versionPayload(roadmapsVersions, +source.droppableId);
-      payload.tasks = payload.tasks.filter(
-        (taskId) => taskId !== +result.draggableId,
-      );
-      await patchVersion(payload).unwrap();
-    }
   };
 
   const onTaskDragEnd = async (result: DropWithDestination) => {
     const { source, destination } = result;
-
-    // Backup list that is not mutated, used for reverting action if api request fails
-    const backupLists = copyVersionLists(versionLists);
-    try {
-      if (source.droppableId === destination.droppableId) {
-        await onDragReorder(result);
-      } else {
-        try {
-          setDisableUpdates(true);
-          await onDragMoveToList(result);
-        } finally {
-          setDisableUpdates(false);
-        }
-      }
-    } catch (e) {
-      setVersionLists(backupLists);
+    if (source.droppableId === destination.droppableId) {
+      await onDragReorder(result);
+    } else {
+      await onDragMoveToList(result);
     }
   };
 
   const onVersionDragEnd = async (result: DropWithDestination) => {
-    if (roadmapId === undefined || roadmapsVersionsLocal === undefined) return;
+    if (roadmapId === undefined || roadmapsVersions === undefined) return;
     const { source, destination, draggableId } = result;
     const dragVersionId = parseInt(draggableId.match(/\d+/)![0], 10);
-    const versionsCopy = roadmapsVersionsLocal
+    const versionsCopy = roadmapsVersions
       .map((ver) => {
         if (ver.sortingRank > source.index) {
           return { ...ver, sortingRank: ver.sortingRank - 1 };
@@ -229,7 +207,6 @@ export const MilestonesEditor = () => {
         return ver;
       })
       .sort((a, b) => a.sortingRank - b.sortingRank);
-    setRoadmapsVersionsLocal(versionsCopy);
     const versionTasks = versionsCopy[destination.index].tasks.map(
       (task) => task.id,
     );
@@ -250,18 +227,13 @@ export const MilestonesEditor = () => {
       (source.index === destination.index &&
         source.droppableId === destination.droppableId)
     ) {
-      setDisableDrag(false);
       return;
     }
 
-    try {
-      if (result.type === 'TASKS') {
-        await onTaskDragEnd(result as DropWithDestination);
-      } else if (result.type === 'VERSIONS') {
-        await onVersionDragEnd(result as DropWithDestination);
-      }
-    } finally {
-      setDisableDrag(false);
+    if (result.type === 'TASKS') {
+      await onTaskDragEnd(result as DropWithDestination);
+    } else if (result.type === 'VERSIONS') {
+      await onVersionDragEnd(result as DropWithDestination);
     }
   };
   const renderMilestones = () => (
@@ -279,7 +251,7 @@ export const MilestonesEditor = () => {
           )}
           ref={droppableProvided.innerRef}
         >
-          {roadmapsVersionsLocal!.map((version, index) => (
+          {roadmapsVersions?.map((version, index) => (
             <Draggable
               key={`ver-${version.id}`}
               draggableId={`ver-${version.id}`}
@@ -358,7 +330,7 @@ export const MilestonesEditor = () => {
   );
 
   return (
-    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <InfoTooltip
         title={
           <div>
@@ -411,7 +383,7 @@ export const MilestonesEditor = () => {
             )}
           </div>
         </div>
-        {roadmapsVersionsLocal && renderMilestones()}
+        {roadmapsVersions && renderMilestones()}
       </div>
     </DragDropContext>
   );
