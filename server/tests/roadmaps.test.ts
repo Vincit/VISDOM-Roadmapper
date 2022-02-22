@@ -54,7 +54,7 @@ describe('Test /roadmaps/ api', function () {
       const res = await loggedInAgent
         .post('/roadmaps/')
         .type('json')
-        .send(newRoadmap);
+        .send({ roadmap: newRoadmap, invitations: [], customers: [] });
       const after = await loggedInAgent.get('/roadmaps/');
 
       const fetchedAgent = await User.query()

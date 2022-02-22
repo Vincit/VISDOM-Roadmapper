@@ -5,6 +5,9 @@ import { Permission, RoleType } from '../../../../shared/types/customTypes';
 import Roadmap from './roadmaps.model';
 import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
+import Customer from '../customer/customer.model';
+import Invitation from '../invitations/invitations.model';
+import uuid from 'uuid';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
   const { user } = ctx.state;
@@ -39,18 +42,74 @@ export const getRoadmapsUsers: RouteHandlerFnc = async (ctx) => {
 };
 
 export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
-  if (!ctx.state.user) {
-    throw new Error('User is required');
+  if (!ctx.state.user) throw new Error('User is required');
+  const userInfo = ctx.state.user;
+  const {
+    roadmap: roadmapData,
+    invitations: invitationsData,
+    customers: customersData,
+  } = ctx.request.body;
+  if (!Array.isArray(invitationsData) || !Array.isArray(customersData)) {
+    ctx.status = 400;
+    return;
   }
 
   const res = await Roadmap.transaction(async (trx) => {
-    const roadmap = await Roadmap.query(trx).insertAndFetch(ctx.request.body);
+    const roadmap = await Roadmap.query(trx).insertAndFetch(roadmapData);
+    const roadmapId = roadmap.id;
+    // userInfo role
     await Role.query(trx).insert({
-      userId: ctx.state.user!.id,
-      roadmapId: roadmap.id,
+      userId: userInfo.id,
+      roadmapId,
       type: RoleType.Admin,
     });
-    return roadmap;
+
+    const customers = await Promise.all(
+      customersData.map(({ name, email, color }: any) =>
+        Customer.query(trx).insertAndFetch({ name, email, color, roadmapId }),
+      ),
+    );
+    // customers need at least one existing user as representative
+    await Promise.all(
+      customers.map((customer) =>
+        customer.$relatedQuery('representatives', trx).relate([userInfo]),
+      ),
+    );
+
+    const invitations = await Promise.all(
+      invitationsData.map(({ email, type }) =>
+        Invitation.query(trx).insertAndFetch({
+          id: uuid.v4(),
+          email,
+          type,
+          roadmapId,
+        }),
+      ),
+    );
+    await Promise.all(
+      invitations.map((invitation) => {
+        const represented =
+          invitationsData.find(({ email }) => email === invitation.email)
+            .representativeFor || [];
+        const representedCustomers = customers.filter(({ name, email }) =>
+          represented.some(
+            (rep: any) => rep.name === name && rep.email === email,
+          ),
+        );
+        return invitation
+          .$relatedQuery('representativeFor', trx)
+          .relate(representedCustomers);
+      }),
+    );
+    return {
+      ...roadmap,
+      customers: await Customer.query(trx)
+        .withGraphFetched('representatives')
+        .where({ roadmapId }),
+      invitations: await Invitation.query(trx)
+        .withGraphFetched('representativeFor')
+        .where({ roadmapId }),
+    };
   });
 
   ctx.body = res;
