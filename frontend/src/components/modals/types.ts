@@ -6,6 +6,7 @@ import {
   Invitation,
   Task,
   InfoModalContent,
+  CheckableUserWithCustomers,
 } from '../../redux/roadmaps/types';
 import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
@@ -81,7 +82,11 @@ type OwnProps = {
   [ModalTypes.DELETE_ROADMAP_MODAL]: {
     id: number;
   };
-  [ModalTypes.NOTIFY_USERS_MODAL]: { taskId: number };
+  [ModalTypes.NOTIFY_USERS_MODAL]: {
+    taskId: number;
+    missingDevelopers: CheckableUserWithCustomers[];
+    missingUsers: CheckableUserWithCustomers[];
+  };
   [ModalTypes.JOIN_PROJECT_MODAL]: { invitation: Invitation };
   [ModalTypes.JOIN_LINK_INVALID_MODAL]: {};
   [ModalTypes.JOIN_LINK_NO_ACCESS_MODAL]: { invitationLink: string };

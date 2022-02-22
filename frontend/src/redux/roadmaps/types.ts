@@ -35,6 +35,10 @@ export interface CustomerStakes {
   color: string;
 }
 
+export interface CheckableUserWithCustomers extends CheckableUser {
+  customers?: Customer[];
+}
+
 export interface CheckableCustomer extends Customer {
   checked: boolean;
 }
