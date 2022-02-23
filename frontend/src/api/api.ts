@@ -400,27 +400,27 @@ export const apiV2 = createApi({
         data: { from, to },
       }),
     }),
-    refetchTasks: build.mutation<null, null>({
+    refetchTasks: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Tasks'],
     }),
-    refetchRoadmaps: build.mutation<null, null>({
+    refetchRoadmaps: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Roadmaps'],
     }),
-    refetchUsers: build.mutation<null, null>({
+    refetchUsers: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Users'],
     }),
-    refetchCustomers: build.mutation<null, null>({
+    refetchCustomers: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Customers'],
     }),
-    refetchTaskrelations: build.mutation<null, null>({
+    refetchTaskrelations: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Taskrelations'],
     }),
-    refetchVersions: build.mutation<null, null>({
+    refetchVersions: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Versions'],
     }),
