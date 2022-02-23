@@ -129,6 +129,15 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
 
     // TODO: separate adding/deleting from updating
     if (tasks) {
+      // Delete tasks from all versions
+      await trx('versionTasks')
+        .whereIn(
+          'versionTasks.taskId',
+          tasks.map((taskId: number) => taskId),
+        )
+        .delete();
+
+      // Wipe current versions tasks list and reconstruct it
       await trx('versionTasks').where('versionId', versionId).delete();
       if (tasks?.length) {
         await trx('versionTasks').insert(
