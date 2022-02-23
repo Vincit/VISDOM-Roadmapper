@@ -34,13 +34,8 @@ export const SocketListener = () => {
     }
 
     if (!socket.current) {
-      console.log('Trying to establish socketIo communication');
       socket.current = io(process.env.REACT_APP_API_BASE_URL!, {
         withCredentials: true,
-      });
-
-      socket.current.on('connect', () => {
-        console.log(`Socket connected`);
       });
 
       socket.current.on('connect_error', (error) => {
@@ -48,52 +43,31 @@ export const SocketListener = () => {
       });
 
       socket.current.on(ClientEvents.ROADMAP_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.ROADMAP_UPDATED}, ${roadmapId}`,
-        );
-        refetchRoadmaps(null);
+        refetchRoadmaps();
       });
 
       socket.current.on(ClientEvents.USER_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.USER_UPDATED}, ${roadmapId}`,
-        );
-        refetchUsers(null);
+        refetchUsers();
       });
 
       socket.current.on(ClientEvents.TASK_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.TASK_UPDATED}, ${roadmapId}`,
-        );
-        refetchTasks(null);
+        refetchTasks();
       });
 
       socket.current.on(ClientEvents.TASKRELATION_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.TASKRELATION_UPDATED}, ${roadmapId}`,
-        );
-        refetchTaskrelations(null);
+        refetchTaskrelations();
       });
 
       socket.current.on(ClientEvents.TASKRATING_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.TASKRATING_UPDATED}, ${roadmapId}`,
-        );
-        refetchTasks(null);
+        refetchTasks();
       });
 
       socket.current.on(ClientEvents.CUSTOMER_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.CUSTOMER_UPDATED}, ${roadmapId}`,
-        );
-        refetchCustomers(null);
+        refetchCustomers();
       });
 
       socket.current.on(ClientEvents.VERSION_UPDATED, (roadmapId) => {
-        console.log(
-          `Event received: ${ClientEvents.VERSION_UPDATED}, ${roadmapId}`,
-        );
-        refetchVersions(null);
+        refetchVersions();
       });
     }
   }, [
