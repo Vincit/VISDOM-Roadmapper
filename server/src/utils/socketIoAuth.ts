@@ -21,7 +21,7 @@ export const socketIoAuth = (
     next: (err?: ExtendedError | undefined) => void,
   ) => {
     // Create a new (fake) Koa context to decrypt the session cookie using koa middleware
-    let ctx = app.createContext<IKoaState>(
+    const ctx = app.createContext<IKoaState>(
       socket.request,
       new http.ServerResponse(socket.request),
     );

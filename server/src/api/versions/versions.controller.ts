@@ -146,6 +146,12 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
       { name: name, sortingRank: sortingRank },
     );
 
+    return patched || tasks;
+  });
+
+  if (!updated) {
+    return void (ctx.status = 404);
+  } else {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
       dontEmitToUserId: ctx.state.user!.id,
@@ -153,13 +159,6 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
       event: ClientEvents.VERSION_UPDATED,
       eventParams: [Number(ctx.params.roadmapId)],
     });
-
-    return patched || tasks;
-  });
-
-  if (!updated) {
-    return void (ctx.status = 404);
-  } else {
     return void (ctx.body = updated);
   }
 };

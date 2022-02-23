@@ -13,8 +13,6 @@ import { SocketStatusResponse } from '../../../shared/types/sockettypes';
 import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
 
-const userToSocketMap: Record<number, ExtendedSocket[]> = {};
-
 export const registerSocketCallbacks = (io: ExtendedServer) => {
   io.on('connection', (socket) => {
     if (!socket.data.user) {
@@ -24,34 +22,12 @@ export const registerSocketCallbacks = (io: ExtendedServer) => {
       return;
     }
 
-    console.log(
-      `New socket connection. Id: ${socket.id} User: ${socket.data.user.id}`,
-    );
-
-    // Track all sockets this userid has opened
-    if (!userToSocketMap[socket.data.user.id])
-      userToSocketMap[socket.data.user.id] = [];
-    userToSocketMap[socket.data.user.id].push(socket);
-
     socket.on('disconnect', () => {
       if (!socket.data.user) {
         console.error(
           'Socket disconnected without associated user. This should never happen',
         );
         return;
-      }
-
-      console.log(`Socket disconnected. Id: ${socket.id}`);
-      // Remove from list of sockets that this userid has opened
-      const sockets = userToSocketMap[socket.data.user.id];
-      if (sockets) {
-        const filtered = sockets.filter((s) => s != socket);
-
-        if (filtered.length === 0) {
-          delete userToSocketMap[socket.data.user.id];
-        } else {
-          userToSocketMap[socket.data.user.id] = filtered;
-        }
       }
     });
 
@@ -60,10 +36,6 @@ export const registerSocketCallbacks = (io: ExtendedServer) => {
       setSubscribedRoadmap(socket),
     );
   });
-};
-
-export const getSocketsByUser = (userId: number) => {
-  return userToSocketMap[userId];
 };
 
 export const setSubscribedRoadmap = (socket: ExtendedSocket) => async (
