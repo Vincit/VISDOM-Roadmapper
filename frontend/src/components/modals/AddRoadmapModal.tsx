@@ -26,7 +26,7 @@ import {
   isInviteUser,
 } from './modalparts/TeamMemberModalParts';
 import { AddOrModifyCustomer } from './modalparts/CustomerModalParts';
-import { Permission } from '../../../../shared/types/customTypes';
+import { Permission, RoleType } from '../../../../shared/types/customTypes';
 import css from './AddRoadmapModal.module.scss';
 import { apiV2 } from '../../api/api';
 import { hasPermission } from '../../../../shared/utils/permission';
@@ -350,7 +350,10 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                 }}
                 onCancel={() => setOpen({ ...open, addCustomer: false })}
                 customers={customers}
-                members={members}
+                members={[
+                  ...members,
+                  { email: userInfo.email, type: RoleType.Admin },
+                ]}
                 onCloseError={() => setUniqueCustomerError(false)}
               />
             )}
@@ -375,7 +378,10 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
                 }}
                 onCancel={() => setEditCustomer(undefined)}
                 customers={customers}
-                members={members}
+                members={[
+                  ...members,
+                  { email: userInfo.email, type: RoleType.Admin },
+                ]}
                 onCloseError={() => setUniqueCustomerError(false)}
               />
             )}

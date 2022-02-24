@@ -73,12 +73,23 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
         roadmapId,
       })),
     );
-
     // add userInfo to representatives if needed
     await Promise.all(
-      customers.map((customer) =>
-        customer.$relatedQuery('representatives', trx).relate([userInfo]),
-      ),
+      customers
+        .filter((customer) =>
+          customersData.find(
+            ({ name, email, representatives }) =>
+              name === customer.name &&
+              email === customer.email &&
+              representatives.find(
+                ({ email, checked }: any) =>
+                  email === userInfo.email && checked,
+              ),
+          ),
+        )
+        .map((customer) =>
+          customer.$relatedQuery('representatives', trx).relate([userInfo]),
+        ),
     );
 
     const invitations = await Invitation.query(trx).insertAndFetch(
