@@ -1,4 +1,6 @@
 import { FC } from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { PageToHtml } from './PageToHtml';
 import { colorForest } from './emailStyles';
 import { baseUrl } from './emailTestEnv';
 
@@ -35,6 +37,18 @@ const footer = {
   paddingBottom: '10px',
   textAlign: 'center' as 'center',
   fontSize: '14px',
+};
+
+export const emailPage = (title: string, page: any) => () => {
+  const html = ReactDOMServer.renderToStaticMarkup(page());
+  return (
+    <div>
+      {html && (
+        <PageToHtml data={html.toString()} title={title} baseUrl={baseUrl} />
+      )}
+      {page()}
+    </div>
+  );
 };
 
 export const EmailTemplate: FC<{ title: string }> = ({ title, children }) => (
