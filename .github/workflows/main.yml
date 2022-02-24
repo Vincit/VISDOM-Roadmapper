@@ -28,7 +28,8 @@ jobs:
         with:
           node-version: "14"
       - run: cd server && yarn install --frozen-lockfile && yarn test && cd ../frontend && yarn install --frozen-lockfile && yarn build && yarn test --passWithNoTests
-        env:
+        env: 
+          CI: false
           POSTGRES_DB: "roadmapper-db"
           POSTGRES_USER: "testuser"
           POSTGRES_PASSWORD: "testpassword"

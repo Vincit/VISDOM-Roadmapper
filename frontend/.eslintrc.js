@@ -26,7 +26,7 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.ts'] }],
     'jsx-a11y/label-has-associated-control': [
