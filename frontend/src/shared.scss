@@ -236,13 +236,14 @@ form {
 
 .searchBarContainer {
   position: relative;
-  max-width: 20em;
   min-width: 12em;
 
   svg {
     fill: $COLOR_BLACK100;
     position: absolute;
-    top: 0.8em;
+    width: 14px;
+    height: 14px;
+    top: calc(50% - 7px);
     right: 1em;
   }
 }
@@ -386,6 +387,7 @@ input {
     min-height: 40px;
     height: 40px;
     padding-left: 18px;
+    padding-right: calc(18px + 14px); // leave room for search icon
   }
 }
 
