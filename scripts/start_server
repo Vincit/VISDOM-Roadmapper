@@ -3,10 +3,22 @@ set -e
 
 cd /var/app/server
 
-AWS_SECRET1_ID="staging/backendEnvVariables"
-AWS_RDS_SECRET_ID="staging/backendRdsCredentials"
-AWS_REGION="eu-central-1"
-ENVFILE=".env"
+if [ "$DEPLOYMENT_GROUP_NAME" == "StagingBackendDeploymentGroup" ]
+then
+    AWS_SECRET1_ID="actuallyStaging/backendEnvVariables"
+    AWS_RDS_SECRET_ID="actuallyStagingDb/backendRdsCredentials"
+    AWS_REGION="eu-central-1"
+    ENVFILE=".env"
+fi
+
+if [ "$DEPLOYMENT_GROUP_NAME" == "BackendDeploymentGroup" ]
+then
+    AWS_SECRET1_ID="staging/backendEnvVariables"
+    AWS_RDS_SECRET_ID="staging/backendRdsCredentials"
+    AWS_REGION="eu-central-1"
+    ENVFILE=".env"
+fi
+
 
 # Export the secret to .env
 {
