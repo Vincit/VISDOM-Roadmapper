@@ -45,7 +45,7 @@ const removeRepresentative = (
   }));
 
 const getKey = (person: InviteRoadmapUser | RoadmapCreationCustomer) =>
-  isInviteUser(person) ? person.email : `${person.name}-${person.email}`;
+  isInviteUser(person) ? person.email : `${person.name}@${person.email}`;
 
 const AddPeopleList: FC<{
   type: 'member' | 'client';

@@ -7,6 +7,7 @@ import User from '../users/users.model';
 import { Role } from '../roles/roles.model';
 import Customer from '../customer/customer.model';
 import Invitation from '../invitations/invitations.model';
+import { sendInvitations } from '../invitations/invitations.controller';
 import uuid from 'uuid';
 
 export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
@@ -64,28 +65,31 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
       type: RoleType.Admin,
     });
 
-    const customers = await Promise.all(
-      customersData.map(({ name, email, color }: any) =>
-        Customer.query(trx).insertAndFetch({ name, email, color, roadmapId }),
-      ),
+    const customers = await Customer.query(trx).insertAndFetch(
+      customersData.map(({ name, email, color }: any) => ({
+        name,
+        email,
+        color,
+        roadmapId,
+      })),
     );
-    // customers need at least one existing user as representative
+
+    // add userInfo to representatives if needed
     await Promise.all(
       customers.map((customer) =>
         customer.$relatedQuery('representatives', trx).relate([userInfo]),
       ),
     );
 
-    const invitations = await Promise.all(
-      invitationsData.map(({ email, type }) =>
-        Invitation.query(trx).insertAndFetch({
-          id: uuid.v4(),
-          email,
-          type,
-          roadmapId,
-        }),
-      ),
+    const invitations = await Invitation.query(trx).insertAndFetch(
+      invitationsData.map(({ email, type }) => ({
+        id: uuid.v4(),
+        email,
+        type,
+        roadmapId,
+      })),
     );
+
     await Promise.all(
       invitations.map((invitation) => {
         const represented =
@@ -101,15 +105,8 @@ export const postRoadmaps: RouteHandlerFnc = async (ctx) => {
           .relate(representedCustomers);
       }),
     );
-    return {
-      ...roadmap,
-      customers: await Customer.query(trx)
-        .withGraphFetched('representatives')
-        .where({ roadmapId }),
-      invitations: await Invitation.query(trx)
-        .withGraphFetched('representativeFor')
-        .where({ roadmapId }),
-    };
+    await sendInvitations(invitations, roadmap.name);
+    return roadmap;
   });
 
   ctx.body = res;

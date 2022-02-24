@@ -46,6 +46,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
     color: customer.color,
   });
   const [representatives, setRepresentatives] = useState<CheckableUser[]>([]);
+  const [validEmail, setValidEmail] = useState(true);
 
   useEffect(() => {
     if (patchCustomerStatus.isError) {
@@ -105,9 +106,10 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
             setFormValues({ ...formValues, name: value })
           }
           email={formValues.email}
-          onEmailChange={(value) =>
-            setFormValues({ ...formValues, email: value })
-          }
+          onEmailChange={(value, valid) => {
+            setFormValues({ ...formValues, email: value });
+            setValidEmail(valid);
+          }}
           colorType={colorType}
           onColorTypeChange={(value) => setColorType(value)}
           color={formValues.color}
@@ -142,7 +144,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
               type="submit"
               disabled={
                 !formValues.name ||
-                !formValues.email ||
+                !validEmail ||
                 !getCheckedIds(representatives).length
               }
             >

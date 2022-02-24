@@ -26,7 +26,7 @@ export const SelectCustomerInfo: FC<{
   colorType: string;
   color: string;
   onNameChange: (name: string) => void;
-  onEmailChange: (email: string) => void;
+  onEmailChange: (email: string, valid: boolean) => void;
   onColorTypeChange: (colorType: string) => void;
   onColorChange: (color: string) => void;
 }> = ({
@@ -40,6 +40,8 @@ export const SelectCustomerInfo: FC<{
   onColorChange,
 }) => {
   const { t } = useTranslation();
+  const [validEmail, setValidEmail] = useState(false);
+
   return (
     <>
       <div className={classes(css.section)}>
@@ -62,7 +64,13 @@ export const SelectCustomerInfo: FC<{
           type="email"
           value={email}
           placeholder={t('Example email', { localPart: 'clientname' })}
-          onChange={(e) => onEmailChange(e.currentTarget.value)}
+          onChange={(e) => {
+            if (validEmail) e.currentTarget.checkValidity();
+            const valid =
+              e.currentTarget.validity.valid && !!e.currentTarget.value;
+            onEmailChange(e.currentTarget.value, valid);
+            setValidEmail(valid);
+          }}
         />
       </div>
       <div className={classes(css.section)}>
@@ -162,6 +170,7 @@ export const AddOrModifyCustomer: FC<{
           : false,
       })),
   );
+  const [validEmail, setValidEmail] = useState(!!initialCustomer);
 
   const handleColorTypeChange = (value: string) => {
     setColorType(value);
@@ -177,7 +186,10 @@ export const AddOrModifyCustomer: FC<{
         colorType={colorType}
         color={customer.color}
         onNameChange={(name) => setCustomer({ ...customer, name })}
-        onEmailChange={(email) => setCustomer({ ...customer, email })}
+        onEmailChange={(email, valid) => {
+          setCustomer({ ...customer, email });
+          setValidEmail(valid);
+        }}
         onColorTypeChange={handleColorTypeChange}
         onColorChange={(color) => setCustomer({ ...customer, color })}
       />
@@ -203,7 +215,7 @@ export const AddOrModifyCustomer: FC<{
         <button
           className="button-small-filled"
           type="button"
-          disabled={!customer.name || !customer.email}
+          disabled={!customer.name || !validEmail}
           onClick={() => onSubmit({ ...customer, representatives })}
         >
           {initialCustomer ? (

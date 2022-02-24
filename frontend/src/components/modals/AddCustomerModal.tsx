@@ -43,6 +43,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     color: randomColor(customers),
   });
   const [representatives, setRepresentatives] = useState<CheckableUser[]>([]);
+  const [validEmail, setValidEmail] = useState(false);
 
   useEffect(() => {
     if (!roadmapUsers) return;
@@ -81,7 +82,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
   const steps = [
     {
       description: t('Client info'),
-      disabled: () => !formValues.name || !formValues.email,
+      disabled: () => !formValues.name || !validEmail,
       component: () => (
         <SelectCustomerInfo
           name={formValues.name}
@@ -89,9 +90,10 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
             setFormValues({ ...formValues, name: value })
           }
           email={formValues.email}
-          onEmailChange={(value) =>
-            setFormValues({ ...formValues, email: value })
-          }
+          onEmailChange={(value, valid) => {
+            setFormValues({ ...formValues, email: value });
+            setValidEmail(valid);
+          }}
           colorType={colorType}
           onColorTypeChange={handleColorTypeChange}
           color={formValues.color}

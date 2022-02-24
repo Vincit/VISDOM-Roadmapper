@@ -14,6 +14,28 @@ import { projectInvitationEmail } from '../../utils/emailMessages';
 // should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
 const BASE_URL = process.env.FRONTEND_BASE_URL!;
 
+export const sendInvitations = (
+  invitations: Invitation[],
+  roadmapName: string,
+) =>
+  Promise.all(
+    invitations.map(({ email, id, type }) =>
+      sendEmail(
+        email,
+        'Invitation to roadmap',
+        `You have been invited to a roadmap, here is a link:\r\n${BASE_URL}/join/${id}`,
+        projectInvitationEmail(
+          BASE_URL,
+          id,
+          roadmapName,
+          RoleType[type] === RoleType[RoleType.Business]
+            ? 'Sales representative'
+            : RoleType[type],
+        ),
+      ),
+    ),
+  );
+
 const deleteOldInvitations = () =>
   Invitation.query().delete().where('updatedAt', '<', daysAgo(30));
 
@@ -72,19 +94,7 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
   });
 
   const invationRoadmap = await Roadmap.query().findById(ctx.params.roadmapId);
-  await sendEmail(
-    email,
-    'Invitation to roadmap',
-    `You have been invited to a roadmap, here is a link:\r\n${BASE_URL}/join/${created.id}`,
-    projectInvitationEmail(
-      BASE_URL,
-      created.id,
-      invationRoadmap.name,
-      RoleType[type] === RoleType[RoleType.Business]
-        ? 'Sales representative'
-        : RoleType[type],
-    ),
-  );
+  await sendInvitations([created], invationRoadmap.name);
   return void (ctx.body = created);
 };
 
