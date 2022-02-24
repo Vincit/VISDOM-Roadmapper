@@ -1,5 +1,10 @@
 name: Continuous integration
-on: pull_request
+on:
+  pull_request:
+    paths-ignore:
+      # exclude files under /frontend instead of only including /server
+      # as there are shared files outside the server directory
+      - 'frontend/**'
 jobs:
   build-and-test:
     name: Test
@@ -27,9 +32,8 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: "14"
-      - run: cd server && yarn install --frozen-lockfile && yarn test && cd ../frontend && yarn install --frozen-lockfile && yarn build && yarn test --passWithNoTests
-        env: 
-          CI: false
+      - run: cd server && yarn install --frozen-lockfile && yarn test
+        env:
           POSTGRES_DB: "roadmapper-db"
           POSTGRES_USER: "testuser"
           POSTGRES_PASSWORD: "testpassword"
