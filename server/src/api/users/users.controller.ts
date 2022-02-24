@@ -47,9 +47,15 @@ export const patchUsers: RouteHandlerFnc = async (ctx) => {
       status = 404;
       return null;
     }
-    if (!(await previous.verifyPassword(currentPassword))) {
-      status = 400;
-      return null;
+    if (email !== undefined || password !== undefined) {
+      // only require password verification for email and password changes
+      if (
+        currentPassword === undefined ||
+        !(await previous.verifyPassword(currentPassword))
+      ) {
+        status = 400;
+        return null;
+      }
     }
     const emailVerified =
       email === undefined || email === previous.email
