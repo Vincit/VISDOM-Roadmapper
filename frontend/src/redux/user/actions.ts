@@ -68,9 +68,9 @@ export const deleteUser = createAsyncThunk<
   boolean,
   UserDeleteRequest,
   { rejectValue: AxiosError }
->('/user/patchUser', async (userPatch, thunkAPI) => {
+>('/user/deleteUser', async (deleteRequest, thunkAPI) => {
   try {
-    return await api.deleteUser(userPatch);
+    return await api.deleteUser(deleteRequest);
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
