@@ -1,0 +1,25 @@
+name: Frontend tests
+on:
+  pull_request:
+    paths-ignore:
+      # exclude files under /server instead of only including /frontend
+      # as there are shared files outside the frontend directory
+      - 'server/**'
+jobs:
+  build-and-test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+      - run: cd frontend && yarn install --frozen-lockfile && yarn build && yarn test --passWithNoTests
+        env:
+          CI: false
+          NODE_ENV: "test"
+          CORS_ORIGIN: "http://localhost:3000"
+          SERVER_PORT: "5000"
+          CHOKIDAR_USEPOLLING: "true"
+          REACT_APP_API_BASE_URL: "http://localhost:5000/"
