@@ -161,6 +161,7 @@ export const AddOrModifyMember: FC<{
       </div>
       <Input
         label={t('Member email the link will be sent to')}
+        required
         placeholder={t('Example email', { localPart: 'teammember' })}
         name="send link"
         type="email"
@@ -183,7 +184,7 @@ export const AddOrModifyMember: FC<{
       </Alert>
       <div className={classes(css.buttons)}>
         <button
-          className="button-small-filled"
+          className="button-small-filled submitInnerForm"
           type="button"
           disabled={!validForm}
           onClick={() => onSubmit(member)}
@@ -208,9 +209,10 @@ export const AddOrModifyMember: FC<{
 
 export const SkipPeopleAddition: FC<{
   type: 'clients' | 'members';
-  extraStep: Boolean;
+  extraStep: boolean;
   onSkip: () => void;
-}> = ({ type, extraStep, onSkip }) => {
+  disabled: boolean;
+}> = ({ type, extraStep, onSkip, disabled }) => {
   const [openTooltip, setOpenTooltip] = useState(false);
   // tooltip button's submitEvent won't bubble to the correct handler
   const submitButton = useRef<HTMLButtonElement>(null);
@@ -245,7 +247,12 @@ export const SkipPeopleAddition: FC<{
         open={openTooltip}
         onClose={() => setOpenTooltip(false)}
       >
-        <button type="submit" onClick={handleSkip} ref={submitButton}>
+        <button
+          type="submit"
+          disabled={disabled}
+          onClick={handleSkip}
+          ref={submitButton}
+        >
           <Trans i18nKey="Skip adding 2/3" />
         </button>
       </ControlledTooltip>{' '}

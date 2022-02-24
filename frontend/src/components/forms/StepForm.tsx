@@ -19,6 +19,10 @@ interface Step {
   description?: string;
   disabled?: () => boolean;
   noCancelConfirmation?: () => boolean;
+  // if innerForm is used, add "submitInnerForm" to submit button's classNames
+  innerForm?: boolean;
+  // can be used for example to close the innerForm
+  onPreviousStepClick?: () => void;
 }
 
 export const StepForm: FC<{
@@ -48,6 +52,14 @@ export const StepForm: FC<{
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (steps[step - 1]?.innerForm) {
+      const element = event.currentTarget.getElementsByClassName(
+        'submitInnerForm',
+      )[0];
+      if (element instanceof HTMLElement) element.click();
+      return;
+    }
     switch (step) {
       case 0:
       case steps.length + 1:
@@ -70,6 +82,7 @@ export const StepForm: FC<{
   };
 
   const handleCancel = () => {
+    steps[step - 1].onPreviousStepClick?.();
     if (step === 0) {
       setStep(previousStep);
       return;
@@ -123,7 +136,10 @@ export const StepForm: FC<{
                   // eslint-disable-next-line
                   key={i + 1}
                   description={description}
-                  onClick={() => setStep(i + 1)}
+                  onClick={() => {
+                    steps[step - 1].onPreviousStepClick?.();
+                    setStep(i + 1);
+                  }}
                 />
               );
             })}
@@ -187,9 +203,10 @@ export const StepForm: FC<{
               className="button-large"
               type="submit"
               disabled={
-                step > 0 &&
-                step <= steps.length &&
-                steps[step - 1]?.disabled?.()
+                (step > 0 &&
+                  step <= steps.length &&
+                  steps[step - 1]?.disabled?.()) ||
+                !!steps[step - 1]?.innerForm
               }
             >
               {submitButton()}

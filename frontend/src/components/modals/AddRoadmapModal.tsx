@@ -214,6 +214,11 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
     },
     {
       description: 'Add members',
+      innerForm: open.addMember || !!editMember,
+      onPreviousStepClick: () => {
+        setOpen({ ...open, addMember: false });
+        setEditMember(undefined);
+      },
       component: () => (
         <div className={css.addPeopleStep}>
           <AddTeamMemberInfo
@@ -305,12 +310,18 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
             type="members"
             extraStep={!!members.length}
             onSkip={() => setMembers([])}
+            disabled={open.addMember || !!editMember}
           />
         </div>
       ),
     },
     {
       description: 'Add clients',
+      innerForm: open.addCustomer || !!editCustomer,
+      onPreviousStepClick: () => {
+        setOpen({ ...open, addCustomer: false });
+        setEditCustomer(undefined);
+      },
       component: () => (
         <div className={css.addPeopleStep}>
           <div className={classes(css.addBox)}>
@@ -390,6 +401,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
             type="clients"
             extraStep={!!customers.length}
             onSkip={() => setCustomers([])}
+            disabled={open.addCustomer || !!editCustomer}
           />
         </div>
       ),

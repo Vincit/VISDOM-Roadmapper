@@ -213,7 +213,7 @@ export const AddOrModifyCustomer: FC<{
       </Alert>
       <div className={classes(css.buttons)}>
         <button
-          className="button-small-filled"
+          className="button-small-filled submitInnerForm"
           type="button"
           disabled={!customer.name || !validEmail}
           onClick={() => onSubmit({ ...customer, representatives })}

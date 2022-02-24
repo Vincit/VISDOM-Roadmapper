@@ -421,6 +421,10 @@ textarea {
   padding: 0;
   border: none;
   font-weight: bold;
+
+  &:disabled {
+    color: $COLOR_BLACK40;
+  }
 }
 
 .green {
@@ -430,8 +434,11 @@ textarea {
     @extend .link-button;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     text-decoration: underline;
+  }
+  &:disabled {
+    color: $COLOR_BLACK40;
   }
 }
 
@@ -442,7 +449,7 @@ textarea {
     @extend .link-button;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     text-decoration: underline;
   }
 }
