@@ -39,34 +39,34 @@ export const SocketListener = () => {
       });
 
       socket.current.on('connect_error', (error) => {
-        console.log(`Error connecting socket: ${error}`);
+        console.error(`Error connecting socket: ${error}`);
       });
 
-      socket.current.on(ClientEvents.ROADMAP_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.ROADMAP_UPDATED, () => {
         refetchRoadmaps();
       });
 
-      socket.current.on(ClientEvents.USER_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.USER_UPDATED, () => {
         refetchUsers();
       });
 
-      socket.current.on(ClientEvents.TASK_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.TASK_UPDATED, () => {
         refetchTasks();
       });
 
-      socket.current.on(ClientEvents.TASKRELATION_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.TASKRELATION_UPDATED, () => {
         refetchTaskrelations();
       });
 
-      socket.current.on(ClientEvents.TASKRATING_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.TASKRATING_UPDATED, () => {
         refetchTasks();
       });
 
-      socket.current.on(ClientEvents.CUSTOMER_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.CUSTOMER_UPDATED, () => {
         refetchCustomers();
       });
 
-      socket.current.on(ClientEvents.VERSION_UPDATED, (roadmapId) => {
+      socket.current.on(ClientEvents.VERSION_UPDATED, () => {
         refetchVersions();
       });
     }
