@@ -1,0 +1,36 @@
+@import '../../shared.scss';
+
+.mainContainer {
+  padding-top: 20px;
+  margin-bottom: -15px;
+}
+
+.flexContainer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.flexItem {
+  width: 300px;
+}
+
+.htmlArea {
+  width: 300px;
+  height: 100px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.iconButton {
+  border: none;
+  background: none;
+}
+
+.linkButton {
+  color: $COLOR_EMERALD;
+}
+
+.note {
+  padding-bottom: 10px;
+}
