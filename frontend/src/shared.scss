@@ -309,7 +309,7 @@ form {
   }
 }
 
-.tooltip {
+body .tooltip {
   @extend .shadow-tooltip;
 
   background: white;
@@ -328,7 +328,7 @@ form {
   margin: auto;
 }
 
-.tooltipArrow {
+body .tooltipArrow {
   color: white;
 }
 

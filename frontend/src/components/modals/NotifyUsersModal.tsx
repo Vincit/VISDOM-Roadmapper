@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { Dot } from './Dot';
 import { percent } from '../utils/string';
 import { CustomerStakes } from '../redux/roadmaps/types';
