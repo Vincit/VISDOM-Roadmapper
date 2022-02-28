@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import classNames from 'classnames';
 import css from './InfoTooltip.module.scss';
 
@@ -22,7 +22,6 @@ export const ControlledTooltip: React.FC<{
       placement={placement || 'top'}
       arrow
       open={open}
-      interactive
       onClose={() => onClose(false)}
       leaveDelay={500}
     >

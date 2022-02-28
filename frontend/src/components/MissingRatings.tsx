@@ -1,6 +1,6 @@
 import { useState, useEffect, FC } from 'react';
 import BuildIcon from '@material-ui/icons/Build';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
