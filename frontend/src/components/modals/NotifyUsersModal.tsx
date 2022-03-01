@@ -14,7 +14,6 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Checkbox } from '../forms/Checkbox';
-import { CheckableUserWithCustomers } from '../../redux/roadmaps/types';
 import css from './NotifyUsersModal.module.scss';
 import { Modal, ModalTypes } from './types';
 import { TextArea } from '../forms/FormField';
@@ -38,15 +37,17 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
     selectById(taskId),
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [previousUsers, setPreviousUsers] = useState<
-    CheckableUserWithCustomers[] | undefined
-  >([]);
+  const [previousUsers, setPreviousUsers] = useState([
+    ...missingUsers,
+    ...missingDevelopers,
+  ]);
   const [errorMessage, setErrorMessage] = useState('');
   const [message, setMessage] = useState('');
   const [allChecked, setAllChecked] = useState<boolean>(false);
-  const [currentUsers, setCurrentUsers] = useState<
-    CheckableUserWithCustomers[] | undefined
-  >([...missingUsers, ...missingDevelopers]);
+  const [currentUsers, setCurrentUsers] = useState([
+    ...missingUsers,
+    ...missingDevelopers,
+  ]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,7 +55,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
     setIsLoading(true);
 
     const usersToNotify = currentUsers
-      ?.filter((user) => user.checked)
+      .filter((user) => user.checked)
       .map((user) => user.id);
 
     if (task && usersToNotify) {
@@ -75,7 +76,6 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
   };
 
   const checkAll = (checked: boolean) => {
-    if (!currentUsers) return;
     if (!checked) setCurrentUsers(previousUsers);
     if (checked) {
       const copy = [...currentUsers];
@@ -86,8 +86,6 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
   };
 
   const checkUser = (checked: boolean, idx: number) => {
-    if (!currentUsers) return;
-
     const updated = currentUsers.map((user, index) =>
       idx === index ? { ...user, checked } : user,
     );
@@ -113,7 +111,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
           onChange={(checked) => checkAll(checked)}
         />
         <hr />
-        {currentUsers?.map((user, idx) => (
+        {currentUsers.map((user, idx) => (
           <div className={classes(css.missingUser)} key={user.id}>
             <div className={classes(css.checkboxDiv)}>
               <Checkbox
@@ -183,7 +181,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
             <button
               className="button-large"
               type="submit"
-              disabled={!currentUsers?.some((user) => user.checked)}
+              disabled={!currentUsers.some((user) => user.checked)}
             >
               <Trans i18nKey="Confirm" />
             </button>
