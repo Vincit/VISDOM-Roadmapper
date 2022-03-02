@@ -4,8 +4,8 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import ListIcon from '@material-ui/icons/List';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import ListIcon from '@mui/icons-material/List';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { totalWeightedValueAndComplexity } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';

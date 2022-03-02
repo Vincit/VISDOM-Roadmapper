@@ -1,14 +1,14 @@
 import { FC, MouseEvent } from 'react';
 import classNames from 'classnames';
-import EditIcon from '@material-ui/icons/Edit';
-import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
-import MailIcon from '@material-ui/icons/MailOutlined';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteSharp';
-import CloseIcon from '@material-ui/icons/Close';
-import CheckIcon from '@material-ui/icons/Check';
-import CancelIcon from '@material-ui/icons/Cancel';
-import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
+import EditIcon from '@mui/icons-material/Edit';
+import SettingsSharpIcon from '@mui/icons-material/SettingsSharp';
+import MailIcon from '@mui/icons-material/MailOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteSharp';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from '@mui/icons-material/Cancel';
+import MoreVertSharpIcon from '@mui/icons-material/MoreVertSharp';
 
 import colors from '../../colors.module.scss';
 import css from './SvgButton.module.scss';

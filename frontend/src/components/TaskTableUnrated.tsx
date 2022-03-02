@@ -1,10 +1,10 @@
 import { SyntheticEvent } from 'react';
 import { Link } from 'react-router-dom';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { InfoTooltip } from './InfoTooltip';
 import { paths } from '../routers/paths';
 import { StoreDispatchType } from '../redux';

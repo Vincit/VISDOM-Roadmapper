@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import PeopleIcon from '@material-ui/icons/People';
-import ListIcon from '@material-ui/icons/List';
-import SettingsIcon from '@material-ui/icons/Settings';
-import TimelineIcon from '@material-ui/icons/Timeline';
+import PeopleIcon from '@mui/icons-material/People';
+import ListIcon from '@mui/icons-material/List';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';

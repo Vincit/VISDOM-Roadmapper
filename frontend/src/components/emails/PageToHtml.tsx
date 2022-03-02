@@ -1,8 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
 import { FC, useState } from 'react';
 import classNames from 'classnames';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import css from './PageToHtml.module.scss';
 
 const classes = classNames.bind(css);

@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import Popover from '@material-ui/core/Popover';
-import FavoriteSharpIcon from '@material-ui/icons/FavoriteSharp';
+import Popover from '@mui/material/Popover';
+import FavoriteSharpIcon from '@mui/icons-material/FavoriteSharp';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { StoreDispatchType } from '../redux';

@@ -1,5 +1,5 @@
 import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import classNames from 'classnames';
 
 export const Dropdown: FC<{

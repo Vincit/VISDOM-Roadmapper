@@ -3,7 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/DeleteSharp';
+import DeleteIcon from '@mui/icons-material/DeleteSharp';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';

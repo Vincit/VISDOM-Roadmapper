@@ -1,11 +1,11 @@
 import { FormEvent, useState } from 'react';
 import assert from 'assert';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 import { Alert } from 'react-bootstrap';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox from '@mui/material/Checkbox';
 import { Link, useLocation, Redirect, matchPath } from 'react-router-dom';
 import { userActions } from '../redux/user';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';

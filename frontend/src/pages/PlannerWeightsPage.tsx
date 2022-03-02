@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { Slider } from '../components/forms/Slider';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Customer } from '../redux/roadmaps/types';

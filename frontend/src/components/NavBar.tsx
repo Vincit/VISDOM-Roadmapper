@@ -1,8 +1,8 @@
 import { useSelector, shallowEqual } from 'react-redux';
 import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import classNames from 'classnames';
 import { ReactComponent as CornerPiece } from '../icons/corner_rounder.svg';
 import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';

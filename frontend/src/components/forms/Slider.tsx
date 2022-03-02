@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core/styles';
-import { Slider as MaterialSlider } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
+import { Slider as MaterialSlider } from '@mui/material';
 import colors from '../../colors.module.scss';
 
 export const Slider = withStyles({

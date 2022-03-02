@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { Checkbox as MaterialCheckbox } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
+import { Checkbox as MaterialCheckbox } from '@mui/material';
 import classNames from 'classnames';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import css from './Checkbox.module.scss';
 import colors from '../../colors.module.scss';
 

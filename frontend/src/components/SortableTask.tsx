@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './SortableTask.module.scss';

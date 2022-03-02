@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { Radio as MaterialRadio } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
+import { Radio as MaterialRadio } from '@mui/material';
 import classNames from 'classnames';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import css from './RadioButton.module.scss';
 import colors from '../../colors.module.scss';
 

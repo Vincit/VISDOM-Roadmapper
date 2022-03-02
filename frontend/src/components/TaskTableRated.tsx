@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Trans } from 'react-i18next';
 import { MouseEvent } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';

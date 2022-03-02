@@ -12,7 +12,7 @@ import {
   DraggableLocation,
 } from 'react-beautiful-dnd';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { useTranslation } from 'react-i18next';
 import {
   chosenRoadmapIdSelector,

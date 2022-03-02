@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import CheckSharpIcon from '@material-ui/icons/CheckSharp';
-import CachedSharpIcon from '@material-ui/icons/CachedSharp';
-import ScheduleSharpIcon from '@material-ui/icons/ScheduleSharp';
+import CheckSharpIcon from '@mui/icons-material/CheckSharp';
+import CachedSharpIcon from '@mui/icons-material/CachedSharp';
+import ScheduleSharpIcon from '@mui/icons-material/ScheduleSharp';
 import css from './StepIndicator.module.scss';
 
 const classes = classNames.bind(css);

@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { StylesProvider } from '@material-ui/core/styles';
+import StylesProvider from '@mui/styles/StylesProvider';
 import { Provider } from 'react-redux';
 import { App } from './App';
 import { store } from './redux/index';

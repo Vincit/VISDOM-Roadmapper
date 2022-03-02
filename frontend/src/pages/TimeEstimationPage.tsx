@@ -4,7 +4,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Alert } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';

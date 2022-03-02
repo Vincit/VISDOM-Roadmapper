@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals/index';
 import { ModalTypes } from '../components/modals/types';
