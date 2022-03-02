@@ -3,7 +3,7 @@ import { Alert, Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
+import SettingsSharpIcon from '@mui/icons-material/SettingsSharp';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';

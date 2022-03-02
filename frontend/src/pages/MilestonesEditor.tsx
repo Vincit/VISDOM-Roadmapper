@@ -9,7 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { Link } from 'react-router-dom';
 import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';

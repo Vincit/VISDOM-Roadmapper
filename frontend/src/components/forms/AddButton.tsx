@@ -1,5 +1,5 @@
 import { FC, MouseEvent } from 'react';
-import ControlPointSharpIcon from '@material-ui/icons/ControlPointSharp';
+import ControlPointSharpIcon from '@mui/icons-material/ControlPointSharp';
 import classNames from 'classnames';
 import css from './AddButton.module.scss';
 

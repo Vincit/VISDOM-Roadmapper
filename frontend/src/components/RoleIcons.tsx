@@ -1,8 +1,8 @@
 import { FC, forwardRef } from 'react';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
-import BuildIcon from '@material-ui/icons/BuildSharp';
-import StarIcon from '@material-ui/icons/StarSharp';
+import BuildIcon from '@mui/icons-material/BuildSharp';
+import StarIcon from '@mui/icons-material/StarSharp';
 import { ReactComponent as BusinessValueFilled } from '../icons/rate_value_filled.svg';
 import { ReactComponent as RequiredWorkFilled } from '../icons/rate_work_filled.svg';
 import { RoleType } from '../../../shared/types/customTypes';

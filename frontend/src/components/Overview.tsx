@@ -2,8 +2,8 @@ import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { IconButton } from '@material-ui/core';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { IconButton } from '@mui/material';
 import { MetricsSummary, MetricsProps } from './MetricsSummary';
 import { EditableTextWithButtons } from './EditableText';
 import { ReactComponent as PreviousArrow } from '../icons/expand_less.svg';
@@ -140,6 +140,7 @@ export const Overview: FC<OverviewProps> = ({
               className={classes({ [css.disabled]: !id })}
               disabled={!id}
               onClick={() => onOverviewChange(id!)}
+              size="large"
             >
               {type === ArrowType.Previous ? <PreviousArrow /> : <NextArrow />}
             </IconButton>

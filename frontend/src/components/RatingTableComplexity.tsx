@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import BuildSharpIcon from '@material-ui/icons/BuildSharp';
+import BuildSharpIcon from '@mui/icons-material/BuildSharp';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';

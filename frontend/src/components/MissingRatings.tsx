@@ -1,5 +1,5 @@
 import { useState, useEffect, FC } from 'react';
-import BuildIcon from '@material-ui/icons/Build';
+import BuildIcon from '@mui/icons-material/Build';
 import Tooltip from '@mui/material/Tooltip';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';

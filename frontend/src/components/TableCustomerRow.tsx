@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { DeleteButton, EditButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';

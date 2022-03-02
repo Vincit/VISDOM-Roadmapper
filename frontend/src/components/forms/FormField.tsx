@@ -6,7 +6,7 @@ import {
   useRef,
   useEffect,
 } from 'react';
-import { TextareaAutosize } from '@material-ui/core';
+import { TextareaAutosize } from '@mui/material';
 import classNames from 'classnames';
 import css from './FormField.module.scss';
 

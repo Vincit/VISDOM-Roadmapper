@@ -1,7 +1,7 @@
 import { Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
-import HelpIcon from '@material-ui/icons/Help';
+import HelpIcon from '@mui/icons-material/Help';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Handle, HandleType } from 'react-flow-renderer';
 import { Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './TaskMapTask.module.scss';

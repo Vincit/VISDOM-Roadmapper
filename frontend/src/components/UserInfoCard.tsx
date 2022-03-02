@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { RoleIcon } from './RoleIcons';
 import { RoadmapRole, UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';

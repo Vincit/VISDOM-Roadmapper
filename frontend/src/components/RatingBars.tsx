@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
-import { Rating as MaterialRating } from '@material-ui/lab';
+import { Rating as MaterialRating } from '@mui/material';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import css from './RatingBars.module.scss';
