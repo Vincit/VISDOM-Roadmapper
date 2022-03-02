@@ -25,9 +25,13 @@
 
 .titleHeader {
   text-decoration: underline;
+  margin: 0;
 }
 
 .emailList {
+  &:not(:empty) {
+    margin-top: 1rem;
+  }
   text-align: left;
   div {
     margin-bottom: 4px;
