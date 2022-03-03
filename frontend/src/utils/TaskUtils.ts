@@ -186,6 +186,17 @@ const ratingValueAndCreator = (
   };
 };
 
+const ratingValues = (customers: Customer[] | undefined) => (
+  rating: Taskrating,
+) => {
+  const ratingCreator = customers?.find(({ id }) => id === rating.forCustomer);
+  const creatorWeight = ratingCreator?.weight ?? 0;
+  return {
+    weightedValue: rating.value * creatorWeight,
+    unweightedValue: rating.value,
+  };
+};
+
 const taskRatingsCustomerStakes = (customers: Customer[] | undefined) => (
   result: Map<Customer, number>,
   task: Task,
@@ -215,21 +226,49 @@ const taskWeightedValueSummary = (
     .map(ratingValueAndCreator(customers))
     .reduce((acc, rating) => acc.add(rating.value), new RatingsSummary());
 
-export const totalWeightedValueAndComplexity = (
+const taskValuesSummary = (task: Task, customers: Customer[] | undefined) =>
+  task.ratings
+    .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
+    .map(ratingValues(customers))
+    .reduce(
+      (acc, rating) => ({
+        weighted: acc.weighted.add(rating.weightedValue),
+        unweighted: acc.unweighted.add(rating.unweightedValue),
+      }),
+      {
+        weighted: new RatingsSummary(),
+        unweighted: new RatingsSummary(),
+      },
+    );
+
+export const totalValuesAndComplexity = (
   tasks: Task[],
   customers: Customer[] | undefined,
 ) => {
   const { complexity } = totalValueAndComplexity(tasks);
   const totalValues = tasks
-    .map((task) => taskWeightedValueSummary(task, customers))
+    .map((task) => taskValuesSummary(task, customers))
     .reduce(
       (acc, summary) => ({
-        sum: acc.sum + summary.avg,
-        total: acc.total + summary.total,
+        weightedSum: acc.weightedSum + summary.weighted.avg,
+        unweightedSum: acc.unweightedSum + summary.unweighted.avg,
+        weightedTotal: acc.weightedTotal + summary.weighted.total,
+        unweightedTotal: acc.unweightedTotal + summary.unweighted.total,
       }),
-      { sum: 0, total: 0 },
+      {
+        weightedSum: 0,
+        unweightedSum: 0,
+        weightedTotal: 0,
+        unweightedTotal: 0,
+      },
     );
-  return { value: totalValues.sum, totalValue: totalValues.total, complexity };
+  return {
+    value: totalValues.weightedSum,
+    totalValue: totalValues.weightedTotal,
+    unweightedValue: totalValues.unweightedSum,
+    unweightedTotalValue: totalValues.unweightedTotal,
+    complexity,
+  };
 };
 
 export const weightedTaskPriority = (customers: Customer[] | undefined) => (

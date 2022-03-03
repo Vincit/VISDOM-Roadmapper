@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import ListIcon from '@mui/icons-material/List';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
-import { totalWeightedValueAndComplexity } from '../utils/TaskUtils';
+import { totalValuesAndComplexity } from '../utils/TaskUtils';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
@@ -23,6 +23,8 @@ interface VersionComplexityAndValues extends Version {
   complexity: number;
   value: number;
   totalValue: number;
+  unweightedValue: number;
+  unweightedTotalValue: number;
 }
 
 export const RoadmapGraphPage = () => {
@@ -58,7 +60,7 @@ export const RoadmapGraphPage = () => {
     setVersions(
       roadmapsVersions?.map((version) => ({
         ...version,
-        ...totalWeightedValueAndComplexity(version.tasks, customers),
+        ...totalValuesAndComplexity(version.tasks, customers),
       })),
     );
   }, [customers, roadmapsVersions]);
@@ -158,7 +160,10 @@ export const RoadmapGraphPage = () => {
             {({ item: ver, width }) => (
               <TaskValueCreatedVisualization
                 width={width}
-                version={ver}
+                version={{
+                  ...ver,
+                  totalValue: ver.unweightedTotalValue,
+                }}
                 key={ver.id}
               />
             )}
