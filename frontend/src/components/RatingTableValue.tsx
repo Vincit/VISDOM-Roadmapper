@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
+import { useTranslation } from 'react-i18next';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
 import { EditButton } from './forms/SvgButton';
@@ -17,6 +18,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
+  const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: createdBy } = apiV2.useGetRoadmapUsersQuery(
     roadmapId ?? skipToken,
@@ -27,7 +29,7 @@ const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
     selectById(rating.forCustomer),
   );
 
-  if (!createdBy || !customer) return null;
+  if (!customer) return null;
 
   return (
     <div style={style} className={classes(css.ratingRow)}>
@@ -38,11 +40,11 @@ const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
             <div className={classes(css.name)}>{customer.name}</div>
           </div>
           <div className={classes(css.bottomRow, css.name)}>
-            {createdBy.email}
+            {createdBy?.email ?? `<${t('deleted account')}>`}
           </div>
         </div>
         <div className={classes(css.rightSide)}>
-          {createdBy.id === user.id &&
+          {rating.createdByUser === user.id &&
             user.representativeFor?.some(
               ({ id }) => id === rating.forCustomer,
             ) && <EditButton fontSize="medium" onClick={onEdit} />}
