@@ -16,9 +16,9 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
+const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: user } = apiV2.useGetRoadmapUsersQuery(
+  const { data: createdBy } = apiV2.useGetRoadmapUsersQuery(
     roadmapId ?? skipToken,
     selectById(rating.createdByUser),
   );
@@ -27,7 +27,7 @@ const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
     selectById(rating.forCustomer),
   );
 
-  if (!user || !customer) return null;
+  if (!createdBy || !customer) return null;
 
   return (
     <div style={style} className={classes(css.ratingRow)}>
@@ -37,12 +37,15 @@ const TableValueRatingRow: RatingRow = ({ rating, style, userId, onEdit }) => {
             <Dot fill={customer.color} />
             <div className={classes(css.name)}>{customer.name}</div>
           </div>
-          <div className={classes(css.bottomRow, css.name)}>{user.email}</div>
+          <div className={classes(css.bottomRow, css.name)}>
+            {createdBy.email}
+          </div>
         </div>
         <div className={classes(css.rightSide)}>
-          {user.id === userId && (
-            <EditButton fontSize="medium" onClick={onEdit} />
-          )}
+          {createdBy.id === user.id &&
+            user.representativeFor?.some(
+              ({ id }) => id === rating.forCustomer,
+            ) && <EditButton fontSize="medium" onClick={onEdit} />}
           <div className={classes(css.value)}>
             {numFormat.format(rating.value)}
           </div>
