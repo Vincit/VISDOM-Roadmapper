@@ -22,6 +22,14 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
   const [hover, setHover] = useState(0);
   const readonly = 'readonly' in rest;
 
+  const getIcon = () => {
+    return dimension === TaskRatingDimension.BusinessValue ? (
+      <BusinessIcon />
+    ) : (
+      <WorkRoundIcon />
+    );
+  };
+
   return (
     <div className={classes(css.ratingBar)}>
       <MaterialRating
@@ -33,13 +41,8 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
           if (onChange && value) onChange(value);
         }}
         onChangeActive={(_, value) => setHover(value)}
-        icon={
-          dimension === TaskRatingDimension.BusinessValue ? (
-            <BusinessIcon />
-          ) : (
-            <WorkRoundIcon />
-          )
-        }
+        icon={getIcon()}
+        emptyIcon={getIcon()}
         classes={{
           icon: classes(css.icon),
           iconFilled: classes(css.iconFilled),
