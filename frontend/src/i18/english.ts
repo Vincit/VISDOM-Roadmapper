@@ -346,5 +346,6 @@ export const english = {
     'Email service error': 'Email service error',
     'This email doesn’t exist': 'This email doesn’t exist',
     You: 'You',
+    'deleted account': 'deleted account',
   },
 };
