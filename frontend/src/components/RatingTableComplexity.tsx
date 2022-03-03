@@ -19,16 +19,16 @@ const numFormat = new Intl.NumberFormat(undefined, {
 const TableComplexityRatingRow: RatingRow = ({
   rating,
   style,
-  userId,
+  user,
   onEdit,
 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: user } = apiV2.useGetRoadmapUsersQuery(
+  const { data: createdBy } = apiV2.useGetRoadmapUsersQuery(
     roadmapId ?? skipToken,
     selectById(rating.createdByUser),
   );
 
-  if (!user) return null;
+  if (!createdBy) return null;
 
   return (
     <div style={style} className={classes(css.ratingRow)}>
@@ -36,9 +36,9 @@ const TableComplexityRatingRow: RatingRow = ({
         <div className={classes(css.roleIcon)}>
           <BuildSharpIcon fontSize="small" />
         </div>
-        <div className={classes(css.name)}>{user.email}</div>
+        <div className={classes(css.name)}>{createdBy.email}</div>
         <div className={classes(css.rightSide)}>
-          {user.id === userId && (
+          {createdBy.id === user.id && (
             <EditButton fontSize="medium" onClick={onEdit} />
           )}
           <div className={classes(css.value)}>

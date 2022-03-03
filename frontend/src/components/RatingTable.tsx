@@ -34,7 +34,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 export type RatingRow = FC<{
   rating: Taskrating;
   style?: CSSProperties;
-  userId: number;
+  user: UserInfo;
   onEdit: (e: MouseEvent) => void;
 }>;
 
@@ -137,7 +137,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
           <Row
             style={style}
             rating={ratings[index]}
-            userId={userInfo.id}
+            user={userInfo}
             onEdit={openRateModal}
           />
         )}
