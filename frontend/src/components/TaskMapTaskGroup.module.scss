@@ -7,13 +7,16 @@
   width: 405px;
   background-color: rgba($COLOR_CLOUD, 0.75);
   border-radius: 10px;
-  cursor: default;
+
+  &:not(.unavailable) {
+    cursor: default;
+  }
 
   &.unavailable {
     filter: grayscale(100%) opacity(20%);
   }
 
-  &.loading:not(.highlight) {
+  &.loading:not(.highlight, .unavailable) {
     cursor: wait;
   }
 

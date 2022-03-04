@@ -14,10 +14,6 @@
   position: relative;
   align-items: center;
 
-  &.unavailable {
-    filter: grayscale(100%) opacity(20%);
-  }
-
   button {
     visibility: hidden;
     padding: 0;
@@ -40,6 +36,7 @@
 
     &.draggingOutside {
       box-shadow: 0px 0px 30px rgba($color: $COLOR_AZURE, $alpha: 0.3);
+      cursor: -webkit-grabbing;
     }
 
     .doneIcon {
@@ -48,7 +45,7 @@
       height: calc(1em * #{$ZOOM});
     }
   }
-  &.loading:not(.dragging) {
+  &.loading:not(.dragging, .draggingOutside) {
     cursor: wait;
   }
 }
