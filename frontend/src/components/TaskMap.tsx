@@ -133,7 +133,7 @@ export const TaskMap: FC<{
               label: (
                 <TaskGroup
                   listId={id}
-                  taskIds={synergies}
+                  taskIds={synergies.sort((a, b) => a - b)} // FIXME: ordering prevents render bugs
                   tasks={tasks}
                   selectedTask={selectedTask}
                   setSelectedTask={setSelectedTask}
