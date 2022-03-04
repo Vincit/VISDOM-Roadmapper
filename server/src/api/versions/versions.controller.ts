@@ -100,6 +100,9 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
     const originalVersion = await Version.query(trx)
       .findById(versionId)
       .where({ roadmapId: Number(ctx.params.roadmapId) });
+
+    if (!originalVersion) return null;
+
     const roadmapId = originalVersion.roadmapId;
     const previousRank = originalVersion.sortingRank;
 

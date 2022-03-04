@@ -1,4 +1,5 @@
-import { Model, Pojo, QueryBuilder } from 'objection';
+import { Pojo, QueryBuilder } from 'objection';
+import Model from '../BaseModel';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { daysAgo } from '../../../../shared/utils/date';
 import Roadmap from '../roadmaps/roadmaps.model';

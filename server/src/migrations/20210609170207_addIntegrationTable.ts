@@ -1,4 +1,4 @@
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 
 // TODO: migrate existing configurations to and from the new table
 

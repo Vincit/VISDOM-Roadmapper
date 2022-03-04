@@ -145,6 +145,10 @@ export const notifyUsers: RouteHandlerFnc = async (ctx) => {
     return;
   }
   const task = await Task.query().findById(ctx.params.taskId);
+  if (!task) {
+    ctx.status = 404;
+    return;
+  }
 
   const taskUrl = `${BASE_URL}/roadmap/${roadmapId}/tasks/task/${ctx.params.taskId}`;
   const messageBody = `${senderEmail} has requested your rating for the task ${task.name} at ${taskUrl}.\r\n\r\n${message}`;

@@ -145,9 +145,12 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
     }),
   );
 
-  const importedTasks: Task[] = [];
-  await Roadmap.transaction(async (trx) => {
+  const ok = await Roadmap.transaction(async (trx) => {
     const roadmap = await Roadmap.query(trx).findById(roadmapId);
+    if (!roadmap) {
+      ctx.status = 404;
+      return false;
+    }
     for (let task of tasks) {
       const existing = await roadmap
         .$relatedQuery('tasks', trx)
@@ -155,14 +158,15 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
         .where('importedFrom', name)
         .first();
       if (existing) {
-        const imported = await existing.$query(trx).patchAndFetch(task);
-        importedTasks.push(imported);
+        await existing.$query(trx).patchAndFetch(task);
       } else {
-        const imported = await Task.query(trx).insert(task);
-        importedTasks.push(imported);
+        await Task.query(trx).insert(task);
       }
     }
+    return true;
   });
+
+  if (!ok) return;
 
   await emitRoadmapEvent(ctx.io, {
     roadmapId: roadmapId,
@@ -172,7 +176,7 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
     eventParams: [roadmapId],
   });
 
-  ctx.body = importedTasks.length + ' tasks imported';
+  ctx.body = `${tasks.length} tasks imported`;
   ctx.status = 200;
 };
 

@@ -75,7 +75,7 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
       return void (ctx.status = 404);
   }
 
-  const created = await Invitation.transaction(async (trx) => {
+  const [created, roadmap] = await Invitation.transaction(async (trx) => {
     const invitation = await Invitation.query(trx)
       .insertAndFetch({
         id: uuid.v4(),
@@ -90,11 +90,13 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
       await invitation
         .$relatedQuery('representativeFor', trx)
         .relate(customers);
-    return invitation;
+    const roadmap = await Roadmap.query()
+      .findById(ctx.params.roadmapId)
+      .throwIfNotFound();
+    return [invitation, roadmap];
   });
 
-  const invationRoadmap = await Roadmap.query().findById(ctx.params.roadmapId);
-  await sendInvitations([created], invationRoadmap.name);
+  await sendInvitations([created], roadmap.name);
   return void (ctx.body = created);
 };
 

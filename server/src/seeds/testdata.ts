@@ -1,4 +1,4 @@
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 import { Model } from 'objection';
 import Roadmap from '../api/roadmaps/roadmaps.model';
 import User from '../api/users/users.model';
@@ -137,9 +137,10 @@ const testRatings = async () => {
   const developer2Id = (await getUser('DeveloperPerson2')).id;
   const business1Id = (await getUser('BusinessPerson1')).id;
   const business2Id = (await getUser('BusinessPerson2')).id;
-  const customerId = (await Customer.query().findOne('name', 'Customer 1')).id;
-  const customer2Id = (await Customer.query().findOne('name', 'Customer 2')).id;
-  const customer3Id = (await Customer.query().findOne('name', 'Customer 3')).id;
+  const customers = await Customer.query();
+  const customer1Id = customers.find(({ name }) => name === 'Customer 1')!.id;
+  const customer2Id = customers.find(({ name }) => name === 'Customer 2')!.id;
+  const customer3Id = customers.find(({ name }) => name === 'Customer 3')!.id;
 
   return [
     {
@@ -156,21 +157,19 @@ const testRatings = async () => {
     },
     {
       createdBy: { id: adminId },
-      createdFor: { id: customerId },
+      createdFor: { id: customer1Id },
       dimension: TaskRatingDimension.BusinessValue,
       value: 5,
     },
     {
       createdBy: { id: business1Id },
-      createdFor: { id: customerId },
+      createdFor: { id: customer1Id },
       dimension: TaskRatingDimension.BusinessValue,
       value: 3,
     },
     {
       createdBy: { id: adminId },
-      createdFor: {
-        id: customer2Id,
-      },
+      createdFor: { id: customer2Id },
       dimension: TaskRatingDimension.BusinessValue,
       value: 4,
     },

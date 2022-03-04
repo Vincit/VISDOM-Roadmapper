@@ -1,4 +1,5 @@
-import { Model, Pojo } from 'objection';
+import { Pojo } from 'objection';
+import Model from '../BaseModel';
 import { daysAgo } from '../../../../shared/utils/date';
 
 export default class PasswordReset extends Model {

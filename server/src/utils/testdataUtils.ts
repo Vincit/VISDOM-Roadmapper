@@ -26,7 +26,7 @@ export const randomTaskratingValue = (
 });
 
 export const getUser = async (name: keyof typeof testUsers) =>
-  await User.query().findOne('email', testUsers[name].email);
+  await User.query().findOne('email', testUsers[name].email).throwIfNotFound();
 
 export const insertRoles = async (
   roadmapId: number,

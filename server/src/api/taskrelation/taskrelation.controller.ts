@@ -1,7 +1,7 @@
 import { ClientEvents } from './../../../../shared/types/sockettypes';
 import { Permission } from './../../../../shared/types/customTypes';
 import { emitRoadmapEvent } from './../../utils/socketIoUtils';
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Task from '../tasks/tasks.model';
 import { TaskRelation } from './taskrelation.model';
@@ -74,7 +74,7 @@ const validateRelations = (
   deps.forEach((_, start) => checkCycles(start));
 };
 
-const relations = async (roadmapId: number, trx?: Transaction) => {
+const relations = async (roadmapId: number, trx?: Knex.Transaction) => {
   const tasks = (await Task.query(trx).where({ roadmapId })).map((t) => t.id);
   return await TaskRelation.query(trx)
     .whereIn('from', tasks)

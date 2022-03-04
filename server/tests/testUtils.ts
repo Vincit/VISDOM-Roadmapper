@@ -1,20 +1,24 @@
-import { loggedInAgent, agentData } from './setuptests';
+import { agentData } from './setuptests';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
-import Customer from '../src/api/customer/customer.model';
 import User from '../src/api/users/users.model';
 import { Role } from '../src/api/roles/roles.model';
-import TaskRating from '../src/api/taskratings/taskratings.model';
 import { Permission } from '../../shared/types/customTypes';
+
+export const someRoadmapId = async () =>
+  (await Roadmap.query().first().throwIfNotFound()).id;
+
+export const agentUserId = async () =>
+  (await User.query().findOne({ email: agentData.email }).throwIfNotFound()).id;
 
 export const withoutPermission = async <T>(
   roadmapId: number,
   permission: Permission,
   work: () => Promise<T>,
 ) => {
-  const userId = (await User.query().where({ email: agentData.email }).first())
-    .id;
-
-  const role = await Role.query().findById([userId, roadmapId]);
+  const userId = await agentUserId();
+  const role = await Role.query()
+    .findById([userId, roadmapId])
+    .throwIfNotFound();
   const original = role.type;
   await role.$query().patch({ type: original & ~permission });
   try {
@@ -24,43 +28,4 @@ export const withoutPermission = async <T>(
       type: original,
     });
   }
-};
-
-export const updateCustomer = async (customer: Customer, newData: any) => {
-  const roadmapId = (
-    await Roadmap.query().where('id', customer.roadmapId).first()
-  ).id;
-  return await loggedInAgent
-    .patch(`/roadmaps/${roadmapId}/customers/${customer.id}`)
-    .type('json')
-    .send(newData);
-};
-
-export const postCustomer = async (roadmapId: number, newCustomer: any) => {
-  return await loggedInAgent
-    .post(`/roadmaps/${roadmapId}/customers`)
-    .type('json')
-    .send(newCustomer);
-};
-
-export const getCustomers = async (roadmapId: number) => {
-  return await loggedInAgent.get(`/roadmaps/${roadmapId}/customers`);
-};
-
-export const deleteCustomer = async (customer: Customer) => {
-  const roadmapId = (
-    await Roadmap.query().where('id', customer.roadmapId).first()
-  ).id;
-  return await loggedInAgent.delete(
-    `/roadmaps/${roadmapId}/customers/${customer.id}`,
-  );
-};
-
-export const getTestRatingData = async () => {
-  const rating = await TaskRating.query()
-    .first()
-    .withGraphFetched('[belongsToTask.[belongsToRoadmap]]');
-  const taskId = rating.belongsToTask?.id;
-  const roadmapId = rating.belongsToTask?.belongsToRoadmap.id;
-  return { rating, taskId, roadmapId };
 };
