@@ -169,19 +169,17 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx) => {
 
 export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
-  await Role.transaction(async (trx) => {
-    const userRole = await Role.query(trx).findById([
-      ctx.state.user!.id,
-      Number(ctx.params.roadmapId),
-    ]);
+  const roadmapId = Number(ctx.params.roadmapId);
+  const userId = ctx.state.user.id;
 
-    if (!userRole) {
-      return void (ctx.status = 404);
-    }
+  await Role.transaction(async (trx) => {
+    const userRole = await Role.query(trx).findById([userId, roadmapId]);
+
+    if (!userRole) return void (ctx.status = 404);
 
     if (userRole.type === RoleType.Admin) {
       const numAdmins = await Role.query(trx)
-        .where('roadmapId', ctx.params.roadmapId)
+        .where({ roadmapId })
         .andWhere('type', RoleType.Admin)
         .resultSize();
 
@@ -193,14 +191,19 @@ export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
       }
     }
 
+    await Customer.relatedQuery('representatives', trx)
+      .for(Customer.query(trx).where({ roadmapId }))
+      .where('id', userId)
+      .unrelate();
+
     const numDeleted = await userRole.$query(trx).delete();
     if (numDeleted === 1) {
       await emitRoadmapEvent(ctx.io, {
-        roadmapId: Number(ctx.params.roadmapId),
+        roadmapId,
         dontEmitToUserId: ctx.state.user!.id,
         requirePermission: Permission.RoadmapReadUsers,
         event: ClientEvents.USER_UPDATED,
-        eventParams: [Number(ctx.params.roadmapId)],
+        eventParams: [roadmapId],
       });
     }
     ctx.status = numDeleted == 1 ? 200 : 500;
