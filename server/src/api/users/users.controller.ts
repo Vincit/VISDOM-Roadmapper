@@ -107,7 +107,7 @@ export const deleteUsers: RouteHandlerFnc = async (ctx) => {
         });
       }
     }
-    return numDeleted == 1 ? 200 : 500;
+    return numDeleted === 1 ? 200 : 500;
   });
 };
 

@@ -112,7 +112,7 @@ export const deleteTaskrating: RouteHandlerFnc = async (ctx) => {
       eventParams: [Number(ctx.params.roadmapId)],
     });
   }
-  ctx.status = numDeleted == 1 ? 200 : 404;
+  ctx.status = numDeleted === 1 ? 200 : 404;
 };
 
 export const patchTaskratings: RouteHandlerFnc = async (ctx) => {

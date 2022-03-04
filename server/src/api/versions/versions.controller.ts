@@ -68,7 +68,7 @@ export const deleteVersions: RouteHandlerFnc = async (ctx) => {
     const numDeleted = await Version.query(trx)
       .findById(Number(ctx.params.versionId))
       .delete();
-    if (delVersion && numDeleted == 1) {
+    if (delVersion && numDeleted === 1) {
       await Version.query(trx)
         .where({ roadmapId: delVersion.roadmapId })
         .andWhere('sortingRank', '>', delVersion.sortingRank)

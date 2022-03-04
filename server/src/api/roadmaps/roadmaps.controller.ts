@@ -179,7 +179,10 @@ export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
   await Role.transaction(async (trx) => {
     const userRole = await Role.query(trx).findById([userId, roadmapId]);
 
-    if (!userRole) return void (ctx.status = 404);
+    if (!userRole) {
+      ctx.status = 404;
+      return;
+    }
 
     if (userRole.type === RoleType.Admin) {
       const numAdmins = await Role.query(trx)
@@ -210,7 +213,6 @@ export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
         eventParams: [roadmapId],
       });
     }
-    ctx.status = numDeleted == 1 ? 200 : 500;
-    return;
+    ctx.status = numDeleted === 1 ? 200 : 500;
   });
 };
