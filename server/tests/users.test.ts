@@ -4,6 +4,7 @@ import { loggedInAgent } from './setuptests';
 import User from '../src/api/users/users.model';
 import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import { getUser } from '../src/utils/testdataUtils';
+import { someRoadmapId } from './testUtils';
 chai.use(chaiHttp);
 
 describe('Test /users/ api', function () {
@@ -52,18 +53,18 @@ describe('Test /users/ api', function () {
       expect(patchResponse.status).to.equal(403);
     });
     it('Should update defaultRoadmapId from null to existing roadmap id', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const userId = (await getUser('AdminPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: firstRoadmapId, currentPassword: 'test' });
+        .send({ defaultRoadmapId: roadmapId, currentPassword: 'test' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
 
       const userAfter = await loggedInAgent.get('/users/whoami');
-      expect(userAfter.body.defaultRoadmapId).to.equal(firstRoadmapId);
+      expect(userAfter.body.defaultRoadmapId).to.equal(roadmapId);
     });
     it('Should update defaultRoadmapId from existing roadmap id to another', async function () {
       const [firstRoadmapId, secondRoadmapId] = (
@@ -94,18 +95,18 @@ describe('Test /users/ api', function () {
       expect(userAfter.body.defaultRoadmapId).to.equal(secondRoadmapId);
     });
     it('Should set defaultRoadmapId to null', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const userId = (await getUser('AdminPerson1')).id;
       const patchResponse = await loggedInAgent
         .patch('/users/' + userId)
         .type('json')
-        .send({ defaultRoadmapId: firstRoadmapId, currentPassword: 'test' });
+        .send({ defaultRoadmapId: roadmapId, currentPassword: 'test' });
 
       expect(patchResponse.status).to.equal(200);
       expect(patchResponse.body.id).to.equal(userId);
 
       const userBefore = await loggedInAgent.get('/users/whoami');
-      expect(userBefore.body.defaultRoadmapId).to.equal(firstRoadmapId);
+      expect(userBefore.body.defaultRoadmapId).to.equal(roadmapId);
 
       const patchToNullRes = await loggedInAgent
         .patch('/users/' + userId)

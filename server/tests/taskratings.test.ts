@@ -6,7 +6,20 @@ import {
   Permission,
   TaskRatingDimension,
 } from '../../shared/types/customTypes';
-import { withoutPermission, getTestRatingData } from './testUtils';
+import { withoutPermission } from './testUtils';
+import TaskRating from '../src/api/taskratings/taskratings.model';
+
+const getTestRatingData = async () => {
+  const rating = await TaskRating.query()
+    .first()
+    .withGraphFetched('[belongsToTask.[belongsToRoadmap]]')
+    .throwIfNotFound();
+  const taskId = rating.belongsToTask?.id;
+  const roadmapId = rating.belongsToTask?.belongsToRoadmap.id;
+  if (!taskId) assert.fail('Task should exist');
+  if (!roadmapId) assert.fail('Roadmap should exist');
+  return { rating, taskId, roadmapId };
+};
 
 describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () {
   describe('GET /roadmap/:roadmapId/tasks/:taskId/taskratings/', function () {
@@ -26,14 +39,14 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       });
     });
     it('Should not get taskratings with incorrect permissions', async function () {
-      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+      const { taskId, roadmapId } = await getTestRatingData();
 
       const res = await withoutPermission(
-        firstRoadmapId!,
+        roadmapId,
         Permission.TaskRatingRead,
         () =>
           loggedInAgent.get(
-            `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+            `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
           ),
       );
       expect(res.status).to.equal(403);
@@ -41,13 +54,13 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
   });
   describe('POST /roadmap/:roadmapId/tasks/:taskId/taskrating/', function () {
     it('Should add new taskrating', async function () {
-      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+      const { taskId, roadmapId } = await getTestRatingData();
 
       const before = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+        .post(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
         .type('json')
         .send([
           {
@@ -57,42 +70,39 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         ]);
       expect(res.status).to.equal(200);
       const after = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       expect(before.body.length + 1).to.equal(after.body.length);
     });
     it('Should not add new taskrating with incorrect permissions', async function () {
-      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+      const { taskId, roadmapId } = await getTestRatingData();
       const before = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
-      const res = await withoutPermission(
-        firstRoadmapId!,
-        Permission.TaskRate,
-        () =>
-          loggedInAgent
-            .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
-            .type('json')
-            .send([
-              {
-                dimension: TaskRatingDimension.Complexity,
-                value: 5,
-              },
-            ]),
+      const res = await withoutPermission(roadmapId, Permission.TaskRate, () =>
+        loggedInAgent
+          .post(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
+          .type('json')
+          .send([
+            {
+              dimension: TaskRatingDimension.Complexity,
+              value: 5,
+            },
+          ]),
       );
       expect(res.status).to.equal(403);
       const after = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       expect(before.body.length).to.equal(after.body.length);
     });
     it('Should not add new taskrating with value outside min-max limits', async function () {
-      const { taskId, roadmapId: firstRoadmapId } = await getTestRatingData();
+      const { taskId, roadmapId } = await getTestRatingData();
       const before = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       const res = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+        .post(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
         .type('json')
         .send([
           {
@@ -102,7 +112,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         ]);
       expect(res.status).to.equal(400);
       const res2 = await loggedInAgent
-        .post(`/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`)
+        .post(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
         .type('json')
         .send([
           {
@@ -113,7 +123,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
       expect(res2.status).to.equal(400);
 
       const after = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/tasks/${taskId}/taskratings`,
+        `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
       expect(before.body.length).to.equal(after.body.length);
     });
@@ -136,7 +146,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
     });
     it('Should not delete taskrating with incorrect permissions', async function () {
       const { rating, taskId, roadmapId } = await getTestRatingData();
-      if (!roadmapId) assert.fail('Roadmap should exist');
       const before = await loggedInAgent.get(
         `/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`,
       );
@@ -176,7 +185,6 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
       const { rating, taskId, roadmapId } = await getTestRatingData();
-      if (!roadmapId) assert.fail('Roadmap should exist');
       const res = await withoutPermission(
         roadmapId,
         Permission.TaskRatingEdit,

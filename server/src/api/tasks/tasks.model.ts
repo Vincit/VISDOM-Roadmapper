@@ -1,4 +1,5 @@
-import { Model, QueryContext, AnyQueryBuilder } from 'objection';
+import { QueryContext, AnyQueryBuilder } from 'objection';
+import Model from '../BaseModel';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
 import User from '../users/users.model';

@@ -26,7 +26,7 @@ export default class Roadmap extends Model {
       id: { type: 'integer' },
       name: { type: 'string', minLength: 1, maxLength: 255 },
       description: { type: 'string', minLength: 1, maxLength: 1000 },
-      daysPerWorkCalibration: { type: 'float' },
+      daysPerWorkCalibration: { type: 'number' },
     },
   };
 

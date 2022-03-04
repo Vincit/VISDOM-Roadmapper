@@ -4,7 +4,7 @@ import { validateEnv } from './utils/validateEnv';
 import cors from '@koa/cors';
 import KoaRouter from '@koa/router';
 import Dotenv from 'dotenv';
-import Knex from 'knex';
+import { knex as Knex } from 'knex';
 import Koa from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import passport from 'koa-passport';

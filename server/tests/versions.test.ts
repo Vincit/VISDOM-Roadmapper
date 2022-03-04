@@ -1,41 +1,37 @@
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
-import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import Version from '../src/api/versions/versions.model';
 import { Permission } from '../../shared/types/customTypes';
 import { loggedInAgent } from './setuptests';
-import { withoutPermission } from './testUtils';
+import { withoutPermission, someRoadmapId } from './testUtils';
 chai.use(chaiHttp);
 
 describe('Test /roadmaps/:roadmapId/versions/ api', function () {
   describe('GET /roadmaps/:roadmapId/versions/', function () {
     it('Should return all versions', async function () {
-      const testVersion = {
+      const roadmapId = await someRoadmapId();
+      await Version.query().insert({
         name: 'Test version',
-        roadmapId: (await Roadmap.query().first()).id,
+        roadmapId,
         sortingRank: 0,
-      };
-      await Version.query().insert(testVersion);
-      const res = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
+      });
+      const res = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.greaterThan(0);
       assert.property(res.body[0], 'tasks');
       assert.property(res.body[0], 'name');
     });
     it('Should not return versions with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const testVersion = {
+      const roadmapId = await someRoadmapId();
+      await Version.query().insert({
         name: 'Test version',
-        roadmapId: firstRoadmapId,
+        roadmapId,
         sortingRank: 0,
-      };
-      await Version.query().insert(testVersion);
+      });
       const res = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.VersionRead,
-        () => loggedInAgent.get(`/roadmaps/${firstRoadmapId}/versions`),
+        () => loggedInAgent.get(`/roadmaps/${roadmapId}/versions`),
       );
       expect(res.status).to.equal(403);
     });
@@ -43,24 +39,21 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
 
   describe('POST /roadmaps/:roadmapId/versions/:versionId', function () {
     it('Should add new version', async function () {
+      const roadmapId = await someRoadmapId();
       const testVersion = {
         name: 'Test version',
-        roadmapId: (await Roadmap.query().first()).id,
+        roadmapId,
         tasks: [],
         sortingRank: 0,
       };
-      const res = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
+      const res = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenBefore = res.body.length;
       const postResponse = await loggedInAgent
-        .post(`/roadmaps/${testVersion.roadmapId}/versions`)
+        .post(`/roadmaps/${roadmapId}/versions`)
         .type('json')
         .send(testVersion);
       expect(postResponse.status).to.equal(200);
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
+      const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenAfter = res2.body.length;
       const insertedVersion = res2.body.find((ver: any) => {
         return ver.name == testVersion.name;
@@ -69,30 +62,26 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(insertedVersion).to.exist;
     });
     it('Should not add new version with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const testVersion = {
         name: 'Test version',
-        roadmapId: firstRoadmapId,
+        roadmapId,
         tasks: [],
         sortingRank: 0,
       };
-      const res = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/versions`,
-      );
+      const res = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenBefore = res.body.length;
       const postResponse = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.VersionCreate | Permission.RoadmapEdit,
         () =>
           loggedInAgent
-            .post(`/roadmaps/${firstRoadmapId}/versions`)
+            .post(`/roadmaps/${roadmapId}/versions`)
             .type('json')
             .send(testVersion),
       );
       expect(postResponse.status).to.equal(403);
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/versions`,
-      );
+      const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenAfter = res2.body.length;
       const insertedVersion = res2.body.find((ver: any) => {
         return ver.name == testVersion.name;
@@ -104,56 +93,45 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
 
   describe('DELETE /roadmaps/:roadmapId/versions/:versionId', function () {
     it('Should delete version', async function () {
-      const testVersion = {
+      const roadmapId = await someRoadmapId();
+      const testVersion = await Version.query().insertAndFetch({
         name: 'Test version',
-        roadmapId: (await Roadmap.query().first()).id,
+        roadmapId,
         tasks: [],
         sortingRank: 0,
-      };
-      await Version.query().insert(testVersion);
-      const res = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
+      });
+      const res = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenBefore = res.body.length;
       const delResponse = await loggedInAgent.delete(
-        `/roadmaps/${testVersion.roadmapId}/versions/${
-          (await Version.query().first()).id
-        }`,
+        `/roadmaps/${roadmapId}/versions/${testVersion.id}`,
       );
       expect(delResponse.status).to.equal(200);
 
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
+      const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenAfter = res2.body.length;
       assert(lenAfter === lenBefore - 1, 'Length must decrease');
     });
     it('Should not delete version with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const testVersion = {
+      const roadmapId = await someRoadmapId();
+      const testVersion = await Version.query().insertAndFetch({
         name: 'Test version',
-        roadmapId: firstRoadmapId,
+        roadmapId,
         tasks: [],
         sortingRank: 0,
-      };
-      const addedVersion = await Version.query().insert(testVersion);
-      const res = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/versions`,
-      );
+      });
+      const res = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenBefore = res.body.length;
       const delResponse = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.VersionDelete | Permission.RoadmapEdit,
         () =>
           loggedInAgent.delete(
-            `/roadmaps/${firstRoadmapId}/versions/${addedVersion.id}`,
+            `/roadmaps/${roadmapId}/versions/${testVersion.id}`,
           ),
       );
       expect(delResponse.status).to.equal(403);
 
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/versions`,
-      );
+      const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenAfter = res2.body.length;
       assert(lenAfter === lenBefore, 'Length must be same');
     });
@@ -161,54 +139,47 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
 
   describe('PATCH /roadmaps/:roadmapId/versions/:versionId', function () {
     it('Should patch version', async function () {
-      const testVersion = {
+      const roadmapId = await someRoadmapId();
+      const testVersion = await Version.query().insertAndFetch({
         name: 'Test version',
-        roadmapId: (await Roadmap.query().first()).id,
+        roadmapId,
         tasks: [],
         sortingRank: 0,
-      };
-      await Version.query().insert(testVersion);
-      const firstVersionId = (await Version.query().first()).id;
+      });
       const patchResponse = await loggedInAgent
-        .patch(`/roadmaps/${testVersion.roadmapId}/versions/${firstVersionId}`)
+        .patch(`/roadmaps/${roadmapId}/versions/${testVersion.id}`)
         .type('json')
         .send({ name: 'patched' });
 
       expect(patchResponse.status).to.equal(200);
-      expect(patchResponse.body.id).to.equal(firstVersionId);
+      expect(patchResponse.body.id).to.equal(testVersion.id);
 
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${testVersion.roadmapId}/versions`,
-      );
+      const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const patchedVersion = res2.body.find((ver: any) => {
         return ver.name == 'patched';
       });
       expect(patchedVersion).to.exist;
     });
     it('Should not patch version with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const testVersion = {
+      const roadmapId = await someRoadmapId();
+      const testVersion = await Version.query().insertAndFetch({
         name: 'Test version',
-        roadmapId: firstRoadmapId,
+        roadmapId,
         tasks: [],
         sortingRank: 0,
-      };
-      await Version.query().insert(testVersion);
-      const firstVersionId = (await Version.query().first()).id;
+      });
       const patchResponse = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.VersionEdit,
         () =>
           loggedInAgent
-            .patch(`/roadmaps/${firstRoadmapId}/versions/${firstVersionId}`)
+            .patch(`/roadmaps/${roadmapId}/versions/${testVersion.id}`)
             .type('json')
             .send({ name: 'patched' }),
       );
       expect(patchResponse.status).to.equal(403);
 
-      const res2 = await loggedInAgent.get(
-        `/roadmaps/${firstRoadmapId}/versions`,
-      );
+      const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const patchedVersion = res2.body.find((ver: any) => {
         return ver.name == 'patched';
       });

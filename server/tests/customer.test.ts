@@ -1,30 +1,49 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
-import Roadmap from '../src/api/roadmaps/roadmaps.model';
 import Customer from '../src/api/customer/customer.model';
 import { Permission } from '../../shared/types/customTypes';
 import { getUser } from '../src/utils/testdataUtils';
-import {
-  deleteCustomer,
-  getCustomers,
-  postCustomer,
-  withoutPermission,
-  updateCustomer,
-} from './testUtils';
+import { loggedInAgent } from './setuptests';
+import { withoutPermission, someRoadmapId } from './testUtils';
 chai.use(chaiHttp);
 
 const byId = <T extends { id: number } | { id: string }>(a: T, b: T) =>
   a.id.toString().localeCompare(b.id.toString());
 
+const customerInSomeRoadmap = async () => {
+  const roadmapId = await someRoadmapId();
+  const customer = await Customer.query()
+    .findOne({ roadmapId })
+    .throwIfNotFound();
+  return { roadmapId, customer };
+};
+
+const updateCustomer = async (customer: Customer, newData: any) =>
+  await loggedInAgent
+    .patch(`/roadmaps/${customer.roadmapId}/customers/${customer.id}`)
+    .type('json')
+    .send(newData);
+
+const postCustomer = async (roadmapId: number, newCustomer: any) =>
+  await loggedInAgent
+    .post(`/roadmaps/${roadmapId}/customers`)
+    .type('json')
+    .send(newCustomer);
+
+const getCustomers = async (roadmapId: number) =>
+  await loggedInAgent.get(`/roadmaps/${roadmapId}/customers`);
+
+const deleteCustomer = async (customer: Customer) =>
+  await loggedInAgent.delete(
+    `/roadmaps/${customer.roadmapId}/customers/${customer.id}`,
+  );
+
 describe('Test /customers/ api', function () {
   describe('GET /customers/', function () {
     it('Should get all customers with correct permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const customers = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
-      const res = await getCustomers(firstRoadmapId);
+      const roadmapId = await someRoadmapId();
+      const customers = await Customer.query().where({ roadmapId });
+      const res = await getCustomers(roadmapId);
 
       expect(res.status).to.equal(200);
       expect(res.body.length).to.equal(customers.length);
@@ -40,7 +59,7 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not get customers with incorrect permissions', async function () {
-      const roadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const res = await withoutPermission(
         roadmapId,
         Permission.RoadmapReadUsers,
@@ -52,7 +71,7 @@ describe('Test /customers/ api', function () {
 
   describe('POST /customers/', function () {
     it('Should create a new customer with correct parameters', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const business1Id = (await getUser('BusinessPerson1')).id;
 
       const validCustomer = {
@@ -62,15 +81,9 @@ describe('Test /customers/ api', function () {
         representatives: [business1Id],
       };
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
-      const res = await postCustomer(firstRoadmapId, validCustomer);
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
+      const res = await postCustomer(roadmapId, validCustomer);
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(200);
       expect(customersAfter.length).to.equal(customersBefore.length + 1);
@@ -80,7 +93,7 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should create a customer without representatives', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
 
       const validCustomer = {
         name: 'olaf',
@@ -88,15 +101,9 @@ describe('Test /customers/ api', function () {
         color: '#A1FF4D',
       };
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
-      const res = await postCustomer(firstRoadmapId, validCustomer);
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
+      const res = await postCustomer(roadmapId, validCustomer);
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(200);
       expect(customersAfter.length).to.equal(customersBefore.length + 1);
@@ -110,7 +117,7 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not create a new customer with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const business1Id = (await getUser('BusinessPerson1')).id;
 
       const validCustomer = {
@@ -120,19 +127,13 @@ describe('Test /customers/ api', function () {
         representatives: [business1Id],
       };
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
       const res = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.RoadmapEdit,
-        () => postCustomer(firstRoadmapId, validCustomer),
+        () => postCustomer(roadmapId, validCustomer),
       );
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(403);
       expect(customersBefore.length).to.equal(customersAfter.length);
@@ -142,40 +143,28 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not create a new customer with empty payload', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const invalidCustomer = undefined;
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
-      const res = await postCustomer(firstRoadmapId, invalidCustomer);
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
+      const res = await postCustomer(roadmapId, invalidCustomer);
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(400);
       expect(customersAfter.length).to.equal(customersBefore.length);
     });
 
     it('Should not create a new customer with incorrect email format', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
       const invalidCustomer = {
         name: 'Test-customer',
         email: 'notemail',
         color: '#A1FF4D',
       };
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
-      const res = await postCustomer(firstRoadmapId, invalidCustomer);
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
+      const res = await postCustomer(roadmapId, invalidCustomer);
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(400);
       expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
@@ -197,17 +186,11 @@ describe('Test /customers/ api', function () {
         },
       ].forEach(({ type, ...data }) => {
         it(`Should not create a new customer with overflown ${type}`, async function () {
-          const firstRoadmapId = (await Roadmap.query().first()).id;
+          const roadmapId = await someRoadmapId();
 
-          const customersBefore = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
-          const res = await postCustomer(firstRoadmapId, data);
-          const customersAfter = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
+          const customersBefore = await Customer.query().where({ roadmapId });
+          const res = await postCustomer(roadmapId, data);
+          const customersAfter = await Customer.query().where({ roadmapId });
 
           expect(res.status).to.equal(400);
           expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
@@ -234,17 +217,11 @@ describe('Test /customers/ api', function () {
         },
       ].forEach(({ type, ...data }) => {
         it(`Should not create a new customer with ${type} missing`, async function () {
-          const firstRoadmapId = (await Roadmap.query().first()).id;
+          const roadmapId = await someRoadmapId();
 
-          const customersBefore = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
-          const res = await postCustomer(firstRoadmapId, data);
-          const customersAfter = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
+          const customersBefore = await Customer.query().where({ roadmapId });
+          const res = await postCustomer(roadmapId, data);
+          const customersAfter = await Customer.query().where({ roadmapId });
 
           expect(res.status).to.equal(400);
           expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
@@ -274,17 +251,11 @@ describe('Test /customers/ api', function () {
         },
       ].forEach(({ type, ...data }) => {
         it(`Should not create a new customer with ${type} as undefined`, async function () {
-          const firstRoadmapId = (await Roadmap.query().first()).id;
+          const roadmapId = await someRoadmapId();
 
-          const customersBefore = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
-          const res = await postCustomer(firstRoadmapId, data);
-          const customersAfter = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
+          const customersBefore = await Customer.query().where({ roadmapId });
+          const res = await postCustomer(roadmapId, data);
+          const customersAfter = await Customer.query().where({ roadmapId });
 
           expect(res.status).to.equal(400);
           expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
@@ -314,17 +285,11 @@ describe('Test /customers/ api', function () {
         },
       ].forEach(({ type, ...data }) => {
         it(`Should not create a new customer with ${type} as null`, async function () {
-          const firstRoadmapId = (await Roadmap.query().first()).id;
+          const roadmapId = await someRoadmapId();
 
-          const customersBefore = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
-          const res = await postCustomer(firstRoadmapId, data);
-          const customersAfter = await Customer.query().where(
-            'roadmapId',
-            firstRoadmapId,
-          );
+          const customersBefore = await Customer.query().where({ roadmapId });
+          const res = await postCustomer(roadmapId, data);
+          const customersAfter = await Customer.query().where({ roadmapId });
 
           expect(res.status).to.equal(400);
           expect(customersAfter.sort(byId)).to.eql(customersBefore.sort(byId));
@@ -335,82 +300,64 @@ describe('Test /customers/ api', function () {
 
   describe('PATCH /customers/', function () {
     it('Should update customer with correct parameters', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-
-      const customer = await Customer.query()
-        .where('roadmapId', firstRoadmapId)
-        .first();
+      const { customer } = await customerInSomeRoadmap();
       const res = await updateCustomer(customer, { name: 'Test-customer' });
       const updatedCustomer = await Customer.query().findById(customer.id);
 
       expect(res.status).to.equal(200);
-      expect(updatedCustomer.name).to.equal('Test-customer');
+      expect(updatedCustomer?.name).to.equal('Test-customer');
     });
 
     describe('Should allow partial updation', function () {
       it('Should update customer values', async function () {
-        const firstRoadmapId = (await Roadmap.query().first()).id;
         const firstUpdation = { name: 'Test-customer' };
 
-        const customer = await Customer.query()
-          .where('roadmapId', firstRoadmapId)
-          .first();
+        const { customer } = await customerInSomeRoadmap();
         const res = await updateCustomer(customer, firstUpdation);
         const updatedCustomer = await Customer.query().findById(customer.id);
 
         expect(res.status).to.equal(200);
-        expect(updatedCustomer.name).to.equal(firstUpdation.name);
+        expect(updatedCustomer?.name).to.equal(firstUpdation.name);
       });
 
       it('Should update representatives', async function () {
-        const firstRoadmapId = (await Roadmap.query().first()).id;
         const business1Id = (await getUser('BusinessPerson1')).id;
         const secondUpdation = { representatives: [business1Id] };
 
-        const customer = await Customer.query()
-          .where('roadmapId', firstRoadmapId)
-          .first();
+        const { customer } = await customerInSomeRoadmap();
         const res = await updateCustomer(customer, secondUpdation);
         const updatedCustomer = await Customer.query()
           .findById(customer.id)
           .withGraphFetched('representatives');
 
         expect(res.status).to.equal(200);
-        expect(updatedCustomer.representatives?.length).to.equal(1);
-        expect(updatedCustomer.representatives?.[0].id).to.equal(
+        expect(updatedCustomer?.representatives?.length).to.equal(1);
+        expect(updatedCustomer?.representatives?.[0].id).to.equal(
           secondUpdation.representatives[0],
         );
       });
     });
 
     it('Should not update customers with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-
-      const customer = await Customer.query()
-        .where('roadmapId', firstRoadmapId)
-        .first();
+      const { customer, roadmapId } = await customerInSomeRoadmap();
       const res = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.RoadmapEdit,
         () => updateCustomer(customer, { name: 'Test-customer' }),
       );
       const updatedCustomer = await Customer.query().findById(customer.id);
 
       expect(res.status).to.equal(403);
-      expect(updatedCustomer.name).to.equal(customer.name);
+      expect(updatedCustomer?.name).to.equal(customer.name);
     });
 
     it('Should not modify customer with empty payload', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-
-      const customer = await Customer.query()
-        .where('roadmapId', firstRoadmapId)
-        .first();
+      const { customer } = await customerInSomeRoadmap();
       const res = await updateCustomer(customer, {});
       const updatedCustomer = await Customer.query().findById(customer.id);
 
       expect(res.status).to.equal(404);
-      expect(updatedCustomer.name).to.equal(customer.name);
+      expect(updatedCustomer?.name).to.equal(customer.name);
     });
 
     describe('Should not allow updation to undefined values', function () {
@@ -429,11 +376,7 @@ describe('Test /customers/ api', function () {
         },
       ].forEach(({ type, ...data }) => {
         it(`Should not update ${type} to undefined`, async function () {
-          const firstRoadmapId = (await Roadmap.query().first()).id;
-
-          const customer = await Customer.query()
-            .where('roadmapId', firstRoadmapId)
-            .first();
+          const { customer } = await customerInSomeRoadmap();
           const res = await updateCustomer(customer, data);
           const updatedCustomer = await Customer.query().findById(customer.id);
 
@@ -459,11 +402,7 @@ describe('Test /customers/ api', function () {
         },
       ].forEach(({ type, ...data }) => {
         it(`Should not update ${type} to null`, async function () {
-          const firstRoadmapId = (await Roadmap.query().first()).id;
-
-          const customer = await Customer.query()
-            .where('roadmapId', firstRoadmapId)
-            .first();
+          const { customer } = await customerInSomeRoadmap();
           const res = await updateCustomer(customer, data);
           const updatedCustomer = await Customer.query().findById(customer.id);
 
@@ -476,20 +415,14 @@ describe('Test /customers/ api', function () {
 
   describe('DELETE /customers/', function () {
     it('Should delete a customer', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const customerToDelete = await Customer.query()
-        .where('roadmapId', firstRoadmapId)
-        .first();
+      const {
+        customer: customerToDelete,
+        roadmapId,
+      } = await customerInSomeRoadmap();
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
       const res = await deleteCustomer(customerToDelete);
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(200);
       expect(customersAfter.length).to.equal(customersBefore.length - 1);
@@ -499,45 +432,33 @@ describe('Test /customers/ api', function () {
     });
 
     it('Should not delete customer with incorrect permissions', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const customerToDelete = await Customer.query()
-        .where('roadmapId', firstRoadmapId)
-        .first();
+      const {
+        customer: customerToDelete,
+        roadmapId,
+      } = await customerInSomeRoadmap();
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
       const res = await withoutPermission(
-        firstRoadmapId,
+        roadmapId,
         Permission.RoadmapEdit,
         () => deleteCustomer(customerToDelete),
       );
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(403);
       expect(customersAfter.length).to.equal(customersBefore.length);
     });
 
     it('Should return not-found on missing resources', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
-      const customerToDelete = await Customer.query()
-        .where('roadmapId', firstRoadmapId)
-        .first();
+      const {
+        customer: customerToDelete,
+        roadmapId,
+      } = await customerInSomeRoadmap();
       await deleteCustomer(customerToDelete);
 
-      const customersBefore = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersBefore = await Customer.query().where({ roadmapId });
       const res = await deleteCustomer(customerToDelete);
-      const customersAfter = await Customer.query().where(
-        'roadmapId',
-        firstRoadmapId,
-      );
+      const customersAfter = await Customer.query().where({ roadmapId });
 
       expect(res.status).to.equal(404);
       expect(customersAfter.length).to.equal(customersBefore.length);
@@ -546,9 +467,9 @@ describe('Test /customers/ api', function () {
 
   describe('Request chaining workflow', function () {
     it('Get - Post - Patch - Delete - Get', async function () {
-      const firstRoadmapId = (await Roadmap.query().first()).id;
+      const roadmapId = await someRoadmapId();
 
-      const getResStart = await getCustomers(firstRoadmapId);
+      const getResStart = await getCustomers(roadmapId);
       expect(getResStart.status).to.equal(200);
 
       const customersBefore = getResStart.body.map(({ name }: any) => name);
@@ -557,31 +478,31 @@ describe('Test /customers/ api', function () {
         email: 'email@test.com',
         color: '#A1FF4D',
       };
-      const postRes = await postCustomer(firstRoadmapId, validCustomer);
+      const postRes = await postCustomer(roadmapId, validCustomer);
       expect(postRes.status).to.equal(200);
 
       const customersAfterPost = (
-        await Customer.query().where('roadmapId', firstRoadmapId)
+        await Customer.query().where({ roadmapId })
       ).map(({ name }) => name);
       expect(customersAfterPost.sort()).to.eql(
         [...customersBefore, 'Test-customer'].sort(),
       );
 
       const postedCustomer = await Customer.query()
-        .where('name', 'Test-customer')
-        .first();
+        .findOne('name', 'Test-customer')
+        .throwIfNotFound();
       const patchRes = await updateCustomer(postedCustomer, {
         name: 'Modified-customer',
       });
       expect(patchRes.status).to.equal(200);
 
-      const updatedCustomer = await Customer.query().findById(
-        postedCustomer.id,
-      );
+      const updatedCustomer = await Customer.query()
+        .findById(postedCustomer.id)
+        .throwIfNotFound();
       expect(updatedCustomer.name).to.equal('Modified-customer');
 
       const customersAfterUpdate = (
-        await Customer.query().where('roadmapId', firstRoadmapId)
+        await Customer.query().where({ roadmapId })
       ).map(({ name }) => name);
       expect(customersAfterUpdate).to.not.include('Test-customer');
 
@@ -589,14 +510,14 @@ describe('Test /customers/ api', function () {
       expect(deleteRes.status).to.equal(200);
 
       const customersAfterDelete = (
-        await Customer.query().where('roadmapId', firstRoadmapId)
+        await Customer.query().where({ roadmapId })
       ).map(({ name }) => name);
       expect(customersAfterDelete.length).to.equal(
         customersAfterPost.length - 1,
       );
       expect(customersAfterDelete).to.not.include('Modified-customer');
 
-      const getResFinal = await getCustomers(firstRoadmapId);
+      const getResFinal = await getCustomers(roadmapId);
       expect(getResFinal.status).to.equal(200);
 
       const customersAfter = getResFinal.body.map(({ name }: any) => name);

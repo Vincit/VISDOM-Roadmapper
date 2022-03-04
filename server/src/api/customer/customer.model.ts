@@ -1,4 +1,4 @@
-import { Model } from 'objection';
+import Model from '../BaseModel';
 import User from '../users/users.model';
 
 export default class Customer extends Model {
@@ -21,7 +21,7 @@ export default class Customer extends Model {
       id: { type: 'integer' },
       name: { type: 'string', minLength: 1, maxLength: 255 },
       email: { type: 'string', format: 'email', minLength: 1, maxLength: 255 },
-      weight: { type: 'float', minimum: 0, maximum: 2 },
+      weight: { type: 'number', minimum: 0, maximum: 2 },
       color: { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' },
     },
   };
