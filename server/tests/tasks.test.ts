@@ -54,7 +54,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
       expect(res.status).to.equal(200);
       expect(before.body.length + 1).to.equal(after.body.length);
-      const added = after.body.find((task: any) => task.name == 'testtask');
+      const added = after.body.find((task: any) => task.name === 'testtask');
       expect(added).to.exist;
       expect(added.description).to.equal('testdesc');
       expect(added.roadmapId).to.equal(roadmapId);
@@ -79,7 +79,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
       expect(res.status).to.equal(403);
       expect(before.body.length).to.equal(after.body.length);
-      const added = after.body.find((task: any) => task.name == 'testtask');
+      const added = after.body.find((task: any) => task.name === 'testtask');
       expect(added).not.to.exist;
     });
   });
@@ -119,7 +119,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
         });
       expect(res.status).to.equal(200);
       const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
-      const patched = after.body.find((task: any) => task.name == 'patched');
+      const patched = after.body.find((task: any) => task.name === 'patched');
       expect(patched).to.exist;
       expect(patched.description).to.equal('patched');
     });
@@ -136,7 +136,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       );
       expect(res.status).to.equal(403);
       const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
-      const patched = after.body.find((task: any) => task.name == 'patched');
+      const patched = after.body.find((task: any) => task.name === 'patched');
       expect(patched).not.to.exist;
     });
   });

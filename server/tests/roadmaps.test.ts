@@ -65,8 +65,8 @@ describe('Test /roadmaps/ api', function () {
 
       const addedRoadmapDb = fetchedAgent?.roadmaps.find(
         (rm: any) =>
-          rm.name == newRoadmap.name &&
-          rm.description == newRoadmap.description,
+          rm.name === newRoadmap.name &&
+          rm.description === newRoadmap.description,
       );
 
       expect(res.status).to.equal(200);

@@ -103,7 +103,7 @@ export const deleteConfigurations: RouteHandlerFnc = async (ctx) => {
     })
     .delete();
 
-  ctx.status = numDeleted == 1 ? 200 : 404;
+  ctx.status = numDeleted === 1 ? 200 : 404;
 };
 
 export const getBoards: RouteHandlerFnc = async (ctx) => {

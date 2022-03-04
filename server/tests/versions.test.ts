@@ -55,9 +55,9 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(postResponse.status).to.equal(200);
       const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenAfter = res2.body.length;
-      const insertedVersion = res2.body.find((ver: any) => {
-        return ver.name == testVersion.name;
-      });
+      const insertedVersion = res2.body.find(
+        (ver: any) => ver.name === testVersion.name,
+      );
       assert(lenAfter === lenBefore + 1, 'Length must increase');
       expect(insertedVersion).to.exist;
     });
@@ -83,9 +83,9 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(postResponse.status).to.equal(403);
       const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
       const lenAfter = res2.body.length;
-      const insertedVersion = res2.body.find((ver: any) => {
-        return ver.name == testVersion.name;
-      });
+      const insertedVersion = res2.body.find(
+        (ver: any) => ver.name === testVersion.name,
+      );
       assert(lenAfter === lenBefore, 'Length must be same');
       expect(insertedVersion).not.to.exist;
     });
@@ -155,9 +155,9 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(patchResponse.body.id).to.equal(testVersion.id);
 
       const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
-      const patchedVersion = res2.body.find((ver: any) => {
-        return ver.name == 'patched';
-      });
+      const patchedVersion = res2.body.find(
+        (ver: any) => ver.name === 'patched',
+      );
       expect(patchedVersion).to.exist;
     });
     it('Should not patch version with incorrect permissions', async function () {
@@ -180,9 +180,9 @@ describe('Test /roadmaps/:roadmapId/versions/ api', function () {
       expect(patchResponse.status).to.equal(403);
 
       const res2 = await loggedInAgent.get(`/roadmaps/${roadmapId}/versions`);
-      const patchedVersion = res2.body.find((ver: any) => {
-        return ver.name == 'patched';
-      });
+      const patchedVersion = res2.body.find(
+        (ver: any) => ver.name === 'patched',
+      );
       expect(patchedVersion).not.to.exist;
     });
   });
