@@ -25,7 +25,6 @@
     "@types/react-modal": "^3.12.1",
     "@types/react-redux": "^7.1.18",
     "@types/react-router-dom": "^5.1.8",
-    "@types/react-select": "^4.0.17",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
     "apexcharts": "^3.27.3",
@@ -34,7 +33,6 @@
     "classnames": "^2.3.1",
     "color-convert": "^2.0.1",
     "dagre": "^0.8.5",
-    "dotenv": "^10.0.0",
     "i18next": "^20.3.4",
     "immutability-helper": "^3.1.1",
     "react": "^17.0.2",
@@ -51,8 +49,8 @@
     "react-modal": "^3.14.3",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "react-select": "^4.3.1",
+    "react-scripts": "5.0.0",
+    "react-select": "^5.2.2",
     "react-virtualized-auto-sizer": "^1.0.6",
     "react-window": "^1.8.6",
     "recharts": "^2.0.10",
@@ -63,7 +61,7 @@
     "typeface-anonymous-pro": "^0.0.72",
     "typeface-roboto": "^0.0.75",
     "typeface-work-sans": "^0.0.72",
-    "typescript": "^4.3.5"
+    "typescript": "4.3.5"
   },
   "scripts": {
     "start": "react-app-rewired start",
