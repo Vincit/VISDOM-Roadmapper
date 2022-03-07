@@ -15,7 +15,7 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from './modals/types';
 import { getType } from '../utils/UserUtils';
-import { unratedTasksAmount } from '../utils/TaskUtils';
+import { unratedTasksByUserCount } from '../utils/TaskUtils';
 import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
@@ -34,17 +34,17 @@ export const TableTeamMemberRow: FC<TableRowProps> = ({ member }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [unratedAmount, setUnratedAmount] = useState(0);
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
 
   useEffect(() => {
-    if (roadmapId && tasks)
+    if (roadmapId && tasks && customers) {
       setUnratedAmount(
-        unratedTasksAmount(member, roadmapId, tasks, users, customers),
+        unratedTasksByUserCount(tasks, member, roadmapId, customers),
       );
-  }, [customers, member, roadmapId, tasks, users]);
+    }
+  }, [customers, member, roadmapId, tasks]);
 
   const deleteUserClicked = (e: MouseEvent) => {
     e.preventDefault();

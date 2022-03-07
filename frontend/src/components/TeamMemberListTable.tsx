@@ -25,17 +25,15 @@ export const TeamMemberList: FC<{
     roadmapId ?? skipToken,
   );
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
 
   const [sort, sorting] = useSorting(
-    useMemo(() => userSort(roadmapId, tasks, users, customers), [
+    useMemo(() => userSort(roadmapId, tasks, customers), [
       customers,
       roadmapId,
       tasks,
-      users,
     ]),
   );
 

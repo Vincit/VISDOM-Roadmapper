@@ -317,6 +317,15 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
   return not(ratedByUser(user));
 };
 
+export const unratedTasksByUserCount = (
+  tasks: Task[],
+  user: RoadmapUser,
+  roadmapId: number,
+  customers: Customer[],
+) => {
+  return tasks?.filter(awaitsUserRatings(user, roadmapId, customers)).length;
+};
+
 export const hasMissingRatings = (
   users: RoadmapUser[] = [],
   customers: Customer[] = [],
