@@ -1,6 +1,6 @@
 import { RoadmapUser, Customer, Task } from '../redux/roadmaps/types';
 import { RoleType } from '../../../shared/types/customTypes';
-import { unratedTasksAmount } from './TaskUtils';
+import { unratedTasksByUserCount } from './TaskUtils';
 import { SortBy, sortKeyLocale, sortKeyNumeric } from './SortUtils';
 
 export enum UserSortingTypes {
@@ -12,7 +12,6 @@ export enum UserSortingTypes {
 export const userSort = (
   roadmapId?: number,
   tasks?: Task[],
-  users?: RoadmapUser[],
   customers?: Customer[],
 ) => (type: UserSortingTypes | undefined): SortBy<RoadmapUser> => {
   switch (type) {
@@ -21,10 +20,10 @@ export const userSort = (
     case UserSortingTypes.SORT_ROLE:
       return sortKeyLocale((user) => RoleType[user.type]);
     case UserSortingTypes.SORT_UNRATED:
-      return roadmapId === undefined
+      return !roadmapId || !tasks || !customers
         ? undefined
         : sortKeyNumeric((user) =>
-            unratedTasksAmount(user, roadmapId, tasks ?? [], users, customers),
+            unratedTasksByUserCount(tasks, user, roadmapId, customers),
           );
     default:
       break;
