@@ -35,7 +35,7 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
     try {
       await patchVersion({ roadmapId, id, name: newName }).unwrap();
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
   };

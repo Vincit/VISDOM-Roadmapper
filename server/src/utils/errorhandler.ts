@@ -78,7 +78,7 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       ctx.status = 500;
       ctx.body = {
         error: 'InternalServerError',
-        errors: err.message,
+        errors: (err as any).message,
       };
     }
   }

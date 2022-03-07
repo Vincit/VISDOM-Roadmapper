@@ -73,7 +73,7 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
         },
       }).unwrap();
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       if (err.data?.response?.data.errors)
         setErrorMessage(err.data?.response?.data.errors);
       else if (err.data?.message) setErrorMessage(err.data.message);

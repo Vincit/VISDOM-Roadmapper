@@ -168,7 +168,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
 
       await dispatch(userActions.getUserInfo());
       setCreatedRoadmapId(id);
-    } catch (err) {
+    } catch (err: any) {
       return { message: err.data?.message ?? t('Internal server error') };
     }
   };

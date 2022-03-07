@@ -25,7 +25,7 @@ export const RemoveTaskModal: Modal<ModalTypes.REMOVE_TASK_MODAL> = ({
     try {
       await deleteTaskTrigger({ roadmapId: task.roadmapId, task }).unwrap();
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
   };

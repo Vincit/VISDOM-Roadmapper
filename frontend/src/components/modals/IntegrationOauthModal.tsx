@@ -54,7 +54,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
         });
         setOAuthURL(url);
         setErrorMessage('');
-      } catch (error) {
+      } catch {
         setErrorMessage(t('Oauth url query error', { name: titleCase(name) }));
       }
     };
@@ -89,7 +89,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
           setErrorMessage(
             t('Oauth token swap error', { name: titleCase(name) }),
           );
-        } catch (err) {
+        } catch (err: any) {
           setErrorMessage(
             err.response?.data?.errors ?? t('Internal server error'),
           );

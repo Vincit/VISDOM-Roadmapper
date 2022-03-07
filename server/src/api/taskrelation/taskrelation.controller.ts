@@ -110,7 +110,7 @@ export const addRelation: RouteHandlerFnc = async (ctx) => {
 
         ctx.body = res;
       });
-    } catch (err) {
+    } catch (err: any) {
       ctx.body = { error: err.message };
       ctx.status = 409;
     }
@@ -165,7 +165,7 @@ export const addSynergies: RouteHandlerFnc = async (ctx) => {
       });
       ctx.body = res;
     });
-  } catch (err) {
+  } catch (err: any) {
     ctx.body = { error: err.message };
     ctx.status = 409;
   }

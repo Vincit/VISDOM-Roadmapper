@@ -32,7 +32,7 @@ const DeleteModalContent: FC<{
     try {
       await action(payload).unwrap();
       closeModal(true);
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     } finally {
       setIsLoading(false);

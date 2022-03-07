@@ -169,7 +169,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     try {
       await action({ roadmapId, ratings: changed, taskId }).unwrap();
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
   };

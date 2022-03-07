@@ -78,9 +78,7 @@ export const OverviewContent: FC<OverviewContentProps> = ({
                   format={format}
                 />
               ) : (
-                <>
-                  <div className={classes(css.value)}>{value}</div>
-                </>
+                <div className={classes(css.value)}>{value}</div>
               )}
             </div>
           ))}

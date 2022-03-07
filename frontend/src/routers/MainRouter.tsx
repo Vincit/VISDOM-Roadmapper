@@ -146,17 +146,15 @@ export const MainRouter = () => {
   }, [queryModal, queryProps, dispatch]);
 
   return (
-    <>
-      <Switch>
-        {routes.map((route) => (
-          <Route
-            exact={route.exact}
-            key={route.path}
-            path={route.path}
-            component={route.component}
-          />
-        ))}
-      </Switch>
-    </>
+    <Switch>
+      {routes.map((route) => (
+        <Route
+          exact={route.exact}
+          key={route.path}
+          path={route.path}
+          component={route.component}
+        />
+      ))}
+    </Switch>
   );
 };

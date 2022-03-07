@@ -36,7 +36,7 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
         roadmapId,
         customer: { id: id as number },
       }).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       return err.data?.message;
     }
     await dispatch(userActions.getUserInfo());
@@ -48,7 +48,7 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
         roadmapId,
         user: { id: id as number },
       }).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       return err.data?.message;
     }
   };
@@ -59,7 +59,7 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
         roadmapId,
         id: id as string,
       }).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       return err.data?.message;
     }
   };
