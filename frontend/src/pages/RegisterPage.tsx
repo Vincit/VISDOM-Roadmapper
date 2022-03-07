@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import assert from 'assert';
 import withStyles from '@mui/styles/withStyles';
 import { Alert } from 'react-bootstrap';
 import classNames from 'classnames';
@@ -170,7 +169,7 @@ export const RegisterPage = () => {
           </div>
           <form onSubmit={handleSubmit}>
             {Object.entries(fields).map(([name, props]) => {
-              assert(knownField(name), `invalid field: ${name}`);
+              if (!knownField(name)) throw new Error(`invalid field: ${name}`);
               return (
                 <Input
                   {...props}

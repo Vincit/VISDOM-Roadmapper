@@ -1,6 +1,5 @@
 import { createApi, BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import Axios, { AxiosRequestConfig, AxiosError } from 'axios';
-import dotenv from 'dotenv';
 import {
   ImportBoardRequest,
   IntegrationConfigurationRequest,
@@ -37,7 +36,6 @@ import {
   UserDeleteRequest,
 } from '../redux/user/types';
 
-dotenv.config();
 const axiosConfig: AxiosRequestConfig = {
   baseURL: process.env.REACT_APP_API_BASE_URL,
   withCredentials: true,

@@ -1,11 +1,6 @@
 import { FC } from 'react';
 
-interface ModalFooterButtonDivProps {
-  rightmargin?: boolean;
-  empty?: boolean;
-}
-
-export const ModalFooterButtonDiv: FC<ModalFooterButtonDivProps> = ({
+export const ModalFooterButtonDiv: FC<{ empty?: boolean }> = ({
   children,
   empty,
 }) => {
