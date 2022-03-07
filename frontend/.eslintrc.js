@@ -26,9 +26,12 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
+    'prefer-regex-literals': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
+    'react/no-unstable-nested-components': 'warn',
     'react/require-default-props': 'off',
+    'react/function-component-definition': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.ts'] }],
     'jsx-a11y/label-has-associated-control': [
       'error',

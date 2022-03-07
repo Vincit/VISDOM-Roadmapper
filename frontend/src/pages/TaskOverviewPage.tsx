@@ -128,7 +128,7 @@ const TaskOverview: FC<{
           [fieldId]: newValue,
         },
       }).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       return err.data.message;
     }
   };

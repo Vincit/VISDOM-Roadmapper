@@ -97,7 +97,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           },
         }).unwrap();
         closeModal();
-      } catch (err) {
+      } catch (err: any) {
         setErrorMessage(err.data?.message ?? 'something went wrong');
       }
     }

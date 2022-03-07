@@ -79,7 +79,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
           }),
         },
       }).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       return err.data?.message;
     }
   };
@@ -95,7 +95,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
           type: selectedRole,
         },
       }).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       return err.data?.message;
     }
   };

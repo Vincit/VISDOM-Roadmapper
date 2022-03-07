@@ -73,7 +73,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
             },
           }),
         );
-      } catch (err) {
+      } catch (err: any) {
         setErrorMessage(err.data?.message);
       }
     }

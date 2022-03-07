@@ -31,7 +31,7 @@ export const SendInvitationModal: Modal<ModalTypes.SEND_INVITATION_MODAL> = ({
         },
       }).unwrap();
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
   };

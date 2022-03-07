@@ -31,7 +31,7 @@ if (!validateEnv()) {
   throw new Error('Invalid environment variables');
 }
 
-export const knex = Knex(knexConfig);
+export const knex = Knex<any, Record<string, any>[]>(knexConfig);
 
 const createServer = async () => {
   console.log('Creating server');

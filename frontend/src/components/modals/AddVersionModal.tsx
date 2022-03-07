@@ -32,7 +32,7 @@ export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
     try {
       await addVersion({ roadmapId, name: versionName }).unwrap();
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
     }
   };

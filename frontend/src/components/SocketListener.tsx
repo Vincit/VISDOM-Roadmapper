@@ -88,5 +88,5 @@ export const SocketListener = () => {
       currentRoadmapId ?? -1,
     );
   }, [currentRoadmapId]);
-  return <></>;
+  return null;
 };

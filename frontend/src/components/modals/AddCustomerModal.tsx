@@ -68,7 +68,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
         },
       }).unwrap();
       await dispatch(userActions.getUserInfo());
-    } catch (err) {
+    } catch (err: any) {
       return { message: err.data?.message ?? 'something went wrong' };
     }
   };

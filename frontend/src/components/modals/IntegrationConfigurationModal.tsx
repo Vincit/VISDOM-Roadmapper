@@ -44,7 +44,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
       try {
         action(formValues).unwrap();
         closeModal();
-      } catch (err) {
+      } catch (err: any) {
         setErrorMessage(err.data?.message ?? 'something went wrong');
       }
     }

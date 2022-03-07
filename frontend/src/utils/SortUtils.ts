@@ -63,7 +63,10 @@ export const sort = <T, K>(
 
     // sort by direct property of the object
     return (list: T[]) =>
-      [...list].sort((a, b) => compare(a[key], b[key]) * order);
+      [...list].sort(
+        (a, b) =>
+          compare((a[key] as unknown) as K, (b[key] as unknown) as K) * order,
+      );
   }
 
   // sort by comparison function
