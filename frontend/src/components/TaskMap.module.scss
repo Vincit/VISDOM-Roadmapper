@@ -7,6 +7,13 @@ $ZOOM: var(--zoom, 1);
   width: 100%;
 }
 
+.info {
+  position: relative;
+  left: 28px;
+  bottom: 26px;
+  width: 16px;
+}
+
 .taskName {
   @extend .taskNameContainer;
 
