@@ -36,15 +36,8 @@
 }
 
 .taskName {
-  width: 210px;
-  max-height: 40px;
-  text-align: left;
-  overflow: hidden;
-  word-wrap: break-word;
-
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
+  @extend .taskNameContainer;
+  width: 175px;
 }
 
 .measureTaskName {
