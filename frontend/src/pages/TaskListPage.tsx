@@ -102,8 +102,8 @@ export const TaskListPage = () => {
   const filter = taskFilter(searchFilter, userInfo);
   const predicate = (task: Task) =>
     (!filter || filter(task)) &&
-    (task.name.includes(searchString) ||
-      task.description.includes(searchString));
+    (task.name.toLowerCase().includes(searchString) ||
+      task.description.toLowerCase().includes(searchString));
 
   return (
     <>
