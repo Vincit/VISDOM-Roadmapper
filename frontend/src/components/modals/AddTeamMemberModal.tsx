@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
@@ -82,7 +81,7 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Add a team member" />
@@ -149,6 +148,6 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

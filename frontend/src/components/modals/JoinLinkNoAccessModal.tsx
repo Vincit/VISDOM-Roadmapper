@@ -1,6 +1,5 @@
 import { FormEvent } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -34,7 +33,7 @@ export const JoinLinkNoAccessModal: Modal<ModalTypes.JOIN_LINK_NO_ACCESS_MODAL> 
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeAndRedirectToOverview}>
         <h3>
           <Trans i18nKey="Log in with another account" />
@@ -65,6 +64,6 @@ export const JoinLinkNoAccessModal: Modal<ModalTypes.JOIN_LINK_NO_ACCESS_MODAL> 
           </button>
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

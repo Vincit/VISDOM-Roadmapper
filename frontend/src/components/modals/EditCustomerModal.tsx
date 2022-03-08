@@ -1,5 +1,4 @@
 import { FormEvent, useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -94,7 +93,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Modify client information" />
@@ -155,6 +154,6 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

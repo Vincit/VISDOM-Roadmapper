@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -32,7 +31,7 @@ export const RemoveTaskModal: Modal<ModalTypes.REMOVE_TASK_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Remove task" />
@@ -75,6 +74,6 @@ export const RemoveTaskModal: Modal<ModalTypes.REMOVE_TASK_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

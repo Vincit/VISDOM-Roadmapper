@@ -484,6 +484,10 @@ textarea {
   }
 }
 
+.formGroup {
+  margin-bottom: 1rem;
+}
+
 .tooltipIcon {
   path {
     @extend .transform-transition;

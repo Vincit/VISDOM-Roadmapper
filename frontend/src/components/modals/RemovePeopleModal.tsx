@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -81,7 +80,7 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           {type === 'customer' && <Trans i18nKey="Remove client" />}
@@ -127,6 +126,6 @@ export const RemovePeopleModal: Modal<ModalTypes.REMOVE_PEOPLE_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,7 +56,7 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Leave roadmap" />
@@ -116,6 +115,6 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

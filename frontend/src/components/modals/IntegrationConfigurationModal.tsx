@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { IntegrationConfigurationRequest } from '../../redux/roadmaps/types';
@@ -56,7 +55,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           {titleCase(name)} <Trans i18nKey="configuration" />
@@ -68,7 +67,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
             <label htmlFor="board">Roadmap: {roadmapName}</label>
             <p>Instructions here</p>
             {fields.map(({ field, secret }) => (
-              <Form.Group key={field}>
+              <div className="formGroup" key={field}>
                 <Input
                   autoComplete="off"
                   required
@@ -79,7 +78,7 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
                   value={(formValues as any)[field]!}
                   onChange={(e) => onChange(field, e.currentTarget.value)}
                 />
-              </Form.Group>
+              </div>
             ))}
           </>
         ) : (
@@ -109,6 +108,6 @@ export const IntegrationConfigurationModal: Modal<ModalTypes.INTEGRATION_CONFIGU
           </button>
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

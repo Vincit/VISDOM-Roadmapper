@@ -1,5 +1,4 @@
 import { FC, FormEvent, useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -188,7 +187,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   if (!task) return null;
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           {edit ? (
@@ -255,6 +254,6 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

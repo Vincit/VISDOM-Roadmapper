@@ -1,4 +1,3 @@
-import { Form } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import HelpIcon from '@mui/icons-material/Help';
@@ -16,7 +15,7 @@ export const InfoModal: Modal<ModalTypes.INFO_MODAL> = ({
   content,
 }) => {
   return (
-    <Form>
+    <form>
       <ModalHeader closeModal={closeModal}>
         <div className={classes(css.headerDiv)}>
           <h3>{header}</h3>
@@ -48,6 +47,6 @@ export const InfoModal: Modal<ModalTypes.INFO_MODAL> = ({
           </button>
         </ModalFooterButtonDiv>
       </div>
-    </Form>
+    </form>
   );
 };

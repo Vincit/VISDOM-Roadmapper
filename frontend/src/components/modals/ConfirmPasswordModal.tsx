@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
@@ -64,7 +63,7 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
   };
 
   return (
-    <Form ref={formRef}>
+    <form ref={formRef}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Enter your password to continue" />
@@ -108,6 +107,6 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

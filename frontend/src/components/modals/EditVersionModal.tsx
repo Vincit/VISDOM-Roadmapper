@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
@@ -42,7 +41,7 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <div className={classes(css.headerDiv)}>
           <h3>
@@ -83,6 +82,6 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

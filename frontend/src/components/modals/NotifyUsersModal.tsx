@@ -1,5 +1,4 @@
 import { useState, FormEvent } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -96,7 +95,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Send notification by email" />
@@ -146,7 +145,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
         <p className={classes(css.message)}>
           <Trans i18nKey="Optional message" />
         </p>
-        <Form.Group>
+        <div className={classes(css.formGroup)}>
           <TextArea
             name="notificationMessage"
             id="notificationMessage"
@@ -155,7 +154,7 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
             value={message}
             onChange={(e) => setMessage(e.currentTarget.value)}
           />
-        </Form.Group>
+        </div>
         {errorMessage.length > 0 && (
           <Alert
             severity="error"
@@ -190,6 +189,6 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

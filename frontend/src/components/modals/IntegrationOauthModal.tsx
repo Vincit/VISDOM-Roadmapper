@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import { api, apiV2, selectById } from '../../api/api';
@@ -124,7 +123,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
             and input the code below:
           </Trans>
         </p>
-        <Form.Group>
+        <div className="formGroup">
           <Input
             autoComplete="off"
             required
@@ -134,7 +133,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
             value={formValues.oauthVerifierCode}
             onChange={(e) => onOAuthVerifierCodeChange(e.currentTarget.value)}
           />
-        </Form.Group>
+        </div>
       </>
     );
   };
@@ -160,7 +159,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>{t('Setup OAuth for', { name: titleCase(name) })}</h3>
       </ModalHeader>
@@ -179,6 +178,6 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>{submitOrRetryButton()}</ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

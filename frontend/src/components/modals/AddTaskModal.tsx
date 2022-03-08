@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -89,14 +88,14 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
         <h3>
           <Trans i18nKey="Add new task" />
         </h3>
       </ModalHeader>
       <ModalContent>
-        <Form.Group>
+        <div className="formGroup">
           <Input
             label={t('Task name')}
             autoComplete="off"
@@ -107,9 +106,9 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
             value={formValues.name}
             onChange={(e) => onNameChange(e.currentTarget.value)}
           />
-        </Form.Group>
+        </div>
 
-        <Form.Group>
+        <div className="formGroup">
           <TextArea
             label={t('Description')}
             autoComplete="off"
@@ -120,7 +119,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
             value={formValues.description}
             onChange={(e) => onDescriptionChange(e.currentTarget.value)}
           />
-        </Form.Group>
+        </div>
         {errorMessage.length > 0 && (
           <Alert
             severity="error"
@@ -142,6 +141,6 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
           )}
         </ModalFooterButtonDiv>
       </ModalFooter>
-    </Form>
+    </form>
   );
 };

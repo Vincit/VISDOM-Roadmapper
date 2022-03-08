@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -75,7 +74,7 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
 
   const renderCommentBox = () =>
     commentBoxOpen && (
-      <Form.Group className={classes(css.commentBoxWrapper)}>
+      <div className={classes(css.commentBoxWrapper, css.formGroup)}>
         <TextArea
           name="description"
           id="description"
@@ -84,7 +83,7 @@ export const TaskRatingWidget: FC<TaskRatingWidgetProps> = ({
           value={rating.comment}
           onChange={(e) => commentChanged(e.currentTarget.value)}
         />
-      </Form.Group>
+      </div>
     );
 
   return (
