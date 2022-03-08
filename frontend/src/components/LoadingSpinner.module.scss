@@ -1,0 +1,7 @@
+@import '../shared.scss';
+
+.loadingSpinner {
+  @extend .layout-row;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,9 +1,11 @@
-import { Spinner } from 'react-bootstrap';
+import CircularProgress from '@mui/material/CircularProgress';
+import classNames from 'classnames';
+import css from './LoadingSpinner.module.scss';
 
-export const LoadingSpinner = () => {
-  return (
-    <Spinner animation="border" role="status" className="m-auto">
-      <span className="sr-only">Loading...</span>
-    </Spinner>
-  );
-};
+const classes = classNames.bind(css);
+
+export const LoadingSpinner = () => (
+  <div className={classes(css.loadingSpinner)}>
+    <CircularProgress size={30} color="info" />
+  </div>
+);
