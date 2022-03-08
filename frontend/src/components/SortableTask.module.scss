@@ -1,19 +1,17 @@
-@import './../shared.scss';
+@import './SortableTaskList.module.scss';
 
 .taskDiv {
   display: flex;
   border-radius: 5px;
   padding: 8px 16px;
-  margin-bottom: 6px;
+  margin-top: 3px;
+  margin-bottom: 3px;
   background-color: white;
   user-select: none;
 }
 
 .leftSideDiv {
-  display: flex;
-  justify-content: flex-start;
-  text-align: left;
-  word-break: break-word;
+  @extend .taskName;
 }
 
 .rightSideDiv {
