@@ -1,7 +1,7 @@
 import { FC, useState, useRef, MouseEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Checkbox } from '../../forms/Checkbox';
 import { RoleIcon } from '../../RoleIcons';
 import { RadioButton } from '../../forms/RadioButton';
@@ -174,14 +174,11 @@ export const AddOrModifyMember: FC<{
           );
         }}
       />
-      <Alert
-        show={error}
-        variant="danger"
-        dismissible
-        onClose={() => onCloseError()}
-      >
-        <Trans i18nKey="The email should be unique" />
-      </Alert>
+      {error && (
+        <Alert severity="error" onClose={() => onCloseError()} icon={false}>
+          <Trans i18nKey="The email should be unique" />
+        </Alert>
+      )}
       <div className={classes(css.buttons)}>
         <button
           className="button-small-filled submitInnerForm"

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Alert, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import { ModalTypes, Modal } from './types';
@@ -82,14 +83,15 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
           onChange={(e) => setPassword(e.currentTarget.value)}
           error={errorState(useState(''))}
         />
-        <Alert
-          show={errorMessage.length > 0}
-          variant="danger"
-          dismissible
-          onClose={() => setErrorMessage('')}
-        >
-          {errorMessage}
-        </Alert>
+        {errorMessage.length > 0 && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMessage('')}
+            icon={false}
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>

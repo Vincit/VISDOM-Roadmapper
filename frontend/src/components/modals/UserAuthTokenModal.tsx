@@ -1,5 +1,5 @@
 import { MouseEvent, useState } from 'react';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { Modal, ModalTypes } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -76,17 +76,18 @@ export const UserAuthTokenModal: Modal<ModalTypes.USER_AUTH_TOKEN_MODAL> = ({
             <Trans i18nKey="Delete" />
           </button>
         </div>
-        <Alert variant="info">
+        <Alert severity="info" icon={false}>
           {visible ? token || 'no token' : token.replace(/./g, '*')}
         </Alert>
-        <Alert
-          show={errorMessage.length > 0}
-          variant="danger"
-          dismissible
-          onClose={() => setErrorMessage('')}
-        >
-          {errorMessage}
-        </Alert>
+        {errorMessage.length > 0 && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMessage('')}
+            icon={false}
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </ModalContent>
       <ModalFooter closeModal={closeModal} />
     </>

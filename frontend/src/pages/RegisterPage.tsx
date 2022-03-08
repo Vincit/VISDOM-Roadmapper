@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import withStyles from '@mui/styles/withStyles';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -195,14 +195,15 @@ export const RegisterPage = () => {
               </Trans>
             </div>
 
-            <Alert
-              show={errorMessage.length > 0}
-              variant="danger"
-              dismissible
-              onClose={() => setErrorMessage('')}
-            >
-              {errorMessage}
-            </Alert>
+            {errorMessage.length > 0 && (
+              <Alert
+                severity="error"
+                onClose={() => setErrorMessage('')}
+                icon={false}
+              >
+                {errorMessage}
+              </Alert>
+            )}
 
             <button className={classes(css['button-large'])} type="submit">
               <Trans i18nKey="Create account" />

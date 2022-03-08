@@ -1,5 +1,6 @@
 import { FormEvent, useState, useEffect } from 'react';
-import { Alert, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
@@ -125,14 +126,15 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
             setRepresentatives(copy);
           }}
         />
-        <Alert
-          show={errorMessage.length > 0}
-          variant="danger"
-          dismissible
-          onClose={() => setErrorMessage('')}
-        >
-          {errorMessage}
-        </Alert>
+        {errorMessage.length > 0 && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMessage('')}
+            icon={false}
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>

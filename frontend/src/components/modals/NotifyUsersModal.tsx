@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
-import { Alert, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
@@ -155,14 +156,15 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
             onChange={(e) => setMessage(e.currentTarget.value)}
           />
         </Form.Group>
-        <Alert
-          show={errorMessage.length > 0}
-          variant="danger"
-          dismissible
-          onClose={() => setErrorMessage('')}
-        >
-          {errorMessage}
-        </Alert>
+        {errorMessage.length > 0 && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMessage('')}
+            icon={false}
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </ModalContent>
       <ModalFooter>
         <ModalFooterButtonDiv>

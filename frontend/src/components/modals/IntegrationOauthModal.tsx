@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Alert, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import { api, apiV2, selectById } from '../../api/api';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -165,9 +166,15 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
       </ModalHeader>
       <ModalContent>
         {modalBody()}
-        <Alert show={errorMessage.length > 0} variant="danger">
-          {errorMessage}
-        </Alert>
+        {errorMessage.length > 0 && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMessage('')}
+            icon={false}
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>{submitOrRetryButton()}</ModalFooterButtonDiv>

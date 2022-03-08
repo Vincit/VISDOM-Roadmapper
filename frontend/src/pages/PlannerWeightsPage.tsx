@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Trans } from 'react-i18next';
@@ -55,14 +55,15 @@ export const PlannerWeightsPage = () => {
           </InfoTooltip>
         </h2>
       </header>
-      <Alert
-        show={errorMessage.length > 0}
-        variant="danger"
-        dismissible
-        onClose={() => setErrorMessage('')}
-      >
-        {errorMessage}
-      </Alert>
+      {errorMessage.length > 0 && (
+        <Alert
+          severity="error"
+          onClose={() => setErrorMessage('')}
+          icon={false}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       <div className={classes(css.description)}>
         <p>
           <Trans i18nKey="Weighting description" />

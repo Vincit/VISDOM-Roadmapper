@@ -1,5 +1,6 @@
 import { FormEvent, SyntheticEvent, useEffect, useState } from 'react';
-import { Alert, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -204,14 +205,15 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           {t('Select integration board', { name: titleCase(name) })}
         </label>
         {modalBody()}
-        <Alert
-          show={errorMessage.length > 0}
-          variant="danger"
-          dismissible
-          onClose={() => setErrorMessage('')}
-        >
-          {errorMessage}
-        </Alert>
+        {errorMessage.length > 0 && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMessage('')}
+            icon={false}
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>

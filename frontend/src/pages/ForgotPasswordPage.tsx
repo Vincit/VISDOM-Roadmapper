@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent, useRef } from 'react';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -111,14 +111,15 @@ export const ForgotPasswordPage = () => {
             error={confirmationError}
             onChange={(e) => setEmail(e.currentTarget.value)}
           />
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
+          {errorMessage.length > 0 && (
+            <Alert
+              severity="error"
+              onClose={() => setErrorMessage('')}
+              icon={false}
+            >
+              {errorMessage}
+            </Alert>
+          )}
           {isLoading ? (
             <LoadingSpinner />
           ) : (

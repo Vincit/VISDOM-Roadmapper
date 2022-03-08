@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
@@ -281,7 +281,7 @@ export const TimeEstimationPage = () => {
       {calculatedDaysPerWork === undefined &&
         selectedMilestoneId !== undefined &&
         milestoneDuration && (
-          <Alert show variant="danger">
+          <Alert severity="error" icon={false}>
             <Trans i18nKey="Unable to calculate working days estimate" />
           </Alert>
         )}

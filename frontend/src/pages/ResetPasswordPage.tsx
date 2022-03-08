@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
-import { Alert } from 'react-bootstrap';
+import Alert from '@mui/material/Alert';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import classNames from 'classnames';
 import { userActions } from '../redux/user';
@@ -91,14 +91,15 @@ export const ResetPasswordPage = () => {
           <button className="button-large" type="submit">
             <Trans i18nKey="Reset password" />
           </button>
-          <Alert
-            show={errorMessage.length > 0}
-            variant="danger"
-            dismissible
-            onClose={() => setErrorMessage('')}
-          >
-            {errorMessage}
-          </Alert>
+          {errorMessage.length > 0 && (
+            <Alert
+              severity="error"
+              onClose={() => setErrorMessage('')}
+              icon={false}
+            >
+              {errorMessage}
+            </Alert>
+          )}
         </form>
         <div className="formFooter">
           <Trans i18nKey="Remembered password" />{' '}

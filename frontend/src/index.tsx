@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import StylesProvider from '@mui/styles/StylesProvider';
+import { StyledEngineProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import { App } from './App';
 import { store } from './redux/index';
@@ -13,9 +13,9 @@ import 'typeface-work-sans';
 ReactDOM.render(
   <Provider store={store}>
     <StrictMode>
-      <StylesProvider injectFirst>
+      <StyledEngineProvider injectFirst>
         <App />
-      </StylesProvider>
+      </StyledEngineProvider>
     </StrictMode>
   </Provider>,
 
