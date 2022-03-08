@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
-import { LockFill, UnlockFill } from 'react-bootstrap-icons';
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import {
@@ -223,9 +224,7 @@ export const PlannerChart: FC<{
             type="submit"
             onClick={toggleSavedData}
           >
-            <div className={classes(css.lockIcon)}>
-              {savedData ? <LockFill /> : <UnlockFill />}
-            </div>
+            {savedData ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
             Compare these versions
           </button>
         </div>

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Search } from 'react-bootstrap-icons';
+import SearchIcon from '@mui/icons-material/Search';
 
 export const SearchField: FC<{
   placeholder?: string;
@@ -16,6 +16,6 @@ export const SearchField: FC<{
           onChange(query);
       }}
     />
-    <Search />
+    <SearchIcon />
   </div>
 );

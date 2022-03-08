@@ -11,19 +11,12 @@
   display: flex;
   margin-left: 46px;
   padding-bottom: 16px;
+
+  svg {
+    margin-right: 8px;
+  }
 }
 
 .label {
   @extend .typography-pre-title;
-}
-
-.lockIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  svg {
-    width: 1.2em;
-    height: 1.2em;
-    margin-right: 8px;
-  }
 }

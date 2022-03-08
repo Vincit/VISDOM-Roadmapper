@@ -241,10 +241,8 @@ form {
   svg {
     fill: $COLOR_BLACK100;
     position: absolute;
-    width: 14px;
-    height: 14px;
-    top: calc(50% - 7px);
-    right: 1em;
+    top: calc(50% - 10px);
+    right: 0.5em;
   }
 }
 
