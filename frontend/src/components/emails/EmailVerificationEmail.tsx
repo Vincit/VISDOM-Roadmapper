@@ -8,7 +8,7 @@ const link = `${baseUrl}/verifyEmail/${token}`;
 export const EmailVerificationEmail = emailPage(title, () => (
   <EmailTemplate title="Thank you for joining Roadmapper!">
     <div>
-      <img style={iconStyle} src={`${baseUrl}/mailIcon.png`} alt="lock-icon" />
+      <img style={iconStyle} src={`${baseUrl}/mailicon.png`} alt="mail-icon" />
     </div>
     <h2 style={{ marginTop: '15px' }}>{title}</h2>
     <div style={textStyle}>

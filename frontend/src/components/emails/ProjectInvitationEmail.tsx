@@ -19,7 +19,7 @@ export const ProjectInvitationEmail = emailPage(title, () => (
       <img
         style={iconStyle}
         src={`${baseUrl}/invitationicon.png`}
-        alt="lock-icon"
+        alt="invitation-icon"
       />
     </div>
     <h2 style={{ marginTop: '15px' }}>{title}</h2>
