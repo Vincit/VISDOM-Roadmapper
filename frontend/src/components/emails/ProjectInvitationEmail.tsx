@@ -11,6 +11,7 @@ import { baseUrl, token } from './emailTestEnv';
 const title = 'You’ve been invited to a project';
 const projectName = '${projectName}';
 const roleType = '${roleType}';
+const link = `${baseUrl}/join/${token}`;
 
 export const ProjectInvitationEmail = emailPage(title, () => (
   <EmailTemplate title="Hi there,">
@@ -32,14 +33,12 @@ export const ProjectInvitationEmail = emailPage(title, () => (
         To accept project invitation, log in or register to Visdom by clicking
         the button below.
       </p>
-      <a href={`${baseUrl}/join/${token}`} style={{ textDecoration: 'none' }}>
+      <a href={link} style={{ textDecoration: 'none' }}>
         <div style={buttonStyle}>Join project</div>
       </a>
       <div>
         <p>Or copy the link below to your browser:</p>
-        <p>
-          {baseUrl}/join/{token}
-        </p>
+        <p>{link}</p>
       </div>
     </div>
     <div style={{ ...textStyle, marginTop: '40px', marginBottom: '-40px' }}>

@@ -3,6 +3,7 @@ import { textStyle, buttonStyle, iconStyle } from './emailStyles';
 import { baseUrl, token } from './emailTestEnv';
 
 const title = 'Verify your email address';
+const link = `${baseUrl}/verifyEmail/${token}`;
 
 export const EmailVerificationEmail = emailPage(title, () => (
   <EmailTemplate title="Thank you for joining Roadmapper!">
@@ -15,17 +16,12 @@ export const EmailVerificationEmail = emailPage(title, () => (
         To complete your account creation in Visdom,{' '}
         <b>please verify your email address</b> by clicking the button below.
       </p>
-      <a
-        href={`${baseUrl}/verifyEmail/${token}`}
-        style={{ textDecoration: 'none' }}
-      >
+      <a href={link} style={{ textDecoration: 'none' }}>
         <div style={buttonStyle}>Verify my email</div>
       </a>
       <div>
         <p>Or copy the link below to your browser:</p>
-        <p>
-          {baseUrl}/verify/{token}
-        </p>
+        <p>{link}</p>
       </div>
     </div>
     <div style={{ ...textStyle, marginTop: '40px', marginBottom: '-40px' }}>
