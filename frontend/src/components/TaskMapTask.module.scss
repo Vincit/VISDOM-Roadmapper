@@ -67,6 +67,10 @@
   width: 17px !important;
   background-color: $COLOR_WHITE !important;
 
+  &.connecting:not(.connectable, .connectStart) {
+    filter: grayscale(100%) !important;
+  }
+
   &.dragging {
     height: calc(17px * #{$ZOOM}) !important;
     width: calc(17px * #{$ZOOM}) !important;
@@ -80,11 +84,20 @@
   border: 2px solid $COLOR_ORANGE !important;
 
   &.filled {
-    background-color: lighten($COLOR_ORANGE, 20%) !important;
+    background-color: lighten($COLOR_ORANGE, 25%) !important;
+  }
+
+  &:hover:not(.connectable),
+  &.connectStart {
+    background-color: lighten($COLOR_ORANGE, 8%) !important;
   }
 
   &.connectable {
-    box-shadow: 0 0 10px 4px $COLOR_ORANGE !important;
+    box-shadow: 0 0 10px 4px lighten($COLOR_ORANGE, 20%) !important;
+
+    &:hover {
+      box-shadow: 0 0 10px 4px $COLOR_ORANGE !important;
+    }
   }
 }
 
@@ -94,11 +107,20 @@
   border: 2px solid $COLOR_FOREST !important;
 
   &.filled {
-    background-color: lighten($COLOR_FOREST, 20%) !important;
+    background-color: lighten($COLOR_FOREST, 25%) !important;
+  }
+
+  &:hover:not(.connectable),
+  &.connectStart {
+    background-color: lighten($COLOR_FOREST, 7%) !important;
   }
 
   &.connectable {
-    box-shadow: 0 0 10px 4px $COLOR_FOREST !important;
+    box-shadow: 0 0 10px 4px lighten($COLOR_FOREST, 25%) !important;
+
+    &:hover {
+      box-shadow: 0 0 10px 4px lighten($COLOR_FOREST, 2%) !important;
+    }
   }
 }
 

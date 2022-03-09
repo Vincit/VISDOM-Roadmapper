@@ -77,6 +77,9 @@ const SingleTask: FC<
             [css.filled]: checked[key],
             [css.dragging]: isDragging,
             [css.connectable]: connectable,
+            [css.connecting]: !!dragHandle,
+            [css.connectStart]:
+              dragHandle?.from === taskId && dragHandle.type === type,
           })}
           id={`${key}-${taskId}`}
           type={type}
