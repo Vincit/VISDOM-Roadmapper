@@ -18,7 +18,7 @@ const taskName = '${taskName}';
 export const NotificationEmail = emailPage(title, () => (
   <EmailTemplate title="Hi there,">
     <div>
-      <img style={iconStyle} src={`${baseUrl}/bellicon.png`} alt="lock-icon" />
+      <img style={iconStyle} src={`${baseUrl}/bellicon.png`} alt="bell-icon" />
     </div>
     <h2>{title}</h2>
     <div style={textStyle}>
