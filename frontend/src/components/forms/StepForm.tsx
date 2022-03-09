@@ -82,7 +82,7 @@ export const StepForm: FC<{
   };
 
   const handleCancel = () => {
-    steps[step - 1].onPreviousStepClick?.();
+    steps[step - 1]?.onPreviousStepClick?.();
     if (step === 0) {
       setStep(previousStep);
       return;
