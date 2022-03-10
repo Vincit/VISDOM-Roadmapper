@@ -92,7 +92,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const { id, name, description, completed, ...others } = ctx.request.body;
+  const { id, name, description, status, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const res = await Task.transaction(async (trx) => {
@@ -110,7 +110,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
     return void (ctx.body = await task.$query(trx).patchAndFetch({
       name: name,
       description: description,
-      completed: completed,
+      status: status,
     }));
   });
 

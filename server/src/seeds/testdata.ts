@@ -208,7 +208,7 @@ const createTestTasks = async () => {
       ratings: defaultRatings.map(({ createdBy, createdFor, dimension }) =>
         randomTaskratingValue(createdBy, createdFor, dimension),
       ),
-      completed: true,
+      status: 'COMPLETED',
     },
     {
       name: 'Test task 3',
@@ -225,7 +225,7 @@ const createTestTasks = async () => {
       ratings: defaultRatings.map(({ createdBy, createdFor, dimension }) =>
         randomTaskratingValue(createdBy, createdFor, dimension),
       ),
-      completed: true,
+      status: 'COMPLETED',
     },
     {
       name: 'Test task 5',
@@ -272,7 +272,7 @@ const createTestTasks = async () => {
   const roadmaps = await Roadmap.query().select('id');
   await Roadmap.query()
     .upsertGraph(
-      { tasks: tasks.splice(0, 6), id: roadmaps[0].id },
+      { tasks: (tasks as any).splice(0, 6), id: roadmaps[0].id },
       {
         relate: true,
         noInsert: ['tasks.ratings.createdBy', 'tasks.ratings.createdFor'],
@@ -282,7 +282,7 @@ const createTestTasks = async () => {
       },
     )
     .upsertGraph(
-      { tasks, id: roadmaps[1].id },
+      { tasks: tasks as any, id: roadmaps[1].id },
       {
         relate: true,
         noInsert: ['tasks.ratings.createdBy', 'tasks.ratings.createdFor'],
