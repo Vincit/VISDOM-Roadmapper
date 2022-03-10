@@ -52,6 +52,10 @@
   &.loading:not(.dragging, .draggingOutside) {
     cursor: wait;
   }
+
+  &.dropDisabled {
+    cursor: not-allowed !important;
+  }
 }
 
 .selectedTask {
@@ -73,6 +77,10 @@
 
   &.connecting:not(.connectable, .connectStart) {
     filter: grayscale(100%) !important;
+  }
+
+  &.dropDisabled {
+    cursor: not-allowed !important;
   }
 
   &.dragging {

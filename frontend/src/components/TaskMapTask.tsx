@@ -26,6 +26,7 @@ export interface TaskProps {
   setSelectedTask?: any;
   checked: { from: boolean; to: boolean };
   disableDragging: boolean;
+  dropDisabled?: boolean;
   unavailable: Set<number>;
   dragHandle?: {
     type: HandleType;
@@ -48,6 +49,7 @@ const SingleTask: FC<
   provided,
   snapshot,
   disableDragging,
+  dropDisabled,
   unavailable,
   dragHandle,
 }) => {
@@ -82,6 +84,7 @@ const SingleTask: FC<
             [css.connectable]: handleConnectable,
             [css.connectStart]:
               dragHandle?.from === taskId && dragHandle.type === type,
+            [css.dropDisabled]: dropDisabled,
           })}
           id={`${key}-${taskId}`}
           type={type}
@@ -108,6 +111,7 @@ const SingleTask: FC<
         [css.connecting]: dragHandle,
         [css.connectable]: connectable,
         [css.connectStart]: dragHandle?.from === taskId,
+        [css.dropDisabled]: dropDisabled,
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
@@ -141,7 +145,7 @@ export const DraggableSingleTask: FC<
   TaskProps & {
     index: number;
   }
-> = ({ taskId, index, disableDragging, ...rest }) => (
+> = ({ taskId, index, disableDragging, dropDisabled, ...rest }) => (
   <Draggable
     key={taskId}
     draggableId={`${taskId}`}
@@ -155,6 +159,7 @@ export const DraggableSingleTask: FC<
           provided={provided}
           snapshot={snapshot}
           disableDragging={disableDragging}
+          dropDisabled={dropDisabled}
           {...rest}
         />
       );
