@@ -47,6 +47,7 @@ export const TaskGroup: FC<
                 from: allDependencies.some(({ from }) => from === taskId),
               }}
               disableDragging={disableDragging}
+              dropDisabled={disableDrop}
               {...rest}
             />
           </div>
