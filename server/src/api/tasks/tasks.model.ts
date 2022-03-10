@@ -1,4 +1,5 @@
 import { QueryContext, AnyQueryBuilder } from 'objection';
+import { TaskStatus } from '../../../../shared/types/customTypes';
 import Model from '../BaseModel';
 import Roadmap from '../roadmaps/roadmaps.model';
 import TaskRating from '../taskratings/taskratings.model';
@@ -8,7 +9,7 @@ export default class Task extends Model {
   id!: number;
   name!: string;
   description!: string;
-  completed!: boolean;
+  status!: TaskStatus;
   createdAt!: string;
   importedFrom!: string | null;
   externalId!: string | null;
@@ -31,7 +32,10 @@ export default class Task extends Model {
       name: { type: 'string', minLength: 1, maxLength: 255 },
       description: { type: 'string', minLength: 1, maxLength: 1000 },
       roadmapId: { type: 'integer' },
-      completed: { type: 'boolean' },
+      status: {
+        type: 'string',
+        enum: ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'],
+      },
       createdAt: { type: 'string', format: 'date-time' },
       createdByUser: { type: 'integer' },
       importedFrom: { type: ['string', 'null'], minLength: 1, maxLength: 255 },

@@ -3,6 +3,12 @@ export enum TaskRelationType {
   Synergy,
 }
 
+export enum TaskStatus {
+  NOT_STARTED = "NOT_STARTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+}
+
 export enum TaskRatingDimension {
   BusinessValue = 0,
   Complexity = 1,
