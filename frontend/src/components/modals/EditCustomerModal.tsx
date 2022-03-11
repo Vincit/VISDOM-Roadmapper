@@ -55,9 +55,10 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
           'something went wrong',
       );
     } else if (patchCustomerStatus.isSuccess) {
+      dispatch(userActions.getUserInfo());
       closeModal();
     }
-  }, [closeModal, patchCustomerStatus]);
+  }, [closeModal, patchCustomerStatus, dispatch]);
 
   useEffect(() => {
     if (!roadmapUsers) return;
@@ -75,7 +76,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
     );
   }, [roadmapUsers, customer.representatives]);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     if (roadmapId === undefined) return;
@@ -89,7 +90,6 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
         representatives: getCheckedIds(representatives),
       },
     });
-    await dispatch(userActions.getUserInfo());
   };
 
   return (
