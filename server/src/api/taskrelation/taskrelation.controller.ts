@@ -96,7 +96,11 @@ export const addRelation: RouteHandlerFnc = async (ctx) => {
   if (from !== to && (await tasksInRoadmap(roadmapId, [from, to]))) {
     try {
       await TaskRelation.transaction(async (trx) => {
-        await TaskRelation.query(trx).insert({ from, to, type });
+        const newRelations = [{ from, to, type }];
+        if (type === TaskRelationType.Synergy) {
+          newRelations.push({ from: to, to: from, type });
+        }
+        await TaskRelation.query(trx).insert(newRelations);
         const res = await relations(roadmapId, trx);
         validateRelations(res);
 
@@ -173,11 +177,19 @@ export const addSynergies: RouteHandlerFnc = async (ctx) => {
 
 export const deleteRelation: RouteHandlerFnc = async (ctx) => {
   const { from, to, type } = ctx.request.body;
-  const deleted =
-    (await tasksInRoadmap(Number(ctx.params.roadmapId), [from, to])) &&
-    (await TaskRelation.query().where({ from, to, type }).delete());
+  if (!(await tasksInRoadmap(Number(ctx.params.roadmapId), [from, to]))) {
+    ctx.status = 404;
+    return;
+  }
+  let expected = 1;
+  const query = TaskRelation.query().where({ from, to, type });
+  if (type === TaskRelationType.Synergy) {
+    query.orWhere({ from: to, to: from, type });
+    expected = 2;
+  }
+  const deleted = await query.delete();
 
-  if (deleted === 1) {
+  if (deleted === expected) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
       dontEmitToUserIds: [ctx.state.user!.id],
@@ -186,5 +198,5 @@ export const deleteRelation: RouteHandlerFnc = async (ctx) => {
       eventParams: [],
     });
   }
-  ctx.status = deleted === 1 ? 200 : 404;
+  ctx.status = deleted === expected ? 200 : 404;
 };
