@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 // useTranslation is a hook and thus can't be used in a function
@@ -30,6 +30,7 @@ import colors from '../colors.module.scss';
 import css from './TaskOverviewPage.module.scss';
 import { MissingRatings } from '../components/MissingRatings';
 import { TaskModalButtons } from '../components/TaskModalButtons';
+import { CloseButton, EditButton } from '../components/forms/SvgButton';
 import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
@@ -113,6 +114,7 @@ const TaskOverview: FC<{
     (hasPermission(role, Permission.TaskEdit) && task.createdByUser === userId);
   const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
   const [patchTaskTrigger] = apiV2.usePatchTaskMutation();
+  const [editMode, setEditMode] = useState(false);
 
   const siblingTasks = [
     {
@@ -154,11 +156,26 @@ const TaskOverview: FC<{
       <div className={classes(css.section)}>
         <div className={classes(css.header)}>
           <h2>{t('Relations')}</h2>
+          <div>
+            <button
+              type="button"
+              className={classes(css.actionButton)}
+              tabIndex={0}
+              onClick={() => setEditMode((prev) => !prev)}
+            >
+              {editMode ? (
+                <CloseButton onClick={() => {}} />
+              ) : (
+                <EditButton fontSize="small" onClick={() => {}} />
+              )}
+              Edit relations
+            </button>
+          </div>
         </div>
         <div className={classes(css.relations)}>
-          <RelationTableRequires task={task} />
-          <RelationTableContributes task={task} />
-          <RelationTablePrecedes task={task} />
+          <RelationTableRequires task={task} editMode={editMode} />
+          <RelationTableContributes task={task} editMode={editMode} />
+          <RelationTablePrecedes task={task} editMode={editMode} />
         </div>
       </div>
 

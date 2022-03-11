@@ -12,8 +12,16 @@
   gap: 30px;
 }
 
+.actionButton {
+  @extend .link-button;
+  @extend .green;
+  & > svg {
+    margin-right: 4px;
+  }
+}
+
 .header {
-  @extend .layout-column;
+  @extend .layout-row;
   gap: 15px;
   text-align: left;
   min-width: 550px;
