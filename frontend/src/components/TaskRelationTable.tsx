@@ -4,19 +4,24 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import { VariableSizeList } from 'react-window';
+import Select from 'react-select';
 import classNames from 'classnames';
 import CachedIcon from '@mui/icons-material/Cached';
 import ClockIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
-import { Task } from '../redux/roadmaps/types';
+import { Task, TaskRelation } from '../redux/roadmaps/types';
+import { TaskRelationType } from '../../../shared/types/customTypes';
 import { paths } from '../routers/paths';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import {
   TaskRelationTableType,
   getTaskRelations,
+  groupTaskRelations,
+  reachable,
 } from '../utils/TaskRelationUtils';
 import { TaskRatingsText } from './TaskRatingsText';
+import { CloseButton } from './forms/SvgButton';
 import css from './TaskRelationTable.module.scss';
 import { apiV2 } from '../api/api';
 import { TaskStatus } from '../../../shared/types/customTypes';
@@ -25,11 +30,13 @@ const classes = classNames.bind(css);
 
 interface RelationTableDef {
   type: TaskRelationTableType;
+  buildRelation: (task: number, other: number) => TaskRelation;
 }
 
 type RelationTableProps = {
   task: Task;
   height?: number;
+  editMode: boolean;
 };
 
 const RelationRow: FC<{
@@ -60,17 +67,21 @@ const RelationRow: FC<{
 
 const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   type,
-}) => ({ task, height = 500 }) => {
+  buildRelation,
+}) => ({ task, editMode, height = 500 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: relations } = apiV2.useGetTaskRelationsQuery(
     roadmapId ?? skipToken,
   );
   const { data: allTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
+  const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
   const listRef = useRef<VariableSizeList<any> | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [rowHeights, setRowHeights] = useState<number[]>([]);
   const [listHeight, setListHeight] = useState(0);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [availableConnections, setAvailableConnections] = useState<Task[]>([]);
 
   useEffect(() => {
     if (relations && allTasks) {
@@ -78,6 +89,19 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
       setTasks(allTasks.filter(({ id }) => ids.has(id)));
     }
   }, [relations, allTasks, task.id]);
+
+  useEffect(() => {
+    if (relations && allTasks) {
+      const groups = groupTaskRelations(relations);
+      const ids = new Set(tasks.map(({ id }) => id));
+      ids.add(task.id);
+      if (type !== TaskRelationTableType.Requires)
+        reachable(task.id, groups, 'source').forEach((id) => ids.add(id));
+      if (type !== TaskRelationTableType.Precedes)
+        reachable(task.id, groups, 'target').forEach((id) => ids.add(id));
+      setAvailableConnections(allTasks.filter(({ id }) => !ids.has(id)));
+    }
+  }, [relations, allTasks, tasks, task.id]);
 
   useEffect(() => {
     if (!divRef || !tasks.length) return;
@@ -109,6 +133,32 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
           <Trans i18nKey={TaskRelationTableType[type]} />
         </h3>
       </div>
+      {editMode && (
+        <>
+          <Select
+            name="relation"
+            id="new-relation"
+            className="react-select"
+            placeholder="Add relation"
+            isDisabled={availableConnections.length === 0}
+            value={null}
+            escapeClearsValue
+            onChange={(selected) => {
+              if (selected && roadmapId !== undefined) {
+                addTaskRelation({
+                  roadmapId,
+                  relation: buildRelation(task.id, selected.value),
+                });
+              }
+            }}
+            options={availableConnections.map(({ id, name }) => ({
+              value: id,
+              label: name,
+            }))}
+          />
+          <br />
+        </>
+      )}
       {!tasks.length ? (
         <div className={classes(css.noRelations)}>
           <Trans i18nKey="No relations" />
@@ -119,12 +169,31 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
           itemSize={(idx) => rowHeights[idx] ?? 0}
           itemCount={tasks.length}
           height={Math.min(height, listHeight)}
-          width="100%"
+          width={editMode ? '105%' : '100%'}
         >
           {({ index, style }) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { height: _, width, ...rest } = style;
-            return <RelationRow style={{ ...rest }} task={tasks[index]} />;
+            const { id } = tasks[index];
+            return editMode ? (
+              <div style={{ ...style, display: 'flex', alignItems: 'center' }}>
+                <RelationRow task={tasks[index]} />
+                <CloseButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (roadmapId !== undefined) {
+                      removeTaskRelation({
+                        roadmapId,
+                        relation: buildRelation(task.id, id),
+                      });
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <RelationRow style={{ ...rest }} task={tasks[index]} />
+            );
           }}
         </VariableSizeList>
       )}
@@ -135,12 +204,27 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
 
 export const RelationTableRequires = relationTable({
   type: TaskRelationTableType.Requires,
+  buildRelation: (task, other) => ({
+    from: other,
+    to: task,
+    type: TaskRelationType.Dependency,
+  }),
 });
 
 export const RelationTablePrecedes = relationTable({
   type: TaskRelationTableType.Precedes,
+  buildRelation: (task, other) => ({
+    from: task,
+    to: other,
+    type: TaskRelationType.Dependency,
+  }),
 });
 
 export const RelationTableContributes = relationTable({
   type: TaskRelationTableType.Contributes,
+  buildRelation: (task, other) => ({
+    from: task,
+    to: other,
+    type: TaskRelationType.Synergy,
+  }),
 });
