@@ -89,9 +89,6 @@ export const emitRoadmapEvent = async <T extends ClientEvents>(
     eventParams: parameters,
   } = { ...emitRoadmapEventParams };
 
-  console.log('Emitting roadmap socket event:');
-  console.log(JSON.stringify(emitRoadmapEventParams, undefined, 2));
-
   const roomName = `roadmap-${roadmapId}`;
   const roadmapSockets = await io.in(roomName).fetchSockets<ISocketData>();
   const socketUserIds = roadmapSockets.map((s) => s.data.user.id);
@@ -99,11 +96,6 @@ export const emitRoadmapEvent = async <T extends ClientEvents>(
     .findByIds(socketUserIds)
     .withGraphJoined('roles')
     .where('roles.roadmapId', roadmapId);
-
-  console.log('socketUsers:');
-  socketUsers.forEach((u) => {
-    console.log(u.email);
-  });
 
   const usersWithPermission = requirePermission
     ? socketUsers.filter((user) =>
@@ -116,6 +108,5 @@ export const emitRoadmapEvent = async <T extends ClientEvents>(
 
     // Sockets are added to a room with their associated user id when they connect to allow sending like this
     io.to(`${user.id}`).emit(event, ...parameters);
-    console.log(`Emitting to: ${user.email}`);
   }
 };
