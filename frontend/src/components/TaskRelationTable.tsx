@@ -19,6 +19,7 @@ import {
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './TaskRelationTable.module.scss';
 import { apiV2 } from '../api/api';
+import { TaskStatus } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -46,7 +47,9 @@ const RelationRow: FC<{
       style={style}
       className={classes(css.task)}
     >
-      {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
+      {task.status === TaskStatus.COMPLETED && (
+        <DoneAllIcon className={classes(css.doneIcon)} />
+      )}
       <div className={classes(css.taskName)}>{task.name}</div>
       <div className={classes(css.taskRatingTexts)}>
         <TaskRatingsText task={task} largeIcons />
