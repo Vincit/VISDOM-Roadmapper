@@ -191,11 +191,6 @@ export const LandingPage = () => {
                 tasks by how complex they see each of them, and the customers by
                 how much value it brings to them.
               </li>
-              <li>
-                <strong>Time estimation</strong> - Based on pure guesses or
-                already realized milestones, PO can estimate how other
-                milestones’ durations look like based on another one.
-              </li>
             </ul>
             <p>
               See example images from{' '}
