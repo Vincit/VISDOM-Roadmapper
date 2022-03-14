@@ -18,7 +18,7 @@ import { DeleteButton } from './forms/SvgButton';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
-import { RoleType } from '../../../shared/types/customTypes';
+import { RoleType, TaskStatus } from '../../../shared/types/customTypes';
 import { userRoleSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
@@ -54,11 +54,13 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
       <div
         style={style}
         className={classes(css.virtualizedTableRow, {
-          [css.completedRow]: task.completed,
+          [css.completedRow]: task.status === TaskStatus.COMPLETED,
         })}
       >
         <div className={classes(css.ratedTitle)}>
-          {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
+          {task.status === TaskStatus.COMPLETED && (
+            <DoneAllIcon className={classes(css.doneIcon)} />
+          )}
           {task.name}
         </div>
         <div>{numFormat.format(value.avg)}</div>
@@ -66,7 +68,7 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
         <div>{numFormat.format(value.total)}</div>
         <div>{numFormat.format(complexity.total)}</div>
         <div>
-          {task.completed ? (
+          {task.status === TaskStatus.COMPLETED ? (
             <span className={classes(css.statusComplete)}>
               <Trans i18nKey="Completed" />
             </span>

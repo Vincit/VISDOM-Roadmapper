@@ -7,6 +7,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './TaskMapTask.module.scss';
+import { TaskStatus } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -109,7 +110,9 @@ const SingleTask: FC<
       {...provided.dragHandleProps}
     >
       {handle('target')}
-      {task.completed && <DoneAllIcon className={classes(css.doneIcon)} />}
+      {task.status === TaskStatus.COMPLETED && (
+        <DoneAllIcon className={classes(css.doneIcon)} />
+      )}
       <div
         className={classes(css.taskName, {
           [css.dragging]: isDragging,
