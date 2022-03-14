@@ -24,7 +24,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(res.body[0]).to.have.property('id');
       expect(res.body[0]).to.have.property('name');
       expect(res.body[0]).to.have.property('description');
-      expect(res.body[0]).to.have.property('completed');
+      expect(res.body[0]).to.have.property('status');
       expect(res.body[0]).to.have.property('createdAt');
       expect(res.body[0]).to.have.property('roadmapId');
       expect(res.body[0]).to.have.property('createdByUser');
