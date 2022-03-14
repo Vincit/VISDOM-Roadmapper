@@ -86,6 +86,8 @@ export const RoadmapGraphPage = () => {
     maxHeight: 300,
   };
 
+  const height = 160;
+
   return (
     <div className={classes(css.plannerPagecontainer)}>
       <BlockGraph
@@ -150,6 +152,17 @@ export const RoadmapGraphPage = () => {
           </InfoTooltip>
         </div>
         <div className={classes(css.stakesContainer)}>
+          <div
+            className={classes(css.lines)}
+            style={{ ['--bar-height' as any]: `${height}px` }}
+          >
+            {[100, 75, 50, 25, 0].map((p) => (
+              <div key={p}>
+                <span>{`${p}%`}</span>
+                <hr />
+              </div>
+            ))}
+          </div>
           <BlockView
             items={versions ?? []}
             dimensions={dimensions}
@@ -160,6 +173,7 @@ export const RoadmapGraphPage = () => {
             {({ item: ver, width }) => (
               <TaskValueCreatedVisualization
                 width={width}
+                height={height}
                 version={{
                   ...ver,
                   totalValue: ver.unweightedTotalValue,
