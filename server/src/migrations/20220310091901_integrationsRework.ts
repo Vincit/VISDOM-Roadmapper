@@ -8,6 +8,8 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('integration')
       .onDelete('SET NULL')
       .index();
+
+    table.string('trelloTableId').nullable();
   });
 
   await knex.schema.createTable('trelloColumnMappings', (table) => {
