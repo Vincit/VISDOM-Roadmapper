@@ -106,6 +106,8 @@ export function BlockView<T>({
             if (x > xMax) return null;
             x += original.width;
             if (x < xMin) return null;
+            if (Number.isNaN(scaled.width) || Number.isNaN(scaled.height))
+              return null;
             return children({ ...scaled, ...props, index });
           },
         )}

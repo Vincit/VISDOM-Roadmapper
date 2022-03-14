@@ -1,11 +1,5 @@
 @import './../shared.scss';
 @import './BlockGraph.module.scss';
 
-$MAX_DIAMETER: calc(60px * var(--max-diameter-multiplier));
-$LARGEST_DOT_DIAMETER: calc(#{$MAX_DIAMETER} * var(--largest-dot-size, 0.3));
-
 .customerStakes {
-  margin-right: calc(
-    var(--version-width) + #{$GRAPH_ITEM_MARGIN} - #{$LARGEST_DOT_DIAMETER}
-  );
 }

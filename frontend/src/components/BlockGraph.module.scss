@@ -45,6 +45,7 @@ $GRAPH_ITEM_MARGIN: 11px;
 
 .viewItems {
   display: flex;
+  gap: $GRAPH_ITEM_MARGIN;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-end;
@@ -57,7 +58,6 @@ $GRAPH_ITEM_MARGIN: 11px;
   flex-direction: column;
   overflow-x: visible;
   border-radius: 8px;
-  margin-right: $GRAPH_ITEM_MARGIN;
   padding: 8px;
   background-color: white;
   cursor: pointer;

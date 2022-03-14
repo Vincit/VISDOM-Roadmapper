@@ -1,8 +1,7 @@
-import { FC } from 'react';
+import { FC, forwardRef } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
-import { Dot } from './Dot';
 import { percent } from '../utils/string';
 import { CustomerStakes } from '../redux/roadmaps/types';
 import css from './CustomerStakesVisualization.module.scss';
@@ -10,92 +9,95 @@ import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
-const noRatingsStakes = [
-  { id: 1, value: 0.3 },
-  { id: 2, value: 0.23 },
-  { id: 3, value: 0.2 },
-];
+const BAR_WIDTH = 37;
 
-const StakeVisualizationTooltip: FC<{
-  title: string;
-}> = ({ title, children }) => (
+const BarSection: FC<{
+  size: number;
+  color: string;
+  vertical?: boolean;
+}> = ({ size, color, vertical, children }) => (
+  <div
+    style={{
+      zIndex: 10,
+      backgroundColor: color,
+      height: vertical ? `${100 * size}%` : BAR_WIDTH,
+      width: vertical ? BAR_WIDTH : `${100 * size}%`,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const PercentageBar: FC<{
+  stakes: { value: number; id: number | string; color: string }[];
+  totalValue: number;
+  vertical?: boolean;
+}> = forwardRef(
+  ({ stakes, totalValue, vertical, children, ...props }, ref: any) => (
+    <div
+      {...{ ...props, ref /* for mui tooltip */ }}
+      className={classes(css.stakes, {
+        [css.vertical]: vertical,
+      })}
+    >
+      {totalValue > 0 ? (
+        stakes
+          .filter(({ value }) => value > 0)
+          .map((entry) => (
+            <BarSection
+              key={entry.id}
+              size={entry.value / totalValue}
+              color={entry.color}
+              vertical={vertical}
+            />
+          ))
+      ) : (
+        <BarSection size={1} color={colors.black10} vertical={vertical} />
+      )}
+    </div>
+  ),
+);
+
+// TODO: implement new design
+const StakesTooltip: FC<{
+  customerStakes: CustomerStakes[];
+  totalValue: number;
+}> = ({ customerStakes, totalValue }) => {
+  const { t } = useTranslation();
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {customerStakes.length
+        ? customerStakes.map((entry) => (
+            <div key={entry.id}>
+              {entry.name}:{' '}
+              {percent(1).format(totalValue > 0 ? entry.value / totalValue : 0)}
+            </div>
+          ))
+        : t('No ratings')}
+    </div>
+  );
+};
+
+export const CustomerStakesVisualization: FC<{
+  customerStakes: CustomerStakes[];
+  totalValue: number;
+  vertical?: boolean;
+}> = ({ customerStakes, totalValue, vertical }) => (
   <Tooltip
     classes={{
       arrow: classes(css.tooltipArrow),
       tooltip: classes(css.tooltip),
     }}
-    title={title}
+    title={
+      <StakesTooltip customerStakes={customerStakes} totalValue={totalValue} />
+    }
     placement="right"
     arrow
   >
-    <div>{children}</div>
+    <PercentageBar
+      stakes={customerStakes}
+      totalValue={totalValue}
+      vertical={vertical}
+    />
   </Tooltip>
 );
-
-const StakeVisualizationContent: FC<{
-  size: number;
-  color: string;
-}> = ({ size, color }) => (
-  <div
-    className={classes(css.dotContainer)}
-    style={{
-      ['--dot-size' as any]: Math.max(0.2, size),
-    }}
-  >
-    <Dot fill={color} />
-  </div>
-);
-
-export const CustomerStakesVisualization: FC<{
-  customerStakes: CustomerStakes[];
-  totalValue: number;
-  largestValue?: number;
-}> = ({ customerStakes, totalValue, largestValue }) => {
-  const { t } = useTranslation();
-
-  if (!customerStakes.length)
-    return (
-      <StakeVisualizationTooltip title={`${t('No ratings')}`}>
-        <div
-          className={classes(css.stakes)}
-          style={{
-            ['--largest-dot-size' as any]: noRatingsStakes[0].value,
-          }}
-        >
-          {noRatingsStakes.map(({ id, value }) => (
-            <StakeVisualizationContent
-              key={id}
-              size={value}
-              color={colors.black10}
-            />
-          ))}
-        </div>
-      </StakeVisualizationTooltip>
-    );
-  return (
-    <div
-      className={classes(css.stakes)}
-      style={{
-        ['--largest-dot-size' as any]: largestValue,
-        ['--max-diameter-multiplier' as any]: Math.min(
-          2,
-          Math.max(1, customerStakes.length * 0.3),
-        ),
-      }}
-    >
-      {customerStakes.map((entry) => (
-        <StakeVisualizationTooltip
-          key={entry.id}
-          title={`${entry.name} : ${percent(1).format(
-            entry.value / totalValue,
-          )}`}
-        >
-          <StakeVisualizationContent
-            size={entry.value / totalValue}
-            color={entry.color}
-          />
-        </StakeVisualizationTooltip>
-      ))}
-    </div>
-  );
-};

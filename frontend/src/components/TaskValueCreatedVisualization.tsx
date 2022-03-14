@@ -16,10 +16,26 @@ interface VersionComplexityAndTotalValue extends Version {
   totalValue: number;
 }
 
+const StakesVisualization: FC<{
+  customerStakes: CustomerStakes[];
+  width: number;
+  height: number;
+  vertical?: boolean;
+}> = ({ customerStakes, width, height, vertical }) => (
+  <div className={classes(css.customerStakes)} style={{ width, height }}>
+    <CustomerStakesVisualization
+      customerStakes={customerStakes}
+      totalValue={customerStakes.reduce((acc, { value }) => acc + value, 0)}
+      vertical={vertical}
+    />
+  </div>
+);
+
 export const TaskValueCreatedVisualization: FC<{
   version: VersionComplexityAndTotalValue;
   width: number;
-}> = ({ version, width }) => {
+  height: number;
+}> = ({ version, width, height }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
@@ -27,44 +43,25 @@ export const TaskValueCreatedVisualization: FC<{
   const [data, setData] = useState<CustomerStakes[]>([]);
 
   useEffect(() => {
-    if (!roadmapId) return;
-
     const customerStakes = totalCustomerStakes(version.tasks, customers);
     setData(
       Array.from(customerStakes)
-        .filter((a) => a[1] > 0)
-        .sort((a, b) => b[1] - a[1])
         .map(([{ id, name, color }, value]) => ({
           id,
           name,
           value,
           color,
-        })),
+        }))
+        .sort((a, b) => b.value - a.value),
     );
-  }, [roadmapId, version.tasks, customers]);
-
-  const largestValue = (stakes: CustomerStakes[]) => {
-    if (!stakes.length) return undefined;
-    return stakes[0].value / version.totalValue;
-  };
+  }, [version.tasks, customers]);
 
   return (
-    <div
-      className={classes(css.customerStakes)}
-      style={{
-        ['--version-width' as any]: `${width}px`,
-        ['--largest-dot-size' as any]: largestValue(data),
-        ['--max-diameter-multiplier' as any]: Math.min(
-          2,
-          Math.max(1, data.length * 0.3),
-        ),
-      }}
-    >
-      <CustomerStakesVisualization
-        customerStakes={data}
-        totalValue={version.totalValue}
-        largestValue={largestValue(data)}
-      />
-    </div>
+    <StakesVisualization
+      customerStakes={data}
+      width={width}
+      height={height}
+      vertical
+    />
   );
 };
