@@ -6,7 +6,7 @@ import i18n from 'i18next';
 import { useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
-import { Permission } from '../../../shared/types/customTypes';
+import { Permission, TaskStatus } from '../../../shared/types/customTypes';
 import {
   valueAndComplexitySummary,
   getRatingsByType,
@@ -79,8 +79,9 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
       {
         label: i18n.t('Status'),
         keyName: 'completed',
-        value: task.completed ? 'Completed' : 'Unordered',
-        format: task.completed ? 'completed' : 'unordered',
+        value: task.status === TaskStatus.COMPLETED ? 'Completed' : 'Unordered',
+        format:
+          task.status === TaskStatus.COMPLETED ? 'completed' : 'unordered',
         editable: false,
       },
     ],

@@ -7,6 +7,7 @@ import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { partition } from '../utils/array';
 import css from './RoadmapCompletionMeter.module.scss';
 import { apiV2 } from '../api/api';
+import { TaskStatus } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -16,7 +17,7 @@ export const RoadmapCompletionMeter = () => {
 
   const [completed, uncompleted] = partition(
     tasks ?? [],
-    (t) => t.completed,
+    (t) => t.status === TaskStatus.COMPLETED,
   ).map((a) => a.length);
 
   const getCompletionPercent = () => {

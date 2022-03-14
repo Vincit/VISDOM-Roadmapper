@@ -9,6 +9,7 @@ import { UserInfo } from '../redux/user/types';
 import {
   RoleType,
   TaskRatingDimension,
+  TaskStatus,
 } from '../../../shared/types/customTypes';
 import { SortBy, sortKeyNumeric, sortKeyLocale } from './SortUtils';
 import { getType, isUserInfo } from './UserUtils';
@@ -127,7 +128,7 @@ export const ratedByCustomer = (
       rating.forCustomer === customer.id && rating.createdByUser === rep.id,
   );
 
-const completed = (task: Task) => task.completed;
+const completed = (task: Task) => task.status === TaskStatus.COMPLETED;
 
 export const taskFilter = (
   type: FilterTypes | undefined,
@@ -156,7 +157,7 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
     case SortingTypes.SORT_DESC:
       return sortKeyLocale('description');
     case SortingTypes.SORT_STATUS:
-      return sortKeyNumeric((t) => +t.completed);
+      return sortKeyNumeric((t) => +(t.status === TaskStatus.COMPLETED));
     case SortingTypes.SORT_RATINGS:
       return sortKeyNumeric(calcTaskPriority);
     case SortingTypes.SORT_AVG_VALUE:
