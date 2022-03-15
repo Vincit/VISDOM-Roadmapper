@@ -27,6 +27,9 @@
   svg {
     margin-right: 11px;
   }
+  svg:hover path:first-child {
+    fill: $COLOR_FOREST;
+  }
   &.minimized {
     flex-direction: column;
     align-items: flex-end;
