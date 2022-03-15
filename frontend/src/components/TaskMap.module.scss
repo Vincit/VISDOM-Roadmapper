@@ -4,7 +4,25 @@ $ZOOM: var(--zoom, 1);
 
 .taskMap {
   @extend .layout-column;
+  position: relative;
   width: 100%;
+}
+
+.noScroll {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 80%;
+  height: 80%;
+  z-index: 100;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+
+  // for testing
+  background-color: $COLOR_RASPBERRY;
+  filter: opacity(20%);
 }
 
 .info {

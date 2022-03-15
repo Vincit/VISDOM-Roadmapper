@@ -15,3 +15,35 @@ export const useMousePosition = () => {
 
   return mousePosition;
 };
+
+interface MousePosition {
+  x: number;
+  y: number;
+}
+
+export const isMouseInElement = (
+  event: MousePosition,
+  element: HTMLDivElement,
+) => {
+  const { left, right, top, bottom } = element.getBoundingClientRect();
+  const { x, y } = event;
+  if (x < left || x >= right) return false;
+  if (y < top || y >= bottom) return false;
+  return true;
+};
+
+export const scrollToDirection = (
+  event: MousePosition,
+  element: HTMLDivElement,
+) => {
+  const { left, right, top, bottom } = element.getBoundingClientRect();
+  const { x, y } = event;
+  const directions = {
+    left: x < left,
+    right: x > right,
+    top: y < top,
+    bottom: y > bottom,
+  };
+  if (Object.values(directions).every((value) => !value)) return false;
+  return directions;
+};

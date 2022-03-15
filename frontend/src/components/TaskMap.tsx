@@ -1,7 +1,11 @@
-import { ReactNode, FC, useEffect, useState } from 'react';
+import { ReactNode, FC, useEffect, useState, useRef } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import ReactFlow, { Controls, OnLoadParams } from 'react-flow-renderer';
+import ReactFlow, {
+  Controls,
+  OnLoadParams,
+  useZoomPanHelper,
+} from 'react-flow-renderer';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +28,11 @@ import { Position, TaskProps } from './TaskMapTask';
 import { TaskGroup } from './TaskMapTaskGroup';
 import { InfoTooltip } from './InfoTooltip';
 import { apiV2 } from '../api/api';
+import {
+  useMousePosition,
+  isMouseInElement,
+  scrollToDirection,
+} from '../utils/useMousePosition';
 import css from './TaskMap.module.scss';
 
 const classes = classNames.bind(css);
@@ -78,11 +87,40 @@ export const TaskMap: FC<{
   const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
   const dispatch = useDispatch<StoreDispatchType>();
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
+  const flowRef = useRef<HTMLDivElement | null>(null);
+  const noScrollRef = useRef<HTMLDivElement | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
+  const mousePosition = useMousePosition();
+  const { transform } = useZoomPanHelper();
+
+  useEffect(() => {
+    let interval: any;
+    if (
+      !draggedTask ||
+      !mapPosition ||
+      !noScrollRef?.current ||
+      !flowRef?.current ||
+      !isMouseInElement(mousePosition, flowRef.current)
+    )
+      clearInterval(interval);
+    else {
+      interval = setInterval(() => {
+        const scroll = scrollToDirection(mousePosition, noScrollRef.current!);
+        if (!scroll) return;
+        let { x, y } = mapPosition;
+        if (scroll.right) x -= 50;
+        if (scroll.left) x += 50;
+        if (scroll.top) y += 50;
+        if (scroll.bottom) y -= 50;
+        transform({ x, zoom: mapPosition.zoom, y });
+      }, 10);
+    }
+    return () => clearInterval(interval);
+  }, [draggedTask, mapPosition, mousePosition, transform]);
 
   useEffect(() => {
     if (!mapPosition && flowInstance && flowElements.length) {
@@ -205,7 +243,11 @@ export const TaskMap: FC<{
         ['--zoom' as any]: mapPosition?.zoom || 1,
       }}
     >
+      <div className={classes(css.noScroll)} ref={noScrollRef} />
       <ReactFlow
+        preventScrolling={false}
+        panOnScroll
+        ref={flowRef}
         connectionLineComponent={ConnectionLine}
         elements={flowElements}
         nodeTypes={{
