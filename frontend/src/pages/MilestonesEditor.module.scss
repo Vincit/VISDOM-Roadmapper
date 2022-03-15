@@ -87,3 +87,19 @@
   width: 34px;
   height: 34px;
 }
+
+.instructions {
+  @extend .typography-pre-title;
+  @extend .layout-column;
+  align-items: center;
+  justify-content: center;
+  min-height: 84px;
+  color: $COLOR_BLACK40;
+  margin: 16px;
+  margin-top: 0;
+
+  .text {
+    padding: 15px;
+    padding-bottom: 0;
+  }
+}

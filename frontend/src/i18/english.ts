@@ -72,6 +72,7 @@ export const english = {
     'Rate customer': 'Rate customer',
     milestones: 'milestones',
     Milestones: 'Milestones',
+    'Milestone task instructions': 'Drag & drop tasks here',
     'Add milestone': 'Add milestone',
     'Milestone name': 'Milestone name',
     'Delete milestone': 'Delete milestone',

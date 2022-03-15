@@ -270,13 +270,32 @@ export const MilestonesEditor = () => {
                     >
                       {version.name}
                     </div>
-
-                    <SortableTaskList
-                      listId={`${version.id}`}
-                      tasks={versionLists[version.id] || []}
-                      disableDragging={disableDrag}
-                      className={classes(css.milestone)}
-                    />
+                    {versionLists[version.id]?.length === 0 ? (
+                      <Droppable droppableId={`${version.id}`} type="TASKS">
+                        {(provided, snapshot) => (
+                          <div
+                            className={classes(css.instructions, {
+                              [css.highlight]: snapshot.isDraggingOver,
+                              'loading-cursor': disableDrag,
+                            })}
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                          >
+                            <div className={classes(css.text)}>
+                              <Trans i18nKey="Milestone task instructions" />
+                            </div>
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    ) : (
+                      <SortableTaskList
+                        listId={`${version.id}`}
+                        tasks={versionLists[version.id] || []}
+                        disableDragging={disableDrag}
+                        className={classes(css.milestone)}
+                      />
+                    )}
                     <div className={classes(css.ratingsSummaryWrapper)}>
                       <MilestoneRatingsSummary
                         tasks={versionLists[version.id] || []}
