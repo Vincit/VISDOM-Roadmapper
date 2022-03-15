@@ -1,3 +1,4 @@
+import { TaskStatus } from './../../../shared/types/customTypes';
 import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
@@ -22,26 +23,16 @@ export async function up(knex: Knex): Promise<void> {
       .index();
 
     table.string('fromColumn', 75).notNullable();
-    table.enu('toStatus', ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'], {
-      useNative: true,
-      existingType: false,
-      enumName: 'task_status_type',
-    });
+    table.integer('toStatus').notNullable();
     table.unique(['integrationId', 'fromColumn']);
   });
 
   await knex.schema.alterTable('tasks', (table) => {
-    table
-      .enu('status', [], {
-        useNative: true,
-        existingType: true,
-        enumName: 'task_status_type',
-      })
-      .defaultTo('NOT_STARTED');
+    table.integer('status').notNullable().defaultTo(0);
   });
 
   await knex('tasks').where('completed', true).update({
-    status: 'COMPLETED',
+    status: TaskStatus.COMPLETED,
   });
 
   await knex.schema.alterTable('tasks', (table) => {
@@ -56,7 +47,7 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.alterTable('tasks', (table) => {
     table.boolean('completed').defaultTo(false);
   });
-  await knex('tasks').where('status', 'COMPLETED').update({
+  await knex('tasks').where('status', TaskStatus.COMPLETED).update({
     completed: true,
   });
   await knex.schema.alterTable('tasks', (table) => {

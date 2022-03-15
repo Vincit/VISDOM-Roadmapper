@@ -55,6 +55,25 @@ class RatingsSummary {
   }
 }
 
+export const taskStatusToText = (status: TaskStatus | number) => {
+  switch (status) {
+    case TaskStatus.NOT_STARTED:
+      return 'Not started';
+    case TaskStatus.IN_PROGRESS:
+      return 'In progress';
+    case TaskStatus.COMPLETED:
+      return 'Completed';
+    default:
+      throw new Error(
+        `taskStatusToText received an invalid taskStatus (status: ${status})`,
+      );
+  }
+};
+
+export const taskStatusToEnumName = (status: TaskStatus | number) => {
+  return TaskStatus[status];
+};
+
 // Accumulates results into provided map
 const ratingsSummaryByDimensionInto = (
   result: Map<TaskRatingDimension, RatingsSummary>,
@@ -157,7 +176,7 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
     case SortingTypes.SORT_DESC:
       return sortKeyLocale('description');
     case SortingTypes.SORT_STATUS:
-      return sortKeyNumeric((t) => +(t.status === TaskStatus.COMPLETED));
+      return sortKeyNumeric('status');
     case SortingTypes.SORT_RATINGS:
       return sortKeyNumeric(calcTaskPriority);
     case SortingTypes.SORT_AVG_VALUE:
