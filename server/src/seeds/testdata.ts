@@ -6,7 +6,10 @@ import Task from '../api/tasks/tasks.model';
 import { Role } from '../api/roles/roles.model';
 import Version from '../api/versions/versions.model';
 import { TaskRelation } from '../api/taskrelation/taskrelation.model';
-import { TaskRelationType } from '../../../shared/types/customTypes';
+import {
+  TaskRelationType,
+  TaskStatus,
+} from '../../../shared/types/customTypes';
 import {
   RoleType,
   TaskRatingDimension,
@@ -208,7 +211,7 @@ const createTestTasks = async () => {
       ratings: defaultRatings.map(({ createdBy, createdFor, dimension }) =>
         randomTaskratingValue(createdBy, createdFor, dimension),
       ),
-      status: 'COMPLETED',
+      status: TaskStatus.COMPLETED,
     },
     {
       name: 'Test task 3',
@@ -225,7 +228,7 @@ const createTestTasks = async () => {
       ratings: defaultRatings.map(({ createdBy, createdFor, dimension }) =>
         randomTaskratingValue(createdBy, createdFor, dimension),
       ),
-      status: 'COMPLETED',
+      status: TaskStatus.COMPLETED,
     },
     {
       name: 'Test task 5',
@@ -282,7 +285,7 @@ const createTestTasks = async () => {
       },
     )
     .upsertGraph(
-      { tasks: tasks as any, id: roadmaps[1].id },
+      { tasks, id: roadmaps[1].id },
       {
         relate: true,
         noInsert: ['tasks.ratings.createdBy', 'tasks.ratings.createdFor'],

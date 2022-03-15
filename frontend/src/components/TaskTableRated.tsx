@@ -10,6 +10,7 @@ import {
   SortingTypes,
   valueAndComplexitySummary,
   taskSort,
+  taskStatusToText,
 } from '../utils/TaskUtils';
 import { table, TableRow } from './Table';
 import css from './TaskTable.module.scss';
@@ -68,15 +69,9 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
         <div>{numFormat.format(value.total)}</div>
         <div>{numFormat.format(complexity.total)}</div>
         <div>
-          {task.status === TaskStatus.COMPLETED ? (
-            <span className={classes(css.statusComplete)}>
-              <Trans i18nKey="Completed" />
-            </span>
-          ) : (
-            <span className={classes(css.statusUnordered)}>
-              <Trans i18nKey="Unordered" />
-            </span>
-          )}
+          <span className={classes(css[TaskStatus[task.status]])}>
+            <Trans i18nKey={taskStatusToText(task.status)} />
+          </span>
         </div>
         <div className={classes(css.ratedButtons)}>
           {type === RoleType.Admin && (

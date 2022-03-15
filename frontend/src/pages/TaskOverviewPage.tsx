@@ -10,6 +10,7 @@ import { Permission, TaskStatus } from '../../../shared/types/customTypes';
 import {
   valueAndComplexitySummary,
   getRatingsByType,
+  taskStatusToText,
 } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { userRoleSelector } from '../redux/user/selectors';
@@ -52,6 +53,7 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
+
   const data = [
     [
       {
@@ -78,10 +80,9 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
       },
       {
         label: i18n.t('Status'),
-        keyName: 'completed',
-        value: task.status === TaskStatus.COMPLETED ? 'Completed' : 'Unordered',
-        format:
-          task.status === TaskStatus.COMPLETED ? 'completed' : 'unordered',
+        keyName: 'status',
+        value: taskStatusToText(task.status),
+        format: TaskStatus[task.status],
         editable: false,
       },
     ],

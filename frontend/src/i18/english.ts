@@ -32,6 +32,8 @@ export const english = {
     'Rated by me': 'Rated by me',
     'Created by': 'Created by',
     Completed: 'Completed',
+    'In progress': 'In progress',
+    'Not started': 'Not started',
     'Not completed': 'Not completed',
     'Rate task': 'Rate task',
     'Edit ratings': 'Edit ratings',

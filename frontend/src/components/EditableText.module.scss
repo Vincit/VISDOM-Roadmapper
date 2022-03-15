@@ -22,11 +22,15 @@
   &.bold {
     @extend .typography-body-bold;
   }
-  &.unordered {
+  &.NOT_STARTED {
     @extend .typography-pre-title;
   }
-  &.completed {
-    @extend .unordered;
+  &.IN_PROGRESS {
+    @extend .NOT_STARTED;
+    color: $COLOR_ORANGE;
+  }
+  &.COMPLETED {
+    @extend .NOT_STARTED;
     color: $COLOR_FOREST;
   }
 }

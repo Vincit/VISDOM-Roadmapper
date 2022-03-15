@@ -24,12 +24,16 @@
   color: $COLOR_BLACK60;
 }
 
-.statusComplete {
+.COMPLETED {
   @extend .typography-pre-title;
   color: $COLOR_FOREST;
 }
 
-.statusUnordered {
+.IN_PROGRESS {
+  @extend .typography-pre-title;
+  color: $COLOR_ORANGE;
+}
+.NOT_STARTED {
   @extend .typography-pre-title;
   color: $COLOR_BLACK100;
 }

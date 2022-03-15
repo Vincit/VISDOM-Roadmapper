@@ -33,8 +33,12 @@ export default class Task extends Model {
       description: { type: 'string', minLength: 1, maxLength: 1000 },
       roadmapId: { type: 'integer' },
       status: {
-        type: 'string',
-        enum: ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'],
+        type: 'integer',
+        enum: [
+          TaskStatus.NOT_STARTED,
+          TaskStatus.IN_PROGRESS,
+          TaskStatus.COMPLETED,
+        ],
       },
       createdAt: { type: 'string', format: 'date-time' },
       createdByUser: { type: 'integer' },

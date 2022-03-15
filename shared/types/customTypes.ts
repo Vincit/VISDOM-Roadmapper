@@ -4,9 +4,9 @@ export enum TaskRelationType {
 }
 
 export enum TaskStatus {
-  NOT_STARTED = "NOT_STARTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
+  NOT_STARTED = 0,
+  IN_PROGRESS = 1,
+  COMPLETED = 2,
 }
 
 export enum TaskRatingDimension {
