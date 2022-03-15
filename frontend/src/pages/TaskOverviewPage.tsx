@@ -104,7 +104,7 @@ const TaskOverview: FC<{
     value: valueRatings,
     complexity: complexityRatings,
   } = getRatingsByType(task?.ratings || []);
-  const hasEditPermission = hasPermission(role, Permission.RoadmapReadUsers);
+  const hasEditPermission = hasPermission(role, Permission.TaskEdit);
   const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
   const [patchTaskTrigger] = apiV2.usePatchTaskMutation();
 
@@ -129,7 +129,7 @@ const TaskOverview: FC<{
         },
       }).unwrap();
     } catch (err: any) {
-      return err.data.message;
+      return err.data?.message;
     }
   };
 
