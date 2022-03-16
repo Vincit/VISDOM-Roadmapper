@@ -171,9 +171,9 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
   await emitRoadmapEvent(ctx.io, {
     roadmapId: roadmapId,
     event: ClientEvents.TASK_UPDATED,
-    dontEmitToUserId: ctx.state.user.id,
+    dontEmitToUserIds: [ctx.state.user.id],
     requirePermission: Permission.TaskRead,
-    eventParams: [roadmapId],
+    eventParams: [],
   });
 
   ctx.body = `${tasks.length} tasks imported`;

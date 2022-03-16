@@ -103,7 +103,7 @@ export const deleteUsers: RouteHandlerFnc = async (ctx) => {
           roadmapId: userRoadmap.id,
           event: ClientEvents.USER_UPDATED,
           requirePermission: Permission.RoadmapReadUsers,
-          eventParams: [userRoadmap.id],
+          eventParams: [],
         });
       }
     }

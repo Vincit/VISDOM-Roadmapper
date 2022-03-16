@@ -1,11 +1,12 @@
 export type ClientEventsMap = {
-  [ClientEvents.ROADMAP_UPDATED]: (roadmapId: number) => void;
-  [ClientEvents.TASK_UPDATED]: (roadmapId: number) => void;
-  [ClientEvents.USER_UPDATED]: (roadmapId: number) => void;
-  [ClientEvents.CUSTOMER_UPDATED]: (roadmapId: number) => void;
-  [ClientEvents.TASKRELATION_UPDATED]: (roadmapId: number) => void;
-  [ClientEvents.TASKRATING_UPDATED]: (roadmapId: number) => void;
-  [ClientEvents.VERSION_UPDATED]: (roadmapId: number) => void;
+  [ClientEvents.ROADMAP_UPDATED]: () => void;
+  [ClientEvents.TASK_UPDATED]: () => void;
+  [ClientEvents.USER_UPDATED]: () => void;
+  [ClientEvents.CUSTOMER_UPDATED]: () => void;
+  [ClientEvents.TASKRELATION_UPDATED]: () => void;
+  [ClientEvents.TASKRATING_UPDATED]: () => void;
+  [ClientEvents.VERSION_UPDATED]: () => void;
+  [ClientEvents.USERINFO_UPDATED]: () => void;
 };
 
 export type ServerEventsMap = {
@@ -23,6 +24,7 @@ export enum ClientEvents {
   TASKRELATION_UPDATED = "TASKRELATION_UPDATED",
   TASKRATING_UPDATED = "TASKRATING_UPDATED",
   VERSION_UPDATED = "VERSION_UPDATED",
+  USERINFO_UPDATED = "USERINFO_UPDATED",
 }
 
 export enum ServerEvents {

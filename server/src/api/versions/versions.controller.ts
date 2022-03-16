@@ -51,10 +51,10 @@ export const postVersions: RouteHandlerFnc = async (ctx) => {
 
   await emitRoadmapEvent(ctx.io, {
     roadmapId: Number(ctx.params.roadmapId),
-    dontEmitToUserId: ctx.state.user!.id,
+    dontEmitToUserIds: [ctx.state.user!.id],
     requirePermission: Permission.VersionRead,
     event: ClientEvents.VERSION_UPDATED,
-    eventParams: [Number(ctx.params.roadmapId)],
+    eventParams: [],
   });
 
   ctx.body = inserted;
@@ -80,10 +80,10 @@ export const deleteVersions: RouteHandlerFnc = async (ctx) => {
   if (numDeleted === 1) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.VersionRead,
       event: ClientEvents.VERSION_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
   }
   ctx.status = numDeleted === 1 ? 200 : 404;
@@ -166,10 +166,10 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
   } else {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.VersionRead,
       event: ClientEvents.VERSION_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
     return void (ctx.body = updated);
   }

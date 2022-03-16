@@ -102,10 +102,10 @@ export const addRelation: RouteHandlerFnc = async (ctx) => {
 
         await emitRoadmapEvent(ctx.io, {
           roadmapId: Number(ctx.params.roadmapId),
-          dontEmitToUserId: ctx.state.user!.id,
+          dontEmitToUserIds: [ctx.state.user!.id],
           requirePermission: Permission.TaskRead,
           event: ClientEvents.TASKRELATION_UPDATED,
-          eventParams: [Number(ctx.params.roadmapId)],
+          eventParams: [],
         });
 
         ctx.body = res;
@@ -146,10 +146,10 @@ export const addSynergies: RouteHandlerFnc = async (ctx) => {
         ctx.body = await relations(roadmapId, trx);
         await emitRoadmapEvent(ctx.io, {
           roadmapId: Number(ctx.params.roadmapId),
-          dontEmitToUserId: ctx.state.user!.id,
+          dontEmitToUserIds: [ctx.state.user!.id],
           requirePermission: Permission.TaskRead,
           event: ClientEvents.TASKRELATION_UPDATED,
-          eventParams: [Number(ctx.params.roadmapId)],
+          eventParams: [],
         });
         return;
       }
@@ -158,10 +158,10 @@ export const addSynergies: RouteHandlerFnc = async (ctx) => {
       validateRelations(res);
       await emitRoadmapEvent(ctx.io, {
         roadmapId: Number(ctx.params.roadmapId),
-        dontEmitToUserId: ctx.state.user!.id,
+        dontEmitToUserIds: [ctx.state.user!.id],
         requirePermission: Permission.TaskRead,
         event: ClientEvents.TASKRELATION_UPDATED,
-        eventParams: [Number(ctx.params.roadmapId)],
+        eventParams: [],
       });
       ctx.body = res;
     });
@@ -180,10 +180,10 @@ export const deleteRelation: RouteHandlerFnc = async (ctx) => {
   if (deleted === 1) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.TaskRead,
       event: ClientEvents.TASKRELATION_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
   }
   ctx.status = deleted === 1 ? 200 : 404;
