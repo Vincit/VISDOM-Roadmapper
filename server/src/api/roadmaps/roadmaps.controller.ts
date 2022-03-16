@@ -147,9 +147,9 @@ export const patchRoadmaps: RouteHandlerFnc = async (ctx) => {
   } else {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       event: ClientEvents.ROADMAP_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
     return void (ctx.body = updated);
   }
@@ -163,9 +163,9 @@ export const deleteRoadmaps: RouteHandlerFnc = async (ctx) => {
   if (numDeleted === 1) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       event: ClientEvents.ROADMAP_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
   }
   ctx.status = numDeleted === 1 ? 200 : 404;
@@ -207,10 +207,10 @@ export const leaveRoadmap: RouteHandlerFnc = async (ctx) => {
     if (numDeleted === 1) {
       await emitRoadmapEvent(ctx.io, {
         roadmapId,
-        dontEmitToUserId: ctx.state.user!.id,
+        dontEmitToUserIds: [ctx.state.user!.id],
         requirePermission: Permission.RoadmapReadUsers,
         event: ClientEvents.USER_UPDATED,
-        eventParams: [roadmapId],
+        eventParams: [],
       });
     }
     ctx.status = numDeleted === 1 ? 200 : 500;

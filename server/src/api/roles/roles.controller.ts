@@ -13,10 +13,10 @@ export const inviteRoadmapUser: RouteHandlerFnc = async (ctx) => {
 
   await emitRoadmapEvent(ctx.io, {
     roadmapId: Number(ctx.params.roadmapId),
-    dontEmitToUserId: ctx.state.user!.id,
+    dontEmitToUserIds: [ctx.state.user!.id],
     requirePermission: Permission.RoadmapReadUsers,
     event: ClientEvents.USER_UPDATED,
-    eventParams: [Number(ctx.params.roadmapId)],
+    eventParams: [],
   });
 
   ctx.body = created;
@@ -34,10 +34,16 @@ export const patchRoadmapUserRoles: RouteHandlerFnc = async (ctx) => {
   if (patched) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.RoadmapReadUsers,
       event: ClientEvents.USER_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
+    });
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      onlyEmitToUserIds: [Number(ctx.params.userId)],
+      event: ClientEvents.USERINFO_UPDATED,
+      eventParams: [],
     });
     return void (ctx.body = patched);
   } else {
@@ -56,10 +62,16 @@ export const deleteRoadmapUserRoles: RouteHandlerFnc = async (ctx) => {
   if (numDeleted === 1) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.RoadmapReadUsers,
       event: ClientEvents.USER_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
+    });
+    await emitRoadmapEvent(ctx.io, {
+      roadmapId: Number(ctx.params.roadmapId),
+      onlyEmitToUserIds: [Number(ctx.params.userId)],
+      event: ClientEvents.USERINFO_UPDATED,
+      eventParams: [],
     });
   }
 

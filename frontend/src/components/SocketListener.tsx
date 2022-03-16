@@ -11,6 +11,7 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { StoreDispatchType } from '../redux';
 import { apiV2 } from '../api/api';
+import { userActions } from '../redux/user';
 
 export const SocketListener = () => {
   const userInfo = useSelector(userInfoSelector);
@@ -68,6 +69,10 @@ export const SocketListener = () => {
 
       socket.current.on(ClientEvents.VERSION_UPDATED, () => {
         refetchVersions();
+      });
+
+      socket.current.on(ClientEvents.USERINFO_UPDATED, () => {
+        dispatch(userActions.getUserInfo());
       });
     }
   }, [

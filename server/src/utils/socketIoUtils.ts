@@ -31,6 +31,9 @@ export const registerSocketCallbacks = (io: ExtendedServer) => {
       }
     });
 
+    // Sockets are added to a room with their user id so we can emit events using user id
+    socket.join(`${socket.data.user.id}`);
+
     socket.on(
       ServerEvents.SET_SUBSCRIBED_ROADMAP,
       setSubscribedRoadmap(socket),
@@ -61,20 +64,23 @@ export const setSubscribedRoadmap = (socket: ExtendedSocket) => async (
     return;
   }
 
-  socket.rooms.forEach((room) => socket.leave(room));
+  socket.rooms.forEach((room) => {
+    if (room.startsWith('roadmap-')) {
+      socket.leave(room);
+    }
+  });
   socket.join(`roadmap-${roadmapId}`);
-  // Sockets are added to a room with their user id so we can emit events using user id
-  socket.join(`${socket.data.user!.id}`);
 
   sendResponse?.({ status: 200 });
 };
 
 export type EmitRoadmapEventParams<T extends ClientEvents> = {
   roadmapId: number;
-  dontEmitToUserId?: number;
-  requirePermission?: number;
   event: T;
   eventParams: Parameters<ClientEventsMap[T]>;
+  dontEmitToUserIds?: number[];
+  onlyEmitToUserIds?: number[];
+  requirePermission?: number;
 };
 
 export const emitRoadmapEvent = async <T extends ClientEvents>(
@@ -83,15 +89,28 @@ export const emitRoadmapEvent = async <T extends ClientEvents>(
 ) => {
   const {
     roadmapId,
-    dontEmitToUserId,
     requirePermission,
     event,
+    dontEmitToUserIds,
+    onlyEmitToUserIds,
     eventParams: parameters,
   } = { ...emitRoadmapEventParams };
 
   const roomName = `roadmap-${roadmapId}`;
   const roadmapSockets = await io.in(roomName).fetchSockets<ISocketData>();
-  const socketUserIds = roadmapSockets.map((s) => s.data.user.id);
+  let socketUserIds = roadmapSockets.map((s) => s.data.user.id);
+
+  if (onlyEmitToUserIds) {
+    socketUserIds = socketUserIds.filter((id) =>
+      onlyEmitToUserIds.includes(id),
+    );
+  }
+  if (dontEmitToUserIds) {
+    socketUserIds = socketUserIds.filter(
+      (id) => !dontEmitToUserIds.includes(id),
+    );
+  }
+
   const socketUsers = await User.query()
     .findByIds(socketUserIds)
     .withGraphJoined('roles')
@@ -104,8 +123,6 @@ export const emitRoadmapEvent = async <T extends ClientEvents>(
     : socketUsers;
 
   for (const user of usersWithPermission) {
-    if (user.id === dontEmitToUserId) continue;
-
     // Sockets are added to a room with their associated user id when they connect to allow sending like this
     io.to(`${user.id}`).emit(event, ...parameters);
   }

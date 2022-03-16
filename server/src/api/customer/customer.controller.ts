@@ -34,16 +34,23 @@ export const postCustomer: RouteHandlerFnc = async (ctx) => {
         .andWhere('roles.roadmapId', roadmapId);
 
       await customer.$relatedQuery('representatives', trx).relate(users);
+
+      await emitRoadmapEvent(ctx.io, {
+        roadmapId: Number(ctx.params.roadmapId),
+        onlyEmitToUserIds: users.map((u) => u.id),
+        event: ClientEvents.USERINFO_UPDATED,
+        eventParams: [],
+      });
     }
     return await customer.$query(trx).withGraphFetched('representatives');
   });
 
   await emitRoadmapEvent(ctx.io, {
     roadmapId: Number(ctx.params.roadmapId),
-    dontEmitToUserId: ctx.state.user!.id,
+    dontEmitToUserIds: [ctx.state.user!.id],
     requirePermission: Permission.RoadmapReadUsers,
     event: ClientEvents.CUSTOMER_UPDATED,
-    eventParams: [Number(ctx.params.roadmapId)],
+    eventParams: [],
   });
 
   ctx.body = inserted;
@@ -87,13 +94,28 @@ export const patchCustomer: RouteHandlerFnc = async (ctx) => {
         .$relatedQuery('representatives', trx)
         .whereIn('id', removed)
         .unrelate();
+
+      await emitRoadmapEvent(ctx.io, {
+        roadmapId: Number(ctx.params.roadmapId),
+        onlyEmitToUserIds: removed,
+        event: ClientEvents.USERINFO_UPDATED,
+        eventParams: [],
+      });
     }
+
     if (added.length) {
       const users = await User.query(trx)
         .whereIn('id', added)
         .withGraphJoined('roles')
         .andWhere('roles.roadmapId', roadmap);
       await customer.$relatedQuery('representatives', trx).relate(users);
+
+      await emitRoadmapEvent(ctx.io, {
+        roadmapId: Number(ctx.params.roadmapId),
+        onlyEmitToUserIds: added,
+        event: ClientEvents.USERINFO_UPDATED,
+        eventParams: [],
+      });
     }
 
     if (!name && !email && !weight && !color)
@@ -109,10 +131,10 @@ export const patchCustomer: RouteHandlerFnc = async (ctx) => {
   } else {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.RoadmapReadUsers,
       event: ClientEvents.CUSTOMER_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
 
     return void (ctx.body = updated);
@@ -128,10 +150,10 @@ export const deleteCustomer: RouteHandlerFnc = async (ctx) => {
   if (numDeleted === 1) {
     await emitRoadmapEvent(ctx.io, {
       roadmapId: Number(ctx.params.roadmapId),
-      dontEmitToUserId: ctx.state.user!.id,
+      dontEmitToUserIds: [ctx.state.user!.id],
       requirePermission: Permission.RoadmapReadUsers,
       event: ClientEvents.CUSTOMER_UPDATED,
-      eventParams: [Number(ctx.params.roadmapId)],
+      eventParams: [],
     });
   }
 
