@@ -9,6 +9,7 @@ import { daysAgo } from '../../../../shared/utils/date';
 import { hasPermission } from '../../../../shared/utils/permission';
 import { Permission, RoleType } from '../../../../shared/types/customTypes';
 import { difference } from '../../utils/array';
+import { isOptional, isNumberArray } from '../../utils/typeValidation';
 import { projectInvitationEmail } from '../../utils/emailMessages';
 
 // should FRONTEND_BASE_URL and CORS_ORIGIN be same variable?
@@ -53,6 +54,9 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
 
   const { type, email, representativeFor, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
+  if (!isOptional(isNumberArray)(representativeFor))
+    return void (ctx.status = 400);
+
   if (!hasPermission(type, Permission.CustomerRepresent) && representativeFor)
     return void (ctx.status = 400);
 
@@ -66,7 +70,7 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
   if (existingRole) throw new Error('Invitee is already a team member');
 
   let customers: Customer[] = [];
-  if (representativeFor) {
+  if (representativeFor?.length) {
     customers = await Customer.query()
       .whereIn('id', representativeFor)
       .andWhere('roadmapId', roadmapId);
@@ -86,7 +90,7 @@ export const postInvitation: RouteHandlerFnc = async (ctx) => {
       .onConflict(['roadmapId', 'email'])
       .merge();
 
-    if (customers)
+    if (customers.length)
       await invitation
         .$relatedQuery('representativeFor', trx)
         .relate(customers);
@@ -110,6 +114,9 @@ export const patchInvitation: RouteHandlerFnc = async (ctx) => {
     ...others
   } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
+  if (!isOptional(isNumberArray)(representativeFor))
+    return void (ctx.status = 400);
+
   const roadmapId = Number(ctx.params.roadmapId);
 
   const patched = await Invitation.transaction(async (trx) => {
