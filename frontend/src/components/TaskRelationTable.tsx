@@ -10,6 +10,7 @@ import CachedIcon from '@mui/icons-material/Cached';
 import ClockIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import SearchIcon from '@mui/icons-material/Search';
 import { Task, TaskRelation } from '../redux/roadmaps/types';
 import { TaskRelationType } from '../../../shared/types/customTypes';
 import { paths } from '../routers/paths';
@@ -64,6 +65,8 @@ const RelationRow: FC<{
     </div>
   );
 };
+
+const DropdownIndicator = () => <SearchIcon />;
 
 const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   type,
@@ -136,9 +139,10 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
       {editMode && (
         <>
           <Select
+            components={{ DropdownIndicator }}
             name="relation"
             id="new-relation"
-            className="react-select"
+            classNamePrefix="react-select-relation"
             placeholder="Add relation"
             isDisabled={availableConnections.length === 0}
             value={null}
