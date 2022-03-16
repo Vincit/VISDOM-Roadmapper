@@ -21,36 +21,38 @@ export const getVersions: RouteHandlerFnc = async (ctx) => {
 };
 
 export const postVersions: RouteHandlerFnc = async (ctx) => {
+  let { sortingRank, name, tasks } = ctx.request.body;
+  const roadmapId = Number(ctx.params.roadmapId);
   const inserted = await Version.transaction(async (trx) => {
     const maxVersion = (await Version.query(trx)
-      .where({ roadmapId: Number(ctx.params.roadmapId) })
+      .where({ roadmapId })
       .max('sortingRank')
       .first()) as any;
     const maxRank = maxVersion.max === null ? -1 : maxVersion.max; // Treat null as -1 so next insertion goes to 0
 
     if (
-      ctx.request.body.sortingRank === null ||
-      ctx.request.body.sortingRank === undefined ||
-      ctx.request.body.sortingRank > maxRank + 1
+      sortingRank === null ||
+      sortingRank === undefined ||
+      sortingRank > maxRank + 1
     ) {
-      ctx.request.body.sortingRank = maxRank + 1;
+      sortingRank = maxRank + 1;
     } else {
       await Version.query(trx)
-        .where({ roadmapId: Number(ctx.params.roadmapId) })
-        .andWhere('sortingRank', '>=', ctx.request.body.sortingRank)
+        .where({ roadmapId })
+        .andWhere('sortingRank', '>=', sortingRank)
         .increment('sortingRank', 1);
     }
 
     return await Version.query().insertAndFetch({
-      name: ctx.request.body.name,
-      tasks: ctx.request.body.name,
-      sortingRank: ctx.request.body.sortingRank,
-      roadmapId: Number(ctx.params.roadmapId),
+      name,
+      tasks,
+      sortingRank,
+      roadmapId,
     });
   });
 
   await emitRoadmapEvent(ctx.io, {
-    roadmapId: Number(ctx.params.roadmapId),
+    roadmapId,
     dontEmitToUserIds: [ctx.state.user!.id],
     requirePermission: Permission.VersionRead,
     event: ClientEvents.VERSION_UPDATED,
