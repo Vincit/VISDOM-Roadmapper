@@ -1,5 +1,9 @@
 type typeValidator<T> = (value: any) => value is T;
 
+export const isOptional = <T>(validateItem: typeValidator<T>) => (
+  value: unknown,
+): value is T | undefined => value === undefined || validateItem(value);
+
 export const isTypedArray = <T>(validateItem: typeValidator<T>) => (
   value: unknown,
 ): value is T[] => {
