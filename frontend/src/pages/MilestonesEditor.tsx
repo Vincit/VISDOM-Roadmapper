@@ -67,6 +67,7 @@ export const MilestonesEditor = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [expandUnordered, setExpandUnordered] = useState(true);
+  const [areInitialVersions, setAreInitialVersions] = useState(true);
 
   useEffect(() => {
     if (!roadmapsVersions) return;
@@ -86,8 +87,13 @@ export const MilestonesEditor = () => {
       SortingOrders.DESCENDING,
     )(Array.from(ratedTasks.values()));
 
+    if (areInitialVersions) {
+      setAreInitialVersions(false);
+      if (!newVersionLists[ROADMAP_LIST_ID].length) setExpandUnordered(false);
+    }
+
     setVersionLists(newVersionLists);
-  }, [customers, tasks, roadmapsVersions, isError]);
+  }, [customers, tasks, roadmapsVersions, isError, areInitialVersions]);
 
   const addVersion = () => {
     dispatch(
