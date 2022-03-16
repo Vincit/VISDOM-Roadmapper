@@ -418,7 +418,6 @@ textarea {
   background-color: transparent;
   padding: 0;
   border: none;
-  font-weight: bold;
 
   &:disabled {
     color: $COLOR_BLACK40;
@@ -431,9 +430,9 @@ textarea {
   &.linkButton {
     @extend .link-button;
   }
-
   &:hover:not(:disabled) {
     text-decoration: underline;
+    color: $COLOR_EMERALD;
   }
   &:disabled {
     color: $COLOR_BLACK40;
@@ -446,9 +445,9 @@ textarea {
   &.linkButton {
     @extend .link-button;
   }
-
   &:hover:not(:disabled) {
     text-decoration: underline;
+    color: $COLOR_AZURE;
   }
 }
 
@@ -480,7 +479,9 @@ textarea {
   a {
     @extend .typography-body-bold;
     color: $COLOR_EMERALD;
-    margin-left: 10;
+  }
+  .linkButton {
+    font-weight: 600;
   }
 }
 

@@ -163,7 +163,10 @@ export const ForgotPasswordPage = () => {
             <Trans i18nKey="We have sent an email" values={{ email }} />
           </p>
         </div>
-        <div className="formFooter" style={{ textAlign: 'center' }}>
+        <div
+          className={classes(css.formFooter)}
+          style={{ textAlign: 'center' }}
+        >
           <div style={{ marginBottom: '16px' }}>
             <Trans i18nKey="Wrong email address?" />{' '}
             <button
