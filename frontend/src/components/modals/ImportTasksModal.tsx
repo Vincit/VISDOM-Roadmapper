@@ -142,6 +142,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           name="board"
           id="board"
           className="react-select"
+          classNamePrefix="react-select"
           placeholder="No boards available"
           isDisabled={boards.data.length === 0}
           menuPortalTarget={document.body}

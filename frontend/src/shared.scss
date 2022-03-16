@@ -346,6 +346,80 @@ body .tooltipArrow {
   -webkit-box-shadow: none !important;
 }
 
+.react-select-relation {
+  border: none;
+}
+
+.react-select-relation__control--is-focused {
+  // @extend .shadow-input !important;
+  -webkit-box-shadow: 0px 0px 0px 3px rgba(14, 198, 121, 0.3) !important;
+  box-shadow: 0px 0px 0px 3px rgba(14, 198, 121, 0.3) !important;
+
+  border: 1px solid $COLOR_EMERALD !important;
+}
+
+.react-select-relation__control {
+  @extend .layout-row;
+  width: 95%;
+  border-radius: 49px;
+  border-color: transparent;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  &:hover,
+  &:focus {
+    // border-color: $COLOR_FOREST;
+    @extend .shadow-input;
+    border: 1px solid $COLOR_EMERALD;
+  }
+  min-height: 40px;
+  height: 40px;
+  margin: auto;
+  & > * {
+    max-height: 100%;
+  }
+}
+
+.react-select-relation__input-container {
+  display: flex;
+  margin: auto;
+  align-items: center;
+  padding: 0;
+  height: 100%;
+  & > * {
+    max-height: 100%;
+  }
+}
+
+.react-select-relation__value-container {
+  display: flex;
+  height: 100%;
+  margin-left: 1rem;
+}
+
+.react-select-relation__input {
+  height: 100%;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+.react-select-relation__indicators {
+  padding: 1rem;
+}
+
+.react-select-relation__placeholder {
+  position: absolute;
+}
+
+.react-select-relation__indicator-separator {
+  display: none;
+}
+
+.react-select-relation__menu {
+  width: 90%;
+  margin-left: 5%;
+}
+
 .input-invalid {
   &:invalid {
     @extend .shadow-input-invalid;

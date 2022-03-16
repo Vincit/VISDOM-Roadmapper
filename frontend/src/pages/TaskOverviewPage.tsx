@@ -164,11 +164,16 @@ const TaskOverview: FC<{
               onClick={() => setEditMode((prev) => !prev)}
             >
               {editMode ? (
-                <CloseButton onClick={() => {}} />
+                <>
+                  <CloseButton onClick={() => {}} />
+                  {t('Close edit')}
+                </>
               ) : (
-                <EditButton fontSize="small" onClick={() => {}} />
+                <>
+                  <EditButton fontSize="small" onClick={() => {}} />
+                  {t('Edit')}
+                </>
               )}
-              Edit relations
             </button>
           </div>
         </div>

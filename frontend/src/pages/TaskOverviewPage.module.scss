@@ -26,6 +26,10 @@
   text-align: left;
   min-width: 550px;
 
+  & > h2 {
+    margin: 0;
+  }
+
   .missingRatings {
     @extend .layout-row;
     justify-content: space-between;
