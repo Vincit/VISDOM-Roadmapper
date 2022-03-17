@@ -46,13 +46,13 @@ export const TaskValueCreatedVisualization: FC<{
     const customerStakes = totalCustomerStakes(version.tasks, customers);
     setData(
       Array.from(customerStakes)
+        .sort(([a], [b]) => b.weight - a.weight)
         .map(([{ id, name, color }, value]) => ({
           id,
           name,
           value,
           color,
-        }))
-        .sort((a, b) => b.value - a.value),
+        })),
     );
   }, [version.tasks, customers]);
 
