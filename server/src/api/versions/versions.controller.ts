@@ -3,6 +3,7 @@ import { RouteHandlerFnc } from '../../types/customTypes';
 import Version from './versions.model';
 import { ClientEvents } from './../../../../shared/types/sockettypes';
 import { emitRoadmapEvent } from './../../utils/socketIoUtils';
+import { isOptional, isNumberArray } from '../../utils/typeValidation';
 
 export const getVersions: RouteHandlerFnc = async (ctx) => {
   const query = Version.query()
@@ -21,7 +22,12 @@ export const getVersions: RouteHandlerFnc = async (ctx) => {
 };
 
 export const postVersions: RouteHandlerFnc = async (ctx) => {
-  let { sortingRank, name, tasks } = ctx.request.body;
+  let { sortingRank, name, tasks, roadmapId: _, ...others } = ctx.request.body;
+  if (Object.keys(others).length || !isOptional(isNumberArray)(tasks)) {
+    ctx.status = 400;
+    return;
+  }
+
   const roadmapId = Number(ctx.params.roadmapId);
   const inserted = await Version.transaction(async (trx) => {
     const maxVersion = (await Version.query(trx)
@@ -95,7 +101,10 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
   let { sortingRank } = ctx.request.body;
   delete ctx.request.body.sortingRank;
   const { id, name, tasks, ...others } = ctx.request.body;
-  if (Object.keys(others).length) return void (ctx.status = 400);
+  if (Object.keys(others).length || !isOptional(isNumberArray)(tasks)) {
+    ctx.status = 400;
+    return;
+  }
 
   const updated = await Version.transaction(async (trx) => {
     const versionId = Number(ctx.params.versionId);
@@ -135,18 +144,13 @@ export const patchVersions: RouteHandlerFnc = async (ctx) => {
     // TODO: separate adding/deleting from updating
     if (tasks) {
       // Delete tasks from all versions
-      await trx('versionTasks')
-        .whereIn(
-          'versionTasks.taskId',
-          tasks.map((taskId: number) => taskId),
-        )
-        .delete();
+      await trx('versionTasks').whereIn('versionTasks.taskId', tasks).delete();
 
       // Wipe current versions tasks list and reconstruct it
       await trx('versionTasks').where('versionId', versionId).delete();
-      if (tasks?.length) {
+      if (tasks.length) {
         await trx('versionTasks').insert(
-          tasks.map((taskId: number, order: number) => ({
+          tasks.map((taskId, order) => ({
             taskId,
             versionId,
             order,

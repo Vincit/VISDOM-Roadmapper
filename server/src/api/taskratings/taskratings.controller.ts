@@ -3,6 +3,13 @@ import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import { userHasPermission } from './../../utils/checkPermissions';
 import {
+  isNumber,
+  isString,
+  isOptional,
+  isRecord,
+  isArray,
+} from './../../utils/typeValidation';
+import {
   Permission,
   TaskRatingDimension,
 } from '../../../../shared/types/customTypes';
@@ -28,7 +35,17 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
   const roadmapId = Number(ctx.params.roadmapId);
   const taskId = Number(ctx.params.taskId);
 
-  if (!Array.isArray(ratings)) return void (ctx.status = 400);
+  if (
+    !isArray(
+      isRecord({
+        dimension: isNumber,
+        forCustomer: isOptional(isNumber),
+        value: isNumber,
+        comment: isOptional(isString),
+      }),
+    )(ratings)
+  )
+    return void (ctx.status = 400);
 
   const hasValueRatePermission = userHasPermission(
     ctx,
@@ -63,7 +80,7 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
 
   const newRatings = await Taskrating.transaction((trx) =>
     Promise.all(
-      ratings.map(({ dimension, value, comment, forCustomer }: any) =>
+      ratings.map(({ dimension, value, comment, forCustomer }) =>
         Task.relatedQuery('ratings', trx)
           .for(taskId)
           .insertAndFetch({
@@ -121,7 +138,16 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
   const userId = Number(ctx.state.user.id);
   const taskId = Number(ctx.params.taskId);
 
-  if (!Array.isArray(ratings)) return void (ctx.status = 400);
+  if (
+    !isArray(
+      isRecord({
+        id: isNumber,
+        value: isNumber,
+        comment: isOptional(isString),
+      }),
+    )(ratings)
+  )
+    return void (ctx.status = 400);
 
   const hasValueRatePermission = userHasPermission(
     ctx,
@@ -137,7 +163,7 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
   );
 
   const foundRatings = await Promise.all(
-    ratings.map(async ({ id, value, comment }: any) => {
+    ratings.map(async ({ id, value, comment }) => {
       const rating = await Taskrating.query()
         .findById(id)
         .where({ parentTask: taskId });
@@ -162,8 +188,8 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
 
   const updated = await Taskrating.transaction((trx) =>
     Promise.all(
-      foundRatings.map(({ rating, value, comment }: any) =>
-        rating.$query(trx).patchAndFetch({ value, comment }),
+      foundRatings.flatMap(({ rating, value, comment }) =>
+        rating ? [rating.$query(trx).patchAndFetch({ value, comment })] : [],
       ),
     ),
   );
