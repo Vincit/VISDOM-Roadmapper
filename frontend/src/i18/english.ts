@@ -98,6 +98,7 @@ export const english = {
     'Unable to calculate working days estimate':
       'Unable to calculate working days estimate',
     'Predicted milestone durations': 'Predicted milestone durations',
+    'Client shares': 'Client shares',
     'Set different weighting for clients':
       'Set different weighting for clients',
     'Weighting description':
