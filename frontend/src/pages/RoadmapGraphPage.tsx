@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import ListIcon from '@mui/icons-material/List';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { totalValuesAndComplexity } from '../utils/TaskUtils';
+import { percent } from '../utils/string';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
@@ -156,9 +157,9 @@ export const RoadmapGraphPage = () => {
             className={classes(css.lines)}
             style={{ ['--bar-height' as any]: `${height}px` }}
           >
-            {[100, 75, 50, 25, 0].map((p) => (
+            {[1, 0.75, 0.5, 0.25, 0].map((p) => (
               <div key={p}>
-                <span>{`${p}%`}</span>
+                <span>{percent(0).format(p)}</span>
                 <hr />
               </div>
             ))}
