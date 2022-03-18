@@ -7,6 +7,7 @@ import { ModalTypes } from '../components/modals/types';
 import { StoreDispatchType } from '../redux/index';
 import { userRoleSelector } from '../redux/user/selectors';
 import { TopBar } from '../components/TopBar';
+import { RoleType } from '../../../shared/types/customTypes';
 
 export const ClientsListPage = () => {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ export const ClientsListPage = () => {
         addType={t('client')}
         onSearchChange={(value) => setSearchString(value)}
         onAddClick={addCustomerClicked}
+        showAddButtonsToRoles={[RoleType.Admin]}
       />
       <div>
         <CustomerList search={searchString} role={role!} />

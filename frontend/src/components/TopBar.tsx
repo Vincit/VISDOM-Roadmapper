@@ -15,6 +15,7 @@ export const TopBar: FC<{
   onSearchChange: (value: string) => void;
   onAddClick: (e: MouseEvent) => void;
   topMargin?: true;
+  showAddButtonsToRoles: RoleType[];
 }> = ({
   searchType,
   addType,
@@ -22,6 +23,7 @@ export const TopBar: FC<{
   onAddClick,
   topMargin,
   children,
+  showAddButtonsToRoles,
 }) => {
   const { t } = useTranslation();
   const role = useSelector(userRoleSelector, shallowEqual);
@@ -34,7 +36,7 @@ export const TopBar: FC<{
       />
       {children}
       <div className={classes(css.rightSide)}>
-        {role === RoleType.Admin && (
+        {role && showAddButtonsToRoles.includes(role) && (
           <button
             className="button-small-filled"
             type="button"

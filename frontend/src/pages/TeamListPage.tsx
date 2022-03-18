@@ -12,6 +12,7 @@ import { InvitationList } from '../components/InvitationListTable';
 import { TopBar } from '../components/TopBar';
 import css from './TeamListPage.module.scss';
 import { apiV2 } from '../api/api';
+import { RoleType } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -41,6 +42,7 @@ export const TeamListPage = () => {
         searchType={t('members')}
         addType={t('team member')}
         onSearchChange={(value) => setSearchString(value)}
+        showAddButtonsToRoles={[RoleType.Admin]}
         onAddClick={addTeamMemberClicked}
       />
       <div>

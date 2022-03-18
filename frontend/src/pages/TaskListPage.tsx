@@ -112,6 +112,7 @@ export const TaskListPage = () => {
         addType={t('task')}
         onSearchChange={(value) => setSearchString(value)}
         onAddClick={onAddNewTaskClick}
+        showAddButtonsToRoles={[RoleType.Business, RoleType.Admin]}
         topMargin
       >
         <div className={classes(css.addNewButtonContainer)}>

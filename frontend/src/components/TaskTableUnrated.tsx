@@ -41,7 +41,11 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     userInfoSelector,
     shallowEqual,
   );
-  const type = getType(userInfo, roadmapId);
+  const roleType = getType(userInfo, roadmapId);
+  const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
+  const showDeleteButton =
+    roleType === RoleType.Admin ||
+    (task.createdByUser === userId && roleType === RoleType.Business);
 
   const { value, complexity } = averageValueAndComplexity([task]);
 
@@ -70,7 +74,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
         </div>
         <div className={classes(css.buttonContainer)}>
           <TaskModalButtons task={task} />
-          {type === RoleType.Admin && (
+          {showDeleteButton && (
             <div className={classes(css.deleteIcon)}>
               <DeleteButton onClick={handleTaskDelete} />
             </div>
