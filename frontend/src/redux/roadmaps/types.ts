@@ -41,6 +41,7 @@ export interface CustomerStakes {
   name: string;
   value: number;
   color: string;
+  differsTooMuchFromPlanned?: boolean; // TODO: calculate this
 }
 
 export interface CheckableUserWithCustomers extends CheckableUser {

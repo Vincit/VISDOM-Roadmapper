@@ -2,6 +2,7 @@ import { FC, forwardRef } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
+import { Dot } from './Dot';
 import { percent } from '../utils/string';
 import { CustomerStakes } from '../redux/roadmaps/types';
 import css from './CustomerStakesVisualization.module.scss';
@@ -9,20 +10,19 @@ import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
-const BAR_WIDTH = 37;
-
 const BarSection: FC<{
   size: number;
   color: string;
   vertical?: boolean;
-}> = ({ size, color, vertical, children }) => (
+  width?: number;
+}> = ({ size, color, vertical, width = 37, children }) => (
   <div
     style={{
       zIndex: 10,
       backgroundColor: color,
       userSelect: 'none',
-      height: vertical ? `${100 * size}%` : BAR_WIDTH,
-      width: vertical ? BAR_WIDTH : `${100 * size}%`,
+      height: vertical ? `${100 * size}%` : width,
+      width: vertical ? width : `${100 * size}%`,
     }}
   >
     {children}
@@ -33,8 +33,9 @@ const PercentageBar: FC<{
   stakes: { value: number; id: number | string; color: string }[];
   totalValue: number;
   vertical?: boolean;
+  width?: number;
 }> = forwardRef(
-  ({ stakes, totalValue, vertical, children, ...props }, ref: any) => (
+  ({ stakes, totalValue, vertical, width, children, ...props }, ref: any) => (
     <div
       {...{ ...props, ref /* for mui tooltip */ }}
       className={classes(css.stakes, {
@@ -50,31 +51,55 @@ const PercentageBar: FC<{
               size={entry.value / totalValue}
               color={entry.color}
               vertical={vertical}
+              width={width}
             />
           ))
       ) : (
-        <BarSection size={1} color={colors.black10} vertical={vertical} />
+        <BarSection
+          size={1}
+          color={colors.black10}
+          vertical={vertical}
+          width={width}
+        />
       )}
     </div>
   ),
 );
 
-// TODO: implement new design
 const StakesTooltip: FC<{
   customerStakes: CustomerStakes[];
   totalValue: number;
-}> = ({ customerStakes, totalValue }) => {
+  showPercentageBar?: boolean;
+}> = ({ customerStakes, totalValue, showPercentageBar }) => {
   const { t } = useTranslation();
+
+  if (customerStakes.length === 0)
+    return <div className={classes(css.stakesTooltip)}>{t('No ratings')}</div>;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {customerStakes.length
-        ? customerStakes.map((entry) => (
-            <div key={entry.id}>
-              {entry.name}:{' '}
-              {percent(1).format(totalValue > 0 ? entry.value / totalValue : 0)}
-            </div>
-          ))
-        : t('No ratings')}
+    <div className={classes(css.stakesTooltip)}>
+      <div>{t('Client shares')}</div>
+      {showPercentageBar && (
+        <PercentageBar
+          stakes={customerStakes}
+          totalValue={totalValue}
+          width={15}
+        />
+      )}
+      {customerStakes.map((entry) => (
+        <div
+          key={entry.id}
+          className={classes(css.customer, {
+            [css.differsTooMuch]: entry.differsTooMuchFromPlanned,
+          })}
+        >
+          <Dot fill={entry.color} />
+          <span className={classes(css.name)}>{entry.name}</span>
+          <span className={classes(css.percentage)}>
+            {percent(1).format(totalValue > 0 ? entry.value / totalValue : 0)}
+          </span>
+        </div>
+      ))}
     </div>
   );
 };
