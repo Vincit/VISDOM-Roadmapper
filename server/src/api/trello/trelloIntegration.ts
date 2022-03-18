@@ -1,4 +1,5 @@
 import { OAuth } from 'oauth';
+import { TaskStatus } from '../../../../shared/types/customTypes';
 
 import {
   ImportedTask,
@@ -97,7 +98,7 @@ class TrelloImporter implements IntegrationProvider {
         name: card.name,
         description: card.desc || 'No description',
         createdAt: this.cardIdToCreationTime(card.id),
-        completed: false,
+        status: TaskStatus.NOT_STARTED,
       }),
     );
   }
