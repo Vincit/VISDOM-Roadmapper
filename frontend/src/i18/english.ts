@@ -231,7 +231,7 @@ export const english = {
     'First project info 2/2':
       'Another way to start using VISDOM is to get an invitation to another existing project. Contact your project’s product owner to invite you in.',
     complexityValueTitle: 'Complexity / Value',
-    customerStakesTitle: 'Clients receiving the most value',
+    customerStakesTitle: 'Client shares of the total value',
     'No ratings': 'No ratings',
     unratedTaskMessage: 'Waiting for ratings',
     'Optional message': 'Optional message',
