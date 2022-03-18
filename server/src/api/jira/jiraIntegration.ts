@@ -10,6 +10,7 @@ import {
   IntegrationConfig,
   InvalidTokenError,
 } from '../integration';
+import { TaskStatus } from '../../../../shared/types/customTypes';
 
 const PRIVATE_KEY_EXPORT_FORMAT = 'pkcs1';
 
@@ -127,7 +128,7 @@ class JiraImporter implements IntegrationProvider {
           name: issue.fields.summary,
           description: issue.fields.description || 'No description',
           createdAt: issue.fields.created,
-          completed: false,
+          status: TaskStatus.NOT_STARTED,
         }),
       );
     return tasks;

@@ -1,3 +1,4 @@
+import { TaskStatus } from './../../../shared/types/customTypes';
 export interface IntegrationConfig {
   name: string;
   host: string;
@@ -11,7 +12,7 @@ export type ImportedTask = {
   name: string;
   description: string;
   createdAt: string;
-  completed: boolean;
+  status: TaskStatus;
 };
 
 export interface TaskFilters {
