@@ -20,6 +20,7 @@ const BarSection: FC<{
     style={{
       zIndex: 10,
       backgroundColor: color,
+      userSelect: 'none',
       height: vertical ? `${100 * size}%` : BAR_WIDTH,
       width: vertical ? BAR_WIDTH : `${100 * size}%`,
     }}
