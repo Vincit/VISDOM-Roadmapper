@@ -20,7 +20,7 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
 import { RoleType, TaskStatus } from '../../../shared/types/customTypes';
-import { userRoleSelector } from '../redux/user/selectors';
+import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
 
@@ -32,7 +32,11 @@ const numFormat = new Intl.NumberFormat(undefined, {
 const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const { value, complexity } = valueAndComplexitySummary(task);
-  const type = useSelector(userRoleSelector, shallowEqual);
+  const roleType = useSelector(userRoleSelector, shallowEqual);
+  const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
+  const showDeleteButton =
+    roleType === RoleType.Admin ||
+    (task.createdByUser === userId && roleType === RoleType.Business);
 
   const handleTaskDelete = (e: MouseEvent) => {
     e.preventDefault();
@@ -46,7 +50,6 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
       }),
     );
   };
-
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
@@ -74,9 +77,7 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
           </span>
         </div>
         <div className={classes(css.ratedButtons)}>
-          {type === RoleType.Admin && (
-            <DeleteButton onClick={handleTaskDelete} />
-          )}
+          {showDeleteButton && <DeleteButton onClick={handleTaskDelete} />}
           <ArrowForwardIcon className={classes(css.arrowIcon)} />
         </div>
       </div>

@@ -60,6 +60,9 @@ export enum RoleType {
     Permission.VersionRead |
     Permission.RoadmapReadUsers,
   Business = Permission.TaskRead |
+    Permission.TaskCreate |
+    Permission.TaskEdit |
+    Permission.TaskDelete |
     Permission.TaskRate |
     Permission.TaskRatingEdit |
     Permission.TaskValueRate |

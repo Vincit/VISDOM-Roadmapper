@@ -13,7 +13,7 @@ import {
   taskStatusToText,
 } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
-import { userRoleSelector } from '../redux/user/selectors';
+import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
@@ -99,6 +99,7 @@ const TaskOverview: FC<{
   const history = useHistory();
   const { t } = useTranslation();
   const role = useSelector(userRoleSelector, shallowEqual);
+  const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
   const { roadmapId } = useParams<{
     roadmapId: string | undefined;
   }>();
@@ -107,7 +108,9 @@ const TaskOverview: FC<{
     value: valueRatings,
     complexity: complexityRatings,
   } = getRatingsByType(task?.ratings || []);
-  const hasEditPermission = hasPermission(role, Permission.TaskEdit);
+  const hasEditPermission =
+    hasPermission(role, Permission.TaskEditOthers) ||
+    (hasPermission(role, Permission.TaskEdit) && task.createdByUser === userId);
   const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
   const [patchTaskTrigger] = apiV2.usePatchTaskMutation();
 
