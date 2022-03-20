@@ -9,8 +9,24 @@
   background-color: $COLOR_BLACK10;
   border-radius: 10px;
   padding-bottom: 10px;
+
+  // multiple scrollbars show in the transition
+  @extend .hide-scrollbar;
+  div {
+    @extend .hide-scrollbar;
+  }
+  -webkit-transition: width 0.3s ease-in-out;
+  -moz-transition: width 0.3s ease-in-out;
+  -o-transition: width 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out;
+
   &.minimized {
     width: 65px;
+
+    -webkit-transition: width 0.1s ease-in-out;
+    -moz-transition: width 0.1s ease-in-out;
+    -o-transition: width 0.1s ease-in-out;
+    transition: width 0.1s ease-in-out;
   }
 }
 
