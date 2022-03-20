@@ -604,6 +604,10 @@ textarea {
   width: 26px;
 }
 
+.ReactModal__Overlay {
+  z-index: 1000;
+}
+
 .taskNameContainer {
   width: 210px;
   max-height: 40px;
