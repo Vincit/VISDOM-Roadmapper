@@ -1,6 +1,11 @@
 @import '../shared.scss';
 @import '../components/SortableTaskList.module.scss';
 
+.loadingSpinnerContainer {
+  position: relative;
+  top: 50%;
+}
+
 .horizontalScroller {
   margin-left: 8px;
 }

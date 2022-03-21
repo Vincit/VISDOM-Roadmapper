@@ -29,6 +29,7 @@ import { move } from '../utils/array';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './MilestonesEditor.module.scss';
 import { apiV2 } from '../api/api';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const classes = classNames.bind(css);
 
@@ -329,7 +330,7 @@ export const MilestonesEditor = () => {
     </Droppable>
   );
 
-  return (
+  const renderPage = () => (
     <DragDropContext onDragEnd={onDragEnd}>
       <InfoTooltip
         title={
@@ -370,4 +371,12 @@ export const MilestonesEditor = () => {
       </div>
     </DragDropContext>
   );
+
+  const renderLoading = () => (
+    <div className={classes(css.loadingSpinnerContainer)}>
+      <LoadingSpinner />
+    </div>
+  );
+
+  return areInitialVersions ? renderLoading() : renderPage();
 };
