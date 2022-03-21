@@ -157,33 +157,32 @@ const TaskOverview: FC<{
           <RelationTablePrecedes task={task} />
         </div>
       </div>
-      {hasEditPermission && (
-        <div className={classes(css.section)}>
-          <div className={classes(css.header)}>
-            <h2>{t('Ratings')}</h2>
-            <div className={classes(css.missingRatings)}>
-              <MissingRatings task={task} label />
-              <TaskModalButtons task={task} overview />
-            </div>
-          </div>
-          <div className={classes(css.ratings)}>
-            {valueRatings.length > 0 && (
-              <RatingTableValue
-                ratings={valueRatings}
-                avg={value.avg}
-                taskId={task.id}
-              />
-            )}
-            {complexityRatings.length > 0 && (
-              <RatingTableComplexity
-                ratings={complexityRatings}
-                avg={complexity.avg}
-                taskId={task.id}
-              />
-            )}
+
+      <div className={classes(css.section)}>
+        <div className={classes(css.header)}>
+          <h2>{t('Ratings')}</h2>
+          <div className={classes(css.missingRatings)}>
+            <MissingRatings task={task} label />
+            <TaskModalButtons task={task} overview />
           </div>
         </div>
-      )}
+        <div className={classes(css.ratings)}>
+          {valueRatings.length > 0 && (
+            <RatingTableValue
+              ratings={valueRatings}
+              avg={value.avg}
+              taskId={task.id}
+            />
+          )}
+          {complexityRatings.length > 0 && (
+            <RatingTableComplexity
+              ratings={complexityRatings}
+              avg={complexity.avg}
+              taskId={task.id}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
