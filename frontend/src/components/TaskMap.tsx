@@ -83,6 +83,7 @@ export const TaskMap: FC<{
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
+  const [groupDraggable, setGroupDraggable] = useState(true);
 
   useEffect(() => {
     if (!mapPosition && flowInstance && flowElements.length) {
@@ -123,7 +124,7 @@ export const TaskMap: FC<{
             type: 'special',
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
-            draggable: false,
+            draggable: groupDraggable,
             // dagre coordinates are in the center, calculate top left corner
             position: {
               x: node.x - node.width / 2,
@@ -144,6 +145,7 @@ export const TaskMap: FC<{
                   disableDrop={dropUnavailable.has(id)}
                   unavailable={unavailable}
                   dragHandle={dragHandle}
+                  setGroupDraggable={setGroupDraggable}
                 />
               ),
             },
@@ -169,7 +171,6 @@ export const TaskMap: FC<{
         ];
       }),
     );
-
     setFlowElements([...groups, ...edges]);
   }, [
     unavailable,
@@ -181,6 +182,7 @@ export const TaskMap: FC<{
     taskRelations,
     tasks,
     dropUnavailable,
+    groupDraggable,
   ]);
 
   const onConnect = async (data: any) => {

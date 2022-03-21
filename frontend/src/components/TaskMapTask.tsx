@@ -27,6 +27,7 @@ export interface TaskProps {
   checked: { from: boolean; to: boolean };
   disableDragging: boolean;
   dropDisabled?: boolean;
+  setGroupDraggable: any;
   unavailable: Set<number>;
   dragHandle?: {
     type: HandleType;
@@ -52,6 +53,7 @@ const SingleTask: FC<
   dropDisabled,
   unavailable,
   dragHandle,
+  setGroupDraggable,
 }) => {
   const { isDragging } = snapshot;
   const task = tasks.find(({ id }) => id === taskId);
@@ -101,6 +103,10 @@ const SingleTask: FC<
       tabIndex={0}
       onClick={selectTask}
       onKeyPress={selectTask}
+      onMouseOver={() => setGroupDraggable(false)}
+      onMouseLeave={() => setGroupDraggable(true)}
+      onFocus={() => setGroupDraggable(false)}
+      onBlur={() => setGroupDraggable(true)}
       className={classes(css.singleTask, {
         [css.selectedTask]: selected,
         [css.dragging]: isDragging,
@@ -145,7 +151,14 @@ export const DraggableSingleTask: FC<
   TaskProps & {
     index: number;
   }
-> = ({ taskId, index, disableDragging, dropDisabled, ...rest }) => (
+> = ({
+  taskId,
+  index,
+  disableDragging,
+  dropDisabled,
+  setGroupDraggable,
+  ...rest
+}) => (
   <Draggable
     key={taskId}
     draggableId={`${taskId}`}
@@ -160,6 +173,7 @@ export const DraggableSingleTask: FC<
           snapshot={snapshot}
           disableDragging={disableDragging}
           dropDisabled={dropDisabled}
+          setGroupDraggable={setGroupDraggable}
           {...rest}
         />
       );
