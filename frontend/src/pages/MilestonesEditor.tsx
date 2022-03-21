@@ -70,6 +70,12 @@ export const MilestonesEditor = () => {
   const [areInitialVersions, setAreInitialVersions] = useState(true);
 
   useEffect(() => {
+    if (!areInitialVersions || !versionLists[ROADMAP_LIST_ID]) return;
+    setAreInitialVersions(false);
+    if (!versionLists[ROADMAP_LIST_ID].length) setExpandUnordered(false);
+  }, [areInitialVersions, versionLists]);
+
+  useEffect(() => {
     if (!roadmapsVersions) return;
 
     const newVersionLists: VersionListsObject = {};
@@ -87,13 +93,8 @@ export const MilestonesEditor = () => {
       SortingOrders.DESCENDING,
     )(Array.from(ratedTasks.values()));
 
-    if (areInitialVersions) {
-      setAreInitialVersions(false);
-      if (!newVersionLists[ROADMAP_LIST_ID].length) setExpandUnordered(false);
-    }
-
     setVersionLists(newVersionLists);
-  }, [customers, tasks, roadmapsVersions, isError, areInitialVersions]);
+  }, [customers, tasks, roadmapsVersions, isError]);
 
   const addVersion = () => {
     dispatch(
