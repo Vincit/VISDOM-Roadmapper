@@ -293,7 +293,6 @@ export const MilestonesEditor = () => {
                         listId={`${version.id}`}
                         tasks={versionLists[version.id] || []}
                         disableDragging={disableDrag}
-                        className={classes(css.milestone)}
                       />
                     )}
                     <div className={classes(css.ratingsSummaryWrapper)}>
