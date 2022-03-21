@@ -50,7 +50,7 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   return (
     <Link
       className={classes(css.navBarLink, css.hoverRow)}
-      to={`${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/task/${task.id}`}
+      to={`${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
     >
       <div
         style={style}

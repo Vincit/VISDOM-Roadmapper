@@ -36,6 +36,6 @@ export const paths = {
   tasksRelative: {
     tasklist: '/tasklist',
     taskmap: '/taskmap',
-    taskOverview: '/task/:taskId([0-9]+)',
+    taskOverview: '/:taskId([0-9]+)',
   },
 };
