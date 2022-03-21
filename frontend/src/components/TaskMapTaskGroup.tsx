@@ -16,6 +16,7 @@ export const TaskGroup: FC<
     allDependencies: { from: number; to: number }[];
     disableDrop?: boolean;
     setGroupDraggable: any;
+    draggingSomething: boolean;
   } & Omit<TaskProps, 'taskId' | 'checked'>
 > = ({
   listId,
@@ -25,6 +26,7 @@ export const TaskGroup: FC<
   disableDragging,
   disableDrop,
   setGroupDraggable,
+  draggingSomething,
   ...rest
 }) => (
   <Droppable isDropDisabled={disableDrop} droppableId={listId} type="TASKS">
@@ -32,8 +34,9 @@ export const TaskGroup: FC<
       <div
         className={classes(css.taskGroup, {
           [css.highlight]: snapshot.isDraggingOver,
-          [css.loading]: disableDragging,
+          // [css.loading]: disableDragging,
           [css.unavailable]: disableDrop,
+          [css.draggingSomething]: draggingSomething,
         })}
         ref={provided.innerRef}
         {...provided.droppableProps}
@@ -51,6 +54,7 @@ export const TaskGroup: FC<
               disableDragging={disableDragging}
               dropDisabled={disableDrop}
               setGroupDraggable={setGroupDraggable}
+              draggingSomething={draggingSomething}
               {...rest}
             />
           </div>

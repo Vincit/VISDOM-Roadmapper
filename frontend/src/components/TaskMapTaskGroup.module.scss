@@ -3,13 +3,13 @@
 .taskGroup {
   @extend .layout-column;
   position: relative;
-  padding: 20px 15px;
+  padding: 10px 0; // Changed from 20px 15px;
   width: 405px;
   background-color: rgba($COLOR_CLOUD, 0.75);
   border-radius: 10px;
 
-  &:not(.unavailable) {
-    cursor: default;
+  &:not(.unavailable, .loading) {
+    cursor: all-scroll;
   }
 
   &.unavailable {
@@ -17,8 +17,14 @@
     cursor: not-allowed;
   }
 
-  &.loading:not(.highlight, .unavailable) {
-    cursor: wait;
+  // &.loading:not(.highlight, .unavailable) {
+  //   cursor: wait;
+  // }
+
+  // Kun dragaat taskia ja hiiri on task groupin päällä, mutta taskin keskikohta ei ole groupin sisällä,
+  // tämä tulee käytäntöön:
+  &.draggingSomething:not(.unavailable) {
+    cursor: grabbing !important;
   }
 
   &.highlight {
