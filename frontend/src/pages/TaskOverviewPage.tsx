@@ -31,6 +31,7 @@ import css from './TaskOverviewPage.module.scss';
 import { MissingRatings } from '../components/MissingRatings';
 import { TaskModalButtons } from '../components/TaskModalButtons';
 import { apiV2 } from '../api/api';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const classes = classNames.bind(css);
 
@@ -191,8 +192,11 @@ const TaskOverview: FC<{
 export const TaskOverviewPage = () => {
   const { taskId } = useParams<{ taskId: string | undefined }>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+  const { data: tasks, isFetching } = apiV2.useGetTasksQuery(
+    roadmapId ?? skipToken,
+  );
   const taskIdx = tasks?.findIndex(({ id }) => Number(taskId) === id);
+  if (isFetching) return <LoadingSpinner />;
   if (!tasks || taskIdx === undefined || taskIdx < 0)
     return <Redirect to={paths.notFound} />;
   return <TaskOverview tasks={tasks} task={tasks[taskIdx]} taskIdx={taskIdx} />;
