@@ -178,7 +178,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     idx: number,
     forCustomer?: number,
   ) => (rating: { value: number; comment: string | undefined }) => {
-    const copy = [...ratings];
+    const copy = [...businessValueRatings];
     const original = copy[idx];
     copy[idx] = { ...original, ...rating, forCustomer, changed: true };
     setBusinessValueRatings(copy);
