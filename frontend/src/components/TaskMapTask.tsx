@@ -40,6 +40,7 @@ const SingleTask: FC<
   TaskProps & {
     provided: any;
     snapshot: any;
+    draggingSomething: boolean;
   }
 > = ({
   taskId,
@@ -54,6 +55,7 @@ const SingleTask: FC<
   unavailable,
   dragHandle,
   setGroupDraggable,
+  draggingSomething,
 }) => {
   const { isDragging } = snapshot;
   const task = tasks.find(({ id }) => id === taskId);
@@ -87,6 +89,7 @@ const SingleTask: FC<
             [css.connectStart]:
               dragHandle?.from === taskId && dragHandle.type === type,
             [css.dropDisabled]: dropDisabled,
+            [css.draggingSomething]: draggingSomething,
           })}
           id={`${key}-${taskId}`}
           type={type}
@@ -118,6 +121,7 @@ const SingleTask: FC<
         [css.connectable]: connectable,
         [css.connectStart]: dragHandle?.from === taskId,
         [css.dropDisabled]: dropDisabled,
+        [css.draggingSomething]: draggingSomething,
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
@@ -150,6 +154,7 @@ const SingleTask: FC<
 export const DraggableSingleTask: FC<
   TaskProps & {
     index: number;
+    draggingSomething: boolean;
   }
 > = ({
   taskId,
@@ -157,6 +162,7 @@ export const DraggableSingleTask: FC<
   disableDragging,
   dropDisabled,
   setGroupDraggable,
+  draggingSomething,
   ...rest
 }) => (
   <Draggable
@@ -174,6 +180,7 @@ export const DraggableSingleTask: FC<
           disableDragging={disableDragging}
           dropDisabled={dropDisabled}
           setGroupDraggable={setGroupDraggable}
+          draggingSomething={draggingSomething}
           {...rest}
         />
       );

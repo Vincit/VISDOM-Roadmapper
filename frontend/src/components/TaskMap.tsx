@@ -142,6 +142,7 @@ export const TaskMap: FC<{
                     ({ dependencies }) => dependencies,
                   )}
                   disableDragging={draggedTask !== undefined}
+                  draggingSomething={draggedTask !== undefined}
                   disableDrop={dropUnavailable.has(id)}
                   unavailable={unavailable}
                   dragHandle={dragHandle}

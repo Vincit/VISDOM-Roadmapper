@@ -13,6 +13,7 @@
   padding: 10px 16px;
   position: relative;
   align-items: center;
+  cursor: grabbing;
 
   &.connecting:not(.connectable, .connectStart) {
     filter: grayscale(100%) opacity(20%);
@@ -49,8 +50,13 @@
       height: calc(1em * #{$ZOOM});
     }
   }
-  &.loading:not(.dragging, .draggingOutside) {
-    cursor: wait;
+
+  // &.loading:not(.dropDisabled) {
+  //   cursor: wait !important;
+  // }
+
+  &.draggingSomething {
+    cursor: grabbing !important;
   }
 
   &.dropDisabled {
@@ -74,6 +80,7 @@
   height: 17px !important;
   width: 17px !important;
   background-color: $COLOR_WHITE !important;
+  cursor: pointer !important;
 
   &.connecting:not(.connectable, .connectStart) {
     filter: grayscale(100%) !important;
@@ -88,6 +95,10 @@
     width: calc(17px * #{$ZOOM}) !important;
     border-width: calc(2px * #{$ZOOM}) !important;
   }
+
+  &.draggingSomething:not(.dropDisabled) {
+    cursor: grabbing !important;
+  }
 }
 
 .leftHandle {
@@ -99,7 +110,7 @@
     background-color: lighten($COLOR_ORANGE, 25%) !important;
   }
 
-  &:hover:not(.connectable),
+  &:hover:not(.connectable, .draggingSomething),
   &.connectStart {
     background-color: lighten($COLOR_ORANGE, 8%) !important;
   }
@@ -122,7 +133,7 @@
     background-color: lighten($COLOR_FOREST, 25%) !important;
   }
 
-  &:hover:not(.connectable),
+  &:hover:not(.connectable, .draggingSomething),
   &.connectStart {
     background-color: lighten($COLOR_FOREST, 7%) !important;
   }
