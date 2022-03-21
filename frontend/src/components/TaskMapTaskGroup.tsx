@@ -15,6 +15,7 @@ export const TaskGroup: FC<
     setSelectedTask: any;
     allDependencies: { from: number; to: number }[];
     disableDrop?: boolean;
+    setGroupDraggable: any;
   } & Omit<TaskProps, 'taskId' | 'checked'>
 > = ({
   listId,
@@ -23,6 +24,7 @@ export const TaskGroup: FC<
   allDependencies,
   disableDragging,
   disableDrop,
+  setGroupDraggable,
   ...rest
 }) => (
   <Droppable isDropDisabled={disableDrop} droppableId={listId} type="TASKS">
@@ -48,6 +50,7 @@ export const TaskGroup: FC<
               }}
               disableDragging={disableDragging}
               dropDisabled={disableDrop}
+              setGroupDraggable={setGroupDraggable}
               {...rest}
             />
           </div>
