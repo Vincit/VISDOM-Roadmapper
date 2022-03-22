@@ -71,13 +71,14 @@ export const OverviewContent: FC<OverviewContentProps> = ({
             <div className={classes(css.row)} key={label}>
               <div className={classes(css.label)}>{label}</div>
               {editable ? (
-                <EditableTextWithButtons
-                  onOk={onDataEditConfirm!}
-                  value={value}
-                  fieldId={keyName}
-                  format={format}
-                  multiline
-                />
+                <div className={classes(css.editableTextContainer)}>
+                  <EditableTextWithButtons
+                    onOk={onDataEditConfirm!}
+                    value={value}
+                    fieldId={keyName}
+                    format={format}
+                  />
+                </div>
               ) : (
                 <div className={classes(css.value, css[format!])}>{value}</div>
               )}

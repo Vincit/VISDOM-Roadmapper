@@ -16,13 +16,17 @@
   & > *:not(.buttons) {
     margin-top: 12px; // the default padding of the buttons
   }
-
+  
   .name {
     font-weight: normal;
     max-width: 70%;
     display: inline-block;
     overflow-wrap: break-word;
   }
+}
+
+.editableTextContainer * {
+  margin: 0px;
 }
 
 .arrowIcon {
@@ -67,16 +71,15 @@
   .row {
     @extend .layout-row;
     gap: 10px;
-    min-height: 50px;
     width: 100%;
   }
   .label {
     @extend .typography-body-bold;
     color: $COLOR_AZURE;
     min-width: 100px;
+
     text-align: start;
-    line-height: 50px;
-    white-space: nowrap;
+    line-height: 21px;
   }
   .value {
     @extend .typography-body;
@@ -86,6 +89,7 @@
 
     padding-left: 21px;
     padding-bottom: 2px;
+    line-height: 21px;
 
     &.bold {
       @extend .typography-body-bold;
@@ -107,3 +111,4 @@
     }
   }
 }
+
