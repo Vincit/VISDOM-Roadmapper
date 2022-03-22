@@ -5,15 +5,17 @@ import { Model } from 'objection';
 
 const oldBusinessRole =
   Permission.TaskRead |
-  Permission.TaskEdit |
-  Permission.TaskDelete |
   Permission.TaskRate |
   Permission.TaskRatingEdit |
   Permission.TaskValueRate |
   Permission.CustomerRepresent |
   Permission.RoadmapReadUsers;
 
-const newBusinessRole = oldBusinessRole | Permission.TaskCreate;
+const newBusinessRole =
+  oldBusinessRole |
+  Permission.TaskCreate |
+  Permission.TaskEdit |
+  Permission.TaskDelete;
 
 export async function up(knex: Knex): Promise<void> {
   Model.knex(knex);
