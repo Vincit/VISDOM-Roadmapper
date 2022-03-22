@@ -143,6 +143,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           id="board"
           className="react-select"
           classNamePrefix="react-select"
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           placeholder="No boards available"
           isDisabled={boards.data.length === 0}
           menuPortalTarget={document.body}
@@ -169,6 +170,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
           id="labels"
           key={selectedBoardId}
           className="react-select"
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           placeholder="Import all issues"
           isMulti
           isClearable

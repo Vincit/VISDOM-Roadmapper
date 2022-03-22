@@ -143,6 +143,7 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
             name="relation"
             id="new-relation"
             classNamePrefix="react-select-relation"
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             placeholder="Add relation"
             isDisabled={availableConnections.length === 0}
             value={null}
