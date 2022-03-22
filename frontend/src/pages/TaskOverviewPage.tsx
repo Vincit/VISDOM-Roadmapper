@@ -146,7 +146,7 @@ const TaskOverview: FC<{
         overviewType={t('Task')}
         name={task.name}
         previousAndNext={siblingTasks}
-        onOverviewChange={(id) => history.push(`${tasksPage}/task/${id}`)}
+        onOverviewChange={(id) => history.push(`${tasksPage}/${id}`)}
         onDataEditConfirm={handleEditConfirm}
         key={task.id}
         {...getTaskOverviewData(task, hasEditPermission)}
