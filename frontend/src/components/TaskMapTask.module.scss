@@ -14,6 +14,10 @@
   position: relative;
   align-items: center;
 
+  &.connecting:not(.connectable, .connectStart) {
+    filter: grayscale(100%) opacity(20%);
+  }
+
   button {
     visibility: hidden;
     padding: 0;

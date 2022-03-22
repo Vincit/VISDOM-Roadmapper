@@ -61,15 +61,16 @@ const SingleTask: FC<
 
   if (!task) return null;
 
+  const connectable =
+    !isDragging &&
+    dragHandle &&
+    !dragHandle.existingConnections.includes(taskId) &&
+    !unavailable.has(taskId);
+
   const handle = (type: HandleType) => {
     const left = type === 'target';
     const key = left ? 'to' : 'from';
-    const connectable =
-      !isDragging &&
-      dragHandle &&
-      dragHandle.type !== type &&
-      !dragHandle.existingConnections.includes(taskId) &&
-      !unavailable.has(taskId);
+    const handleConnectable = connectable && dragHandle?.type !== type;
     return (
       /* drag-n-drop is blocked for interactive elements such as buttons */
       <button type="button">
@@ -77,15 +78,15 @@ const SingleTask: FC<
           className={classes(left ? css.leftHandle : css.rightHandle, {
             [css.filled]: checked[key],
             [css.dragging]: isDragging,
-            [css.connectable]: connectable,
-            [css.connecting]: !!dragHandle,
+            [css.connecting]: dragHandle,
+            [css.connectable]: handleConnectable,
             [css.connectStart]:
               dragHandle?.from === taskId && dragHandle.type === type,
           })}
           id={`${key}-${taskId}`}
           type={type}
           position={left ? Position.Left : Position.Right}
-          isConnectable={connectable}
+          isConnectable={handleConnectable}
         />
       </button>
     );
@@ -104,6 +105,9 @@ const SingleTask: FC<
         [css.loading]: disableDragging && !isDragging,
         [css.unavailable]:
           dragHandle?.from !== taskId && unavailable.has(taskId),
+        [css.connecting]: dragHandle,
+        [css.connectable]: connectable,
+        [css.connectStart]: dragHandle?.from === taskId,
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
