@@ -68,13 +68,13 @@ export const MilestonesEditor = () => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [expandUnordered, setExpandUnordered] = useState(true);
-  const [areInitialVersions, setAreInitialVersions] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!areInitialVersions || !versionLists[ROADMAP_LIST_ID]) return;
-    setAreInitialVersions(false);
+    if (!isLoading || !versionLists[ROADMAP_LIST_ID]) return;
+    setIsLoading(false);
     if (!versionLists[ROADMAP_LIST_ID].length) setExpandUnordered(false);
-  }, [areInitialVersions, versionLists]);
+  }, [isLoading, versionLists]);
 
   useEffect(() => {
     if (!roadmapsVersions) return;
@@ -330,7 +330,13 @@ export const MilestonesEditor = () => {
     </Droppable>
   );
 
-  const renderPage = () => (
+  if (isLoading)
+    return (
+      <div className={classes(css.loadingSpinnerContainer)}>
+        <LoadingSpinner />
+      </div>
+    );
+  return (
     <DragDropContext onDragEnd={onDragEnd}>
       <InfoTooltip
         title={
@@ -371,12 +377,4 @@ export const MilestonesEditor = () => {
       </div>
     </DragDropContext>
   );
-
-  const renderLoading = () => (
-    <div className={classes(css.loadingSpinnerContainer)}>
-      <LoadingSpinner />
-    </div>
-  );
-
-  return areInitialVersions ? renderLoading() : renderPage();
 };
