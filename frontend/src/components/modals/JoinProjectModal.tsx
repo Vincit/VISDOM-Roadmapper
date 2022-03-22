@@ -10,6 +10,7 @@ import { userInfoSelector } from '../../redux/user/selectors';
 import { UserInfo } from '../../redux/user/types';
 import { paths } from '../../routers/paths';
 import { ReactComponent as MailIcon } from '../../icons/mail_icon.svg';
+import { apiV2 } from '../../api/api';
 import { RoleType } from '../../../../shared/types/customTypes';
 import '../../shared.scss';
 
@@ -20,6 +21,7 @@ export const JoinProjectModal: Modal<ModalTypes.JOIN_PROJECT_MODAL> = ({
   const dispatch = useDispatch<StoreDispatchType>();
   const { t } = useTranslation();
   const history = useHistory();
+  const [refetchRoadmaps] = apiV2.useRefetchRoadmapsMutation();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -40,6 +42,7 @@ export const JoinProjectModal: Modal<ModalTypes.JOIN_PROJECT_MODAL> = ({
     if (userActions.joinRoadmap.rejected.match(res))
       return { message: res.payload?.message ?? '' };
     await dispatch(userActions.getUserInfo());
+    refetchRoadmaps();
   };
 
   const steps = [
