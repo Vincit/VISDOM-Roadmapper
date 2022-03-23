@@ -3,6 +3,17 @@
 .fieldContainer {
   @extend .layout-column;
   gap: 0.8rem;
+
+  label {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+}
+
+.tooltipIcon {
+  width: 14px;
+  height: 14px;
 }
 
 .fieldError {

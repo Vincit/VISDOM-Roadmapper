@@ -315,6 +315,8 @@ export const english = {
       'Client weights affect the scaling of milestone`s total values in the roadmap graph. Weight of 0% will ignore the ratings of the client in question.',
     'Compare milestone durations with different estimates.':
       'Compare milestone durations with different estimates.',
+    'Bad request - password':
+      'Bad request error - is current password correct?',
     Realization: 'Realization',
     'system calculated average values over time':
       'system calculated average values over time.',
@@ -349,6 +351,11 @@ export const english = {
     'Error message': 'Error: {{error}}.',
     'Email service error': 'Email service error',
     'This email doesn’t exist': 'This email doesn’t exist',
+    'Change password': 'Change password',
+    'Current password': 'Current password',
+    'New password': 'New password',
+    'Confirm new password': 'Confirm new password',
+    'Password requirements': 'Must contain at least 8 characters',
     You: 'You',
     'deleted account': 'deleted account',
     'Last modified by': 'Last modified by',

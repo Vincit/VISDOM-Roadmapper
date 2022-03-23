@@ -35,3 +35,9 @@
   @extend .layout-row;
   min-width: 400px;
 }
+
+.passwordButton {
+  @extend .button-small-filled;
+  justify-content: center;
+  display: flex;
+}

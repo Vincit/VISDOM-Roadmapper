@@ -1,34 +1,37 @@
 import { useState, useRef, SyntheticEvent } from 'react';
-import { useHistory } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import { useDispatch } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
+import classNames from 'classnames';
 import { ModalTypes, Modal } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { errorState, Input } from '../forms/FormField';
-import { paths } from '../../routers/paths';
 import '../../shared.scss';
+import css from './ChangePasswordModal.module.scss';
 
 import { LoadingSpinner } from '../LoadingSpinner';
-
 import { StoreDispatchType } from '../../redux';
 import { userActions } from '../../redux/user';
 
-export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
+const classes = classNames.bind(css);
+
+export const ChangePasswordModal: Modal<ModalTypes.CHANGE_PASSWORD_MODAL> = ({
   closeModal,
-  actionData,
-  deleteUser,
+  id,
 }) => {
-  const history = useHistory();
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const confirmationError = errorState(useState(''));
 
   const errorHandler = (response?: { data: string; status: number }) => {
     switch (response?.status) {
@@ -46,43 +49,73 @@ export const ConfirmPasswordModal: Modal<ModalTypes.CONFIRM_PASSWORD_MODAL> = ({
     e.stopPropagation();
     e.preventDefault();
     if (!formRef.current?.checkValidity()) return;
-    const action = deleteUser ? userActions.deleteUser : userActions.modifyUser;
+    if (newPassword !== confirmPassword) {
+      confirmationError.setMessage(t('Password confirmation error'));
+      return;
+    }
+    const action = userActions.modifyUser;
     setIsLoading(true);
     const res = await dispatch(
       action({
-        currentPassword: password,
-        ...actionData,
+        password: newPassword,
+        currentPassword,
+        id,
       }),
     );
     setIsLoading(false);
     if (action.rejected.match(res)) {
       errorHandler(res.payload?.response);
-    } else if (deleteUser) {
-      history.push(paths.home);
     } else {
       closeModal(true);
     }
   };
 
   return (
-    <form ref={formRef} onSubmit={handleConfirm}>
+    <form
+      ref={formRef}
+      onSubmit={handleConfirm}
+      className={classes(css.changePasswordForm)}
+    >
       <ModalHeader closeModal={closeModal}>
         <h3>
-          <Trans i18nKey="Enter your password to continue" />
+          <Trans i18nKey="Change password" />
         </h3>
       </ModalHeader>
-      <ModalContent>
+      <ModalContent gap={30} overflowAuto>
         <Input
           label={t('Current password')}
           autoComplete="off"
-          key="password"
           name="password"
           type="password"
+          id="current password"
           required
           placeholder={t('Current password')}
-          value={password}
-          onChange={(e) => setPassword(e.currentTarget.value)}
-          error={errorState(useState(''))}
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.currentTarget.value)}
+        />
+        <Input
+          label={t('New password')}
+          labelHint={t('Password requirements')}
+          autoComplete="off"
+          id="newPassword"
+          type="password"
+          required
+          minLength={8}
+          maxLength={72}
+          placeholder={t('New password')}
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.currentTarget.value)}
+        />
+        <Input
+          label={t('Confirm new password')}
+          required
+          id="confirmPassword"
+          type="password"
+          autoComplete="off"
+          placeholder={t('Confirm password')}
+          value={confirmPassword}
+          error={confirmationError}
+          onChange={(e) => setConfirmPassword(e.currentTarget.value)}
         />
         {errorMessage.length > 0 && (
           <Alert

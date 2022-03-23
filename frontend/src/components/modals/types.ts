@@ -34,6 +34,7 @@ export enum ModalTypes {
   JOIN_LINK_INVALID_MODAL = 'JOIN_LINK_INVALID_MODAL',
   JOIN_LINK_NO_ACCESS_MODAL = 'JOIN_LINK_NO_ACCESS_MODAL',
   CONFIRM_PASSWORD_MODAL = 'CONFIRM_PASSWORD_MODAL',
+  CHANGE_PASSWORD_MODAL = 'CHANGE_PASSWORD_MODAL',
   INFO_MODAL = 'INFO_MODAL',
   LEAVE_ROADMAP_MODAL = 'LEAVE_ROADMAP_MODAL',
 }
@@ -99,6 +100,7 @@ type OwnProps = {
         actionData: Omit<UserDeleteRequest, 'currentPassword'>;
         deleteUser: true;
       };
+  [ModalTypes.CHANGE_PASSWORD_MODAL]: { id: number };
   [ModalTypes.INFO_MODAL]: { header: string; content: InfoModalContent };
   [ModalTypes.LEAVE_ROADMAP_MODAL]: {
     roadmapId: number;
