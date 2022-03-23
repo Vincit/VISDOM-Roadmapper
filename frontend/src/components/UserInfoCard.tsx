@@ -93,12 +93,12 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
       }),
     );
   };
-  const passwordOnOk = async (newValue: string) => {
+  const openChangePasswordModal = () => {
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.CONFIRM_PASSWORD_MODAL,
+        modalType: ModalTypes.CHANGE_PASSWORD_MODAL,
         modalProps: {
-          actionData: { id: userInfo.id, password: newValue },
+          id: userInfo.id,
         },
       }),
     );
@@ -150,15 +150,13 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
           </div>
         </div>
         <div>
-          <p className={classes(css.subtitle)}>
-            <Trans i18nKey="Password" />
-          </p>
-          <EditableTextWithButtons
-            onOk={passwordOnOk}
-            value="********"
-            fieldId="password"
-            format=""
-          />
+          <button
+            className={classes(css.passwordButton)}
+            type="button"
+            onClick={() => openChangePasswordModal()}
+          >
+            <Trans i18nKey="Change password" />
+          </button>
         </div>
       </div>
       <ProjectTable items={userInfo.roles} />

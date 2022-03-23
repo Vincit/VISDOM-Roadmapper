@@ -30,6 +30,7 @@ import { JoinProjectModal } from './JoinProjectModal';
 import { JoinLinkInvalidModal } from './JoinLinkInvalidModal';
 import { JoinLinkNoAccessModal } from './JoinLinkNoAccessModal';
 import { ConfirmPasswordModal } from './ConfirmPasswordModal';
+import { ChangePasswordModal } from './ChangePasswordModal';
 import { InfoModal } from './InfoModal';
 import { LeaveRoadmapModal } from './LeaveRoadmapModal';
 
@@ -57,6 +58,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.JOIN_LINK_INVALID_MODAL]: JoinLinkInvalidModal,
   [ModalTypes.JOIN_LINK_NO_ACCESS_MODAL]: JoinLinkNoAccessModal,
   [ModalTypes.CONFIRM_PASSWORD_MODAL]: ConfirmPasswordModal,
+  [ModalTypes.CHANGE_PASSWORD_MODAL]: ChangePasswordModal,
   [ModalTypes.INFO_MODAL]: InfoModal,
   [ModalTypes.LEAVE_ROADMAP_MODAL]: LeaveRoadmapModal,
 } as const;

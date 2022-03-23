@@ -8,7 +8,9 @@ import {
 } from 'react';
 import { TextareaAutosize } from '@mui/material';
 import classNames from 'classnames';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import css from './FormField.module.scss';
+import { InfoTooltip } from '../InfoTooltip';
 
 const classes = classNames.bind(css);
 
@@ -20,6 +22,7 @@ interface FieldType extends HTMLElement {
 
 export interface FieldProps<T extends FieldType> extends HTMLProps<T> {
   label?: string;
+  labelHint?: string;
   error?: {
     message: string;
     setMessage: (_: string) => void;
@@ -57,6 +60,7 @@ function field<T extends FieldType>(
   return ({
     error = errorState(useState('')),
     label,
+    labelHint,
     innerRef,
     id,
     ...props
@@ -71,7 +75,16 @@ function field<T extends FieldType>(
     }, [ref, error.message, innerRef]);
     return (
       <div className={classes(css.fieldContainer)}>
-        {label && <label htmlFor={id}>{label}</label>}
+        {label && (
+          <label htmlFor={id}>
+            {label}
+            {labelHint && (
+              <InfoTooltip title={labelHint}>
+                <InfoIcon className={classes(css.tooltipIcon)} />
+              </InfoTooltip>
+            )}
+          </label>
+        )}
         <Tag
           {...props}
           ref={ref}
