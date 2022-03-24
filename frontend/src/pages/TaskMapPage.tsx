@@ -51,6 +51,7 @@ export const TaskMapPage = () => {
     new Set(),
   );
   const [expandUnstaged, setExpandUnstaged] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (relations === undefined) return;
@@ -105,7 +106,9 @@ export const TaskMapPage = () => {
     newList.push({ synergies: [draggedTaskId], dependencies: moved });
 
     setTaskRelations(newList);
+    setIsLoading(true);
     await addSynergyRelations(draggedTaskId, []);
+    setIsLoading(false);
   };
 
   const onDragMoveToGroup = async (
@@ -124,17 +127,21 @@ export const TaskMapPage = () => {
         ...prev,
         { synergies: [draggedTaskId], dependencies: [] },
       ]);
+      setIsLoading(true);
       await addSynergyRelations(
         draggedTaskId,
         taskRelations[destinationId].synergies,
       );
+      setIsLoading(false);
       return;
     }
 
     if (destinationId === -1) {
       // staged task is unstaged
       setStagedTasks((prev) => prev.filter((id) => id !== draggedTaskId));
+      setIsLoading(true);
       await addSynergyRelations(draggedTaskId, []);
+      setIsLoading(false);
       return;
     }
 
@@ -152,10 +159,12 @@ export const TaskMapPage = () => {
     copyList[sourceId].dependencies = remaining;
     copyList[destinationId].dependencies.push(...moved);
     setTaskRelations(copyList);
+    setIsLoading(true);
     await addSynergyRelations(
       draggedTaskId,
       taskRelations[destinationId].synergies,
     );
+    setIsLoading(false);
   };
 
   const onDragEnd = async (result: DropResult) => {
@@ -165,6 +174,7 @@ export const TaskMapPage = () => {
     setDropUnavailable(new Set());
 
     try {
+      setIsLoading(true);
       if (reason === 'DROP') {
         if (!destination) await onDragMoveOutside(draggedTaskId);
         else if (source.droppableId !== destination.droppableId)
@@ -174,11 +184,15 @@ export const TaskMapPage = () => {
       setTaskRelations(backupList);
     } finally {
       setDraggedTask(undefined);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div id="taskmap" className={classes(css.taskmap, css.grow)}>
+    <div
+      id="taskmap"
+      className={classes(css.taskmap, css.grow, { [css.loading]: isLoading })}
+    >
       <DragDropContext
         onDragEnd={onDragEnd}
         onDragStart={({ draggableId }) => {
@@ -220,6 +234,8 @@ export const TaskMapPage = () => {
               selectedTask={selectedTask}
               setSelectedTask={setSelectedTask}
               dropUnavailable={dropUnavailable}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />
           </ReactFlowProvider>
         </div>

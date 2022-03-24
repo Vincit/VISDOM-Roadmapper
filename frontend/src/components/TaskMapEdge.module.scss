@@ -13,11 +13,19 @@
   stroke-width: 15 !important;
   opacity: 0 !important;
   cursor: pointer !important;
+
+  &.loading {
+    cursor: wait !important;
+  }
   &:hover {
     opacity: 0.1 !important;
   }
-  &.disableInteraction {
+  &.disableInteraction:not(.loading) {
     cursor: -webkit-grabbing !important;
     stroke: transparent !important;
   }
+}
+
+.loading {
+  cursor: wait !important;
 }

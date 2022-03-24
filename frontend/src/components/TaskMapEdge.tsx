@@ -8,7 +8,14 @@ import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
-const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
+const DrawPath: FC<any> = ({
+  id,
+  d,
+  markerEnd,
+  disableInteraction,
+  isLoading,
+  setIsLoading,
+}) => {
   const [selected, setSelected] = useState<string | undefined>(undefined);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
@@ -17,7 +24,9 @@ const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
   const deleteRelation = useCallback(
     async (tbdeleted: string) => {
       if (roadmapId === undefined) return;
+      if (isLoading) return;
       const data = tbdeleted.split('-');
+      setIsLoading(true);
       await removeTaskRelation({
         roadmapId,
         relation: {
@@ -26,8 +35,9 @@ const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
           type: 0,
         },
       }).unwrap();
+      setIsLoading(false);
     },
-    [removeTaskRelation, roadmapId],
+    [removeTaskRelation, roadmapId, isLoading, setIsLoading],
   );
 
   useEffect(() => {
@@ -52,7 +62,10 @@ const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
 
   return (
     <>
-      <linearGradient id="linearGradient">
+      <linearGradient
+        id="linearGradient"
+        className={classes({ [css.loading]: isLoading })}
+      >
         <stop className={classes(css.firstStop)} offset="30%" />
         <stop className={classes(css.secondStop)} offset="70%" />
       </linearGradient>
@@ -68,6 +81,7 @@ const DrawPath: FC<any> = ({ id, d, markerEnd, disableInteraction }) => {
         id={`${id}-border`}
         className={`react-flow__edge-path ${classes(css.invisiblePath, {
           [css.disableInteraction]: disableInteraction,
+          [css.loading]: isLoading,
         })}`}
         d={d}
         markerEnd={markerEnd}
@@ -106,6 +120,8 @@ export const CustomEdge: FC<any> = ({
       d={d}
       markerEnd={markerEnd}
       disableInteraction={data.disableInteraction}
+      isLoading={data.isLoading}
+      setIsLoading={data.setIsLoading}
     />
   );
 };

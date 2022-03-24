@@ -27,6 +27,7 @@ export const TaskGroup: FC<
   disableDrop,
   setGroupDraggable,
   draggingSomething,
+  isLoading,
   ...rest
 }) => (
   <Droppable isDropDisabled={disableDrop} droppableId={listId} type="TASKS">
@@ -34,7 +35,7 @@ export const TaskGroup: FC<
       <div
         className={classes(css.taskGroup, {
           [css.highlight]: snapshot.isDraggingOver,
-          // [css.loading]: disableDragging,
+          [css.loading]: isLoading,
           [css.unavailable]: disableDrop,
           [css.draggingSomething]: draggingSomething,
         })}
@@ -55,6 +56,7 @@ export const TaskGroup: FC<
               dropDisabled={disableDrop}
               setGroupDraggable={setGroupDraggable}
               draggingSomething={draggingSomething}
+              isLoading={isLoading}
               {...rest}
             />
           </div>
