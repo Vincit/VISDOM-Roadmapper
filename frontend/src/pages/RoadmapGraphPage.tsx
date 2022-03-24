@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import ListIcon from '@mui/icons-material/List';
+import Drawer from '@mui/material/Drawer';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { totalValuesAndComplexity } from '../utils/TaskUtils';
 import { percent } from '../utils/string';
@@ -13,8 +13,9 @@ import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { BlockGraph, BlockView } from '../components/BlockGraph';
+import { RoadmapGraphSidebar } from '../components/RoadmapGraphSidebar';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { Version } from '../redux/roadmaps/types';
+import { VersionComplexityAndValues } from '../redux/roadmaps/types';
 import colors from '../colors.module.scss';
 import { apiV2 } from '../api/api';
 import { Permission } from '../../../shared/types/customTypes';
@@ -25,14 +26,6 @@ import { userInfoSelector } from '../redux/user/selectors';
 import { RootState } from '../redux/types';
 
 const classes = classNames.bind(css);
-
-interface VersionComplexityAndValues extends Version {
-  complexity: number;
-  value: number;
-  totalValue: number;
-  unweightedValue: number;
-  unweightedTotalValue: number;
-}
 
 export const RoadmapGraphPage = () => {
   const { t } = useTranslation();
@@ -80,10 +73,6 @@ export const RoadmapGraphPage = () => {
     );
   }, [customers, roadmapsVersions]);
 
-  useEffect(() => {
-    if (selectedVersion < 0 && roadmapsVersions?.length) setSelectedVersion(0);
-  }, [roadmapsVersions, selectedVersion]);
-
   const numFormat = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
@@ -102,103 +91,131 @@ export const RoadmapGraphPage = () => {
   };
 
   const height = 160;
+  const sideBarOpen = selectedVersion >= 0;
+  const clearSelection = () => setSelectedVersion(-1);
 
   return (
-    <div className={classes(css.plannerPagecontainer)}>
-      <BlockGraph
-        title={
-          <div className={classes(css.titleContainer)}>
+    <div className={classes(css.plannerContainer)}>
+      <div
+        className={classes(css.plannerPagecontainer)}
+        onClick={clearSelection}
+        onKeyPress={clearSelection}
+        role="button"
+        tabIndex={0}
+      >
+        <BlockGraph
+          title={
+            <div className={classes(css.titleContainer)}>
+              <h2 className={classes(css.graphTitle)}>
+                {t('complexityValueTitle')}
+              </h2>
+              <InfoTooltip title={t('Planner complexityValue tooltip')}>
+                <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+              </InfoTooltip>
+            </div>
+          }
+          xLabel="Total complexity"
+          yLabel="Total value"
+          selected={selectedVersion}
+          setSelected={setSelectedVersion}
+          items={versions ?? []}
+          id={(ver) => ver.id}
+          dimensions={dimensions}
+          limits={limits}
+          innerRef={(e) => {
+            a.current = e;
+          }}
+        >
+          {({ item: { name, value, complexity, tasks }, index }) => (
+            <>
+              <div className={classes(css.versionData)}>
+                <div className={classes(css.ratingDiv)}>
+                  <BusinessIcon size="xxsmall" color={colors.azure} />
+                  <p>{numFormat.format(value)}</p>
+                </div>
+                <div className={classes(css.ratingDiv)}>
+                  <WorkRoundIcon size="xxsmall" color={colors.azure} />
+                  <p>{numFormat.format(complexity)}</p>
+                </div>
+                <div className={classes(css.dash)} />
+                <div className={classes(css.ratingDiv)}>
+                  <ListIcon />
+                  <p>{tasks.length}</p>
+                </div>
+              </div>
+              <p
+                className={classes(css.versionTitle, {
+                  [css.selected]: index === selectedVersion,
+                })}
+              >
+                {name}
+              </p>
+            </>
+          )}
+        </BlockGraph>
+        <div className={classes(css.footer)}>
+          <div
+            className={classes(
+              css.titleContainer,
+              css.lowerGraphTitleContainer,
+            )}
+          >
             <h2 className={classes(css.graphTitle)}>
-              {t('complexityValueTitle')}
+              {t('customerStakesTitle')}
             </h2>
-            <InfoTooltip title={t('Planner complexityValue tooltip')}>
+            <InfoTooltip title={t('Planner customerStakes tooltip')}>
               <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
             </InfoTooltip>
           </div>
-        }
-        xLabel="Total complexity"
-        yLabel="Total value"
-        selected={selectedVersion}
-        setSelected={setSelectedVersion}
-        items={versions ?? []}
-        id={(ver) => ver.id}
-        dimensions={dimensions}
-        limits={limits}
-        innerRef={(e) => {
-          a.current = e;
-        }}
-      >
-        {({ item: { name, value, complexity, tasks }, index }) => (
-          <>
-            <div className={classes(css.versionData)}>
-              <div className={classes(css.ratingDiv)}>
-                <BusinessIcon size="xxsmall" color={colors.azure} />
-                <p>{numFormat.format(value)}</p>
-              </div>
-              <div className={classes(css.ratingDiv)}>
-                <WorkRoundIcon size="xxsmall" color={colors.azure} />
-                <p>{numFormat.format(complexity)}</p>
-              </div>
-              <div className={classes(css.dash)} />
-              <div className={classes(css.ratingDiv)}>
-                <ListIcon />
-                <p>{tasks.length}</p>
-              </div>
-            </div>
-            <p
-              className={classes(css.versionTitle, {
-                [css.selected]: index === selectedVersion,
-              })}
+          <div className={classes(css.stakesContainer)}>
+            <div
+              className={classes(css.lines)}
+              style={{ ['--bar-height' as any]: `${height}px` }}
             >
-              {name}
-            </p>
-          </>
-        )}
-      </BlockGraph>
-      <div className={classes(css.footer)}>
-        <div
-          className={classes(css.titleContainer, css.lowerGraphTitleContainer)}
-        >
-          <h2 className={classes(css.graphTitle)}>
-            {t('customerStakesTitle')}
-          </h2>
-          <InfoTooltip title={t('Planner customerStakes tooltip')}>
-            <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-          </InfoTooltip>
-        </div>
-        <div className={classes(css.stakesContainer)}>
-          <div
-            className={classes(css.lines)}
-            style={{ ['--bar-height' as any]: `${height}px` }}
-          >
-            {[1, 0.75, 0.5, 0.25, 0].map((p) => (
-              <div key={p}>
-                <span>{percent(0).format(p)}</span>
-                <hr />
-              </div>
-            ))}
+              {[1, 0.75, 0.5, 0.25, 0].map((p) => (
+                <div key={p}>
+                  <span>{percent(0).format(p)}</span>
+                  <hr />
+                </div>
+              ))}
+            </div>
+            <BlockView
+              items={versions ?? []}
+              dimensions={dimensions}
+              limits={limits}
+              innerRef={b}
+              style={{ overflowX: 'hidden' }}
+            >
+              {({ item: ver, width }) => (
+                <TaskValueCreatedVisualization
+                  width={width}
+                  height={height}
+                  version={{
+                    ...ver,
+                    totalValue: ver.unweightedTotalValue,
+                  }}
+                  key={ver.id}
+                />
+              )}
+            </BlockView>
           </div>
-          <BlockView
-            items={versions ?? []}
-            dimensions={dimensions}
-            limits={limits}
-            innerRef={b}
-            style={{ overflowX: 'hidden' }}
-          >
-            {({ item: ver, width }) => (
-              <TaskValueCreatedVisualization
-                width={width}
-                height={height}
-                version={{
-                  ...ver,
-                  totalValue: ver.unweightedTotalValue,
-                }}
-                key={ver.id}
-              />
-            )}
-          </BlockView>
         </div>
       </div>
+      <Drawer
+        anchor="right"
+        variant="persistent"
+        open={sideBarOpen}
+        onClose={clearSelection}
+        BackdropProps={{ invisible: true }}
+        className={classes(css.drawer)}
+      >
+        {sideBarOpen && (
+          <RoadmapGraphSidebar
+            version={versions![selectedVersion]}
+            onClose={clearSelection}
+          />
+        )}
+      </Drawer>
     </div>
   );
 };

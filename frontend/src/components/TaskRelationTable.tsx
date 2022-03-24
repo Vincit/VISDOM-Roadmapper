@@ -1,7 +1,6 @@
-import { FC, CSSProperties, useRef, useState, useEffect } from 'react';
+import { FC, useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import { VariableSizeList } from 'react-window';
 import Select from 'react-select';
@@ -9,14 +8,9 @@ import classNames from 'classnames';
 import CachedIcon from '@mui/icons-material/Cached';
 import ClockIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
 import SearchIcon from '@mui/icons-material/Search';
 import { Task, TaskRelation } from '../redux/roadmaps/types';
-import {
-  TaskRelationType,
-  TaskStatus,
-} from '../../../shared/types/customTypes';
-import { paths } from '../routers/paths';
+import { TaskRelationType } from '../../../shared/types/customTypes';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import {
   TaskRelationTableType,
@@ -24,7 +18,7 @@ import {
   groupTaskRelations,
   reachable,
 } from '../utils/TaskRelationUtils';
-import { TaskRatingsText } from './TaskRatingsText';
+import { TaskRow } from './TaskTable';
 import { CloseButton } from './forms/SvgButton';
 import css from './TaskRelationTable.module.scss';
 import { apiV2 } from '../api/api';
@@ -39,32 +33,6 @@ interface RelationTableDef {
 type RelationTableProps = {
   task: Task;
   height?: number;
-};
-
-const RelationRow: FC<{
-  task: Task;
-  style?: CSSProperties;
-}> = ({ task, style }) => {
-  const history = useHistory();
-  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`;
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={() => history.push(toTask)}
-      onKeyPress={() => history.push(toTask)}
-      style={style}
-      className={classes(css.task)}
-    >
-      {task.status === TaskStatus.COMPLETED && (
-        <DoneAllIcon className={classes(css.doneIcon)} />
-      )}
-      <div className={classes(css.taskName)}>{task.name}</div>
-      <div className={classes(css.taskRatingTexts)}>
-        <TaskRatingsText task={task} largeIcons />
-      </div>
-    </div>
-  );
 };
 
 const DropdownIndicator = () => <SearchIcon />;
@@ -177,7 +145,7 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
             const { id } = tasks[index];
             return (
               <div style={{ ...style, display: 'flex', alignItems: 'center' }}>
-                <RelationRow task={tasks[index]} />
+                <TaskRow task={tasks[index]} largeIcons />
                 <CloseButton
                   onClick={(e) => {
                     e.preventDefault();

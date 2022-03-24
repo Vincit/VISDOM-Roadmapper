@@ -1,5 +1,11 @@
 @import './../shared.scss';
 @import './BlockGraph.module.scss';
 
-.customerStakes {
+.stakes {
+  @extend .layout-row;
+  gap: 47px;
+  width: 100%;
+  .stakesDescription {
+    width: 100%;
+  }
 }

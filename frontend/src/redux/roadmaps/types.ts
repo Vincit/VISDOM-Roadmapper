@@ -205,6 +205,14 @@ export interface Version {
   sortingRank: number;
 }
 
+export interface VersionComplexityAndValues extends Version {
+  complexity: number;
+  value: number;
+  totalValue: number;
+  unweightedValue: number;
+  unweightedTotalValue: number;
+}
+
 export interface VersionRequest {
   roadmapId: number;
   id?: number;

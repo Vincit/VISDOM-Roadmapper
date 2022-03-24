@@ -5,7 +5,10 @@ import classNames from 'classnames';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Version, CustomerStakes } from '../redux/roadmaps/types';
 import { totalCustomerStakes } from '../utils/TaskUtils';
-import { CustomerStakesVisualization } from './CustomerStakesVisualization';
+import {
+  CustomerStakesVisualization,
+  StakesTooltipContent,
+} from './CustomerStakesVisualization';
 import css from './TaskValueCreatedVisualization.module.scss';
 import { apiV2 } from '../api/api';
 
@@ -16,31 +19,18 @@ interface VersionComplexityAndTotalValue extends Version {
   totalValue: number;
 }
 
-const StakesVisualization: FC<{
-  customerStakes: CustomerStakes[];
-  width: number;
-  height: number;
-  vertical?: boolean;
-}> = ({ customerStakes, width, height, vertical }) => (
-  <div className={classes(css.customerStakes)} style={{ width, height }}>
-    <CustomerStakesVisualization
-      customerStakes={customerStakes}
-      totalValue={customerStakes.reduce((acc, { value }) => acc + value, 0)}
-      vertical={vertical}
-    />
-  </div>
-);
-
 export const TaskValueCreatedVisualization: FC<{
   version: VersionComplexityAndTotalValue;
   width: number;
   height: number;
-}> = ({ version, width, height }) => {
+  noTooltip?: true;
+}> = ({ version, width, height, noTooltip }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
   const [data, setData] = useState<CustomerStakes[]>([]);
+  const totalValue = data.reduce((acc, { value }) => acc + value, 0);
 
   useEffect(() => {
     const customerStakes = totalCustomerStakes(version.tasks, customers);
@@ -57,11 +47,24 @@ export const TaskValueCreatedVisualization: FC<{
   }, [version.tasks, customers]);
 
   return (
-    <StakesVisualization
-      customerStakes={data}
-      width={width}
-      height={height}
-      vertical
-    />
+    <div className={classes(css.stakes)}>
+      <div style={{ width, height }}>
+        <CustomerStakesVisualization
+          customerStakes={data}
+          totalValue={totalValue}
+          noTooltip={noTooltip}
+          vertical
+        />
+      </div>
+      {noTooltip && (
+        <div className={classes(css.stakesDescription)}>
+          <StakesTooltipContent
+            customerStakes={data}
+            totalValue={totalValue}
+            noTitle
+          />
+        </div>
+      )}
+    </div>
   );
 };

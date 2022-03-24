@@ -9,7 +9,8 @@
   text-align: left;
   white-space: nowrap;
 
-  height: 116px;
+  max-height: 116px;
+  min-height: min-content;
   width: 150px;
   min-width: min-content;
   padding: 16px;

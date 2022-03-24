@@ -1,5 +1,21 @@
 @import '../shared.scss';
 
+.plannerContainer {
+  @extend .layoutCol;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.drawer:global(.MuiDrawer-root .MuiDrawer-paper) {
+  position: relative;
+}
+
+.plannerPagecontainer {
+  cursor: inherit;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 .titleContainer {
   display: flex;
   line-height: 150%;
@@ -28,9 +44,10 @@
   margin-left: -30px;
   margin-top: -15px;
   height: calc(var(--bar-height) + 2 * 15px /* offset the top margin */);
-  width: 100vh;
+  width: 100%;
   @extend .layout-column;
   justify-content: space-between;
+  color: $COLOR_BLACK60;
   & > div {
     @extend .layout-row;
     gap: 0.5rem;

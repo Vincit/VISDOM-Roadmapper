@@ -1,0 +1,85 @@
+@import '../pages/RoadmapGraphPage.module.scss';
+
+.versionWrapper {
+  @extend .layout-column;
+  gap: 20px;
+  padding: 25px;
+  min-width: 400px;
+
+  > hr {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+.header {
+  @extend .layout-row;
+  @extend .typography-h3;
+  align-items: flex-start;
+  gap: 14px;
+
+  svg {
+    margin-top: 3px;
+    margin-left: auto;
+    margin-right: 5px;
+  }
+}
+
+.metrics {
+  @extend .layout-row;
+  gap: 10px;
+  height: 120px;
+  align-items: center;
+  justify-content: center;
+}
+
+.averages {
+  @extend .layout-column;
+  gap: 7.5px;
+  margin-left: 26px;
+  margin-right: 20px;
+
+  div {
+    @extend .layout-row;
+    align-items: center;
+    .value {
+      @extend .typography-pre-title;
+      margin-left: auto;
+      color: $COLOR_AZURE;
+    }
+  }
+}
+
+.summary {
+  @extend .typography-pre-title;
+  display: flex;
+  margin-left: 26px;
+  margin-right: 20px;
+  align-items: center;
+  gap: 4.75px;
+
+  .rightSide {
+    margin-left: auto;
+    display: flex;
+    gap: 11.75px;
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 4.75px;
+    }
+  }
+}
+
+.shares {
+  margin-top: 10px;
+  margin-left: 35px;
+  margin-right: 20px;
+
+  .lines {
+    width: 100px;
+  }
+  .visualization {
+    margin-left: 17px;
+  }
+}

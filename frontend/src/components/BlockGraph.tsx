@@ -160,8 +160,14 @@ export function BlockGraph<T>({
               })}
               style={{ width, height }}
               key={id(item)}
-              onClick={() => setSelected(index)}
-              onKeyPress={() => setSelected(index)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelected(index);
+              }}
+              onKeyPress={(e) => {
+                e.stopPropagation();
+                setSelected(index);
+              }}
               role="button"
               tabIndex={0}
             >

@@ -66,11 +66,12 @@ const PercentageBar: FC<{
   ),
 );
 
-const StakesTooltip: FC<{
+export const StakesTooltipContent: FC<{
   customerStakes: CustomerStakes[];
   totalValue: number;
   showPercentageBar?: boolean;
-}> = ({ customerStakes, totalValue, showPercentageBar }) => {
+  noTitle?: true;
+}> = ({ customerStakes, totalValue, showPercentageBar, noTitle }) => {
   const { t } = useTranslation();
 
   if (customerStakes.length === 0)
@@ -78,7 +79,7 @@ const StakesTooltip: FC<{
 
   return (
     <div className={classes(css.stakesTooltip)}>
-      <div>{t('Client shares')}</div>
+      {!noTitle && <div>{t('Client shares')}</div>}
       {showPercentageBar && (
         <PercentageBar
           stakes={customerStakes}
@@ -108,22 +109,36 @@ export const CustomerStakesVisualization: FC<{
   customerStakes: CustomerStakes[];
   totalValue: number;
   vertical?: boolean;
-}> = ({ customerStakes, totalValue, vertical }) => (
-  <Tooltip
-    classes={{
-      arrow: classes(css.tooltipArrow),
-      tooltip: classes(css.tooltip),
-    }}
-    title={
-      <StakesTooltip customerStakes={customerStakes} totalValue={totalValue} />
-    }
-    placement="right"
-    arrow
-  >
-    <PercentageBar
-      stakes={customerStakes}
-      totalValue={totalValue}
-      vertical={vertical}
-    />
-  </Tooltip>
-);
+  noTooltip?: true;
+}> = ({ customerStakes, totalValue, vertical, noTooltip }) => {
+  if (noTooltip)
+    return (
+      <PercentageBar
+        stakes={customerStakes}
+        totalValue={totalValue}
+        vertical={vertical}
+      />
+    );
+  return (
+    <Tooltip
+      classes={{
+        arrow: classes(css.tooltipArrow),
+        tooltip: classes(css.tooltip),
+      }}
+      title={
+        <StakesTooltipContent
+          customerStakes={customerStakes}
+          totalValue={totalValue}
+        />
+      }
+      placement="right"
+      arrow
+    >
+      <PercentageBar
+        stakes={customerStakes}
+        totalValue={totalValue}
+        vertical={vertical}
+      />
+    </Tooltip>
+  );
+};

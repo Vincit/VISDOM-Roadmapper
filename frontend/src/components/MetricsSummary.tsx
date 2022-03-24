@@ -6,7 +6,7 @@ const classes = classNames.bind(css);
 
 export interface MetricsProps {
   label: string;
-  value: string | number;
+  value?: string | number;
   children?: any;
 }
 
@@ -17,10 +17,14 @@ export const MetricsSummary: FC<MetricsProps> = ({
 }) => (
   <div className={classes(css.dataEntryWrapper)}>
     {label}
-    <div className={classes(css.dash)} />
-    <div className={classes(css.dataNumberWrapper)}>
-      {value}
-      <div>{children}</div>
-    </div>
+    {value !== undefined && (
+      <>
+        <div className={classes(css.dash)} />
+        <div className={classes(css.dataNumberWrapper)}>
+          {value}
+          <div>{children}</div>
+        </div>
+      </>
+    )}
   </div>
 );

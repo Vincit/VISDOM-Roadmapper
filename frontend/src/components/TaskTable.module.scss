@@ -1,4 +1,4 @@
-@import '../shared.scss';
+@import './TaskMapTask.module.scss';
 
 // Bottom and top left radius for clean looking hover
 .ratedTitle {
@@ -63,4 +63,20 @@
 .deleteIcon {
   margin-right: 8px;
   margin-left: 12px;
+}
+
+.task {
+  @extend .singleTask;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: adjust-color($COLOR_SKY, $lightness: 11%);
+  }
+}
+
+.noTasks {
+  margin-left: 26px;
+  text-align: left;
 }
