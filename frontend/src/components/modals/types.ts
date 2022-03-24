@@ -40,7 +40,7 @@ export enum ModalTypes {
 
 type OwnProps = {
   [ModalTypes.ADD_TASK_MODAL]: {};
-  [ModalTypes.RATE_TASK_MODAL]: { taskId: number; edit: boolean };
+  [ModalTypes.RATE_TASK_MODAL]: { task: Task; edit: boolean };
   [ModalTypes.REMOVE_TASK_MODAL]: { task: Task };
   [ModalTypes.REMOVE_PEOPLE_MODAL]: {
     id: number | string;

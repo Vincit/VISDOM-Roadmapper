@@ -47,11 +47,37 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     throw new Error('User is required');
   }
   const { createdAt, id, ...others } = ctx.request.body;
-  const task = await Task.query().insertAndFetch({
+  const { user, role } = ctx.state;
+
+  let task = await Task.query().insertAndFetch({
     ...others,
     roadmapId: Number(ctx.params.roadmapId),
     createdByUser: Number(ctx.state.user.id),
   });
+
+  const graphTask = await task
+    .$fetchGraph(
+      '[ratings(ratingModifier), createdBy(userModifier), lastUpdatedBy(userModifier)]',
+    )
+    .modifiers(
+      ctx.query.eager
+        ? {
+            ratingModifier: (builder: Objection.AnyQueryBuilder) => {
+              builder.modify('keepVisible', user, role);
+            },
+            userModifier: () => {},
+          }
+        : {
+            ratingModifier: (builder: Objection.AnyQueryBuilder) => {
+              builder
+                .modify('keepVisible', user, role)
+                .select('taskratings.id');
+            },
+            userModifier: (builder: Objection.AnyQueryBuilder) => {
+              builder.select('users.id');
+            },
+          },
+    );
 
   await emitRoadmapEvent(ctx.io, {
     roadmapId: Number(ctx.params.roadmapId),
@@ -61,7 +87,7 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     eventParams: [],
   });
 
-  ctx.body = task;
+  ctx.body = graphTask;
 };
 
 export const deleteTasks: RouteHandlerFnc = async (ctx) => {

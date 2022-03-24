@@ -10,7 +10,7 @@ import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { VariableSizeList } from 'react-window';
 import classNames from 'classnames';
-import { Taskrating } from '../redux/roadmaps/types';
+import { Task, Taskrating } from '../redux/roadmaps/types';
 import { FilterTypes } from '../utils/TaskUtils';
 import { titleCase } from '../utils/string';
 import { StoreDispatchType } from '../redux';
@@ -44,7 +44,7 @@ interface RatingTableDef {
 }
 
 type RatingTableProps = {
-  taskId: number;
+  task: Task;
   ratings: Taskrating[];
   avg: number;
   searchFilter?: FilterTypes;
@@ -55,7 +55,7 @@ type RatingTableProps = {
 export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   Row,
   type,
-}) => ({ taskId, ratings, avg, height = 500 }) => {
+}) => ({ task, ratings, avg, height = 500 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -94,7 +94,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
       modalsActions.showModal({
         modalType: ModalTypes.RATE_TASK_MODAL,
         modalProps: {
-          taskId,
+          task,
           edit: true,
         },
       }),

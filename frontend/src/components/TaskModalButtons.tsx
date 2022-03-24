@@ -77,7 +77,7 @@ export const TaskModalButtons: FC<{
 
   const openRateModal = openModal({
     modalType: ModalTypes.RATE_TASK_MODAL,
-    modalProps: { taskId: task.id, edit: false },
+    modalProps: { task, edit: false },
   });
 
   const awaitsRatings = awaitsUserRatings(userInfo, roadmapId, customers)(task);
