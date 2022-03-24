@@ -150,7 +150,7 @@ export const notifyUsers: RouteHandlerFnc = async (ctx) => {
     return;
   }
 
-  const taskUrl = `${BASE_URL}/roadmap/${roadmapId}/tasks/task/${ctx.params.taskId}`;
+  const taskUrl = `${BASE_URL}/roadmap/${roadmapId}/tasks/${ctx.params.taskId}`;
   const messageBody = `${senderEmail} has requested your rating for the task ${task.name} at ${taskUrl}.\r\n\r\n${message}`;
   users.forEach(({ email }) => {
     sendEmail(

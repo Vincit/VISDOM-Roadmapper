@@ -45,7 +45,7 @@ const RelationRow: FC<{
   style?: CSSProperties;
 }> = ({ task, style }) => {
   const history = useHistory();
-  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/task/${task.id}`;
+  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`;
   return (
     <div
       role="button"
