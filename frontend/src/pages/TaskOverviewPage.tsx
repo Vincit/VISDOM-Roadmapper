@@ -175,14 +175,14 @@ const TaskOverview: FC<{
             <RatingTableValue
               ratings={valueRatings}
               avg={value.avg}
-              taskId={task.id}
+              task={task}
             />
           )}
           {complexityRatings.length > 0 && (
             <RatingTableComplexity
               ratings={complexityRatings}
               avg={complexity.avg}
-              taskId={task.id}
+              task={task}
             />
           )}
         </div>

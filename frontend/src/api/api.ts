@@ -150,7 +150,7 @@ export const apiV2 = createApi({
     addTask: build.mutation<Task, { roadmapId: number; task: TaskRequest }>({
       invalidatesTags: ['Tasks'],
       query: ({ roadmapId, task }) => ({
-        url: `roadmaps/${roadmapId}/tasks/`,
+        url: `roadmaps/${roadmapId}/tasks?eager=1`,
         method: 'post',
         data: task,
       }),

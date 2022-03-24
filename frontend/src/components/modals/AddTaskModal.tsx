@@ -58,7 +58,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
       };
 
       try {
-        const res = await addTaskTrigger({
+        const task = await addTaskTrigger({
           roadmapId: chosenRoadmapId!,
           task: req,
         }).unwrap();
@@ -68,7 +68,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
           modalsActions.showModal({
             modalType: ModalTypes.RATE_TASK_MODAL,
             modalProps: {
-              taskId: res.id,
+              task,
               edit: false,
             },
           }),

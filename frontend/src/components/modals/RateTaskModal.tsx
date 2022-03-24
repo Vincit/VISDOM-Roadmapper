@@ -2,7 +2,6 @@ import { FC, FormEvent, useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
-import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import {
@@ -27,7 +26,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Dot } from '../Dot';
 import { getType } from '../../utils/UserUtils';
 import css from './RateTaskModal.module.scss';
-import { apiV2, selectById } from '../../api/api';
+import { apiV2 } from '../../api/api';
 
 const classes = classNames.bind(css);
 
@@ -67,9 +66,10 @@ const CustomerHeader: FC<{
 
 export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   closeModal,
-  taskId,
+  task,
   edit,
 }) => {
+  console.log('task modaalissa:', task);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -80,17 +80,12 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   const [patchTaskratings, patchStatus] = apiV2.usePatchTaskratingsMutation();
   const [addTaskratings, addStatus] = apiV2.useAddTaskratingsMutation();
 
-  const { data: task } = apiV2.useGetTasksQuery(
-    roadmapId ?? skipToken,
-    selectById(taskId),
-  );
-
   const dimension =
     getType(userInfo, roadmapId) === RoleType.Developer
       ? TaskRatingDimension.Complexity
       : TaskRatingDimension.BusinessValue;
 
-  const taskRatings = task?.ratings.filter(
+  const taskRatings = task.ratings.filter(
     (rating) =>
       rating.createdByUser === userInfo?.id && rating.dimension === dimension,
   );
@@ -167,7 +162,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     const action = edit ? patchTaskratings : addTaskratings;
     if (roadmapId === undefined || changed.length === 0) return;
     try {
-      await action({ roadmapId, ratings: changed, taskId }).unwrap();
+      await action({ roadmapId, ratings: changed, taskId: task.id }).unwrap();
       closeModal();
     } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
