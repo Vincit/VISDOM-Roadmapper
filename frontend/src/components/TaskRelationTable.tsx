@@ -12,7 +12,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import SearchIcon from '@mui/icons-material/Search';
 import { Task, TaskRelation } from '../redux/roadmaps/types';
-import { TaskRelationType } from '../../../shared/types/customTypes';
+import {
+  TaskRelationType,
+  TaskStatus,
+} from '../../../shared/types/customTypes';
 import { paths } from '../routers/paths';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import {
@@ -25,7 +28,6 @@ import { TaskRatingsText } from './TaskRatingsText';
 import { CloseButton } from './forms/SvgButton';
 import css from './TaskRelationTable.module.scss';
 import { apiV2 } from '../api/api';
-import { TaskStatus } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -45,7 +47,7 @@ const RelationRow: FC<{
   style?: CSSProperties;
 }> = ({ task, style }) => {
   const history = useHistory();
-  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/task/${task.id}`;
+  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`;
   return (
     <div
       role="button"
