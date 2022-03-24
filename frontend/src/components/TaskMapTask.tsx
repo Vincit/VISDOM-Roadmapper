@@ -29,6 +29,7 @@ export interface TaskProps {
   dropDisabled?: boolean;
   setGroupDraggable: any;
   unavailable: Set<number>;
+  isLoading: boolean;
   dragHandle?: {
     type: HandleType;
     from: number;
@@ -50,18 +51,19 @@ const SingleTask: FC<
   checked,
   provided,
   snapshot,
-  disableDragging,
   dropDisabled,
   unavailable,
   dragHandle,
   setGroupDraggable,
   draggingSomething,
+  isLoading,
 }) => {
   const { isDragging } = snapshot;
   const task = tasks.find(({ id }) => id === taskId);
 
   const selectTask = (e: MouseEvent) => {
     e.stopPropagation();
+    if (isLoading) return;
     setSelectedTask(selected ? undefined : task);
   };
 
@@ -90,11 +92,12 @@ const SingleTask: FC<
               dragHandle?.from === taskId && dragHandle.type === type,
             [css.dropDisabled]: dropDisabled,
             [css.draggingSomething]: draggingSomething,
+            [css.loading]: isLoading,
           })}
           id={`${key}-${taskId}`}
           type={type}
           position={left ? Position.Left : Position.Right}
-          isConnectable={handleConnectable}
+          isConnectable={!isLoading}
         />
       </button>
     );
@@ -114,7 +117,6 @@ const SingleTask: FC<
         [css.selectedTask]: selected,
         [css.dragging]: isDragging,
         [css.draggingOutside]: !snapshot.draggingOver,
-        [css.loading]: disableDragging && !isDragging,
         [css.unavailable]:
           dragHandle?.from !== taskId && unavailable.has(taskId),
         [css.connecting]: dragHandle,
@@ -122,6 +124,7 @@ const SingleTask: FC<
         [css.connectStart]: dragHandle?.from === taskId,
         [css.dropDisabled]: dropDisabled,
         [css.draggingSomething]: draggingSomething,
+        [css.loading]: isLoading,
       })}
       ref={provided.innerRef}
       {...provided.draggableProps}
@@ -163,6 +166,7 @@ export const DraggableSingleTask: FC<
   dropDisabled,
   setGroupDraggable,
   draggingSomething,
+  isLoading,
   ...rest
 }) => (
   <Draggable
@@ -181,6 +185,7 @@ export const DraggableSingleTask: FC<
           dropDisabled={dropDisabled}
           setGroupDraggable={setGroupDraggable}
           draggingSomething={draggingSomething}
+          isLoading={isLoading}
           {...rest}
         />
       );

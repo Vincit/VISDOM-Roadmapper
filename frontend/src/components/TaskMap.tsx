@@ -56,6 +56,8 @@ type Edge = {
   targetHandle: string;
   data: {
     disableInteraction: boolean;
+    isLoading: boolean;
+    setIsLoading: any;
   };
 };
 
@@ -65,12 +67,16 @@ export const TaskMap: FC<{
   selectedTask: Task | undefined;
   setSelectedTask: (task: Task | undefined) => void;
   dropUnavailable: Set<string>;
+  isLoading: boolean;
+  setIsLoading: any;
 }> = ({
   taskRelations,
   draggedTask,
   selectedTask,
   setSelectedTask,
   dropUnavailable,
+  isLoading,
+  setIsLoading,
 }) => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
@@ -124,7 +130,7 @@ export const TaskMap: FC<{
             type: 'special',
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
-            draggable: groupDraggable,
+            draggable: groupDraggable && !isLoading,
             // dagre coordinates are in the center, calculate top left corner
             position: {
               x: node.x - node.width / 2,
@@ -141,12 +147,13 @@ export const TaskMap: FC<{
                   allDependencies={taskRelations.flatMap(
                     ({ dependencies }) => dependencies,
                   )}
-                  disableDragging={draggedTask !== undefined}
+                  disableDragging={draggedTask !== undefined || isLoading}
                   draggingSomething={draggedTask !== undefined}
                   disableDrop={dropUnavailable.has(id)}
                   unavailable={unavailable}
                   dragHandle={dragHandle}
                   setGroupDraggable={setGroupDraggable}
+                  isLoading={isLoading}
                 />
               ),
             },
@@ -167,7 +174,11 @@ export const TaskMap: FC<{
             target: targetGroup.id,
             targetHandle: `to-${to}`,
             type: 'custom',
-            data: { disableInteraction: draggedTask !== undefined },
+            data: {
+              disableInteraction: draggedTask !== undefined,
+              isLoading,
+              setIsLoading,
+            },
           },
         ];
       }),
@@ -184,21 +195,27 @@ export const TaskMap: FC<{
     tasks,
     dropUnavailable,
     groupDraggable,
+    isLoading,
+    setIsLoading,
   ]);
 
   const onConnect = async (data: any) => {
+    if (isLoading) return;
     const { sourceHandle, targetHandle } = data;
     const type = TaskRelationType.Dependency;
 
     // Handles are in form 'from-{id}' and 'to-{id}', splitting required
     const from = Number(sourceHandle.split('-')[1]);
     const to = Number(targetHandle.split('-')[1]);
+    if (from === to) return;
 
     // the handle only accepts valid connections
+    setIsLoading(true);
     await addTaskRelation({
       roadmapId: roadmapId!,
       relation: { from, to, type },
-    }).unwrap();
+    });
+    setIsLoading(false);
   };
 
   return (

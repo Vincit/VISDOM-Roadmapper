@@ -51,16 +51,16 @@
     }
   }
 
-  // &.loading:not(.dropDisabled) {
-  //   cursor: wait !important;
-  // }
-
-  &.draggingSomething {
+  &.draggingSomething:not(.loading, .dropDisabled) {
     cursor: grabbing !important;
   }
 
   &.dropDisabled {
     cursor: not-allowed !important;
+  }
+
+  &.loading {
+    cursor: wait !important;
   }
 }
 
@@ -96,8 +96,12 @@
     border-width: calc(2px * #{$ZOOM}) !important;
   }
 
-  &.draggingSomething:not(.dropDisabled) {
+  &.draggingSomething:not(.dropDisabled, .loading) {
     cursor: grabbing !important;
+  }
+
+  &.loading {
+    cursor: wait !important;
   }
 }
 
