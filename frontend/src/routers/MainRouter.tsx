@@ -139,7 +139,7 @@ export const MainRouter = () => {
 
     dispatch(
       modalsActions.showModal({
-        modalType: queryModal as ModalTypes,
+        modalType: queryModal as any,
         modalProps: queryProps as any,
       }),
     );

@@ -1,14 +1,19 @@
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useTranslation } from 'react-i18next';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
-import { EditButton } from './forms/SvgButton';
+import { EditButton, DeleteButton } from './forms/SvgButton';
 import { Dot } from './Dot';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
+import {
+  TaskRatingDimension,
+  Permission,
+} from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
 import { apiV2, selectById } from '../api/api';
+import { userRoleSelector } from '../redux/user/selectors';
+import { hasPermission } from '../../../shared/utils/permission';
 
 const classes = classNames.bind(css);
 
@@ -17,7 +22,13 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
+const TableValueRatingRow: RatingRow = ({
+  rating,
+  style,
+  user,
+  onEdit,
+  onDelete,
+}) => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: createdBy } = apiV2.useGetRoadmapUsersQuery(
@@ -28,9 +39,13 @@ const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
     roadmapId ?? skipToken,
     selectById(rating.forCustomer),
   );
+  const role = useSelector(userRoleSelector, shallowEqual);
+  const hasEditOthersPermission = hasPermission(
+    role,
+    Permission.TaskRatingEditOthers,
+  );
 
   if (!customer) return null;
-
   return (
     <div style={style} className={classes(css.ratingRow)}>
       <div className={classes(css.valueRating)}>
@@ -48,6 +63,7 @@ const TableValueRatingRow: RatingRow = ({ rating, style, user, onEdit }) => {
             user.representativeFor?.some(
               ({ id }) => id === rating.forCustomer,
             ) && <EditButton fontSize="medium" onClick={onEdit} />}
+          {hasEditOthersPermission && <DeleteButton onClick={onDelete} />}
           <div className={classes(css.value)}>
             {numFormat.format(rating.value)}
           </div>

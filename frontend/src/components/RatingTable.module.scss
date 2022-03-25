@@ -56,12 +56,13 @@
   @extend .typography-h3;
   @extend .layout-row;
   margin-left: auto;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  width: 70px;
+  width: 90px;
+  gap: 10px;
 
   .value {
-    margin-left: auto;
+    min-width: 30px;
   }
 }
 

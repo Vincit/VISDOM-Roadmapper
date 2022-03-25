@@ -1,14 +1,19 @@
 import classNames from 'classnames';
 import BuildSharpIcon from '@mui/icons-material/BuildSharp';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useTranslation } from 'react-i18next';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { ratingTable, RatingRow } from './RatingTable';
-import { EditButton } from './forms/SvgButton';
-import { TaskRatingDimension } from '../../../shared/types/customTypes';
+import { EditButton, DeleteButton } from './forms/SvgButton';
+import {
+  TaskRatingDimension,
+  Permission,
+} from '../../../shared/types/customTypes';
 import css from './RatingTable.module.scss';
 import { apiV2, selectById } from '../api/api';
+import { userRoleSelector } from '../redux/user/selectors';
+import { hasPermission } from '../../../shared/utils/permission';
 
 const classes = classNames.bind(css);
 
@@ -22,12 +27,18 @@ const TableComplexityRatingRow: RatingRow = ({
   style,
   user,
   onEdit,
+  onDelete,
 }) => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: createdBy } = apiV2.useGetRoadmapUsersQuery(
     roadmapId ?? skipToken,
     selectById(rating.createdByUser),
+  );
+  const role = useSelector(userRoleSelector, shallowEqual);
+  const hasEditOthersPermission = hasPermission(
+    role,
+    Permission.TaskRatingEditOthers,
   );
 
   return (
@@ -40,6 +51,7 @@ const TableComplexityRatingRow: RatingRow = ({
           {createdBy?.email ?? `<${t('deleted account')}>`}
         </div>
         <div className={classes(css.rightSide)}>
+          {hasEditOthersPermission && <DeleteButton onClick={onDelete} />}
           {rating.createdByUser === user.id && (
             <EditButton fontSize="medium" onClick={onEdit} />
           )}
