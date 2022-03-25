@@ -23,6 +23,7 @@ import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import colors from '../colors.module.scss';
 import css from './RatingTable.module.scss';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 
 const classes = classNames.bind(css);
 
@@ -36,6 +37,7 @@ export type RatingRow = FC<{
   style?: CSSProperties;
   user: UserInfo;
   onEdit: (e: MouseEvent) => void;
+  onDelete: () => void;
 }>;
 
 interface RatingTableDef {
@@ -69,6 +71,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   const [listHeight, setListHeight] = useState(0);
   const typeString =
     type === TaskRatingDimension.BusinessValue ? 'value' : 'complexity';
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
 
   useEffect(() => {
     if (!divRef) return;
@@ -96,6 +99,19 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
         modalProps: {
           task,
           edit: true,
+        },
+      }),
+    );
+  };
+
+  const openDeleteModal = (rating: Taskrating) => {
+    if (!roadmapId) return;
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.REMOVE_RATING_MODAL,
+        modalProps: {
+          roadmapId,
+          rating,
         },
       }),
     );
@@ -139,6 +155,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
             rating={ratings[index]}
             user={userInfo}
             onEdit={openRateModal}
+            onDelete={() => openDeleteModal(ratings[index])}
           />
         )}
       </VariableSizeList>

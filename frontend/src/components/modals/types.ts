@@ -7,6 +7,7 @@ import {
   Task,
   InfoModalContent,
   CheckableUserWithCustomers,
+  Taskrating,
 } from '../../redux/roadmaps/types';
 import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
@@ -15,6 +16,7 @@ export enum ModalTypes {
   RATE_TASK_MODAL = 'RATE_TASK_MODAL',
   REMOVE_TASK_MODAL = 'REMOVE_TASK_MODAL',
   REMOVE_PEOPLE_MODAL = 'REMOVE_PEOPLE_MODAL',
+  REMOVE_RATING_MODAL = 'REMOVE_RATING_MODAL',
   EDIT_CUSTOMER_MODAL = 'EDIT_CUSTOMER_MODAL',
   ADD_CUSTOMER_MODAL = 'ADD_CUSTOMER_MODAL',
   ADD_TEAM_MEMBER_MODAL = 'ADD_TEAM_MEMBER_MODAL',
@@ -47,6 +49,10 @@ type OwnProps = {
     id: number | string;
     name: string;
     type: 'customer' | 'team' | 'invitation';
+  };
+  [ModalTypes.REMOVE_RATING_MODAL]: {
+    roadmapId: number;
+    rating: Taskrating;
   };
   [ModalTypes.SEND_INVITATION_MODAL]: {
     invitation: Invitation;

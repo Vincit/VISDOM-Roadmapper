@@ -247,6 +247,8 @@ export const english = {
     'Remove task': 'Remove task',
     'Remove task warning':
       'Are you sure you want to remove <strong>{{name}}</strong>?',
+    'Remove rating warning':
+      'Are you sure you want to remove rating by <strong>{{rater}}</strong> for <strong>{{customer}}</strong>?',
     'Leave roadmap warning':
       'Are you sure you want to leave roadmap <strong>{{name}}</strong>?',
     'Leave roadmap warning last admin':
