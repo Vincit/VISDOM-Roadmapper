@@ -17,17 +17,17 @@ taskrelationRouter.get(
 );
 taskrelationRouter.post(
   '/relations',
-  requirePermission(Permission.TaskRead | Permission.RoadmapEdit),
+  requirePermission(Permission.EditRelations),
   addRelation,
 );
 taskrelationRouter.post(
   '/relations/synergies',
-  requirePermission(Permission.TaskRead | Permission.RoadmapEdit),
+  requirePermission(Permission.EditRelations),
   addSynergies,
 );
 taskrelationRouter.delete(
   '/relations',
-  requirePermission(Permission.TaskRead | Permission.RoadmapEdit),
+  requirePermission(Permission.EditRelations),
   deleteRelation,
 );
 

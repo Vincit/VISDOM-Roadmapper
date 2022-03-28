@@ -48,6 +48,8 @@ export enum Permission {
   IntegrationConfigurationEdit = 1 << 21,
 
   RoadmapInvite = 1 << 22,
+
+  EditRelations = 1 << 23,
 }
 
 export enum RoleType {
@@ -58,7 +60,8 @@ export enum RoleType {
     Permission.TaskRatingEdit |
     Permission.TaskComplexityRate |
     Permission.VersionRead |
-    Permission.RoadmapReadUsers,
+    Permission.RoadmapReadUsers |
+    Permission.EditRelations,
   Business = Permission.TaskRead |
     Permission.TaskCreate |
     Permission.TaskEdit |
@@ -67,5 +70,6 @@ export enum RoleType {
     Permission.TaskRatingEdit |
     Permission.TaskValueRate |
     Permission.CustomerRepresent |
-    Permission.RoadmapReadUsers,
+    Permission.RoadmapReadUsers |
+    Permission.EditRelations,
 }
