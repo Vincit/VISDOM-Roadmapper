@@ -9,16 +9,16 @@ import Roadmap from '../roadmaps/roadmaps.model';
 import { getIntegration, InvalidTokenError } from '../integration';
 
 const integrationConfig = async (name: string, roadmapId: number) => {
-  const config = await Integration.query().where({ name, roadmapId }).first();
+  const config = await Integration.query().findOne({ name, roadmapId });
   if (!config) {
-    throw `Missing configuration for ${name}.`;
+    throw new Error(`Missing configuration for ${name}.`);
   }
   return config;
 };
 
-const integrationTokens = async (config: Integration, userId: number) => {
+const integrationTokens = async (config: Integration) => {
   const tokens = await Token.query()
-    .where({ user: userId, provider: config.name, instance: config.host })
+    .where({ forIntegration: config.id })
     .whereIn('type', ['access_token', 'access_token_secret']);
 
   const accessToken = tokens?.find(({ type }) => type === 'access_token');
@@ -38,7 +38,7 @@ const integrationProvider = async (ctx: IKoaContext) => {
   const { integrationName, roadmapId } = ctx.params;
   const { getIntegrationProvider } = getIntegration(integrationName);
   const config = await integrationConfig(integrationName, Number(roadmapId));
-  const tokens = await integrationTokens(config, ctx.state.user.id);
+  const tokens = await integrationTokens(config);
   return getIntegrationProvider(config, tokens);
 };
 
@@ -200,10 +200,13 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx) => {
     throw new Error('User is required');
   }
 
-  const { integrationName } = ctx.params;
+  const { roadmapId, integrationName } = ctx.params;
   const { verifierToken, token, tokenSecret } = ctx.request.body;
 
-  const provider = await oAuthProvider(ctx);
+  const { getOAuthProvider } = getIntegration(integrationName);
+  const config = await integrationConfig(integrationName, Number(roadmapId));
+  const provider = getOAuthProvider(config);
+
   try {
     const newToken = await provider.swapOAuthToken({
       token,
@@ -218,40 +221,28 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx) => {
     const userId = ctx.state.user.id;
     await Token.transaction(async (trx) => {
       // TODO: interface, class or something else to represent the token contents.
-      const upsertToken = async (newToken: {
-        provider: string;
-        instance: string;
-        type: string;
-        user: number;
-        value: string;
-      }) => {
+      const upsertToken = async (type: string, value: string) => {
         // TODO: Extract providers and token types somewhere to avoid magic numbers.
-        const existing = await Token.query(trx)
-          .where('tokens.user', newToken.user)
-          .where('provider', newToken.provider)
-          .where('instance', newToken.instance)
-          .where('type', newToken.type)
-          .first();
+        const newToken = {
+          forIntegration: config.id,
+          provider: integrationName,
+          instance: provider.instance,
+          user: userId,
+          type,
+          value,
+        };
+        const existing = await Token.query(trx).findOne({
+          forIntegration: newToken.forIntegration,
+          type: newToken.type,
+        });
         if (existing) {
           await existing.$query(trx).patchAndFetch(newToken);
         } else {
           await Token.query(trx).insert(newToken);
         }
       };
-      await upsertToken({
-        provider: integrationName,
-        instance: provider.instance,
-        type: 'access_token',
-        user: userId,
-        value: newToken,
-      });
-      await upsertToken({
-        provider: integrationName,
-        instance: provider.instance,
-        type: 'access_token_secret',
-        user: userId,
-        value: tokenSecret,
-      });
+      await upsertToken('access_token', newToken);
+      await upsertToken('access_token_secret', tokenSecret);
     });
 
     ctx.status = 200;
