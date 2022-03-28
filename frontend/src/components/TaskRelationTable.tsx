@@ -12,7 +12,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import SearchIcon from '@mui/icons-material/Search';
 import { Task, TaskRelation } from '../redux/roadmaps/types';
-import { TaskRelationType } from '../../../shared/types/customTypes';
+import {
+  TaskRelationType,
+  TaskStatus,
+} from '../../../shared/types/customTypes';
 import { paths } from '../routers/paths';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import {
@@ -25,7 +28,6 @@ import { TaskRatingsText } from './TaskRatingsText';
 import { CloseButton } from './forms/SvgButton';
 import css from './TaskRelationTable.module.scss';
 import { apiV2 } from '../api/api';
-import { TaskStatus } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
@@ -37,7 +39,6 @@ interface RelationTableDef {
 type RelationTableProps = {
   task: Task;
   height?: number;
-  editMode: boolean;
 };
 
 const RelationRow: FC<{
@@ -71,7 +72,7 @@ const DropdownIndicator = () => <SearchIcon />;
 const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   type,
   buildRelation,
-}) => ({ task, editMode, height = 500 }) => {
+}) => ({ task, height = 500 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: relations } = apiV2.useGetTaskRelationsQuery(
     roadmapId ?? skipToken,
@@ -136,34 +137,30 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
           <Trans i18nKey={TaskRelationTableType[type]} />
         </h3>
       </div>
-      {editMode && (
-        <>
-          <Select
-            components={{ DropdownIndicator }}
-            name="relation"
-            id="new-relation"
-            classNamePrefix="react-select-relation"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            placeholder="Add relation"
-            isDisabled={availableConnections.length === 0}
-            value={null}
-            escapeClearsValue
-            onChange={(selected) => {
-              if (selected && roadmapId !== undefined) {
-                addTaskRelation({
-                  roadmapId,
-                  relation: buildRelation(task.id, selected.value),
-                });
-              }
-            }}
-            options={availableConnections.map(({ id, name }) => ({
-              value: id,
-              label: name,
-            }))}
-          />
-          <br />
-        </>
-      )}
+      <Select
+        components={{ DropdownIndicator }}
+        name="relation"
+        id="new-relation"
+        classNamePrefix="react-select-relation"
+        styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+        placeholder="Add relation"
+        isDisabled={availableConnections.length === 0}
+        value={null}
+        escapeClearsValue
+        onChange={(selected) => {
+          if (selected && roadmapId !== undefined) {
+            addTaskRelation({
+              roadmapId,
+              relation: buildRelation(task.id, selected.value),
+            });
+          }
+        }}
+        options={availableConnections.map(({ id, name }) => ({
+          value: id,
+          label: name,
+        }))}
+      />
+      <br />
       {!tasks.length ? (
         <div className={classes(css.noRelations)}>
           <Trans i18nKey="No relations" />
@@ -174,13 +171,11 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
           itemSize={(idx) => rowHeights[idx] ?? 0}
           itemCount={tasks.length}
           height={Math.min(height, listHeight)}
-          width={editMode ? '105%' : '100%'}
+          width="105%"
         >
           {({ index, style }) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { height: _, width, ...rest } = style;
             const { id } = tasks[index];
-            return editMode ? (
+            return (
               <div style={{ ...style, display: 'flex', alignItems: 'center' }}>
                 <RelationRow task={tasks[index]} />
                 <CloseButton
@@ -196,8 +191,6 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
                   }}
                 />
               </div>
-            ) : (
-              <RelationRow style={{ ...rest }} task={tasks[index]} />
             );
           }}
         </VariableSizeList>
