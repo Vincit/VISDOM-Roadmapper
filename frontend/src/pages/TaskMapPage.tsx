@@ -204,6 +204,9 @@ export const TaskMapPage = () => {
         <div className={classes(css.flowContainer)}>
           <ExpandableColumn
             expanded={expandUnstaged}
+            className={classes({
+              [css.loading]: isLoading,
+            })}
             onToggle={() => setExpandUnstaged((prev) => !prev)}
             title={
               <div>

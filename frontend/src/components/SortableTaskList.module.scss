@@ -44,3 +44,7 @@
   @extend .taskName;
   visibility: hidden;
 }
+
+.notAllowed {
+  cursor: not-allowed;
+}
