@@ -8,6 +8,8 @@ export default class Token extends Model {
   type!: string;
   value!: string;
 
+  forIntegration!: number | null;
+
   belongsToUser!: User;
 
   static tableName = 'tokens';
