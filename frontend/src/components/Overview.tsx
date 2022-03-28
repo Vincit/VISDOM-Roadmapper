@@ -76,6 +76,7 @@ export const OverviewContent: FC<OverviewContentProps> = ({
                   value={value}
                   fieldId={keyName}
                   format={format}
+                  multiline
                 />
               ) : (
                 <div className={classes(css.value)}>{value}</div>
