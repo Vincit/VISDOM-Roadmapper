@@ -1,4 +1,4 @@
-import { QueryContext, AnyQueryBuilder } from 'objection';
+import { QueryContext, AnyQueryBuilder, ModelOptions } from 'objection';
 import { TaskStatus } from '../../../../shared/types/customTypes';
 import Model from '../BaseModel';
 import Roadmap from '../roadmaps/roadmaps.model';
@@ -11,6 +11,7 @@ export default class Task extends Model {
   description!: string;
   status!: TaskStatus;
   createdAt!: string;
+  updatedAt?: string;
   importedFrom!: string | null;
   externalId!: string | null;
   externalLink!: string | null;
@@ -18,8 +19,9 @@ export default class Task extends Model {
   belongsToRoadmap!: Roadmap;
   ratings?: TaskRating[];
   createdBy?: User;
-
   createdByUser?: number;
+  lastUpdatedBy?: User;
+  lastUpdatedByUserId?: number;
 
   static tableName = 'tasks';
 
@@ -55,6 +57,11 @@ export default class Task extends Model {
     }
   }
 
+  async $beforeUpdate(opt: ModelOptions, context: QueryContext): Promise<void> {
+    await super.$beforeUpdate(opt, context);
+    this.updatedAt = new Date().toJSON();
+  }
+
   static get modifiers() {
     return {
       selectTaskId: (builder: AnyQueryBuilder) => {
@@ -86,6 +93,14 @@ export default class Task extends Model {
         modelClass: User,
         join: {
           from: 'tasks.createdByUser',
+          to: 'users.id',
+        },
+      },
+      lastUpdatedBy: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'tasks.lastUpdatedByUserId',
           to: 'users.id',
         },
       },

@@ -105,9 +105,11 @@ export interface Task {
   description: string;
   roadmapId: number;
   createdAt: string;
+  updatedAt?: string;
   status: TaskStatus;
   ratings: Taskrating[];
   createdByUser: number;
+  lastUpdatedByUserId?: number;
 }
 
 export interface TaskRequest {
