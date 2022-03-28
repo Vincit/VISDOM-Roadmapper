@@ -18,7 +18,9 @@ export const getTasks: RouteHandlerFnc = async (ctx) => {
 
   ctx.body = await Task.query()
     .where({ roadmapId: Number(ctx.params.roadmapId) })
-    .withGraphFetched('[ratings(ratingModifier), createdBy(userModifier)]')
+    .withGraphFetched(
+      '[ratings(ratingModifier), createdBy(userModifier), lastUpdatedBy(userModifier)]',
+    )
     .modifiers(
       ctx.query.eager
         ? {
@@ -111,6 +113,7 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
       name: name,
       description: description,
       status: status,
+      lastUpdatedByUserId: ctx.state.user!.id,
     }));
   });
 
