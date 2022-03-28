@@ -67,7 +67,7 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       ctx.status = 403;
       ctx.body = err.message;
     } else if (err instanceof InvalidTokenError) {
-      ctx.status = 401;
+      ctx.status = 403;
       ctx.body = {
         error: 'InvalidTokenError',
         message: err.message,
