@@ -102,7 +102,7 @@ export const SortableTaskList: FC<{
           <div
             className={classes(css.sortableList, {
               [css.highlight]: snapshot.isDraggingOver,
-              'loading-cursor': disableDragging,
+              [css.notAllowed]: isDropDisabled,
             })}
             ref={provided.innerRef}
             {...provided.droppableProps}
