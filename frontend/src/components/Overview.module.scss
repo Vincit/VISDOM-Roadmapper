@@ -27,6 +27,17 @@
 
 .editableTextContainer * {
   margin: 0px;
+  max-height: 84px;
+  overflow-wrap: anywhere;
+  align-items: start;
+}
+
+// Targets EditableText value
+.editableTextContainer > div > div:nth-child(2) {
+  overflow: scroll;
+}
+.editableTextContainer > div {
+  justify-content: right;
 }
 
 .arrowIcon {
@@ -84,18 +95,22 @@
   .value {
     @extend .typography-body;
     @extend .layout-row;
-    align-items: center;
     text-align: start;
-
+    
     padding-left: 21px;
     padding-bottom: 2px;
     line-height: 21px;
-
+    overflow-wrap: anywhere;
+    overflow: scroll;
+    max-height: 63px;
+    
+    
     &.bold {
       @extend .typography-body-bold;
     }
     &.NOT_STARTED {
       @extend .typography-pre-title;
+      align-items: center;
     }
     &.IN_PROGRESS {
       @extend .NOT_STARTED;
