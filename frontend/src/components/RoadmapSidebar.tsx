@@ -14,6 +14,7 @@ import css from './RoadmapSidebar.module.scss';
 import { userRoleSelector } from '../redux/user/selectors';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { RoleType } from '../../../shared/types/customTypes';
+import { apiV2, selectById } from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -21,10 +22,14 @@ export const RoadmapSidebar: FC = () => {
   const { pathname } = useLocation();
   const role = useSelector(userRoleSelector, shallowEqual);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-
-  if (roadmapId === undefined) return null;
+  const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(roadmapId),
+  );
 
   const url = `/roadmap/${roadmapId}`;
+
+  if (!roadmapId || (!roadmap && !isFetching)) return null;
 
   const renderButtons = () => {
     return (

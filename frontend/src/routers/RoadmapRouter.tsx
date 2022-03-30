@@ -22,6 +22,7 @@ import { PlannerPageRouter } from './PlannerPageRouter';
 import { TasksPageRouter } from './TasksPageRouter';
 import '../shared.scss';
 import { usePrevious } from '../utils/usePrevious';
+import { apiV2, selectById } from '../api/api';
 
 const routes = [
   {
@@ -68,6 +69,10 @@ const RoadmapRouterComponent = () => {
   const selectedRoadmapId = useSelector(chosenRoadmapIdSelector);
   const previousRoadmapId = usePrevious<number | undefined>(selectedRoadmapId);
   const dispatch = useDispatch<StoreDispatchType>();
+  const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(
+    undefined,
+    selectById(selectedRoadmapId),
+  );
 
   useEffect(() => {
     // Try to select roadmap given in route parameters
@@ -101,12 +106,8 @@ const RoadmapRouterComponent = () => {
     urlRoadmapId,
   ]);
 
-  if (!selectedRoadmapId)
-    return (
-      <div className="layoutRow">
-        <div className="layoutCol">Roadmap not found!</div>
-      </div>
-    );
+  if (selectedRoadmapId && !isFetching && !roadmap)
+    return <Redirect to={paths.notFound} />;
 
   return (
     <div className="layoutRow overflowYAuto">
