@@ -1,6 +1,6 @@
 import { FC, MouseEvent } from 'react';
 import ReactDOM from 'react-dom';
-import { Handle, HandleType } from 'react-flow-renderer';
+import { Handle, HandleType, Position } from 'react-flow-renderer';
 import { Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -11,14 +11,6 @@ import { TaskStatus } from '../../../shared/types/customTypes';
 
 const classes = classNames.bind(css);
 
-// Node positions require special Position-enum in typescript
-export enum Position {
-  Left = 'left',
-  Top = 'top',
-  Right = 'right',
-  Bottom = 'bottom',
-}
-
 export interface TaskProps {
   taskId: number;
   tasks: Task[];
@@ -27,9 +19,10 @@ export interface TaskProps {
   checked: { from: boolean; to: boolean };
   disableDragging: boolean;
   dropDisabled?: boolean;
-  setGroupDraggable: any;
+  setGroupDraggable: (_: boolean) => unknown;
   unavailable: Set<number>;
   isLoading: boolean;
+  draggingSomething: boolean;
   dragHandle?: {
     type: HandleType;
     from: number;
@@ -41,7 +34,6 @@ const SingleTask: FC<
   TaskProps & {
     provided: any;
     snapshot: any;
-    draggingSomething: boolean;
   }
 > = ({
   taskId,
@@ -157,18 +149,8 @@ const SingleTask: FC<
 export const DraggableSingleTask: FC<
   TaskProps & {
     index: number;
-    draggingSomething: boolean;
   }
-> = ({
-  taskId,
-  index,
-  disableDragging,
-  dropDisabled,
-  setGroupDraggable,
-  draggingSomething,
-  isLoading,
-  ...rest
-}) => (
+> = ({ taskId, index, disableDragging, ...rest }) => (
   <Draggable
     key={taskId}
     draggableId={`${taskId}`}
@@ -182,10 +164,6 @@ export const DraggableSingleTask: FC<
           provided={provided}
           snapshot={snapshot}
           disableDragging={disableDragging}
-          dropDisabled={dropDisabled}
-          setGroupDraggable={setGroupDraggable}
-          draggingSomething={draggingSomething}
-          isLoading={isLoading}
           {...rest}
         />
       );

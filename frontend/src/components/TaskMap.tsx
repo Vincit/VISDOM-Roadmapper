@@ -1,7 +1,11 @@
 import { ReactNode, FC, useEffect, useState } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import ReactFlow, { Controls, OnLoadParams } from 'react-flow-renderer';
+import ReactFlow, {
+  Controls,
+  OnLoadParams,
+  Position,
+} from 'react-flow-renderer';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +24,7 @@ import {
 import { TaskRelationType } from '../../../shared/types/customTypes';
 import { CustomEdge } from './TaskMapEdge';
 import { ConnectionLine } from './TaskMapConnection';
-import { Position, TaskProps } from './TaskMapTask';
+import { TaskProps } from './TaskMapTask';
 import { TaskGroup } from './TaskMapTaskGroup';
 import { InfoTooltip } from './InfoTooltip';
 import { apiV2 } from '../api/api';
@@ -57,7 +61,7 @@ type Edge = {
   data: {
     disableInteraction: boolean;
     isLoading: boolean;
-    setIsLoading: any;
+    setIsLoading: (_: boolean) => void;
   };
 };
 
