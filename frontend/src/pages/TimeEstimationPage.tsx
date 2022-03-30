@@ -240,18 +240,16 @@ export const TimeEstimationPage = () => {
               <Dropdown title={selectedTitle} css={css} maxLength={40}>
                 {roadmapsVersions
                   .filter((e) => e.name !== selectedTitle)
-                  .map((ver) => {
-                    return (
-                      <option
-                        className={classes(css.dropItem)}
-                        key={ver.id}
-                        value={ver.id}
-                        onClick={() => handleMilestoneChange(ver)}
-                      >
-                        {ver.name}
-                      </option>
-                    );
-                  })}
+                  .map((ver) => (
+                    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+                    <div
+                      className={classes(css.dropItem)}
+                      key={ver.id}
+                      onClick={() => handleMilestoneChange(ver)}
+                    >
+                      {ver.name}
+                    </div>
+                  ))}
               </Dropdown>
             ))}
         </div>
