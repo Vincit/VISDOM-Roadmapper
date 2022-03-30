@@ -25,6 +25,7 @@ import { SortableTaskList } from '../components/SortableTaskList';
 import { ExpandableColumn } from '../components/ExpandableColumn';
 import { TaskMap } from '../components/TaskMap';
 import css from './TaskMapPage.module.scss';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const classes = classNames.bind(css);
 
@@ -51,6 +52,10 @@ export const TaskMapPage = () => {
     new Set(),
   );
   const [expandUnstaged, setExpandUnstaged] = useState(false);
+  const {
+    data: users,
+    isLoading: isLoadingUsers,
+  } = apiV2.useGetRoadmapUsersQuery(Number(roadmapId) ?? skipToken);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -188,6 +193,8 @@ export const TaskMapPage = () => {
     }
   };
 
+  if (isLoadingUsers) return <LoadingSpinner />;
+
   return (
     <div
       id="taskmap"
@@ -244,7 +251,9 @@ export const TaskMapPage = () => {
         </div>
         {selectedTask && (
           <div className={classes(css.taskOverviewContainer)}>
-            <OverviewContent {...getTaskOverviewData(selectedTask, false)} />
+            <OverviewContent
+              {...getTaskOverviewData(selectedTask, false, users!)}
+            />
           </div>
         )}
       </DragDropContext>

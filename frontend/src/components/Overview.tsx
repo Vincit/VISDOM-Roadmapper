@@ -79,7 +79,7 @@ export const OverviewContent: FC<OverviewContentProps> = ({
                   multiline
                 />
               ) : (
-                <div className={classes(css.value)}>{value}</div>
+                <div className={classes(css.value, css[format!])}>{value}</div>
               )}
             </div>
           ))}
