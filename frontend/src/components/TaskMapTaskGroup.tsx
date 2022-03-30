@@ -12,11 +12,9 @@ export const TaskGroup: FC<
     listId: string;
     taskIds: number[];
     selectedTask: Task | undefined;
-    setSelectedTask: any;
+    setSelectedTask: (task: Task | undefined) => void;
     allDependencies: { from: number; to: number }[];
     disableDrop?: boolean;
-    setGroupDraggable: any;
-    draggingSomething: boolean;
   } & Omit<TaskProps, 'taskId' | 'checked'>
 > = ({
   listId,

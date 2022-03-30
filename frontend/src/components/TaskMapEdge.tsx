@@ -1,14 +1,28 @@
 import { FC, MouseEvent, useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { getMarkerEnd, getBezierPath } from 'react-flow-renderer';
+import {
+  getMarkerEnd,
+  getBezierPath,
+  Position,
+  ArrowHeadType,
+} from 'react-flow-renderer';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './TaskMapEdge.module.scss';
 import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
-const DrawPath: FC<any> = ({
+interface DrawPathProps {
+  id: string;
+  d: string;
+  markerEnd: string;
+  disableInteraction: any;
+  isLoading: any;
+  setIsLoading: any;
+}
+
+const DrawPath: FC<DrawPathProps> = ({
   id,
   d,
   markerEnd,
@@ -93,7 +107,26 @@ const DrawPath: FC<any> = ({
   );
 };
 
-export const CustomEdge: FC<any> = ({
+interface CustomEdgeData {
+  disableInteraction: boolean;
+  isLoading: boolean;
+  setIsLoading: (_: boolean) => void;
+}
+
+interface CustomEdgeProps {
+  id: string;
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+  sourcePosition: Position | undefined;
+  targetPosition: Position | undefined;
+  arrowHeadType: ArrowHeadType | undefined;
+  markerEndId: string;
+  data: CustomEdgeData;
+}
+
+export const CustomEdge: FC<CustomEdgeProps> = ({
   id,
   sourceX,
   sourceY,
