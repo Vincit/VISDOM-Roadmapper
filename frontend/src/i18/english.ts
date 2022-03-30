@@ -351,5 +351,9 @@ export const english = {
     'This email doesn’t exist': 'This email doesn’t exist',
     You: 'You',
     'deleted account': 'deleted account',
+    'Last modified by': 'Last modified by',
+    'Today at <time>': 'Today at {{time}}',
+    'Yesterday at <time>': 'Yesterday at {{time}}',
+    'On <date>': 'On {{date}}',
   },
 };

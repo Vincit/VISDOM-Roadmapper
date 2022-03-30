@@ -7,6 +7,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useParams, useHistory, Redirect } from 'react-router-dom';
 import { Permission, TaskStatus } from '../../../shared/types/customTypes';
+import { isToday, isYesterday } from '../../../shared/utils/date';
 import {
   valueAndComplexitySummary,
   getRatingsByType,
@@ -15,7 +16,7 @@ import {
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { Task } from '../redux/roadmaps/types';
+import { RoadmapUser, Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableComplexity } from '../components/RatingTableComplexity';
 import { RatingTableValue } from '../components/RatingTableValue';
@@ -40,7 +41,11 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-export const getTaskOverviewData = (task: Task, editable: boolean) => {
+export const getTaskOverviewData = (
+  task: Task,
+  editable: boolean,
+  users: RoadmapUser[],
+) => {
   const { value, complexity } = valueAndComplexitySummary(task);
   const metrics = [
     {
@@ -54,6 +59,36 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
+
+  let editedAtText: string;
+  if (!task.updatedAt) {
+    editedAtText = '-';
+  } else {
+    const updatedDate = new Date(task.updatedAt);
+    let datePart: string;
+    if (isYesterday(updatedDate))
+      datePart = i18n.t('Yesterday at <time>', {
+        time: updatedDate.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      });
+    else if (isToday(updatedDate))
+      datePart = i18n.t('Today at <time>', {
+        time: updatedDate.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      });
+    else
+      datePart = i18n.t('On <date>', {
+        date: updatedDate.toLocaleDateString(),
+      });
+    editedAtText = `${
+      users.find((u) => u.id === task.lastUpdatedByUserId)?.email ??
+      i18n.t('deleted account')
+    } (${datePart})`;
+  }
 
   const data = [
     [
@@ -87,7 +122,16 @@ export const getTaskOverviewData = (task: Task, editable: boolean) => {
         editable: false,
       },
     ],
+    [
+      {
+        label: i18n.t('Last modified by'),
+        keyName: 'lastUpdatedByUserId',
+        value: editedAtText,
+        editable: false,
+      },
+    ],
   ];
+
   return { metrics, data };
 };
 
@@ -100,9 +144,7 @@ const TaskOverview: FC<{
   const { t } = useTranslation();
   const role = useSelector(userRoleSelector, shallowEqual);
   const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
-  const { roadmapId } = useParams<{
-    roadmapId: string | undefined;
-  }>();
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { value, complexity } = valueAndComplexitySummary(task);
   const {
     value: valueRatings,
@@ -113,6 +155,9 @@ const TaskOverview: FC<{
     (hasPermission(role, Permission.TaskEdit) && task.createdByUser === userId);
   const tasksPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}`;
   const [patchTaskTrigger] = apiV2.usePatchTaskMutation();
+  const { data: users, isLoading } = apiV2.useGetRoadmapUsersQuery(
+    roadmapId ?? skipToken,
+  );
 
   const siblingTasks = [
     {
@@ -139,6 +184,8 @@ const TaskOverview: FC<{
     }
   };
 
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <div className="overviewContainer">
       <Overview
@@ -149,7 +196,7 @@ const TaskOverview: FC<{
         onOverviewChange={(id) => history.push(`${tasksPage}/${id}`)}
         onDataEditConfirm={handleEditConfirm}
         key={task.id}
-        {...getTaskOverviewData(task, hasEditPermission)}
+        {...getTaskOverviewData(task, hasEditPermission, users!)}
       />
       <div className={classes(css.section)}>
         <div className={classes(css.header)}>

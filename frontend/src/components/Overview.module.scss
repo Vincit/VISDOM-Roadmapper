@@ -76,6 +76,7 @@
     min-width: 100px;
     text-align: start;
     line-height: 50px;
+    white-space: nowrap;
   }
   .value {
     @extend .typography-body;
