@@ -16,7 +16,7 @@
   & > *:not(.buttons) {
     margin-top: 12px; // the default padding of the buttons
   }
-  
+
   .name {
     font-weight: normal;
     max-width: 70%;
@@ -25,6 +25,9 @@
   }
 }
 
+.editableTextContainer {
+  width: inherit;
+}
 .editableTextContainer * {
   margin: 0px;
   max-height: 84px;
@@ -37,7 +40,7 @@
   overflow: scroll;
 }
 .editableTextContainer > div {
-  justify-content: right;
+  flex-direction: row-reverse;
 }
 
 .arrowIcon {
@@ -96,15 +99,14 @@
     @extend .typography-body;
     @extend .layout-row;
     text-align: start;
-    
+
     padding-left: 21px;
     padding-bottom: 2px;
     line-height: 21px;
     overflow-wrap: anywhere;
     overflow: scroll;
     max-height: 63px;
-    
-    
+
     &.bold {
       @extend .typography-body-bold;
     }
@@ -126,4 +128,3 @@
     }
   }
 }
-
