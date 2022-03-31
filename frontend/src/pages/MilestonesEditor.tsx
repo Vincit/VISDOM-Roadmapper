@@ -6,7 +6,7 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { Trans, useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
@@ -30,6 +30,12 @@ import { InfoTooltip } from '../components/InfoTooltip';
 import css from './MilestonesEditor.module.scss';
 import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
+import { getType } from '../utils/UserUtils';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { RootState } from '../redux/types';
 
 const classes = classNames.bind(css);
 
@@ -59,8 +65,16 @@ export const MilestonesEditor = () => {
     patchVersion,
     { isLoading: disableDrag, isError },
   ] = apiV2.usePatchVersionMutation();
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  const type = getType(userInfo, roadmapId);
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
+    {
+      skip: !hasPermission(type, Permission.VersionRead),
+    },
   );
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,

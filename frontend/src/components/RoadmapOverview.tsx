@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
@@ -9,14 +9,28 @@ import { averageValueAndComplexity } from '../utils/TaskUtils';
 import { MetricsSummary } from './MetricsSummary';
 import colors from '../colors.module.scss';
 import { apiV2 } from '../api/api';
+import { Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
+import { getType } from '../utils/UserUtils';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
+import { RootState } from '../redux/types';
 
 const classes = classNames.bind(css);
 
 export const RoadmapOverview = () => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  const type = getType(userInfo, roadmapId);
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
+    {
+      skip: !hasPermission(type, Permission.VersionRead),
+    },
   );
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
