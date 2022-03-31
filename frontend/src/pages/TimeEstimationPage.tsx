@@ -20,6 +20,11 @@ import { Dropdown } from '../components/forms/Dropdown';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
 import { apiV2 } from '../api/api';
+import { Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
+import { getType } from '../utils/UserUtils';
+import { UserInfo } from '../redux/user/types';
+import { userInfoSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
 
@@ -27,8 +32,16 @@ export const TimeEstimationPage = () => {
   const { t } = useTranslation();
   const durationInput = useRef<HTMLInputElement>(null);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
+  const type = getType(userInfo, roadmapId);
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
+    {
+      skip: !hasPermission(type, Permission.VersionRead),
+    },
   );
   const dispatch = useDispatch<StoreDispatchType>();
   const timeEstimates = useSelector<RootState, TimeEstimate[]>(
