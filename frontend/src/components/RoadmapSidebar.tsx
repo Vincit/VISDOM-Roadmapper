@@ -22,14 +22,13 @@ export const RoadmapSidebar: FC = () => {
   const { pathname } = useLocation();
   const role = useSelector(userRoleSelector, shallowEqual);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(
-    undefined,
-    selectById(roadmapId),
-  );
+  const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(undefined, {
+    ...selectById(roadmapId),
+    skip: !roadmapId,
+  });
+  if (!roadmapId || (!roadmap && !isFetching)) return null;
 
   const url = `/roadmap/${roadmapId}`;
-
-  if (!roadmapId || (!roadmap && !isFetching)) return null;
 
   const renderButtons = () => {
     return (
