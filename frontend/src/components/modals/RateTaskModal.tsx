@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState, useEffect } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -69,7 +69,6 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   task,
   edit,
 }) => {
-  console.log('task modaalissa:', task);
   const [errorMessage, setErrorMessage] = useState('');
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -141,18 +140,6 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     .filter(({ value }) => (edit ? value : !value));
 
   const [businessValueRatings, setBusinessValueRatings] = useState(ratings);
-  const [businessRatingModified, setBusinessRatingModified] = useState(false);
-
-  useEffect(() => {
-    const modified = ratings.some(({ id, comment, value }) =>
-      businessValueRatings.some(
-        (rating) =>
-          rating.id === id &&
-          (rating.comment !== comment || rating.value !== value),
-      ),
-    );
-    setBusinessRatingModified(modified);
-  }, [businessValueRatings, ratings]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -174,8 +161,18 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     forCustomer?: number,
   ) => (rating: { value: number; comment: string | undefined }) => {
     const copy = [...businessValueRatings];
-    const original = copy[idx];
-    copy[idx] = { ...original, ...rating, forCustomer, changed: true };
+    const previous = copy[idx];
+
+    let changed = rating.value !== 0;
+    if (edit) {
+      const { value, comment } = ratings.find(({ id }) => previous.id === id)!;
+      changed =
+        rating.value === 0 ||
+        value !== rating.value ||
+        comment !== rating.comment;
+    }
+
+    copy[idx] = { ...previous, ...rating, forCustomer, changed };
     setBusinessValueRatings(copy);
   };
 
@@ -242,7 +239,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
             <button
               className="button-large"
               type="submit"
-              disabled={!businessRatingModified}
+              disabled={!businessValueRatings.some(({ changed }) => changed)}
             >
               <Trans i18nKey="Submit" />
             </button>

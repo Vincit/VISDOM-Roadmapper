@@ -38,7 +38,12 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
         value={initialValue}
         max={5}
         onChange={(_, value) => {
-          if (onChange && value) onChange(value);
+          if (!onChange) return;
+          if (value) onChange(value);
+          else {
+            onChange(0);
+            setHover(0);
+          }
         }}
         onChangeActive={(_, value) => setHover(value)}
         icon={getIcon()}
