@@ -32,9 +32,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [addTaskTrigger, { isLoading }] = apiV2.useAddTaskMutation();
-  const chosenRoadmapId = useSelector<RootState, number | undefined>(
-    chosenRoadmapIdSelector,
-  );
+  const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
@@ -53,7 +51,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
       const req: TaskRequest = {
         name: formValues.name,
         description: formValues.description,
-        roadmapId: chosenRoadmapId,
+        roadmapId: chosenRoadmapId!,
         createdByUser: userInfo?.id,
       };
 

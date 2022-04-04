@@ -36,7 +36,7 @@ export const NavBar = () => {
           <VisdomLogo />
         </div>
       )}
-      {pathname.startsWith(paths.userInfo) && roadmapId === undefined && (
+      {pathname.startsWith(paths.userInfo) && !roadmapId && (
         <Link to={paths.overview} className={classes(css.logo)}>
           <VisdomLogo />
         </Link>

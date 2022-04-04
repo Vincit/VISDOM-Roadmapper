@@ -37,7 +37,7 @@ const DrawPath: FC<DrawPathProps> = ({
   // Should be given 'id' as param in the form: 'from-taskId-to-taskId'
   const deleteRelation = useCallback(
     async (tbdeleted: string) => {
-      if (roadmapId === undefined) return;
+      if (!roadmapId) return;
       if (isLoading) return;
       const data = tbdeleted.split('-');
       setIsLoading(true);

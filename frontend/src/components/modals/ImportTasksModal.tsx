@@ -42,7 +42,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
       name,
       roadmapId: chosenRoadmapId!,
     },
-    { skip: chosenRoadmapId === undefined },
+    { skip: !chosenRoadmapId },
   );
   const labels = apiV2.useGetIntegrationBoardLabelsQuery(
     {
@@ -50,7 +50,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
       boardId: selectedBoardId!,
       roadmapId: chosenRoadmapId!,
     },
-    { skip: !selectedBoardId || chosenRoadmapId === undefined },
+    { skip: !selectedBoardId || !chosenRoadmapId },
   );
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,

@@ -67,7 +67,9 @@ const RoadmapRouterComponent = () => {
     roadmapId: string | undefined;
   }>();
   const selectedRoadmapId = useSelector(chosenRoadmapIdSelector);
-  const previousRoadmapId = usePrevious<number | undefined>(selectedRoadmapId);
+  const previousRoadmapId = usePrevious<number | undefined | null>(
+    selectedRoadmapId,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(
     undefined,
@@ -87,7 +89,7 @@ const RoadmapRouterComponent = () => {
     let newPath: string;
     const roadmapIdRegex = new RegExp('^/roadmap/\\d+/');
     if (!previousRoadmapId || selectedRoadmapId === previousRoadmapId) return;
-    if (selectedRoadmapId === undefined) {
+    if (!selectedRoadmapId) {
       newPath = '/overview';
     } else if (history.location.pathname.match(roadmapIdRegex)) {
       newPath = history.location.pathname.replace(

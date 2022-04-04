@@ -123,7 +123,7 @@ export const MilestonesEditor = () => {
   const deleteVersionClicked = (id: number) => (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.DELETE_VERSION_MODAL,
@@ -153,7 +153,7 @@ export const MilestonesEditor = () => {
   };
 
   const onDragReorder = async (result: DropWithDestination) => {
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     const { source, destination } = result;
     const copyLists = copyVersionLists(versionLists);
 
@@ -208,7 +208,7 @@ export const MilestonesEditor = () => {
   };
 
   const onVersionDragEnd = async (result: DropWithDestination) => {
-    if (roadmapId === undefined || roadmapsVersions === undefined) return;
+    if (!roadmapId || roadmapsVersions === undefined) return;
     const { source, destination, draggableId } = result;
     const dragVersionId = parseInt(draggableId.match(/\d+/)![0], 10);
     const versionsCopy = roadmapsVersions

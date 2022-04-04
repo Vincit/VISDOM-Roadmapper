@@ -3,7 +3,7 @@ import { RoadmapsState, TaskmapPosition } from './types';
 
 export const SELECT_CURRENT_ROADMAP: CaseReducer<
   RoadmapsState,
-  PayloadAction<number>
+  PayloadAction<number | null>
 > = (state, action) => {
   state.selectedRoadmapId = action.payload;
 };

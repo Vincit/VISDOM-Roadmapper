@@ -79,7 +79,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     patchCustomerTrigger({
       roadmapId,
       customer: {

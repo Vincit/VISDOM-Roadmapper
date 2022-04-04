@@ -27,7 +27,7 @@ export const AddVersionModal: Modal<ModalTypes.ADD_VERSION_MODAL> = ({
     event.preventDefault();
     event.stopPropagation();
 
-    if (!form.checkValidity() || roadmapId === undefined) return;
+    if (!form.checkValidity() || !roadmapId) return;
 
     try {
       await addVersion({ roadmapId, name: versionName }).unwrap();
