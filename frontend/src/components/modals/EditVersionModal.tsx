@@ -31,7 +31,7 @@ export const EditVersionModal: Modal<ModalTypes.EDIT_VERSION_MODAL> = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     try {
       await patchVersion({ roadmapId, id, name: newName }).unwrap();
       closeModal();

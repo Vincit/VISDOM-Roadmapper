@@ -10,6 +10,7 @@ import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { Footer } from '../components/Footer';
 import '../shared.scss';
+import { roadmapsActions } from '../redux/roadmaps';
 
 export const NotFoundPage = () => {
   const dispatch = useDispatch<StoreDispatchType>();
@@ -19,6 +20,8 @@ export const NotFoundPage = () => {
   useEffect(() => {
     if (!loadedUserInfo)
       dispatch(userActions.getUserInfo()).then(() => setLoadedUserInfo(true));
+
+    dispatch(roadmapsActions.selectCurrentRoadmap(null));
   }, [dispatch, loadedUserInfo]);
 
   if (!loadedUserInfo) return <LoadingSpinner />;

@@ -6,7 +6,7 @@ import {
 } from '../../../../shared/types/customTypes';
 
 export interface RoadmapsState {
-  selectedRoadmapId?: number;
+  selectedRoadmapId?: number | null;
   taskmapPosition: TaskmapPosition | undefined;
 }
 

@@ -41,7 +41,7 @@ export const PlannerWeightsPage = () => {
   };
 
   const saveWeight = async (customerId: number, weight: number) => {
-    if (roadmapId !== undefined)
+    if (roadmapId)
       patchCustomerTrigger({ roadmapId, customer: { id: customerId, weight } });
   };
 

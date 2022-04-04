@@ -67,7 +67,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   }, [selectedRole]);
 
   const editInvitation = async () => {
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     try {
       await patchInvitation({
         roadmapId,
@@ -85,7 +85,7 @@ export const EditTeamMemberModal: Modal<ModalTypes.EDIT_TEAM_MEMBER_MODAL> = ({
   };
 
   const editTeamMember = async () => {
-    if (roadmapId === undefined || member.type === selectedRole) return;
+    if (!roadmapId || member.type === selectedRole) return;
 
     try {
       await patchRoadmapUser({

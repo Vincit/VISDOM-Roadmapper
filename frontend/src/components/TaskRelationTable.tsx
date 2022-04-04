@@ -148,7 +148,7 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
         value={null}
         escapeClearsValue
         onChange={(selected) => {
-          if (selected && roadmapId !== undefined) {
+          if (selected && roadmapId) {
             addTaskRelation({
               roadmapId,
               relation: buildRelation(task.id, selected.value),
@@ -182,7 +182,7 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (roadmapId !== undefined) {
+                    if (roadmapId) {
                       removeTaskRelation({
                         roadmapId,
                         relation: buildRelation(task.id, id),

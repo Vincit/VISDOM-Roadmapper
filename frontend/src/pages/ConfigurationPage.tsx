@@ -40,7 +40,7 @@ const RoadmapConfigurationPageComponent = ({
   const onConfigurationClick = (target: string, fields: any[]) => (e: any) => {
     e.preventDefault();
 
-    if (!roadmap || roadmapId === undefined) return;
+    if (!roadmap || !roadmapId) return;
     const configuration = roadmap.integrations.find(
       ({ name }) => name === target,
     );
@@ -60,7 +60,7 @@ const RoadmapConfigurationPageComponent = ({
 
   const onOAuthClick = (target: string) => (e: any) => {
     e.preventDefault();
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.SETUP_OAUTH_MODAL,
@@ -80,7 +80,7 @@ const RoadmapConfigurationPageComponent = ({
   };
   const openDeleteRoadmapModal = (e: any) => {
     e.preventDefault();
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.DELETE_ROADMAP_MODAL,

@@ -58,7 +58,7 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
   }, [roadmapUsers]);
 
   const handleSubmit = async () => {
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
     try {
       await addCustomerTrigger({
         roadmapId,

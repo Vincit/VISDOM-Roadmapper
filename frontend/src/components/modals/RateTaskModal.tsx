@@ -160,7 +160,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
 
     const changed = businessValueRatings.filter((rating) => rating.changed);
     const action = edit ? patchTaskratings : addTaskratings;
-    if (roadmapId === undefined || changed.length === 0) return;
+    if (!roadmapId || changed.length === 0) return;
     try {
       await action({ roadmapId, ratings: changed, taskId: task.id }).unwrap();
       closeModal();

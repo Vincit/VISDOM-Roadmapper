@@ -47,7 +47,7 @@ const ClientOverview: FC<{
   });
   const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
 
-  if (roadmapId === undefined) return null;
+  if (!roadmapId) return null;
   const unratedTasks = unratedTasksAmount(
     client,
     roadmapId,

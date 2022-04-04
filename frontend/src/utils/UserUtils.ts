@@ -7,7 +7,7 @@ export const isUserInfo = (
 
 export const getType = (
   user: UserInfo | RoadmapUser | undefined,
-  roadmapId: number | undefined,
+  roadmapId: number | undefined | null,
 ) => {
   if (!user) return undefined;
   if (isUserInfo(user))

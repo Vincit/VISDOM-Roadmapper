@@ -9,7 +9,7 @@ import {
 import { RoadmapsState } from './types';
 
 const initialState: RoadmapsState = {
-  selectedRoadmapId: undefined,
+  selectedRoadmapId: null,
   taskmapPosition: undefined,
 };
 

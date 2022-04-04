@@ -38,7 +38,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
   );
 
   useEffect(() => {
-    if (roadmapId !== undefined && tasks)
+    if (roadmapId && tasks)
       setUnratedAmount(
         unratedTasksAmount(customer, roadmapId, tasks, users, customers),
       );

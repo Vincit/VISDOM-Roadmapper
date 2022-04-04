@@ -12,7 +12,7 @@ export enum CustomerSortingTypes {
 }
 
 export const customerSort = (
-  roadmapId?: number,
+  roadmapId?: number | null,
   tasks?: Task[],
   users?: RoadmapUser[],
   customers?: Customer[],
@@ -27,7 +27,7 @@ export const customerSort = (
     case CustomerSortingTypes.SORT_COLOR:
       return sortKeyLocale('color');
     case CustomerSortingTypes.SORT_UNRATED:
-      return roadmapId === undefined
+      return !roadmapId
         ? undefined
         : sortKeyNumeric((customer) =>
             unratedTasksAmount(

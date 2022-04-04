@@ -59,7 +59,7 @@ export const AddTeamMemberModal: Modal<ModalTypes.ADD_TEAM_MEMBER_MODAL> = ({
     event.preventDefault();
     event.stopPropagation();
 
-    if (roadmapId === undefined) return;
+    if (!roadmapId) return;
 
     try {
       await sendInvitation({

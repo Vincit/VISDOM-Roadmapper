@@ -10,7 +10,7 @@ export enum UserSortingTypes {
 }
 
 export const userSort = (
-  roadmapId?: number,
+  roadmapId?: number | null,
   tasks?: Task[],
   customers?: Customer[],
 ) => (type: UserSortingTypes | undefined): SortBy<RoadmapUser> => {
