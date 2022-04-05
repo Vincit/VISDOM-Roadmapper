@@ -1,5 +1,6 @@
 import { createApi, BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import Axios, { AxiosRequestConfig, AxiosError } from 'axios';
+import { TaskStatus } from '../../../shared/types/customTypes';
 import {
   ImportBoardRequest,
   IntegrationConfigurationRequest,
@@ -292,15 +293,52 @@ export const apiV2 = createApi({
         data: configuration,
       }),
     }),
+    deleteIntegrationConfiguration: build.mutation<
+      void,
+      IntegrationConfiguration
+    >({
+      invalidatesTags: ['Integrations', 'Roadmaps'],
+      query: ({ roadmapId, name, id }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/configuration/${id}`,
+        method: 'delete',
+      }),
+    }),
     patchIntegrationConfiguration: build.mutation<
       IntegrationConfiguration,
       IntegrationConfigurationRequest
     >({
       invalidatesTags: ['Integrations', 'Roadmaps'],
-      query: ({ roadmapId, name, id, host, consumerkey, privatekey }) => ({
+      query: ({ roadmapId, name, id, ...data }) => ({
         url: `roadmaps/${roadmapId}/integrations/${name}/configuration/${id}`,
         method: 'patch',
-        data: { host, consumerkey, privatekey },
+        data,
+      }),
+    }),
+    deleteIntegrationStatusMapping: build.mutation<
+      void,
+      { id: number; name: string; roadmapId: number; mappingId: number }
+    >({
+      invalidatesTags: ['Integrations', 'Roadmaps'],
+      query: ({ roadmapId, name, id, mappingId }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/configuration/${id}/statusmapping/${mappingId}`,
+        method: 'delete',
+      }),
+    }),
+    setIntegrationStatusMapping: build.mutation<
+      void,
+      {
+        id: number;
+        name: string;
+        roadmapId: number;
+        fromColumn: string;
+        toStatus: TaskStatus;
+      }
+    >({
+      invalidatesTags: ['Integrations', 'Roadmaps'],
+      query: ({ roadmapId, name, id, ...data }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/configuration/${id}/statusmapping`,
+        method: 'post',
+        data,
       }),
     }),
     getIntegrations: build.query<Integrations, number>({
@@ -320,20 +358,40 @@ export const apiV2 = createApi({
         method: 'get',
       }),
     }),
+    getIntegrationSelectedBoard: build.query<
+      IntegrationBoard,
+      GetRoadmapBoardsRequest
+    >({
+      providesTags: ['Integrations'],
+      query: ({ name, roadmapId }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/boards/selected`,
+        method: 'get',
+      }),
+    }),
+    getIntegrationBoardColumns: build.query<
+      { id: string; name: string }[],
+      GetRoadmapBoardLabelsRequest
+    >({
+      providesTags: ['Integrations'],
+      query: ({ name, roadmapId }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/columns`,
+        method: 'get',
+      }),
+    }),
     getIntegrationBoardLabels: build.query<
       string[],
       GetRoadmapBoardLabelsRequest
     >({
       providesTags: ['Integrations'],
-      query: ({ name, roadmapId, boardId }) => ({
-        url: `roadmaps/${roadmapId}/integrations/${name}/boards/${boardId}/labels`,
+      query: ({ name, roadmapId }) => ({
+        url: `roadmaps/${roadmapId}/integrations/${name}/labels`,
         method: 'get',
       }),
     }),
     importIntegrationBoard: build.mutation<void, ImportBoardRequest>({
       invalidatesTags: ['Integrations', 'Tasks'],
       query: (request) => ({
-        url: `roadmaps/${request.roadmapId}/integrations/${request.name}/boards/${request.boardId}/import`,
+        url: `roadmaps/${request.roadmapId}/integrations/${request.name}/import`,
         method: 'post',
         data: request,
       }),
