@@ -5,6 +5,7 @@ import {
   patchConfigurations,
   deleteConfigurations,
   getBoards,
+  getSelectedBoard,
   getBoardLabels,
   importBoard,
   getOauthAuthorizationURL,
@@ -55,12 +56,10 @@ integrationRouter.delete(
 );
 
 integrationRouter.get(`/:integrationName/boards`, getBoards);
-integrationRouter.get(
-  `/:integrationName/boards/:boardId/labels`,
-  getBoardLabels,
-);
+integrationRouter.get(`/:integrationName/boards/selected`, getSelectedBoard);
+integrationRouter.get(`/:integrationName/labels`, getBoardLabels);
 integrationRouter.post(
-  `/:integrationName/boards/:boardId/import`,
+  `/:integrationName/import`,
   requirePermission(Permission.TaskCreate | Permission.TaskEdit),
   importBoard,
 );

@@ -16,11 +16,12 @@ const integrationConfig = async (name: string, roadmapId: number) => {
   return config;
 };
 
-const integrationTokens = async (config: Integration) => {
-  const tokens = await Token.query()
+const integrationTokens = async (config: Integration, forUser?: number) => {
+  const query = Token.query()
     .where({ forIntegration: config.id })
     .whereIn('type', ['access_token', 'access_token_secret']);
-
+  if (forUser) query.where({ user: forUser });
+  const tokens = await query;
   const accessToken = tokens?.find(({ type }) => type === 'access_token');
   const accessTokenSecret = tokens?.find(
     ({ type }) => type === 'access_token_secret',
@@ -34,12 +35,18 @@ const integrationTokens = async (config: Integration) => {
   };
 };
 
-const integrationProvider = async (ctx: IKoaContext) => {
+const integrationProvider = async (
+  ctx: IKoaContext,
+  withUsersTokens?: number,
+) => {
   const { integrationName, roadmapId } = ctx.params;
   const { getIntegrationProvider } = getIntegration(integrationName);
   const config = await integrationConfig(integrationName, Number(roadmapId));
-  const tokens = await integrationTokens(config);
-  return getIntegrationProvider(config, tokens);
+  const tokens = await integrationTokens(config, withUsersTokens);
+  return {
+    config,
+    provider: getIntegrationProvider(config, tokens),
+  };
 };
 
 const oAuthProvider = async (ctx: IKoaContext) => {
@@ -51,7 +58,7 @@ const oAuthProvider = async (ctx: IKoaContext) => {
 
 export const postConfigurations: RouteHandlerFnc = async (ctx) => {
   const { defaultConfig } = getIntegration(ctx.params.integrationName);
-  const { host, consumerkey, privatekey } = {
+  const { host, consumerkey, privatekey, boardId } = {
     ...defaultConfig,
     ...ctx.request.body,
   } as any;
@@ -61,6 +68,7 @@ export const postConfigurations: RouteHandlerFnc = async (ctx) => {
     host,
     consumerkey,
     privatekey,
+    boardId,
     roadmapId: Number(ctx.params.roadmapId),
   });
 };
@@ -72,6 +80,8 @@ export const patchConfigurations: RouteHandlerFnc = async (ctx) => {
     host,
     consumerkey,
     privatekey,
+    boardId,
+    statusMapping,
     ...others
   } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
@@ -81,6 +91,7 @@ export const patchConfigurations: RouteHandlerFnc = async (ctx) => {
       host,
       consumerkey,
       privatekey,
+      boardId,
     })
     .where({
       roadmapId: Number(ctx.params.roadmapId),
@@ -110,16 +121,36 @@ export const getBoards: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const provider = await integrationProvider(ctx);
+  const { provider } = await integrationProvider(ctx, ctx.state.user.id);
   ctx.body = await provider.boards();
+};
+
+export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  const {
+    provider,
+    config: { boardId },
+  } = await integrationProvider(ctx);
+  if (!boardId) {
+    throw new Error('Invalid config: board id missing');
+  }
+  ctx.body = (await provider.boards()).find(({ id }) => id === boardId);
 };
 
 export const getBoardLabels: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const provider = await integrationProvider(ctx);
-  ctx.body = await provider.labels(ctx.params.boardId);
+  const {
+    provider,
+    config: { boardId },
+  } = await integrationProvider(ctx);
+  if (!boardId) {
+    throw new Error('Invalid config: board id missing');
+  }
+  ctx.body = await provider.labels(boardId);
   ctx.status = 200;
 };
 
@@ -127,11 +158,17 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const provider = await integrationProvider(ctx);
+  const {
+    provider,
+    config: { boardId },
+  } = await integrationProvider(ctx);
+  if (!boardId) {
+    throw new Error('Invalid config: board id missing');
+  }
+  const createdByUser = ctx.state.user.id;
   const name = ctx.params.integrationName;
-  const { createdByUser, filters } = ctx.request.body;
+  const { filters } = ctx.request.body;
   const roadmapId = Number(ctx.params.roadmapId);
-  const boardId = ctx.params.boardId;
 
   const tasks = (await provider.tasks(boardId, filters)).map(
     ({ id, link, description, ...issue }) => ({
@@ -140,7 +177,7 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
       importedFrom: name,
       externalId: id,
       externalLink: link,
-      createdByUser, // TODO: should this be taken from the current user?
+      createdByUser,
       roadmapId,
     }),
   );
@@ -158,7 +195,10 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
         .where('importedFrom', name)
         .first();
       if (existing) {
-        await existing.$query(trx).patchAndFetch(task);
+        await existing.$query(trx).patchAndFetch({
+          ...task,
+          lastUpdatedByUserId: task.createdByUser,
+        });
       } else {
         await Task.query(trx).insert(task);
       }

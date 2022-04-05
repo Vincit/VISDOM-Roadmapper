@@ -1,5 +1,6 @@
 import { Pojo } from 'objection';
 import Model from '../BaseModel';
+import StatusMapping from './statusMapping.model';
 
 import { IntegrationConfig } from '../integration';
 
@@ -11,6 +12,9 @@ export default class Integration extends Model implements IntegrationConfig {
   privatekey!: string;
 
   roadmapId!: number;
+
+  boardId!: string | null;
+  statusMapping?: StatusMapping[];
 
   static tableName = 'integration';
 
@@ -32,6 +36,19 @@ export default class Integration extends Model implements IntegrationConfig {
       roadmapId: { type: 'integer' },
     },
   };
+
+  static get relationMappings() {
+    return {
+      statusMapping: {
+        relation: Model.HasManyRelation,
+        modelClass: StatusMapping,
+        join: {
+          from: 'integration.id',
+          to: 'importStatusMapping.integrationId',
+        },
+      },
+    };
+  }
 
   $formatJson(json: Pojo): Pojo {
     json = super.$formatJson(json);
