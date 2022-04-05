@@ -47,7 +47,6 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
   const labels = apiV2.useGetIntegrationBoardLabelsQuery(
     {
       name,
-      boardId: selectedBoardId!,
       roadmapId: chosenRoadmapId!,
     },
     { skip: !selectedBoardId || !chosenRoadmapId },
@@ -89,8 +88,6 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
       try {
         await importIntegrationBoard({
           name,
-          boardId: selectedBoardId!,
-          createdByUser: userInfo!.id,
           roadmapId: chosenRoadmapId!,
           filters: {
             labels: selectedLabels.get(selectedBoardId!),

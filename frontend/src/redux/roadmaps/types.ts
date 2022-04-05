@@ -155,13 +155,10 @@ export interface GetRoadmapBoardsRequest {
 export interface GetRoadmapBoardLabelsRequest {
   roadmapId: number;
   name: string;
-  boardId: string;
 }
 
 export interface ImportBoardRequest {
   name: string;
-  boardId: string;
-  createdByUser: number;
   roadmapId: number;
   filters?: {
     labels?: string[];
@@ -181,21 +178,19 @@ export interface OAuthTokenSwapRequest {
   tokenSecret: string;
 }
 
-interface IntegrationBase {
+export interface IntegrationConfiguration {
+  id: number;
   name: string;
+  roadmapId: number;
   host?: string;
   consumerkey: string;
   privatekey: string;
-  roadmapId: number;
+  boardId?: string;
+  statusMapping?: { id: number; fromColumn: string; toStatus: TaskStatus }[];
 }
 
-export interface IntegrationConfigurationRequest extends IntegrationBase {
-  id?: number;
-}
-
-export interface IntegrationConfiguration extends IntegrationBase {
-  id: number;
-}
+export interface IntegrationConfigurationRequest
+  extends Partial<IntegrationConfiguration> {}
 
 export interface Version {
   roadmapId: number;
