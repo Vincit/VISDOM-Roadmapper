@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import {
   Customer,
-  IntegrationConfiguration,
   RoadmapUser,
   Invitation,
   Task,
@@ -28,7 +27,6 @@ export enum ModalTypes {
   COMPLETE_VERSION_MODAL = 'COMPLETE_VERSION_MODAL',
   IMPORT_TASKS_MODAL = 'IMPORT_TASKS_MODAL',
   SETUP_OAUTH_MODAL = 'SETUP_OAUTH_MODAL',
-  INTEGRATION_CONFIGURATION_MODAL = 'INTEGRATION_CONFIGURATION_MODAL',
   USER_AUTH_TOKEN_MODAL = 'USER_AUTH_TOKEN_MODAL',
   ADD_ROADMAP_MODAL = 'ADD_ROADMAP_MODAL',
   DELETE_ROADMAP_MODAL = 'DELETE_ROADMAP_MODAL',
@@ -81,13 +79,6 @@ type OwnProps = {
   [ModalTypes.SETUP_OAUTH_MODAL]: {
     name: string;
     roadmapId: number;
-  };
-  [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: {
-    name: string;
-    roadmapId: number;
-    roadmapName?: string;
-    configuration?: IntegrationConfiguration;
-    fields: { field: string; secret?: boolean }[];
   };
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: {};
   [ModalTypes.ADD_ROADMAP_MODAL]: {};
