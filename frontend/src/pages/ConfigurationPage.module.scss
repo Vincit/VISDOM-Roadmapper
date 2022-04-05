@@ -3,18 +3,11 @@
 .configurationPage {
   @extend .layoutCol;
   margin-left: 27px;
+  gap: 20px;
 }
 
 .columnHeader {
   @extend .typography-h3;
   text-align: left;
-  border-bottom: 1px solid $COLOR_BLACK40;
   padding-top: 16px;
-  padding-bottom: 24px;
-}
-
-.infoIcon {
-  width: 18px !important;
-  height: 18px !important;
-  margin-left: 10px;
 }
