@@ -122,8 +122,10 @@ export const english = {
     'Password type error': 'Password should contain at least 8 characters.',
     'Password confirmation error': 'Passwords do not match.',
     'Welcome user': '<0>Welcome, </0>{{name}}',
-    'Invalid Oauth token error':
-      'Invalid or missing Oauth token, please configure Oauth first.',
+    'Invalid configuration error':
+      'Invalid or missing configuration, please contact an administrator if the problem persists.',
+    'Oauth can not select board':
+      'The Oauth is authorised by another user. To select a board, reauthorise first with your own account.',
     'Terms of use':
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
     'Setup OAuth for': 'Setup OAuth for {{name}}',
