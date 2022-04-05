@@ -10,7 +10,8 @@ export default class Token extends Model {
 
   forIntegration!: number | null;
 
-  belongsToUser!: User;
+  user!: number;
+  belongsToUser?: User;
 
   static tableName = 'tokens';
 

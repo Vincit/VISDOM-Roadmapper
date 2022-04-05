@@ -14,7 +14,7 @@ describe('Test /roadmaps/:roadmapId/integrations/jira/ api', function () {
         Permission.TaskCreate | Permission.TaskEdit,
         () =>
           loggedInAgent
-            .post(`/roadmaps/${roadmapId}/integrations/jira/boards/1/import/`)
+            .post(`/roadmaps/${roadmapId}/integrations/jira/import/`)
             .type('json')
             .send({}),
       );
@@ -23,7 +23,7 @@ describe('Test /roadmaps/:roadmapId/integrations/jira/ api', function () {
     it('Should not receive 403 error with correct permissions', async function () {
       const roadmapId = await someRoadmapId();
       const res = await loggedInAgent
-        .post(`/roadmaps/${roadmapId}/integrations/jira/boards/1/import/`)
+        .post(`/roadmaps/${roadmapId}/integrations/jira/import/`)
         .type('json')
         .send({});
       expect(res.status).not.to.equal(403);
