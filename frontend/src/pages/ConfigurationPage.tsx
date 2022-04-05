@@ -69,15 +69,6 @@ const RoadmapConfigurationPageComponent = ({
     );
   };
 
-  const openTokenModal = (e: any) => {
-    e.preventDefault();
-    dispatch(
-      modalsActions.showModal({
-        modalType: ModalTypes.USER_AUTH_TOKEN_MODAL,
-        modalProps: {},
-      }),
-    );
-  };
   const openDeleteRoadmapModal = (e: any) => {
     e.preventDefault();
     if (!roadmapId) return;
@@ -135,22 +126,6 @@ const RoadmapConfigurationPageComponent = ({
           ])}
         </>
       )}
-      <div className={classes(css.layoutRow)}>
-        <span className={classes(css.columnHeader)}>
-          <Trans i18nKey="Personal auth token" />
-          <InfoTooltip title={t('Personal auth token tooltip')}>
-            <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
-          </InfoTooltip>
-          <br />
-          <button
-            className="button-small-filled"
-            type="submit"
-            onClick={openTokenModal}
-          >
-            + <Trans i18nKey="Manage" />
-          </button>
-        </span>
-      </div>
       {userType === RoleType.Admin && (
         <div className={classes(css.layoutRow)}>
           <span className={classes(css.columnHeader)}>

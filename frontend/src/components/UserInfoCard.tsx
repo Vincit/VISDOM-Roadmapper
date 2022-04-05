@@ -116,6 +116,15 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
     setSent(await api.sendEmailVerificationLink(userInfo));
     setSending(false);
   };
+  const openTokenModal = (e: any) => {
+    e.preventDefault();
+    dispatch(
+      modalsActions.showModal({
+        modalType: ModalTypes.USER_AUTH_TOKEN_MODAL,
+        modalProps: {},
+      }),
+    );
+  };
 
   return (
     <div className={classes(css.content)}>
@@ -156,6 +165,18 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
             onClick={() => openChangePasswordModal()}
           >
             <Trans i18nKey="Change password" />
+          </button>
+        </div>
+        <div>
+          <p className={classes(css.subtitle)}>
+            <Trans i18nKey="Personal auth token" />
+          </p>
+          <button
+            className="button-small-filled"
+            type="submit"
+            onClick={openTokenModal}
+          >
+            + <Trans i18nKey="Manage" />
           </button>
         </div>
       </div>
