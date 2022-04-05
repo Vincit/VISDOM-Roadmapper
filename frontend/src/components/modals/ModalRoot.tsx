@@ -17,7 +17,6 @@ import { RemoveTaskModal } from './RemoveTaskModal';
 import { RemoveRatingModal } from './RemoveRatingModal';
 import { ImportTasksModal } from './ImportTasksModal';
 import { OauthModal } from './IntegrationOauthModal';
-import { IntegrationConfigurationModal } from './IntegrationConfigurationModal';
 import { RateTaskModal } from './RateTaskModal';
 import { RemovePeopleModal } from './RemovePeopleModal';
 import { EditCustomerModal } from './EditCustomerModal';
@@ -52,7 +51,6 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.COMPLETE_VERSION_MODAL]: CompleteVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
   [ModalTypes.SETUP_OAUTH_MODAL]: OauthModal,
-  [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: IntegrationConfigurationModal,
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: UserAuthTokenModal,
   [ModalTypes.ADD_ROADMAP_MODAL]: AddRoadmapModal,
   [ModalTypes.DELETE_ROADMAP_MODAL]: DeleteRoadmapModal,
