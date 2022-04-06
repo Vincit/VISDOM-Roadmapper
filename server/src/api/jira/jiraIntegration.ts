@@ -105,6 +105,28 @@ class JiraImporter implements IntegrationProvider {
     }));
   }
 
+  async columns(boardId: string) {
+    // A column may have multiple statuses mapped to it, and the status id
+    // is available in the task, so the status is used instead of columns.
+    //
+    // The statuses are mapped to the corresponding column names, and
+    // disambiguated by including the status name in parentheses if it
+    // differs from the column name.
+    const statusNames = new Map<string, string>();
+    const statuses = (await this.api.listStatus()) as any[];
+    statuses.forEach(({ id, name }) => statusNames.set(id, name));
+    const response = await this.api.getConfiguration(boardId);
+    return (response.columnConfig.columns as any[]).flatMap(
+      ({ name, statuses }: { name: string; statuses: any[] }) =>
+        statuses.map(({ id }) => {
+          const statusName = statusNames.get(id);
+          return statusName && statusName !== name
+            ? { id, name: `${name} (${statusName})` }
+            : { id, name };
+        }),
+    );
+  }
+
   async labels(boardId: string) {
     const response = await this.api
       .getIssuesForBoard(boardId)
