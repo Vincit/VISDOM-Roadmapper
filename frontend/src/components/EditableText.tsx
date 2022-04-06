@@ -72,7 +72,26 @@ const withButtons = (Component: typeof EditableText) => ({
   };
 
   return (
-    <div className={classes(css.withButtonsContainer)}>
+    <div
+      className={classes(css.withButtonsContainer, {
+        [css.withButtonsContainerEditMode]: editOpen,
+      })}
+    >
+      <Component
+        editOpen={editOpen}
+        editText={editText}
+        onChange={handleTextChange}
+        onKeyDown={handleKeyDown}
+        error={{ message: errorMessage, setMessage: setErrorMessage }}
+        isLoading={isLoading}
+        value={value}
+        format={format}
+        required
+        innerRef={(e) => {
+          field.current = e;
+          e.focus();
+        }}
+      />
       {editOpen ? (
         <div className={classes(css.buttonsDiv)}>
           <CloseButton onClick={handleCancel} />
@@ -89,21 +108,6 @@ const withButtons = (Component: typeof EditableText) => ({
           />
         </div>
       )}
-      <Component
-        editOpen={editOpen}
-        editText={editText}
-        onChange={handleTextChange}
-        onKeyDown={handleKeyDown}
-        error={{ message: errorMessage, setMessage: setErrorMessage }}
-        isLoading={isLoading}
-        value={value}
-        format={format}
-        required
-        innerRef={(e) => {
-          field.current = e;
-          e.focus();
-        }}
-      />
     </div>
   );
 };
@@ -117,13 +121,12 @@ export const EditableText: FC<
     format: string | undefined;
   } & ComponentPropsWithoutRef<typeof TextAreaAutosize>
 > = ({ editOpen, editText, value, isLoading, format, ...props }) => {
-  if (!editOpen)
-    return <div className={classes(css.value, css[format ?? ''])}>{value}</div>;
+  if (!editOpen) return <div className={classes(css.value)}>{value}</div>;
   if (isLoading) return <LoadingSpinner />;
   return (
     <TextAreaAutosize
       {...props}
-      className={classes(css.input, css[format ?? ''])}
+      className={classes(css.value)}
       value={editText}
       autoComplete="off"
     />
