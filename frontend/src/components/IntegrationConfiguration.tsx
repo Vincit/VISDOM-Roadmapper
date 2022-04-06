@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
+import ArrowIcon from '@mui/icons-material/ArrowForward';
 import { ReactComponent as ExpandLess } from '../icons/expand_less.svg';
 import { ReactComponent as ExpandMore } from '../icons/expand_more.svg';
 import { StoreDispatchType } from '../redux';
@@ -15,16 +16,164 @@ import {
   IntegrationConfiguration,
   IntegrationConfigurationRequest,
 } from '../redux/roadmaps/types';
+import { TaskStatus } from '../../../shared/types/customTypes';
+import { taskStatusToText } from '../utils/TaskUtils';
 import { titleCase } from '../utils/string';
 import { apiV2 } from '../api/api';
 import { InfoTooltip } from './InfoTooltip';
 import { LoadingSpinner } from './LoadingSpinner';
 import { Input } from './forms/FormField';
+import { CloseButton } from './forms/SvgButton';
 
 import '../shared.scss';
 import css from './IntegrationConfiguration.module.scss';
+import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
+
+const SetMapping: FC<{
+  name: string;
+  status?: TaskStatus;
+  select: (status: TaskStatus) => unknown;
+  remove?: () => unknown;
+}> = ({ name, status, select, remove }) => {
+  const { t } = useTranslation();
+  return (
+    <div style={{ width: '100%', display: 'flex', gap: 10 }}>
+      <span style={{ flexGrow: 1 }}>{name}</span>
+      <ArrowIcon style={{ alignSelf: 'center' }} htmlColor={colors.black40} />
+      <select
+        value={status}
+        onChange={(e) => {
+          select(Number(e.currentTarget.value));
+        }}
+      >
+        {Object.values(TaskStatus).map(
+          (value) =>
+            typeof value !== 'string' && (
+              <option key={value} value={value}>
+                {t(taskStatusToText(value))}
+              </option>
+            ),
+        )}
+      </select>
+      <div style={{ alignSelf: 'center', width: 21 }}>
+        {remove && (
+          <CloseButton
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              remove();
+            }}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
+  configuration: { id, name, roadmapId, boardId, statusMapping },
+}) => {
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const {
+    data: columns,
+    isError,
+    isLoading,
+  } = apiV2.useGetIntegrationBoardColumnsQuery({
+    name,
+    roadmapId,
+  });
+
+  const [selected, setSelected] = useState<{
+    value: string;
+    label: string;
+  } | null>();
+
+  const [setMapping] = apiV2.useSetIntegrationStatusMappingMutation();
+  const [removeMapping] = apiV2.useDeleteIntegrationStatusMappingMutation();
+
+  const select = (fromColumn: string) => (toStatus: TaskStatus) => {
+    setMapping({ roadmapId, name, id, fromColumn, toStatus });
+    setSelected(null);
+  };
+
+  if (isError || !boardId) return null;
+
+  return (
+    <div>
+      <label htmlFor="status-mapping">Task state in {name}</label>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          {errorMessage && (
+            <Alert
+              severity="error"
+              onClose={() => {
+                setErrorMessage('');
+              }}
+              icon={false}
+            >
+              {errorMessage}
+            </Alert>
+          )}
+          <Select
+            name="status-mapping"
+            id="status-mapping"
+            className="react-select"
+            classNamePrefix="react-select"
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            placeholder="Select list"
+            isClearable
+            menuPortalTarget={document.body}
+            value={selected}
+            onChange={setSelected}
+            options={columns
+              ?.filter(
+                (column) =>
+                  !statusMapping?.some(
+                    ({ fromColumn }) => fromColumn === column.id,
+                  ),
+              )
+              .map((column) => ({
+                value: column.id,
+                label: column.name,
+              }))}
+          />
+          {(selected || statusMapping) && <br />}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {selected && (
+              <SetMapping
+                name={selected.label}
+                select={select(selected.value)}
+              />
+            )}
+            {columns &&
+              statusMapping?.map(({ id: mappingId, fromColumn, toStatus }) => {
+                const columnName = columns.find(
+                  (column) => column.id === fromColumn,
+                )?.name;
+                if (!columnName) return undefined;
+                return (
+                  <SetMapping
+                    key={fromColumn}
+                    name={columnName}
+                    status={toStatus}
+                    select={select(fromColumn)}
+                    remove={() =>
+                      removeMapping({ roadmapId, name, id, mappingId })
+                    }
+                  />
+                );
+              })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
   configuration: { id, name, roadmapId, boardId },
@@ -292,6 +441,9 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
               <Oauth configuration={configuration} />
               <SelectBoard configuration={configuration} />
             </>
+          )}
+          {configuration?.boardId && (
+            <MapStates configuration={configuration} />
           )}
         </div>
       )}
