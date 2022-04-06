@@ -1,4 +1,4 @@
-import { Permission } from './../../../../shared/types/customTypes';
+import { Permission, TaskStatus } from './../../../../shared/types/customTypes';
 import { ClientEvents } from './../../../../shared/types/sockettypes';
 import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { IKoaContext, RouteHandlerFnc } from '../../types/customTypes';
@@ -9,7 +9,9 @@ import Roadmap from '../roadmaps/roadmaps.model';
 import { getIntegration, InvalidTokenError } from '../integration';
 
 const integrationConfig = async (name: string, roadmapId: number) => {
-  const config = await Integration.query().findOne({ name, roadmapId });
+  const config = await Integration.query()
+    .findOne({ name, roadmapId })
+    .withGraphFetched('statusMapping');
   if (!config) {
     throw new Error(`Missing configuration for ${name}.`);
   }
@@ -175,7 +177,7 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
   }
   const {
     provider,
-    config: { boardId },
+    config: { boardId, statusMapping },
   } = await integrationProvider(ctx);
   if (!boardId) {
     throw new Error('Invalid config: board id missing');
@@ -186,7 +188,7 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
   const roadmapId = Number(ctx.params.roadmapId);
 
   const tasks = (await provider.tasks(boardId, filters)).map(
-    ({ id, link, description, ...issue }) => ({
+    ({ id, link, description, status, columnId, ...issue }) => ({
       ...issue,
       description: description.substring(0, 1000), // TODO: should we allow longer description?
       importedFrom: name,
@@ -194,6 +196,11 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
       externalLink: link,
       createdByUser,
       roadmapId,
+      status:
+        statusMapping?.find(({ fromColumn }) => fromColumn === columnId)
+          ?.toStatus ??
+        status ??
+        TaskStatus.NOT_STARTED,
     }),
   );
 

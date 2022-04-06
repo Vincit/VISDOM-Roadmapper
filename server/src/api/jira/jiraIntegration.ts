@@ -150,7 +150,7 @@ class JiraImporter implements IntegrationProvider {
           name: issue.fields.summary,
           description: issue.fields.description || 'No description',
           createdAt: issue.fields.created,
-          status: TaskStatus.NOT_STARTED,
+          columnId: issue.fields.status.id,
         }),
       );
     return tasks;

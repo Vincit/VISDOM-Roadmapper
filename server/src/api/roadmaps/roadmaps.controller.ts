@@ -18,7 +18,7 @@ export const getRoadmaps: RouteHandlerFnc = async (ctx) => {
 
   const query = User.relatedQuery('roadmaps').for(user.id);
   if (ctx.query.eager) {
-    query.withGraphFetched('[integrations]');
+    query.withGraphFetched('[integrations.[statusMapping]]');
   }
   ctx.body = await query;
 };

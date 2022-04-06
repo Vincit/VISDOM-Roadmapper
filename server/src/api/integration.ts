@@ -12,7 +12,8 @@ export type ImportedTask = {
   name: string;
   description: string;
   createdAt: string;
-  status: TaskStatus;
+  status?: TaskStatus;
+  columnId?: string;
 };
 
 export interface TaskFilters {

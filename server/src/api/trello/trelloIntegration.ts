@@ -1,5 +1,4 @@
 import { OAuth } from 'oauth';
-import { TaskStatus } from '../../../../shared/types/customTypes';
 
 import {
   ImportedTask,
@@ -95,7 +94,7 @@ class TrelloImporter implements IntegrationProvider {
 
   async tasks(boardId: string, filters?: TaskFilters) {
     const response = await this.fetch<{ [key: string]: string }[]>(
-      `boards/${boardId}/cards/open?fields=shortUrl,name,desc,labels`,
+      `boards/${boardId}/cards/open?fields=shortUrl,name,desc,labels,idList`,
     );
     return response.filter(this.importFilter(filters)).map(
       (card): ImportedTask => ({
@@ -104,7 +103,7 @@ class TrelloImporter implements IntegrationProvider {
         name: card.name,
         description: card.desc || 'No description',
         createdAt: this.cardIdToCreationTime(card.id),
-        status: TaskStatus.NOT_STARTED,
+        columnId: card.idList,
       }),
     );
   }
