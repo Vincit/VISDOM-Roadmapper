@@ -103,6 +103,7 @@ export const getTaskOverviewData = (
         label: i18n.t('Description'),
         keyName: 'description',
         value: task.description,
+        format: 'multiline',
         editable,
       },
     ],

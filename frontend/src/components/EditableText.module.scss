@@ -33,6 +33,9 @@
     @extend .NOT_STARTED;
     color: $COLOR_FOREST;
   }
+  &.multiline {
+    white-space: pre-line;
+  }
 }
 
 .input {
