@@ -13,6 +13,10 @@ import {
   swapOauthAuthorizationToken,
 } from './integration.controller';
 import {
+  setStatusMapping,
+  deleteStatusMapping,
+} from './statusMapping.controller';
+import {
   hasIntegration,
   availableIntegrations,
   registerIntegration,
@@ -54,6 +58,17 @@ integrationRouter.delete(
   '/:integrationName/configuration/:integrationId',
   requirePermission(Permission.IntegrationConfigurationEdit),
   deleteConfigurations,
+);
+
+integrationRouter.post(
+  '/:integrationName/configuration/:integrationId/statusmapping',
+  requirePermission(Permission.IntegrationConfigurationEdit),
+  setStatusMapping,
+);
+integrationRouter.delete(
+  '/:integrationName/configuration/:integrationId/statusmapping/:mappingId',
+  requirePermission(Permission.IntegrationConfigurationEdit),
+  deleteStatusMapping,
 );
 
 integrationRouter.get(`/:integrationName/boards`, getBoards);
