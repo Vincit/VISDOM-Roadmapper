@@ -139,6 +139,21 @@ export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
   ctx.body = (await provider.boards()).find(({ id }) => id === boardId);
 };
 
+export const getBoardColumns: RouteHandlerFnc = async (ctx) => {
+  if (!ctx.state.user) {
+    throw new Error('User is required');
+  }
+  const {
+    provider,
+    config: { boardId },
+  } = await integrationProvider(ctx);
+  if (!boardId) {
+    throw new Error('Invalid config: board id missing');
+  }
+  ctx.body = await provider.columns(boardId);
+  ctx.status = 200;
+};
+
 export const getBoardLabels: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');

@@ -6,6 +6,7 @@ import {
   deleteConfigurations,
   getBoards,
   getSelectedBoard,
+  getBoardColumns,
   getBoardLabels,
   importBoard,
   getOauthAuthorizationURL,
@@ -57,6 +58,7 @@ integrationRouter.delete(
 
 integrationRouter.get(`/:integrationName/boards`, getBoards);
 integrationRouter.get(`/:integrationName/boards/selected`, getSelectedBoard);
+integrationRouter.get(`/:integrationName/columns`, getBoardColumns);
 integrationRouter.get(`/:integrationName/labels`, getBoardLabels);
 integrationRouter.post(
   `/:integrationName/import`,

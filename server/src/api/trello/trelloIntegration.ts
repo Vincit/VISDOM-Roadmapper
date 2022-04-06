@@ -80,6 +80,12 @@ class TrelloImporter implements IntegrationProvider {
     );
   }
 
+  async columns(boardId: string) {
+    return await this.fetch<{ id: string; name: string }[]>(
+      `boards/${boardId}/lists?fields=id,name`,
+    );
+  }
+
   async labels(boardId: string) {
     const { labelNames } = await this.fetch<{
       labelNames: { [key in any]: string };
