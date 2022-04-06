@@ -132,7 +132,7 @@ export const deleteTaskrating: RouteHandlerFnc = async (ctx) => {
   ctx.status = numDeleted === 1 ? 200 : 404;
 };
 
-export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
+export const updateTaskratings: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
   const ratings = ctx.request.body;
   const userId = Number(ctx.state.user.id);
@@ -186,13 +186,19 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
   if (foundRatings.some(({ err }) => err === 403))
     return void (ctx.status = 403);
 
-  const updated = await Taskrating.transaction((trx) =>
-    Promise.all(
+  const result = await Taskrating.transaction(async (trx) => {
+    const toDelete = foundRatings.flatMap(({ value, rating }) =>
+      !value && rating ? [rating.id] : [],
+    );
+    await Taskrating.query(trx).findByIds(toDelete).delete();
+
+    const updated = await Promise.all(
       foundRatings.flatMap(({ rating, value, comment }) =>
         rating ? [rating.$query(trx).patchAndFetch({ value, comment })] : [],
       ),
-    ),
-  );
+    );
+    return { deleted: toDelete, updated };
+  });
 
   await emitRoadmapEvent(ctx.io, {
     roadmapId: Number(ctx.params.roadmapId),
@@ -202,5 +208,5 @@ export const patchTaskratings: RouteHandlerFnc = async (ctx) => {
     eventParams: [],
   });
 
-  return void (ctx.body = updated);
+  return void (ctx.body = result);
 };

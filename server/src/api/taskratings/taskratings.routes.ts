@@ -3,7 +3,7 @@ import {
   getTaskratings,
   deleteTaskrating,
   postTaskRatings,
-  patchTaskratings,
+  updateTaskratings,
 } from './taskratings.controller';
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../../../shared/types/customTypes';
@@ -23,7 +23,7 @@ taskratingRouter.post(
 taskratingRouter.patch(
   '/taskratings',
   requirePermission(Permission.TaskRatingEdit),
-  patchTaskratings,
+  updateTaskratings,
 );
 taskratingRouter.delete(
   '/taskratings/:ratingId',

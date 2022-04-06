@@ -76,7 +76,10 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
   );
   const roadmapId = useSelector(chosenRoadmapIdSelector);
 
-  const [patchTaskratings, patchStatus] = apiV2.usePatchTaskratingsMutation();
+  const [
+    updateTaskratings,
+    updateStatus,
+  ] = apiV2.useUpdateTaskratingsMutation();
   const [addTaskratings, addStatus] = apiV2.useAddTaskratingsMutation();
 
   const dimension =
@@ -146,7 +149,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
     event.stopPropagation();
 
     const changed = businessValueRatings.filter((rating) => rating.changed);
-    const action = edit ? patchTaskratings : addTaskratings;
+    const action = edit ? updateTaskratings : addTaskratings;
     if (!roadmapId || changed.length === 0) return;
     try {
       await action({ roadmapId, ratings: changed, taskId: task.id }).unwrap();
@@ -233,7 +236,7 @@ export const RateTaskModal: Modal<ModalTypes.RATE_TASK_MODAL> = ({
       </ModalContent>
       <ModalFooter closeModal={closeModal}>
         <ModalFooterButtonDiv>
-          {patchStatus.isLoading || addStatus.isLoading ? (
+          {updateStatus.isLoading || addStatus.isLoading ? (
             <LoadingSpinner />
           ) : (
             <button

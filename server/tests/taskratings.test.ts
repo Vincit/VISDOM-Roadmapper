@@ -179,9 +179,9 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
           },
         ]);
       expect(res.status).to.equal(200);
-      expect(res.body.length).to.equal(1);
-      expect(res.body[0].dimension).to.equal(rating.dimension);
-      expect(res.body[0].value).to.equal(newValue);
+      expect(res.body.updated.length).to.equal(1);
+      expect(res.body.updated[0].dimension).to.equal(rating.dimension);
+      expect(res.body.updated[0].value).to.equal(newValue);
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
       const { rating, taskId, roadmapId } = await getTestRatingData();

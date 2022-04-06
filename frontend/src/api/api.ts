@@ -165,7 +165,7 @@ export const apiV2 = createApi({
         method: 'delete',
       }),
     }),
-    patchTaskratings: build.mutation<
+    updateTaskratings: build.mutation<
       Taskrating[],
       { roadmapId: number; taskId: number; ratings: TaskratingRequest[] }
     >({
