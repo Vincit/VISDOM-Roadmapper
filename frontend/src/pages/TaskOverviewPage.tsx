@@ -245,8 +245,9 @@ export const TaskOverviewPage = () => {
   const { data: tasks, isFetching } = apiV2.useGetTasksQuery(
     roadmapId ?? skipToken,
   );
+
   const taskIdx = tasks?.findIndex(({ id }) => Number(taskId) === id);
-  if (isFetching) return <LoadingSpinner />;
+  if (!roadmapId || isFetching) return <LoadingSpinner />;
   if (!tasks || taskIdx === undefined || taskIdx < 0)
     return <Redirect to={paths.notFound} />;
   return <TaskOverview tasks={tasks} task={tasks[taskIdx]} taskIdx={taskIdx} />;
