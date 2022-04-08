@@ -92,7 +92,7 @@ export const SortableTaskList: FC<{
         mode="virtual"
         renderClone={(provided, _, rubric) => (
           <StaticTask
-            task={tasks[rubric.source.index]}
+            task={searched[rubric.source.index]}
             showRatings={!!showRatings}
             provided={provided}
           />
