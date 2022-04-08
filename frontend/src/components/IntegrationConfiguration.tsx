@@ -267,6 +267,32 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
   );
 };
 
+const Remove: FC<{ configuration: IntegrationConfiguration }> = ({
+  configuration,
+}) => {
+  const [remove] = apiV2.useDeleteIntegrationConfigurationMutation();
+  return (
+    <div className={classes(css.layoutRow)}>
+      <span className={classes(css.columnHeader)}>
+        <button
+          className={classes(css['button-small-filled'], css.deleteButton)}
+          type="submit"
+          onClick={(e) => {
+            e.preventDefault();
+            // TODO: ask confirmation
+            remove(configuration);
+          }}
+        >
+          <Trans
+            i18nKey="Remove configuration"
+            values={{ name: titleCase(configuration.name) }}
+          />
+        </button>
+      </span>
+    </div>
+  );
+};
+
 const Oauth: FC<{ configuration: IntegrationConfiguration }> = ({
   configuration: { name, roadmapId },
 }) => {
@@ -445,6 +471,7 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
           {configuration?.boardId && (
             <MapStates configuration={configuration} />
           )}
+          {configuration && <Remove configuration={configuration} />}
         </div>
       )}
     </div>
