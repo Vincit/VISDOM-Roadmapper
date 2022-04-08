@@ -15,7 +15,7 @@ export const ExpandableColumn: FC<{
 }> = ({ expanded, onToggle, title, children, className, style }) => (
   <div className={className} style={style}>
     <div
-      className={classes(css.expandableContentWrapper, {
+      className={classes(css.expandableWrapper, {
         [css.minimized]: !expanded,
       })}
     >
@@ -31,7 +31,9 @@ export const ExpandableColumn: FC<{
         {expanded ? <ExpandLess /> : <ExpandMore />}
         {title}
       </div>
-      {expanded && children}
+      <div className={classes(css.expandableContent)}>
+        {expanded && children}
+      </div>
     </div>
   </div>
 );

@@ -18,7 +18,7 @@
   overflow-y: auto;
   min-height: 100px;
   height: inherit;
-  padding: 16px;
+  padding: 1px;
   padding-top: 0px;
   scrollbar-width: thin;
 
@@ -29,19 +29,14 @@
   @extend .searchBarContainer;
   @extend .layout-column;
   background-color: $COLOR_BLACK10;
-  padding: 10px 0px;
+  padding: 10px 3px;
   gap: 10px;
   position: sticky;
   top: 0;
 }
 
-.taskName {
-  @extend .taskNameContainer;
-  width: 175px;
-}
-
 .measureTaskName {
-  @extend .taskName;
+  @extend .taskNameContainer;
   visibility: hidden;
 }
 

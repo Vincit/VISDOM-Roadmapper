@@ -1,4 +1,4 @@
-@import './SortableTaskList.module.scss';
+@import '../shared.scss';
 
 .taskDiv {
   display: flex;
@@ -11,7 +11,7 @@
 }
 
 .leftSideDiv {
-  @extend .taskName;
+  @extend .taskNameContainer;
 }
 
 .rightSideDiv {

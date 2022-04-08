@@ -1,6 +1,6 @@
 @import '../shared.scss';
 
-.expandableContentWrapper {
+.expandableWrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -60,4 +60,10 @@
     margin-right: 0;
     margin-bottom: 11px;
   }
+}
+
+.expandableContent {
+  padding: 15px;
+  padding-top: 0;
+  height: 100%;
 }
