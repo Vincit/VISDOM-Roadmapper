@@ -280,6 +280,7 @@ form {
   }
   &:disabled {
     background: $COLOR_BLACK40;
+    cursor: inherit;
   }
 }
 

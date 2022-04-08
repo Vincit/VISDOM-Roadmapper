@@ -1,17 +1,27 @@
 @import '../../shared.scss';
 
 .svgButtonIcon {
+  &:not(.disabled) {
+    &:hover path {
+      fill: var(--icon-hover-color, $COLOR_BLACK60);
+    }
+    cursor: pointer;
+  }
+
   path {
     fill: var(--icon--color, $COLOR_BLACK40);
     transition: 150ms ease-out;
   }
-  &:hover path {
-    fill: var(--icon-hover-color, $COLOR_BLACK60);
+  &.disabled path {
+    fill: var(--icon-disabled-color, $COLOR_BLACK40);
   }
-  cursor: pointer;
 }
 
 .closeButton {
   width: 24px !important;
   height: 24px !important;
+}
+
+a {
+  line-height: 1;
 }

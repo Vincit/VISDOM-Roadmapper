@@ -17,6 +17,7 @@ const classes = classNames.bind(css);
 
 type ButtonProps = {
   onClick?: (event: MouseEvent) => void;
+  disabled?: boolean;
 };
 
 type ExtraProps = {
@@ -36,16 +37,19 @@ function svgButton<E = {}>(
     ...defaults
   }: ExtraProps & { [K in keyof E]?: E[K] },
 ): SvgButton<Pick<E, Exclude<keyof E, keyof ExtraProps>>> {
-  return ({ href, ...props }) => {
+  return ({ href, disabled, onClick, ...props }) => {
     const icon = (
       <Icon
-        className={classes(css.svgButtonIcon, className)}
+        className={classes(css.svgButtonIcon, className, {
+          [css.disabled]: disabled,
+        })}
         style={{ '--icon--color': iconColor, '--icon-hover-color': hoverColor }}
+        onClick={disabled ? undefined : onClick}
         {...defaults}
         {...props}
       />
     );
-    return href ? <a href={href}>{icon}</a> : icon;
+    return disabled || !href ? icon : <a href={href}>{icon}</a>;
   };
 }
 

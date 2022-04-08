@@ -269,6 +269,7 @@ export const MilestonesEditor = () => {
             css.layoutRow,
             css.overflowYAuto,
             css.horizontalScroller,
+            { 'loading-cursor': disableDrag },
           )}
           ref={droppableProvided.innerRef}
         >
@@ -298,7 +299,6 @@ export const MilestonesEditor = () => {
                           <div
                             className={classes(css.instructions, {
                               [css.highlight]: snapshot.isDraggingOver,
-                              'loading-cursor': disableDrag,
                             })}
                             ref={provided.innerRef}
                             {...provided.droppableProps}
@@ -329,6 +329,7 @@ export const MilestonesEditor = () => {
                           id: version.id,
                           roadmapId: roadmapId!,
                         })}
+                        disabled={disableDrag}
                       />
                       <SettingsButton
                         onClick={editVersionClicked(version.id, version.name)}
@@ -336,6 +337,7 @@ export const MilestonesEditor = () => {
                           id: version.id,
                           name: version.name,
                         })}
+                        disabled={disableDrag}
                       />
                     </div>
                   </div>
@@ -346,12 +348,13 @@ export const MilestonesEditor = () => {
           <div className={classes(css.milestoneCol)}>
             <div
               className={classes(css.milestoneWrapper, css.addNewBtnWrapper)}
-              onClick={addVersion}
-              onKeyPress={addVersion}
-              role="button"
-              tabIndex={0}
             >
-              <button className={classes(css['button-large'])} type="submit">
+              <button
+                className={classes(css['button-large'])}
+                type="button"
+                onClick={addVersion}
+                disabled={disableDrag}
+              >
                 <Trans i18nKey="+ Add new milestone" />
               </button>
             </div>
@@ -401,6 +404,7 @@ export const MilestonesEditor = () => {
             listId={ROADMAP_LIST_ID}
             tasks={versionLists[ROADMAP_LIST_ID] || []}
             disableDragging={disableDrag}
+            className={classes({ 'loading-cursor': disableDrag })}
             showRatings
             showSearch
           />
