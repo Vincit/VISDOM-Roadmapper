@@ -55,7 +55,7 @@ export const TaskMapPage = () => {
   const {
     data: users,
     isLoading: isLoadingUsers,
-  } = apiV2.useGetRoadmapUsersQuery(Number(roadmapId) ?? skipToken);
+  } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
