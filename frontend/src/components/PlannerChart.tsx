@@ -27,7 +27,7 @@ import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
-const colors = ['blue', 'red', 'green', 'yellow', 'orange'];
+const colors = ['blue', 'red', 'green', 'orange'] as const;
 
 enum DataKeys {
   OptimalRoadmap = 'Optimal roadmap',
@@ -178,7 +178,7 @@ export const PlannerChart: FC<{
               name={vername}
               type="linear"
               dataKey={vername}
-              stroke={colors[index]}
+              stroke={colors[index % colors.length]}
             />
           ))}
 
@@ -214,7 +214,7 @@ export const PlannerChart: FC<{
               Value
             </Label>
           </YAxis>
-          <Legend verticalAlign="bottom" />
+          <Legend verticalAlign="bottom" wrapperStyle={{ bottom: 12 }} />
         </LineChart>
       </ResponsiveContainer>
       {!hideButtons && (
