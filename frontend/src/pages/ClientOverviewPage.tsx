@@ -35,18 +35,15 @@ const ClientOverview: FC<{
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   // select users as client's representatives does not include type
   const representativeIds = client.representatives?.map(({ id }) => id);
-  const { data: allUsers } = apiV2.useGetRoadmapUsersQuery(
-    roadmapId ?? skipToken,
-  );
+  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const representatives =
-    allUsers?.filter(({ id }) => representativeIds?.includes(id)) ?? [];
+    users?.filter(({ id }) => representativeIds?.includes(id)) ?? [];
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
   const { tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
     selectFromResult: ({ data }) => ({ tasks: data ?? [] }),
   });
-  const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
 
   if (!roadmapId) return null;
   const unratedTasks = unratedTasksAmount(
