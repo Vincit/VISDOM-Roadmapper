@@ -57,6 +57,7 @@ export const TaskMapPage = () => {
     isLoading: isLoadingUsers,
   } = apiV2.useGetRoadmapUsersQuery(Number(roadmapId) ?? skipToken);
   const [isLoading, setIsLoading] = useState(false);
+  const [stagedReady, setStagedReady] = useState(false);
 
   useEffect(() => {
     if (relations === undefined) return;
@@ -83,7 +84,12 @@ export const TaskMapPage = () => {
         })),
       ),
     );
+    setStagedReady(true);
   }, [relations, tasks, stagedTasks]);
+
+  useEffect(() => {
+    if (stagedReady && !stagedTasks.length) setExpandUnstaged(true);
+  }, [stagedTasks, stagedReady]);
 
   const addSynergyRelations = (from: number, to: number[]) =>
     addSynergy({ roadmapId: roadmapId!, from, to }).unwrap();
