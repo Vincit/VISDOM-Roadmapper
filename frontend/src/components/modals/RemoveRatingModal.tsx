@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import Alert from '@mui/material/Alert';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Modal, ModalTypes } from './types';
@@ -17,6 +17,7 @@ export const RemoveRatingModal: Modal<ModalTypes.REMOVE_RATING_MODAL> = ({
   roadmapId,
   rating,
 }) => {
+  const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
   const [
     deleteTaskratingTrigger,
@@ -47,7 +48,6 @@ export const RemoveRatingModal: Modal<ModalTypes.REMOVE_RATING_MODAL> = ({
     }
   };
 
-  if (!customer) return null;
   return (
     <form onSubmit={handleSubmit}>
       <ModalHeader closeModal={closeModal}>
@@ -59,13 +59,22 @@ export const RemoveRatingModal: Modal<ModalTypes.REMOVE_RATING_MODAL> = ({
         <div className="modalCancelContent">
           <AlertIcon />
           <div>
-            <Trans
-              i18nKey="Remove rating warning"
-              values={{
-                rater: rater?.email ?? 'deleted user',
-                customer: customer.name,
-              }}
-            />
+            {customer ? (
+              <Trans
+                i18nKey="Remove representative rating warning"
+                values={{
+                  rater: rater?.email ?? t('deleted account'),
+                  customer: customer.name,
+                }}
+              />
+            ) : (
+              <Trans
+                i18nKey="Remove developer rating warning"
+                values={{
+                  rater: rater?.email ?? t('deleted account'),
+                }}
+              />
+            )}
           </div>
         </div>
         {errorMessage.length > 0 && (
