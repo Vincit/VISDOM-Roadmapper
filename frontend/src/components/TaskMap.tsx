@@ -105,7 +105,7 @@ export const TaskMap: FC<{
   }, [flowInstance, flowElements, mapPosition]);
 
   useEffect(() => {
-    if (!divRef || taskRelations.length === 0) return;
+    if (!divRef) return;
 
     const measuredRelations = taskRelations.map((relation, idx) => {
       // calculate taskgroup height
