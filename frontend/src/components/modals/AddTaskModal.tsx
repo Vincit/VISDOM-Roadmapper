@@ -19,6 +19,7 @@ import { ModalHeader } from './modalparts/ModalHeader';
 import { Input, TextArea } from '../forms/FormField';
 import { representsCustomers } from '../../utils/UserUtils';
 import '../../shared.scss';
+import './AddTaskModal.module.scss';
 import { apiV2 } from '../../api/api';
 
 export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
