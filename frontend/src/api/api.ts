@@ -303,6 +303,21 @@ export const apiV2 = createApi({
         method: 'delete',
       }),
     }),
+    swapIntegrationOAuthToken: build.mutation<
+      void,
+      {
+        roadmapId: number;
+        name: string;
+        swapRequest: OAuthTokenSwapRequest;
+      }
+    >({
+      invalidatesTags: ['Integrations'],
+      query: ({ roadmapId, name, swapRequest }) => ({
+        url: `/roadmaps/${roadmapId}/integrations/${name}/oauth/swaptoken`,
+        method: 'post',
+        data: swapRequest,
+      }),
+    }),
     patchIntegrationConfiguration: build.mutation<
       IntegrationConfiguration,
       IntegrationConfigurationRequest
@@ -553,18 +568,6 @@ const getIntegrationOauthURL = async (name: string, roadmapId: number) => {
   return response.data as OAuthURLResponse;
 };
 
-const swapIntegrationOAuthToken = async (
-  name: string,
-  swapRequest: OAuthTokenSwapRequest,
-  roadmapId: number,
-) => {
-  await axios.post(
-    `/roadmaps/${roadmapId}/integrations/${name}/oauth/swaptoken`,
-    swapRequest,
-  );
-  return true;
-};
-
 const sendNotification = async (
   users: number[],
   task: Task,
@@ -636,7 +639,6 @@ export const api = {
   generateCurrentUserToken,
   deleteCurrentUserToken,
   getIntegrationOauthURL,
-  swapIntegrationOAuthToken,
   sendNotification,
   patchDefaultRoadmap,
   getInvitation,

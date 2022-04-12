@@ -26,6 +26,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     undefined,
     selectById(roadmapId),
   );
+  const [swapOAuthToken] = apiV2.useSwapIntegrationOAuthTokenMutation();
   const currentConfiguration = roadmap?.integrations.find(
     (it) => it.name === name,
   );
@@ -70,33 +71,24 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     if (form.checkValidity() && currentConfiguration) {
       setIsLoading(true);
 
-      const swapToken = async () => {
-        try {
-          const success = await api.swapIntegrationOAuthToken(
-            name,
-            {
-              id: currentConfiguration.id,
-              verifierToken: formValues.oauthVerifierCode,
-              token: formValues.token,
-              tokenSecret: formValues.tokenSecret,
-            },
-            roadmapId,
-          );
-          if (success) {
-            closeModal(true);
-            return;
-          }
-          setErrorMessage(
-            t('Oauth token swap error', { name: titleCase(name) }),
-          );
-        } catch (err: any) {
+      swapOAuthToken({
+        name,
+        swapRequest: {
+          id: currentConfiguration.id,
+          verifierToken: formValues.oauthVerifierCode,
+          token: formValues.token,
+          tokenSecret: formValues.tokenSecret,
+        },
+        roadmapId,
+      })
+        .unwrap()
+        .then(() => closeModal(true))
+        .catch((err) =>
           setErrorMessage(
             err.response?.data?.errors ?? t('Internal server error'),
-          );
-        }
-        setIsLoading(false);
-      };
-      swapToken();
+          ),
+        )
+        .finally(() => setIsLoading(false));
     }
   };
 
