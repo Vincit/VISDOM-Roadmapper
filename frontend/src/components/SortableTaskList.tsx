@@ -1,4 +1,11 @@
-import { CSSProperties, FC, useEffect, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  FC,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { VariableSizeList } from 'react-window';
 import { useTranslation } from 'react-i18next';
 import { Droppable } from 'react-beautiful-dnd';
@@ -60,20 +67,23 @@ export const SortableTaskList: FC<{
     listRef.current!.resetAfterIndex(0);
   }, [searched, divRef]);
 
-  const Row = ({ data, index, style }: RowProps) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { height: _, ...rest } = style;
-    return (
-      <SortableTask
-        style={{ ...rest }}
-        key={data[index].id}
-        task={data[index]}
-        index={index}
-        disableDragging={disableDragging}
-        showRatings={!!showRatings}
-      />
-    );
-  };
+  const Row = useCallback(
+    ({ data, index, style }: RowProps) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { height: _, ...rest } = style;
+      return (
+        <SortableTask
+          style={{ ...rest }}
+          key={data[index].id}
+          task={data[index]}
+          index={index}
+          disableDragging={disableDragging}
+          showRatings={!!showRatings}
+        />
+      );
+    },
+    [disableDragging, showRatings],
+  );
 
   return (
     <div className={classes(css.sortableListWrapper, className)}>
