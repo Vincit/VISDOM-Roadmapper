@@ -129,6 +129,8 @@ type Predicate<T> = (t: T) => boolean;
 const not = <T>(f: Predicate<T>) => (t: T) => !f(t);
 const or = <T>(...fs: Predicate<T>[]) => (t: T) =>
   fs.reduce((res, f) => res || f(t), false);
+const and = <T>(...fs: Predicate<T>[]) => (t: T) =>
+  fs.reduce((res, f) => res && f(t), true);
 
 export const ratedByUser = (user: RoadmapUser | UserInfo) => (task: Task) =>
   task.ratings.some((rating) => rating.createdByUser === user.id);
@@ -327,6 +329,7 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
 
     // Otherwise filter for tasks that lack ratings from at least one represented customer
     return (task: Task) =>
+      !completed(task) &&
       task.roadmapId === roadmapId &&
       !filteredCustomers.every((customer) =>
         ratedByCustomer(customer, user)(task),
@@ -334,7 +337,7 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
   }
 
   // For other user types just look for missing ratings by them
-  return not(ratedByUser(user));
+  return not(or(completed, ratedByUser(user)));
 };
 
 export const unratedTasksByUserCount = (
@@ -346,7 +349,7 @@ export const unratedTasksByUserCount = (
   return tasks?.filter(awaitsUserRatings(user, roadmapId, customers)).length;
 };
 
-export const hasMissingRatings = (
+const hasMissingRatings = (
   users: RoadmapUser[] = [],
   customers: Customer[] = [],
 ) => {
@@ -373,15 +376,17 @@ export const isUnrated = (
   roadmapId: number,
   users: RoadmapUser[] | undefined,
   customers: Customer[] | undefined,
-): ((task: Task) => boolean) => {
-  if (isCustomer(user))
-    return (task) =>
+) => {
+  let condition: (task: Task) => boolean;
+  if (isCustomer(user)) {
+    condition = (task) =>
       !!user.representatives?.some((rep) => !ratedByCustomer(user, rep)(task));
-
-  const baseCondition = awaitsUserRatings(user, roadmapId, customers);
-  if (getType(user, roadmapId) === RoleType.Admin)
-    return or(baseCondition, hasMissingRatings(users, customers));
-  return baseCondition;
+  } else {
+    condition = awaitsUserRatings(user, roadmapId, customers);
+    if (getType(user, roadmapId) === RoleType.Admin)
+      condition = or(condition, hasMissingRatings(users, customers));
+  }
+  return and(not(completed), condition);
 };
 
 export const unratedTasksAmount = (
@@ -393,12 +398,14 @@ export const unratedTasksAmount = (
 ) => tasks.filter(isUnrated(user, roadmapId, users, customers)).length;
 
 export const missingDeveloper = (task: Task) => {
+  if (completed(task)) return () => false;
   const ratedBy = hasUserRating(task);
   return (user: RoadmapUser) =>
     user.type === RoleType.Developer && !ratedBy(user);
 };
 
 export const missingCustomer = (task: Task) => (customer: Customer) =>
+  !completed(task) &&
   !customer.representatives?.every((rep) =>
     ratedByCustomer(customer, rep)(task),
   );
@@ -416,6 +423,7 @@ export const getMissingRepresentatives = (
   allUsers: RoadmapUser[],
   task: Task,
 ) => {
+  if (completed(task)) return [];
   const missingRepresentativeIds = new Set<number>();
   const ratingsForTask = task.ratings
     .filter((rating) => rating.forCustomer === customer.id)
