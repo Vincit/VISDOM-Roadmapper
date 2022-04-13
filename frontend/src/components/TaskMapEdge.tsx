@@ -5,7 +5,7 @@ import {
   getMarkerEnd,
   getBezierPath,
   Position,
-  ArrowHeadType,
+  MarkerType,
 } from 'react-flow-renderer';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './TaskMapEdge.module.scss';
@@ -107,7 +107,7 @@ const DrawPath: FC<DrawPathProps> = ({
   );
 };
 
-interface CustomEdgeData {
+export interface CustomEdgeData {
   disableInteraction: boolean;
   isLoading: boolean;
   setIsLoading: (_: boolean) => void;
@@ -121,7 +121,7 @@ interface CustomEdgeProps {
   targetY: number;
   sourcePosition: Position | undefined;
   targetPosition: Position | undefined;
-  arrowHeadType: ArrowHeadType | undefined;
+  arrowHeadType: MarkerType;
   markerEndId: string;
   data: CustomEdgeData;
 }

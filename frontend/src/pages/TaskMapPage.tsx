@@ -130,6 +130,8 @@ export const TaskMapPage = () => {
     const destinationId = Number(destination.droppableId);
     const sourceId = Number(source.droppableId);
 
+    if (sourceId === destinationId) return;
+    if (dropUnavailable.has(destination.droppableId)) return;
     if (sourceId === -1) {
       // unstaged task added to existing group
       setStagedTasks((prev) => [...prev, draggedTaskId]);
@@ -187,9 +189,8 @@ export const TaskMapPage = () => {
     try {
       setIsLoading(true);
       if (reason === 'DROP') {
-        if (!destination) await onDragMoveOutside(draggedTaskId);
-        else if (source.droppableId !== destination.droppableId)
-          await onDragMoveToGroup(source, destination, draggedTaskId);
+        if (!destination) return await onDragMoveOutside(draggedTaskId);
+        await onDragMoveToGroup(source, destination, draggedTaskId);
       }
     } catch (err) {
       setTaskRelations(backupList);
