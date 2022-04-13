@@ -187,9 +187,9 @@ export const TaskMapPage = () => {
     try {
       setIsLoading(true);
       if (reason === 'DROP') {
-        if (!destination) await onDragMoveOutside(draggedTaskId);
-        else if (source.droppableId !== destination.droppableId)
-          await onDragMoveToGroup(source, destination, draggedTaskId);
+        if (source.droppableId === destination?.droppableId) return;
+        if (!destination) return await onDragMoveOutside(draggedTaskId);
+        await onDragMoveToGroup(source, destination, draggedTaskId);
       }
     } catch (err) {
       setTaskRelations(backupList);

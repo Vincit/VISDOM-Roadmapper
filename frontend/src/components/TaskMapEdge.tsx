@@ -1,12 +1,7 @@
 import { FC, MouseEvent, useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import {
-  getMarkerEnd,
-  getBezierPath,
-  Position,
-  ArrowHeadType,
-} from 'react-flow-renderer';
+import { getMarkerEnd, getBezierPath, Position } from 'react-flow-renderer';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './TaskMapEdge.module.scss';
 import { apiV2 } from '../api/api';
@@ -121,7 +116,7 @@ interface CustomEdgeProps {
   targetY: number;
   sourcePosition: Position | undefined;
   targetPosition: Position | undefined;
-  arrowHeadType: ArrowHeadType | undefined;
+  arrowHeadType: any;
   markerEndId: string;
   data: CustomEdgeData;
 }
