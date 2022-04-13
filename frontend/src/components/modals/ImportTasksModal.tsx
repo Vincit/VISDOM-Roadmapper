@@ -1,9 +1,9 @@
-import { FormEvent, useEffect, useState, useMemo } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
-import { apiV2, selectById } from '../../api/api';
+import { apiV2 } from '../../api/api';
 import { StoreDispatchType } from '../../redux';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { RootState } from '../../redux/types';
@@ -33,13 +33,9 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
     importIntegrationBoard,
     importStatus,
   ] = apiV2.useImportIntegrationBoardMutation();
-  const { data: roadmap } = apiV2.useGetRoadmapsQuery(undefined, {
-    skip: !chosenRoadmapId,
-    ...selectById(chosenRoadmapId),
-  });
-  const selectedBoardId = useMemo(
-    () => roadmap?.integrations.find((it) => it.name === name)?.boardId,
-    [roadmap, name],
+  const { data: selectedBoard } = apiV2.useGetIntegrationSelectedBoardQuery(
+    { name, roadmapId: chosenRoadmapId! },
+    { skip: !chosenRoadmapId },
   );
   const {
     data: labels,
@@ -103,18 +99,18 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
             </label>
             <Select
               id="labels"
-              key={selectedBoardId}
+              key={selectedBoard?.id}
               className="react-select"
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               placeholder="Import all issues"
               isMulti
               isClearable
-              isDisabled={selectedBoardId === undefined}
+              isDisabled={!selectedBoard?.id}
               menuPortalTarget={document.body}
               onChange={(selected) =>
                 setSelectedLabels(selected.map(({ value }) => value))
               }
-              isLoading={selectedBoardId !== undefined && isLoading}
+              isLoading={!!selectedBoard?.id && isLoading}
               defaultValue={selectedLabels?.map((label) => ({
                 value: label,
                 label,
@@ -141,7 +137,7 @@ export const ImportTasksModal: Modal<ModalTypes.IMPORT_TASKS_MODAL> = ({
             <button
               className="button-large"
               type="submit"
-              disabled={isError || selectedBoardId === undefined}
+              disabled={isError || !selectedBoard?.id}
             >
               <Trans i18nKey="Import" />
             </button>
