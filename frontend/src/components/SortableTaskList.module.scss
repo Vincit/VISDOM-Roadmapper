@@ -35,11 +35,6 @@
   top: 0;
 }
 
-.measureTaskName {
-  @extend .taskNameContainer;
-  visibility: hidden;
-}
-
 .notAllowed {
   cursor: not-allowed;
 }

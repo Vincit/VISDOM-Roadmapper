@@ -1,30 +1,39 @@
-import { CSSProperties, FC } from 'react';
+import { CSSProperties, FC, forwardRef } from 'react';
+import classNames from 'classnames';
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Task } from '../redux/roadmaps/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import css from './SortableTask.module.scss';
 
-export const StaticTask: FC<{
-  task: Task;
-  showRatings: boolean;
-  provided: DraggableProvided;
-  style?: CSSProperties;
-}> = ({ task, showRatings, provided, style }) => (
+const classes = classNames.bind(css);
+
+export const StaticTask = forwardRef<
+  HTMLDivElement,
+  {
+    task: Task;
+    showRatings: boolean;
+    provided?: DraggableProvided;
+    style?: CSSProperties;
+    className?: string;
+  }
+>(({ task, showRatings, provided, style, className }, ref) => (
   <div
-    className={css.taskDiv}
-    ref={provided.innerRef}
-    {...provided.draggableProps}
-    {...provided.dragHandleProps}
-    style={{ ...provided.draggableProps.style, ...(style && { ...style }) }}
+    className={classes(css.taskDiv, className)}
+    ref={provided?.innerRef}
+    {...provided?.draggableProps}
+    {...provided?.dragHandleProps}
+    style={{ ...provided?.draggableProps.style, ...(style && { ...style }) }}
   >
-    <div className={css.leftSideDiv}>{task.name}</div>
+    <div className={css.leftSideDiv} ref={ref}>
+      {task.name}
+    </div>
     <div className={css.rightSideDiv}>
       {showRatings && <TaskRatingsText task={task} />}
       <DragIndicatorIcon fontSize="small" />
     </div>
   </div>
-);
+));
 
 export const SortableTask: FC<{
   task: Task;

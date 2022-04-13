@@ -45,7 +45,7 @@ export const SortableTaskList: FC<{
   const [search, setSearch] = useState('');
   const [searched, setSearched] = useState(tasks);
   const listRef = useRef<VariableSizeList<any> | null>(null);
-  const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
+  const [measureRef, setMeasureRef] = useState<HTMLDivElement | null>(null);
   const [rowHeights, setRowHeights] = useState<number[]>([]);
 
   useEffect(() => {
@@ -55,17 +55,17 @@ export const SortableTaskList: FC<{
   }, [search, tasks]);
 
   useEffect(() => {
-    if (!divRef) return;
+    if (!measureRef) return;
     const heights = searched.map(({ name }) => {
-      divRef.textContent = name;
-      const textHeight = divRef.offsetHeight;
-      divRef.textContent = '';
+      measureRef.textContent = name;
+      const textHeight = measureRef.offsetHeight;
+      measureRef.textContent = '';
 
       return 22 + textHeight; // 22 = margin + padding
     });
     setRowHeights(heights);
     listRef.current!.resetAfterIndex(0);
-  }, [searched, divRef]);
+  }, [searched, measureRef]);
 
   const Row = useCallback(
     ({ data, index, style }: RowProps) => {
@@ -132,7 +132,14 @@ export const SortableTaskList: FC<{
                 </VariableSizeList>
               )}
             </AutoSizer>
-            <div ref={setDivRef} className={classes(css.measureTaskName)} />
+            {searched.length > 0 && (
+              <StaticTask
+                ref={setMeasureRef}
+                className="measure"
+                showRatings={!!showRatings}
+                task={searched[0]}
+              />
+            )}
           </div>
         )}
       </Droppable>
