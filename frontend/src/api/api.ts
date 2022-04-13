@@ -188,7 +188,7 @@ export const apiV2 = createApi({
       }),
     }),
     getVersions: build.query<Version[], number>({
-      providesTags: ['Versions'],
+      providesTags: ['Versions', 'Tasks'],
       query: (roadmapId) => ({
         url: `roadmaps/${roadmapId}/versions`,
         method: 'get',
