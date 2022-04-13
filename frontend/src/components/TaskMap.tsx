@@ -1,14 +1,18 @@
-import { ReactNode, FC, useEffect, useState } from 'react';
+import { ReactNode, FC, useEffect, useState, useCallback } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import ReactFlow, {
+  applyNodeChanges,
   Controls,
-  OnLoadParams,
   Position,
+  ReactFlowInstance,
+  Node,
+  Edge as FlowEdge,
 } from 'react-flow-renderer';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { useTranslation } from 'react-i18next';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
   chosenRoadmapIdSelector,
   taskmapPositionSelector,
@@ -22,12 +26,13 @@ import {
   reachable,
 } from '../utils/TaskRelationUtils';
 import { TaskRelationType } from '../../../shared/types/customTypes';
-import { CustomEdge } from './TaskMapEdge';
+import { CustomEdge, CustomEdgeData } from './TaskMapEdge';
 import { ConnectionLine } from './TaskMapConnection';
 import { TaskProps } from './TaskMapTask';
 import { TaskGroup } from './TaskMapTaskGroup';
 import { InfoTooltip } from './InfoTooltip';
 import { apiV2 } from '../api/api';
+
 import css from './TaskMap.module.scss';
 
 const classes = classNames.bind(css);
@@ -36,34 +41,11 @@ const CustomNodeComponent: FC<{ data: any }> = ({ data }) => {
   return <div>{data.label}</div>;
 };
 
-type Group = {
-  id: string;
-  type: 'special';
-  sourcePosition: Position;
-  targetPosition: Position;
-  draggable: boolean;
-  position: {
-    x: number;
-    y: number;
-  };
-  data: {
-    label: ReactNode;
-  };
-};
+type Group = Node<{ label: ReactNode }> & { type: 'special' };
+type Edge = FlowEdge<CustomEdgeData> & { type: 'custom' };
 
-type Edge = {
-  id: string;
-  type: 'custom';
-  source: string;
-  sourceHandle: string;
-  target: string;
-  targetHandle: string;
-  data: {
-    disableInteraction: boolean;
-    isLoading: boolean;
-    setIsLoading: (_: boolean) => void;
-  };
-};
+const nodeTypes = { special: CustomNodeComponent };
+const edgeTypes = { custom: CustomEdge };
 
 export const TaskMap: FC<{
   taskRelations: GroupedRelation[];
@@ -84,26 +66,30 @@ export const TaskMap: FC<{
 }) => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const flowKey = `taskmap-positions-key-rm-${roadmapId}`;
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
   const dispatch = useDispatch<StoreDispatchType>();
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
-  const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
-  const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
+  const [edges, setEdges] = useState<Edge[]>([]);
+  const [groups, setGroups] = useState<Node<Group['data']>[]>([]);
+  const [flowInstance, setFlowInstance] = useState<
+    ReactFlowInstance | undefined
+  >();
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
   const [groupDraggable, setGroupDraggable] = useState(true);
 
   useEffect(() => {
-    if (!mapPosition && flowInstance && flowElements.length) {
+    if (!mapPosition && flowInstance && (edges.length || groups.length)) {
       // calling flowInstance.fitView() directly doesn't work, this seems to be
       // a limitation of the library
       const instance = flowInstance;
       requestAnimationFrame(() => instance.fitView());
     }
-  }, [flowInstance, flowElements, mapPosition]);
+  }, [flowInstance, mapPosition, edges, groups]);
 
-  useEffect(() => {
+  const drawCanvas = useCallback(() => {
     const measuredRelations = taskRelations.map((relation, idx) => ({
       id: `${idx}`,
       width: 436,
@@ -112,23 +98,34 @@ export const TaskMap: FC<{
       ...relation,
     }));
 
+    const storageFlow = localStorage.getItem(flowKey);
+    const flow = storageFlow ? JSON.parse(storageFlow) : undefined;
     const graph = getAutolayout(measuredRelations);
-
-    const groups: Group[] = !tasks
+    const createdGroups: Group[] = !tasks
       ? []
       : measuredRelations.map(({ id, synergies }) => {
           const node = graph.node(id);
+          // dagre coordinates are in the center, calculate top left corner
+          let x = node.x - node.width / 2;
+          let y = node.y - node.height / 2;
+
+          if (flow) {
+            const key = JSON.stringify(synergies.sort());
+            const correctNode = flow.find(
+              (n: any) => JSON.stringify(n.tasks.sort()) === key,
+            );
+
+            if (correctNode) {
+              x = correctNode.position.x;
+              y = correctNode.position.y;
+            }
+          }
           return {
             id,
             type: 'special',
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
-            draggable: groupDraggable && !isLoading,
-            // dagre coordinates are in the center, calculate top left corner
-            position: {
-              x: node.x - node.width / 2,
-              y: node.y - node.height / 2,
-            },
+            position: { x, y },
             data: {
               label: (
                 <TaskGroup
@@ -153,43 +150,58 @@ export const TaskMap: FC<{
           };
         });
 
-    const edges: Edge[] = measuredRelations.flatMap(({ dependencies }, idx) =>
-      dependencies.flatMap(({ from, to }) => {
-        const targetGroup = measuredRelations.find(({ synergies }) =>
-          synergies.includes(to),
-        );
-        if (!targetGroup) return [];
-        return [
-          {
-            id: `from-${from}-to-${to}`,
-            source: String(idx),
-            sourceHandle: `from-${from}`,
-            target: targetGroup.id,
-            targetHandle: `to-${to}`,
-            type: 'custom',
-            data: {
-              disableInteraction: draggedTask !== undefined,
-              isLoading,
-              setIsLoading,
+    const createdEdges: Edge[] = measuredRelations.flatMap(
+      ({ dependencies }, idx) =>
+        dependencies.flatMap(({ from, to }) => {
+          const targetGroup = measuredRelations.find(({ synergies }) =>
+            synergies.includes(to),
+          );
+          if (!targetGroup) return [];
+          return [
+            {
+              id: `from-${from}-to-${to}`,
+              source: String(idx),
+              sourceHandle: `from-${from}`,
+              target: targetGroup.id,
+              targetHandle: `to-${to}`,
+              type: 'custom',
+              data: {
+                disableInteraction: draggedTask !== undefined,
+                isLoading,
+                setIsLoading,
+              },
             },
-          },
-        ];
-      }),
+          ];
+        }),
     );
-    setFlowElements([...groups, ...edges]);
+
+    setGroups(createdGroups);
+    setEdges(createdEdges);
   }, [
-    unavailable,
-    draggedTask,
     dragHandle,
+    draggedTask,
+    dropUnavailable,
+    flowKey,
+    isLoading,
     selectedTask,
+    setIsLoading,
     setSelectedTask,
     taskRelations,
     tasks,
-    dropUnavailable,
-    groupDraggable,
-    isLoading,
-    setIsLoading,
+    unavailable,
   ]);
+
+  useEffect(() => drawCanvas(), [drawCanvas]);
+
+  const saveNodeState = useCallback(() => {
+    if (!flowInstance) return;
+    const { nodes } = flowInstance.toObject();
+    const filteredFlow = nodes.map(({ data, position }) => ({
+      tasks: data.label.props.taskIds,
+      position,
+    }));
+    localStorage.setItem(flowKey, JSON.stringify(filteredFlow));
+  }, [flowInstance, flowKey]);
 
   const onConnect = async (data: any) => {
     if (isLoading) return;
@@ -207,7 +219,13 @@ export const TaskMap: FC<{
       roadmapId: roadmapId!,
       relation: { from, to, type },
     });
+    saveNodeState();
     setIsLoading(false);
+  };
+
+  const resetCanvas = () => {
+    localStorage.removeItem(flowKey);
+    drawCanvas();
   };
 
   return (
@@ -220,10 +238,15 @@ export const TaskMap: FC<{
     >
       <ReactFlow
         connectionLineComponent={ConnectionLine}
-        elements={flowElements}
-        nodeTypes={{
-          special: CustomNodeComponent,
+        nodesDraggable={groupDraggable}
+        nodes={groups}
+        edges={edges}
+        onNodesChange={(changes) => {
+          if (changes[0].type === 'remove') return;
+          setGroups((nodes) => applyNodeChanges(changes, nodes));
         }}
+        onNodeDragStop={saveNodeState}
+        nodeTypes={nodeTypes}
         draggable={false}
         onConnectStart={(_, { nodeId, handleId, handleType }) => {
           if (!nodeId || !handleId || !handleType) return;
@@ -246,15 +269,13 @@ export const TaskMap: FC<{
           setDragHandle(undefined);
         }}
         onConnect={onConnect}
-        edgeTypes={{
-          custom: CustomEdge,
-        }}
+        edgeTypes={edgeTypes}
         onContextMenu={(e) => e.preventDefault()}
-        onLoad={setFlowInstance}
+        onInit={setFlowInstance}
         defaultZoom={mapPosition?.zoom}
         defaultPosition={mapPosition && [mapPosition.x, mapPosition.y]}
-        onMove={(tr) => {
-          if (tr) dispatch(roadmapsActions.setTaskmapPosition(tr));
+        onMove={(_, viewport) => {
+          dispatch(roadmapsActions.setTaskmapPosition(viewport));
         }}
       >
         <Controls showInteractive={false} showZoom={false}>
@@ -263,6 +284,10 @@ export const TaskMap: FC<{
               className={classes(css.info, css.tooltipIcon, css.infoIcon)}
             />
           </InfoTooltip>
+          <RestartAltIcon
+            className={classes(css.restart)}
+            onClick={resetCanvas}
+          />
         </Controls>
       </ReactFlow>
     </div>

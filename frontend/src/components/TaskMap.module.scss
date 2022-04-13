@@ -9,7 +9,15 @@ $ZOOM: var(--zoom, 1);
 
 .info {
   position: relative;
-  left: 28px;
+  left: 48px;
   bottom: 26px;
+  width: 16px;
+}
+
+.restart {
+  position: relative;
+  cursor: pointer;
+  left: 28px;
+  bottom: 49.5px;
   width: 16px;
 }
