@@ -211,6 +211,13 @@ export const apiV2 = createApi({
         data: { name, tasks, sortingRank },
       }),
     }),
+    completeVersion: build.mutation<Version, VersionRequest>({
+      invalidatesTags: ['Versions', 'Tasks'],
+      query: ({ roadmapId, id }) => ({
+        url: `/roadmaps/${roadmapId}/versions/${id}/complete/`,
+        method: 'patch',
+      }),
+    }),
     addVersion: build.mutation<Version, VersionRequest>({
       invalidatesTags: ['Versions'],
       query: (version) => ({

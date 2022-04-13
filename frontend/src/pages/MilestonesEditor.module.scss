@@ -74,6 +74,16 @@
     border: 0;
     background-color: transparent;
   }
+  &.completed {
+    border: 1px solid $COLOR_FOREST;
+    background-color: $COLOR_MINT;
+    .milestoneHeader {
+      color: $COLOR_FOREST;
+    }
+    .milestoneTasks {
+      color: $COLOR_BLACK60;
+    }
+  }
 }
 
 .infoBackground {

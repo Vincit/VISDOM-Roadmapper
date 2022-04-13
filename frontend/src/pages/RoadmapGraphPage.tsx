@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next';
 import ListIcon from '@mui/icons-material/List';
 import Drawer from '@mui/material/Drawer';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
-import { totalValuesAndComplexity } from '../utils/TaskUtils';
+import {
+  totalValuesAndComplexity,
+  isCompletedMilestone,
+} from '../utils/TaskUtils';
 import { percent } from '../utils/string';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { InfoTooltip } from '../components/InfoTooltip';
@@ -119,7 +122,13 @@ export const RoadmapGraphPage = () => {
           yLabel="Total value"
           selected={selectedVersion}
           setSelected={setSelectedVersion}
-          items={versions ?? []}
+          items={
+            versions?.map((version) => ({
+              ...version,
+              completed: isCompletedMilestone(version),
+            })) ?? []
+          }
+          completed={({ completed }) => completed}
           id={(ver) => ver.id}
           dimensions={dimensions}
           limits={limits}
@@ -128,13 +137,23 @@ export const RoadmapGraphPage = () => {
           }}
         >
           {({
-            item: { name, value, unweightedValue, complexity, tasks },
+            item: {
+              name,
+              value,
+              unweightedValue,
+              complexity,
+              tasks,
+              completed,
+            },
             index,
           }) => (
             <>
               <div className={classes(css.versionData)}>
                 <div className={classes(css.ratingDiv)}>
-                  <BusinessIcon size="xxsmall" color={colors.azure} />
+                  <BusinessIcon
+                    size="xxsmall"
+                    color={completed ? colors.forest : colors.azure}
+                  />
                   <p>
                     {numFormat.format(
                       hasReadCustomerValuesPermission ? value : unweightedValue,
@@ -142,11 +161,18 @@ export const RoadmapGraphPage = () => {
                   </p>
                 </div>
                 <div className={classes(css.ratingDiv)}>
-                  <WorkRoundIcon size="xxsmall" color={colors.azure} />
+                  <WorkRoundIcon
+                    size="xxsmall"
+                    color={completed ? colors.forest : colors.azure}
+                  />
                   <p>{numFormat.format(complexity)}</p>
                 </div>
                 <div className={classes(css.dash)} />
-                <div className={classes(css.ratingDiv)}>
+                <div
+                  className={classes(css.ratingDiv, {
+                    [css.completed]: completed,
+                  })}
+                >
                   <ListIcon />
                   <p>{tasks.length}</p>
                 </div>
@@ -154,6 +180,7 @@ export const RoadmapGraphPage = () => {
               <p
                 className={classes(css.versionTitle, {
                   [css.selected]: index === selectedVersion,
+                  [css.completed]: completed,
                 })}
               >
                 {name}

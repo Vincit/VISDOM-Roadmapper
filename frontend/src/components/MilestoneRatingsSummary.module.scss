@@ -1,5 +1,12 @@
 @import './../shared.scss';
 
+.ratingSummary.completed {
+  color: $COLOR_FOREST;
+  .rating {
+    color: $COLOR_FOREST;
+  }
+}
+
 .ratingDiv {
   display: flex;
   margin-bottom: 7.5px;

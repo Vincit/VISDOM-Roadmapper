@@ -79,6 +79,7 @@ type BlockGraphProps<T> = {
   selected: number;
   setSelected: (_: number) => void;
   id: (item: T) => string | number;
+  completed?: (item: T) => boolean;
 } & BlockViewProps<T>;
 
 export function BlockView<T>({
@@ -123,6 +124,7 @@ export function BlockGraph<T>({
   selected,
   setSelected,
   id,
+  completed,
   children,
   innerRef,
   ...viewProps
@@ -157,6 +159,7 @@ export function BlockGraph<T>({
               }
               className={classes(css.graphItem, {
                 [css.selected]: index === selected,
+                [css.completed]: completed?.(item),
               })}
               style={{ width, height }}
               key={id(item)}

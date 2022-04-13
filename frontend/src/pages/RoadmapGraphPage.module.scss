@@ -88,6 +88,9 @@
   p {
     margin-left: 4.75px;
   }
+  &.completed svg {
+    color: $COLOR_FOREST;
+  }
 }
 
 .dash {
@@ -105,5 +108,8 @@
   @extend .hide-text-ellipsis;
   &.selected {
     color: $COLOR_AZURE;
+  }
+  &.completed {
+    color: $COLOR_FOREST;
   }
 }

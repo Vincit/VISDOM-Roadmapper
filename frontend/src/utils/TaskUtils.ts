@@ -3,6 +3,7 @@ import {
   RoadmapUser,
   Task,
   Taskrating,
+  Version,
 } from '../redux/roadmaps/types';
 import { isCustomer } from './CustomerUtils';
 import { UserInfo } from '../redux/user/types';
@@ -150,6 +151,9 @@ export const ratedByCustomer = (
   );
 
 const completed = (task: Task) => task.status === TaskStatus.COMPLETED;
+
+export const isCompletedMilestone = ({ tasks }: Version) =>
+  tasks.length > 0 && tasks.every(completed);
 
 export const taskFilter = (
   type: FilterTypes | undefined,

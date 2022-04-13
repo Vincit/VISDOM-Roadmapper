@@ -7,6 +7,7 @@ import {
   getVersions,
   patchVersions,
   postVersions,
+  completeVersions,
 } from './versions.controller';
 const versionsRouter = new KoaRouter<IKoaState, IKoaContext>();
 
@@ -26,6 +27,12 @@ versionsRouter.patch(
   '/versions/:versionId',
   requirePermission(Permission.VersionEdit),
   patchVersions,
+);
+
+versionsRouter.patch(
+  '/versions/:versionId/complete',
+  requirePermission(Permission.VersionEdit),
+  completeVersions,
 );
 
 versionsRouter.delete(

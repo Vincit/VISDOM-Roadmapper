@@ -33,12 +33,13 @@ const Rating: FC<{
 
 export const MilestoneRatingsSummary: FC<{
   tasks: Task[];
-}> = ({ tasks }) => {
+  completed?: boolean;
+}> = ({ tasks, completed }) => {
   const { t } = useTranslation();
   const totalRatings = totalValueAndComplexity(tasks);
   const averageRatings = averageValueAndComplexity(tasks);
   return (
-    <div className={classes(css.ratingSummary)}>
+    <div className={classes(css.ratingSummary, { [css.completed]: completed })}>
       <Rating title={t('Average value')} value={averageRatings.value} />
       <Rating
         title={t('Average complexity')}

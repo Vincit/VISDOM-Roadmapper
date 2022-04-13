@@ -75,5 +75,11 @@ $GRAPH_ITEM_MARGIN: 11px;
   &.selected {
     background: $COLOR_CLOUD;
   }
+  &.completed {
+    border: 1px solid $COLOR_FOREST;
+    &.selected {
+      background: $COLOR_MINT;
+    }
+  }
   user-select: none;
 }

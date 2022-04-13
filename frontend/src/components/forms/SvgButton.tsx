@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreVertSharpIcon from '@mui/icons-material/MoreVertSharp';
-
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import colors from '../../colors.module.scss';
 import css from './SvgButton.module.scss';
 
@@ -81,4 +81,7 @@ export const MailButton = svgButton(MailIcon, { hoverColor: colors.azure });
 
 export const ExitButton = svgButton(CancelIcon, {
   hoverColor: colors.mandy,
+});
+export const DoneButton = svgButton(DoneAllIcon, {
+  hoverColor: colors.emerald,
 });

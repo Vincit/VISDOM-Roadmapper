@@ -11,7 +11,11 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { Link } from 'react-router-dom';
-import { DeleteButton, SettingsButton } from '../components/forms/SvgButton';
+import {
+  DeleteButton,
+  DoneButton,
+  SettingsButton,
+} from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { ExpandableColumn } from '../components/ExpandableColumn';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
@@ -23,6 +27,7 @@ import { Task, Version } from '../redux/roadmaps/types';
 import {
   weightedTaskPriority,
   hasRatingsOnEachDimension,
+  isCompletedMilestone,
 } from '../utils/TaskUtils';
 import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
@@ -126,12 +131,18 @@ export const MilestonesEditor = () => {
     );
   };
 
-  const editVersionClicked = (id: number, name: string) => (e: MouseEvent) => {
+  const editOrCompleteVersionClicked = (
+    id: number,
+    name: string,
+    modalType:
+      | ModalTypes.EDIT_VERSION_MODAL
+      | ModalTypes.COMPLETE_VERSION_MODAL,
+  ) => (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(
       modalsActions.showModal({
-        modalType: ModalTypes.EDIT_VERSION_MODAL,
+        modalType,
         modalProps: { id, name },
       }),
     );
@@ -267,85 +278,115 @@ export const MilestonesEditor = () => {
           )}
           ref={droppableProvided.innerRef}
         >
-          {roadmapsVersions?.map((version, index) => (
-            <Draggable
-              key={`ver-${version.id}`}
-              draggableId={`ver-${version.id}`}
-              index={index}
-              isDragDisabled={disableDrag || !hasVersionEditPermission}
-            >
-              {(draggableProvided) => (
-                <div
-                  className={classes(css.milestoneCol)}
-                  ref={draggableProvided.innerRef}
-                  {...draggableProvided.draggableProps}
-                >
-                  <div className={classes(css.milestoneWrapper)}>
+          {roadmapsVersions?.map((version, index) => {
+            const completed = isCompletedMilestone(version);
+            return (
+              <Draggable
+                key={`ver-${version.id}`}
+                draggableId={`ver-${version.id}`}
+                index={index}
+                isDragDisabled={disableDrag || !hasVersionEditPermission}
+              >
+                {(draggableProvided) => (
+                  <div
+                    className={classes(css.milestoneCol)}
+                    ref={draggableProvided.innerRef}
+                    {...draggableProvided.draggableProps}
+                  >
                     <div
-                      className={classes(css.milestoneHeader)}
-                      {...draggableProvided.dragHandleProps}
+                      className={classes(css.milestoneWrapper, {
+                        [css.completed]: completed,
+                      })}
                     >
-                      {version.name}
-                    </div>
-                    {versionLists[version.id]?.length === 0 ? (
-                      <Droppable droppableId={`${version.id}`} type="TASKS">
-                        {(provided, snapshot) => (
-                          <div
-                            className={classes(css.instructions, {
-                              [css.highlight]: snapshot.isDraggingOver,
-                            })}
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                          >
-                            <div className={classes(css.text)}>
-                              {hasVersionEditPermission && (
-                                <Trans i18nKey="Milestone task instructions" />
-                              )}
+                      <div
+                        className={classes(css.milestoneHeader)}
+                        {...draggableProvided.dragHandleProps}
+                      >
+                        {version.name}
+                      </div>
+                      {versionLists[version.id]?.length === 0 ? (
+                        <Droppable droppableId={`${version.id}`} type="TASKS">
+                          {(provided, snapshot) => (
+                            <div
+                              className={classes(css.instructions, {
+                                [css.highlight]: snapshot.isDraggingOver,
+                              })}
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                            >
+                              <div className={classes(css.text)}>
+                                {hasVersionEditPermission && (
+                                  <Trans i18nKey="Milestone task instructions" />
+                                )}
+                              </div>
+                              {provided.placeholder}
                             </div>
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    ) : (
-                      <SortableTaskList
-                        listId={`${version.id}`}
-                        tasks={versionLists[version.id] || []}
-                        disableDragging={
-                          disableDrag || !hasVersionEditPermission
-                        }
-                        hideDragIndicator={!hasVersionEditPermission}
-                      />
-                    )}
-                    <div className={classes(css.ratingsSummaryWrapper)}>
-                      <MilestoneRatingsSummary
-                        tasks={versionLists[version.id] || []}
-                      />
-                    </div>
-                    {hasVersionEditPermission && (
-                      <div className={classes(css.milestoneFooter)}>
-                        <DeleteButton
-                          onClick={deleteVersionClicked(version.id)}
-                          href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
-                            id: version.id,
-                            roadmapId: roadmapId!,
-                          })}
-                          disabled={disableDrag}
+                          )}
+                        </Droppable>
+                      ) : (
+                        <SortableTaskList
+                          listId={`${version.id}`}
+                          tasks={versionLists[version.id] || []}
+                          className={classes(css.milestoneTasks)}
+                          disableDragging={
+                            disableDrag || !hasVersionEditPermission
+                          }
+                          hideDragIndicator={!hasVersionEditPermission}
                         />
-                        <SettingsButton
-                          onClick={editVersionClicked(version.id, version.name)}
-                          href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
-                            id: version.id,
-                            name: version.name,
-                          })}
-                          disabled={disableDrag}
+                      )}
+                      <div className={classes(css.ratingsSummaryWrapper)}>
+                        <MilestoneRatingsSummary
+                          tasks={versionLists[version.id] || []}
+                          completed={completed}
                         />
                       </div>
-                    )}
+                      {hasVersionEditPermission && (
+                        <div className={classes(css.milestoneFooter)}>
+                          <DeleteButton
+                            onClick={deleteVersionClicked(version.id)}
+                            href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
+                              id: version.id,
+                              roadmapId: roadmapId!,
+                            })}
+                            disabled={disableDrag}
+                          />
+                          <SettingsButton
+                            onClick={editOrCompleteVersionClicked(
+                              version.id,
+                              version.name,
+                              ModalTypes.EDIT_VERSION_MODAL,
+                            )}
+                            href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
+                              id: version.id,
+                              name: version.name,
+                            })}
+                            disabled={disableDrag}
+                          />
+                          {!completed && (
+                            <DoneButton
+                              onClick={editOrCompleteVersionClicked(
+                                version.id,
+                                version.name,
+                                ModalTypes.COMPLETE_VERSION_MODAL,
+                              )}
+                              href={modalLink(
+                                ModalTypes.COMPLETE_VERSION_MODAL,
+                                {
+                                  id: version.id,
+                                  name: version.name,
+                                },
+                              )}
+                              disabled={disableDrag}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </Draggable>
-          ))}
+                )}
+              </Draggable>
+            );
+          })}
           {hasVersionEditPermission && (
             <div className={classes(css.milestoneCol)}>
               <div

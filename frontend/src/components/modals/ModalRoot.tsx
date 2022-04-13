@@ -12,6 +12,7 @@ import { AddTaskModal } from './AddTaskModal';
 import { AddVersionModal } from './AddVersionModal';
 import { DeleteVersionModal, DeleteRoadmapModal } from './DeleteModal';
 import { EditVersionModal } from './EditVersionModal';
+import { CompleteVersionModal } from './CompleteVersionModal';
 import { RemoveTaskModal } from './RemoveTaskModal';
 import { RemoveRatingModal } from './RemoveRatingModal';
 import { ImportTasksModal } from './ImportTasksModal';
@@ -48,6 +49,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_VERSION_MODAL]: AddVersionModal,
   [ModalTypes.DELETE_VERSION_MODAL]: DeleteVersionModal,
   [ModalTypes.EDIT_VERSION_MODAL]: EditVersionModal,
+  [ModalTypes.COMPLETE_VERSION_MODAL]: CompleteVersionModal,
   [ModalTypes.IMPORT_TASKS_MODAL]: ImportTasksModal,
   [ModalTypes.SETUP_OAUTH_MODAL]: OauthModal,
   [ModalTypes.INTEGRATION_CONFIGURATION_MODAL]: IntegrationConfigurationModal,

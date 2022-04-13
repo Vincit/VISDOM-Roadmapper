@@ -1,9 +1,10 @@
-import { Permission } from './../../../../shared/types/customTypes';
+import { Permission, TaskStatus } from './../../../../shared/types/customTypes';
 import { RouteHandlerFnc } from '../../types/customTypes';
 import Version from './versions.model';
 import { ClientEvents } from './../../../../shared/types/sockettypes';
 import { emitRoadmapEvent } from './../../utils/socketIoUtils';
 import { isOptional, isNumberArray } from '../../utils/typeValidation';
+import Task from '../tasks/tasks.model';
 
 export const getVersions: RouteHandlerFnc = async (ctx) => {
   const query = Version.query()
@@ -95,6 +96,36 @@ export const deleteVersions: RouteHandlerFnc = async (ctx) => {
     });
   }
   ctx.status = numDeleted === 1 ? 200 : 404;
+};
+
+export const completeVersions: RouteHandlerFnc = async (ctx) => {
+  const roadmapId = Number(ctx.params.roadmapId);
+  const version = await Version.query()
+    .withGraphFetched('tasks')
+    .findById(Number(ctx.params.versionId))
+    .where({ roadmapId });
+  if (!version) {
+    ctx.status = 404;
+    return;
+  }
+
+  const completedTasks = await Task.transaction((trx) =>
+    Promise.all(
+      version.tasks.map((task) =>
+        task.$query(trx).patchAndFetch({ status: TaskStatus.COMPLETED }),
+      ),
+    ),
+  );
+
+  await emitRoadmapEvent(ctx.io, {
+    roadmapId,
+    dontEmitToUserIds: [ctx.state.user!.id],
+    requirePermission: Permission.VersionRead,
+    event: ClientEvents.VERSION_UPDATED,
+    eventParams: [],
+  });
+
+  ctx.body = completedTasks;
 };
 
 export const patchVersions: RouteHandlerFnc = async (ctx) => {
