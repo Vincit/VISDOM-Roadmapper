@@ -83,9 +83,9 @@ export const TaskListPage = () => {
   };
 
   const renderImportButton = (name: string) => {
-    // TODO: disable button if oauth is not completed
-    // or maybe open the oauth modal first then
-    if (roadmap?.integrations.some((it) => it.name === name)) {
+    // Disable button if boardId is not selected. Working oauth is only checked
+    // in the modal, as it requires live api queries.
+    if (roadmap?.integrations.find((it) => it.name === name)?.boardId) {
       return (
         <button
           className={classes(css['button-small-filled'])}
