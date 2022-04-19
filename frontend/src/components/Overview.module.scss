@@ -27,24 +27,20 @@
 
 .editableTextContainer {
   width: inherit;
-}
-.editableTextContainer * {
-  margin: 0px;
-  max-height: 84px;
-  overflow-wrap: anywhere;
-  align-items: start;
-}
-
-// Targets EditableText value
-.editableTextContainer > div > div:nth-child(2) {
-  padding-right: 15%;
-  justify-content: left;
-  textarea {
-    overflow: scroll !important;
+  * {
+    margin: 0px;
+    overflow-wrap: anywhere;
+    align-items: start;
   }
-}
-.editableTextContainer > div {
-  flex-direction: row;
+  div {
+    textarea {
+      overflow: scroll !important;
+    }
+    div:nth-child(2) {
+      padding-right: 15%;
+      justify-content: left;
+    }
+  }
 }
 
 .arrowIcon {
