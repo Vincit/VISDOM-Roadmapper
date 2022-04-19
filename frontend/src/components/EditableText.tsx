@@ -121,7 +121,8 @@ export const EditableText: FC<
     format: string | undefined;
   } & ComponentPropsWithoutRef<typeof TextAreaAutosize>
 > = ({ editOpen, editText, value, isLoading, format, ...props }) => {
-  if (!editOpen) return <div className={classes(css.value)}>{value}</div>;
+  if (!editOpen)
+    return <div className={classes(css.value, css[format!])}>{value}</div>;
   if (isLoading) return <LoadingSpinner />;
   return (
     <TextAreaAutosize
