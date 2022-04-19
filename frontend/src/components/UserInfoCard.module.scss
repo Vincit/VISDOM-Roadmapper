@@ -34,6 +34,18 @@
 .textContainer {
   @extend .layout-row;
   min-width: 400px;
+  div:nth-child(2) {
+    flex-direction: column;
+    order: 0;
+  }
+  div:nth-child(1) {
+    max-height: 100px;
+    order: 1;
+    textarea {
+      overflow: scroll;
+      max-height: 80px;
+    }
+  }
 }
 
 .passwordButton {
