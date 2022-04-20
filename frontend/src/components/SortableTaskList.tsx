@@ -30,6 +30,7 @@ export const SortableTaskList: FC<{
   disableDragging: boolean;
   isDropDisabled?: boolean;
   showRatings?: boolean;
+  hideDragIndicator?: boolean;
   showSearch?: boolean;
   className?: string;
 }> = ({
@@ -37,6 +38,7 @@ export const SortableTaskList: FC<{
   tasks,
   disableDragging,
   showRatings,
+  hideDragIndicator,
   showSearch,
   className,
   isDropDisabled,
@@ -79,10 +81,11 @@ export const SortableTaskList: FC<{
           index={index}
           disableDragging={disableDragging}
           showRatings={!!showRatings}
+          hideDragIndicator={hideDragIndicator}
         />
       );
     },
-    [disableDragging, showRatings],
+    [disableDragging, hideDragIndicator, showRatings],
   );
 
   return (

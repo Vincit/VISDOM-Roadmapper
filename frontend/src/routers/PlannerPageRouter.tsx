@@ -1,10 +1,14 @@
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSelector, shallowEqual } from 'react-redux';
+import { userRoleSelector } from '../redux/user/selectors';
 import { PageNavBar } from '../components/PageNavBar';
 import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { PlannerWeightsPage } from '../pages/PlannerWeightsPage';
 import { RoadmapGraphPage } from '../pages/RoadmapGraphPage';
 import { TimeEstimationPage } from '../pages/TimeEstimationPage';
+import { Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
 import { paths } from './paths';
 import '../shared.scss';
 
@@ -39,6 +43,11 @@ const routes = [
 export const PlannerPageRouter = () => {
   const { path } = useRouteMatch();
   const { t } = useTranslation();
+  const role = useSelector(userRoleSelector, shallowEqual);
+  const hasReadCustomerValuesPermission = hasPermission(
+    role,
+    Permission.RoadmapReadCustomerValues,
+  );
 
   const headers = [
     {
@@ -49,10 +58,14 @@ export const PlannerPageRouter = () => {
       url: '/editor',
       text: t('Milestones'),
     },
-    {
-      url: '/weights',
-      text: t('Client Weights'),
-    },
+    ...(hasReadCustomerValuesPermission
+      ? [
+          {
+            url: '/weights',
+            text: t('Client Weights'),
+          },
+        ]
+      : []),
     {
       url: '/timeestimation',
       text: t('Time Estimation'),

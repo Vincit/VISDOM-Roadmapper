@@ -20,10 +20,7 @@ import colors from '../colors.module.scss';
 import { apiV2 } from '../api/api';
 import { Permission } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
-import { getType } from '../utils/UserUtils';
-import { UserInfo } from '../redux/user/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { RootState } from '../redux/types';
+import { userRoleSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
 
@@ -34,11 +31,11 @@ export const RoadmapGraphPage = () => {
     undefined | VersionComplexityAndValues[]
   >(undefined);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
+  const type = useSelector(userRoleSelector, shallowEqual);
+  const hasReadCustomerValuesPermission = hasPermission(
+    type,
+    Permission.RoadmapReadCustomerValues,
   );
-  const type = getType(userInfo, roadmapId);
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
     {
@@ -78,9 +75,13 @@ export const RoadmapGraphPage = () => {
     maximumFractionDigits: 1,
   });
 
-  const dimensions = ({ complexity, value }: VersionComplexityAndValues) => ({
+  const dimensions = ({
+    complexity,
+    value,
+    unweightedValue,
+  }: VersionComplexityAndValues) => ({
     width: complexity,
-    height: value,
+    height: hasReadCustomerValuesPermission ? value : unweightedValue,
   });
 
   const limits = {
@@ -126,12 +127,19 @@ export const RoadmapGraphPage = () => {
             a.current = e;
           }}
         >
-          {({ item: { name, value, complexity, tasks }, index }) => (
+          {({
+            item: { name, value, unweightedValue, complexity, tasks },
+            index,
+          }) => (
             <>
               <div className={classes(css.versionData)}>
                 <div className={classes(css.ratingDiv)}>
                   <BusinessIcon size="xxsmall" color={colors.azure} />
-                  <p>{numFormat.format(value)}</p>
+                  <p>
+                    {numFormat.format(
+                      hasReadCustomerValuesPermission ? value : unweightedValue,
+                    )}
+                  </p>
                 </div>
                 <div className={classes(css.ratingDiv)}>
                   <WorkRoundIcon size="xxsmall" color={colors.azure} />

@@ -1,7 +1,9 @@
 import { forwardRef } from 'react';
 import classNames from 'classnames';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import ListIcon from '@mui/icons-material/List';
+import { userRoleSelector } from '../redux/user/selectors';
 import { ModalCloseButton } from './forms/SvgButton';
 import { VersionComplexityAndValues } from '../redux/roadmaps/types';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
@@ -10,6 +12,8 @@ import { TaskTable } from './TaskTable';
 import { TaskValueCreatedVisualization } from './TaskValueCreatedVisualization';
 import { averageValueAndComplexity } from '../utils/TaskUtils';
 import { percent } from '../utils/string';
+import { Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
 import colors from '../colors.module.scss';
 import css from './RoadmapGraphSidebar.module.scss';
 
@@ -38,11 +42,20 @@ export const RoadmapGraphSidebar = forwardRef<
     tasks,
     complexity,
     value,
+    unweightedValue,
     totalValue,
     unweightedTotalValue,
   } = version;
+  const type = useSelector(userRoleSelector, shallowEqual);
+  const hasReadCustomerValuesPermission = hasPermission(
+    type,
+    Permission.RoadmapReadCustomerValues,
+  );
   const averageRatings = averageValueAndComplexity(tasks);
   const visualizationHeight = 160;
+  const displayedValue = hasReadCustomerValuesPermission
+    ? value
+    : unweightedValue;
 
   return (
     <div className={classes(css.versionWrapper)} ref={ref} {...props}>
@@ -56,8 +69,14 @@ export const RoadmapGraphSidebar = forwardRef<
         ) : (
           <>
             <MetricsSummary
-              label={t('Weighted value')}
-              value={metricsFormat.format(totalValue)}
+              label={t(
+                hasReadCustomerValuesPermission ? 'Weighted value' : 'Value',
+              )}
+              value={metricsFormat.format(
+                hasReadCustomerValuesPermission
+                  ? totalValue
+                  : unweightedTotalValue,
+              )}
             >
               <BusinessIcon color={colors.black100} />
             </MetricsSummary>
@@ -97,7 +116,7 @@ export const RoadmapGraphSidebar = forwardRef<
         <div className={classes(css.rightSide)}>
           <div>
             <BusinessIcon size="xxsmall" color={colors.azure} />
-            {value ? numFormat.format(value) : '-'}
+            {displayedValue ? numFormat.format(displayedValue) : '-'}
           </div>
           <div>
             <WorkRoundIcon size="xxsmall" color={colors.azure} />

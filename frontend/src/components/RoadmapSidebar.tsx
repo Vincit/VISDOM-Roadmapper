@@ -13,7 +13,8 @@ import { ReactComponent as VisdomLogo } from '../icons/visdom_icon.svg';
 import css from './RoadmapSidebar.module.scss';
 import { userRoleSelector } from '../redux/user/selectors';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { RoleType } from '../../../shared/types/customTypes';
+import { RoleType, Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
 import { apiV2, selectById } from '../api/api';
 
 const classes = classNames.bind(css);
@@ -21,6 +22,7 @@ const classes = classNames.bind(css);
 export const RoadmapSidebar: FC = () => {
   const { pathname } = useLocation();
   const role = useSelector(userRoleSelector, shallowEqual);
+  const hasReadVersionPermission = hasPermission(role, Permission.VersionRead);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(undefined, {
     ...selectById(roadmapId),
@@ -69,45 +71,45 @@ export const RoadmapSidebar: FC = () => {
           </Link>
         )}
         {role === RoleType.Admin && (
-          <>
-            <Link
-              to={url + paths.roadmapRelative.team}
-              className={classes(css.navButton, {
-                [css.selected]: pathname.startsWith(
-                  url + paths.roadmapRelative.team,
-                ),
-              })}
-            >
-              <DashboardIcon />
-              <Trans i18nKey="Team" />
-            </Link>
-            <Link
-              to={
-                url +
-                paths.roadmapRelative.planner +
-                paths.plannerRelative.editor
-              }
-              className={classes(css.navButton, {
-                [css.selected]: pathname.startsWith(
-                  url + paths.roadmapRelative.planner,
-                ),
-              })}
-            >
-              <TimelineIcon />
-              <Trans i18nKey="Plan" />
-            </Link>{' '}
-            <Link
-              to={url + paths.roadmapRelative.configure}
-              className={classes(css.navButton, css.settings, {
-                [css.selected]: pathname.startsWith(
-                  url + paths.roadmapRelative.configure,
-                ),
-              })}
-            >
-              <SettingsIcon />
-              <Trans i18nKey="Settings" />
-            </Link>
-          </>
+          <Link
+            to={url + paths.roadmapRelative.team}
+            className={classes(css.navButton, {
+              [css.selected]: pathname.startsWith(
+                url + paths.roadmapRelative.team,
+              ),
+            })}
+          >
+            <DashboardIcon />
+            <Trans i18nKey="Team" />
+          </Link>
+        )}
+        {hasReadVersionPermission && (
+          <Link
+            to={
+              url + paths.roadmapRelative.planner + paths.plannerRelative.editor
+            }
+            className={classes(css.navButton, {
+              [css.selected]: pathname.startsWith(
+                url + paths.roadmapRelative.planner,
+              ),
+            })}
+          >
+            <TimelineIcon />
+            <Trans i18nKey="Plan" />
+          </Link>
+        )}
+        {role === RoleType.Admin && (
+          <Link
+            to={url + paths.roadmapRelative.configure}
+            className={classes(css.navButton, css.settings, {
+              [css.selected]: pathname.startsWith(
+                url + paths.roadmapRelative.configure,
+              ),
+            })}
+          >
+            <SettingsIcon />
+            <Trans i18nKey="Settings" />
+          </Link>
         )}
       </>
     );

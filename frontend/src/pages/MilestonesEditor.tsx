@@ -32,10 +32,7 @@ import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Permission } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
-import { getType } from '../utils/UserUtils';
-import { UserInfo } from '../redux/user/types';
-import { userInfoSelector } from '../redux/user/selectors';
-import { RootState } from '../redux/types';
+import { userRoleSelector } from '../redux/user/selectors';
 
 const classes = classNames.bind(css);
 
@@ -65,11 +62,8 @@ export const MilestonesEditor = () => {
     patchVersion,
     { isLoading: disableDrag, isError },
   ] = apiV2.usePatchVersionMutation();
-  const userInfo = useSelector<RootState, UserInfo | undefined>(
-    userInfoSelector,
-    shallowEqual,
-  );
-  const type = getType(userInfo, roadmapId);
+  const type = useSelector(userRoleSelector, shallowEqual);
+  const hasVersionEditPermission = hasPermission(type, Permission.VersionEdit);
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
     {
@@ -278,7 +272,7 @@ export const MilestonesEditor = () => {
               key={`ver-${version.id}`}
               draggableId={`ver-${version.id}`}
               index={index}
-              isDragDisabled={disableDrag}
+              isDragDisabled={disableDrag || !hasVersionEditPermission}
             >
               {(draggableProvided) => (
                 <div
@@ -304,7 +298,9 @@ export const MilestonesEditor = () => {
                             {...provided.droppableProps}
                           >
                             <div className={classes(css.text)}>
-                              <Trans i18nKey="Milestone task instructions" />
+                              {hasVersionEditPermission && (
+                                <Trans i18nKey="Milestone task instructions" />
+                              )}
                             </div>
                             {provided.placeholder}
                           </div>
@@ -314,7 +310,10 @@ export const MilestonesEditor = () => {
                       <SortableTaskList
                         listId={`${version.id}`}
                         tasks={versionLists[version.id] || []}
-                        disableDragging={disableDrag}
+                        disableDragging={
+                          disableDrag || !hasVersionEditPermission
+                        }
+                        hideDragIndicator={!hasVersionEditPermission}
                       />
                     )}
                     <div className={classes(css.ratingsSummaryWrapper)}>
@@ -322,43 +321,47 @@ export const MilestonesEditor = () => {
                         tasks={versionLists[version.id] || []}
                       />
                     </div>
-                    <div className={classes(css.milestoneFooter)}>
-                      <DeleteButton
-                        onClick={deleteVersionClicked(version.id)}
-                        href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
-                          id: version.id,
-                          roadmapId: roadmapId!,
-                        })}
-                        disabled={disableDrag}
-                      />
-                      <SettingsButton
-                        onClick={editVersionClicked(version.id, version.name)}
-                        href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
-                          id: version.id,
-                          name: version.name,
-                        })}
-                        disabled={disableDrag}
-                      />
-                    </div>
+                    {hasVersionEditPermission && (
+                      <div className={classes(css.milestoneFooter)}>
+                        <DeleteButton
+                          onClick={deleteVersionClicked(version.id)}
+                          href={modalLink(ModalTypes.DELETE_VERSION_MODAL, {
+                            id: version.id,
+                            roadmapId: roadmapId!,
+                          })}
+                          disabled={disableDrag}
+                        />
+                        <SettingsButton
+                          onClick={editVersionClicked(version.id, version.name)}
+                          href={modalLink(ModalTypes.EDIT_VERSION_MODAL, {
+                            id: version.id,
+                            name: version.name,
+                          })}
+                          disabled={disableDrag}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
             </Draggable>
           ))}
-          <div className={classes(css.milestoneCol)}>
-            <div
-              className={classes(css.milestoneWrapper, css.addNewBtnWrapper)}
-            >
-              <button
-                className={classes(css['button-large'])}
-                type="button"
-                onClick={addVersion}
-                disabled={disableDrag}
+          {hasVersionEditPermission && (
+            <div className={classes(css.milestoneCol)}>
+              <div
+                className={classes(css.milestoneWrapper, css.addNewBtnWrapper)}
               >
-                <Trans i18nKey="+ Add new milestone" />
-              </button>
+                <button
+                  className={classes(css['button-large'])}
+                  type="button"
+                  onClick={addVersion}
+                  disabled={disableDrag}
+                >
+                  <Trans i18nKey="+ Add new milestone" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
           {droppableProvided.placeholder}
         </div>
       )}
@@ -403,8 +406,9 @@ export const MilestonesEditor = () => {
           <SortableTaskList
             listId={ROADMAP_LIST_ID}
             tasks={versionLists[ROADMAP_LIST_ID] || []}
-            disableDragging={disableDrag}
+            disableDragging={disableDrag || !hasVersionEditPermission}
             className={classes({ 'loading-cursor': disableDrag })}
+            hideDragIndicator={!hasVersionEditPermission}
             showRatings
             showSearch
           />
