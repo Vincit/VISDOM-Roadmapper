@@ -369,5 +369,10 @@ export const english = {
     'Today at <time>': 'Today at {{time}}',
     'Yesterday at <time>': 'Yesterday at {{time}}',
     'On <date>': 'On {{date}}',
+    'Target weighted shares': 'Target weighted shares',
+    'Actual weighted shares': 'Actual weighted shares',
+    'No client weights set': 'No client weights set',
+    'Client weights': 'Client weights',
+    'See client weights': 'See client weights',
   },
 };

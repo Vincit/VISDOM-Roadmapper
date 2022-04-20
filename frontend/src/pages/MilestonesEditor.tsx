@@ -38,6 +38,9 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Permission } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
 import { userRoleSelector } from '../redux/user/selectors';
+import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
+import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
+import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
 
@@ -262,6 +265,60 @@ export const MilestonesEditor = () => {
       await onVersionDragEnd(result as DropWithDestination);
     }
   };
+
+  const renderTopBar = () => {
+    return (
+      <div className={classes(css.topbar)}>
+        <InfoTooltip
+          title={
+            <div>
+              <Trans i18nKey="Planner milestones tooltip">
+                Milestones create your project’s
+                <Link to={`/roadmap/${roadmapId}/planner/graph`}>roadmap.</Link>
+              </Trans>
+            </div>
+          }
+        >
+          <div className={classes(css.infoBackground)}>
+            <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+          </div>
+        </InfoTooltip>
+        <div className={classes(css.topbarShares)}>
+          <div>
+            <Trans i18nKey="Actual weighted shares" />
+          </div>
+          {roadmapsVersions && (
+            <TaskValueCreatedVisualization
+              versions={[...roadmapsVersions]}
+              width={200}
+              height={20}
+              barWidth={20}
+            />
+          )}
+        </div>
+        <div className={classes(css.topbarShares)}>
+          <Trans i18nKey="Target weighted shares" />
+          {roadmapsVersions && (
+            <CustomerWeightsVisualization
+              width={200}
+              height={20}
+              barWidth={20}
+              light
+            />
+          )}
+        </div>
+        {roadmapsVersions && (
+          <Link
+            className={classes(css.clientWeightsLink, 'green')}
+            to={`/roadmap/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.weights}`}
+          >
+            <Trans i18nKey="See client weights" />
+          </Link>
+        )}
+      </div>
+    );
+  };
+
   const renderMilestones = () => (
     <Droppable
       droppableId="roadmapVersions"
@@ -417,20 +474,6 @@ export const MilestonesEditor = () => {
     );
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <InfoTooltip
-        title={
-          <div>
-            <Trans i18nKey="Planner milestones tooltip">
-              Milestones create your project’s
-              <Link to={`/roadmap/${roadmapId}/planner/graph`}>roadmap.</Link>
-            </Trans>
-          </div>
-        }
-      >
-        <div className={classes(css.infoBackground)}>
-          <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-        </div>
-      </InfoTooltip>
       <div className={classes(css.layoutRow, css.overflowYAuto)}>
         <ExpandableColumn
           className={classes(css.unorderedCol)}
@@ -454,7 +497,12 @@ export const MilestonesEditor = () => {
             showSearch
           />
         </ExpandableColumn>
-        {versionLists && renderMilestones()}
+        <div className={classes(css.layoutCol, css.overflowYAuto)}>
+          {renderTopBar()}
+          <div className={classes(css.layoutRow, css.overflowYAuto)}>
+            {versionLists && renderMilestones()}
+          </div>
+        </div>
       </div>
     </DragDropContext>
   );

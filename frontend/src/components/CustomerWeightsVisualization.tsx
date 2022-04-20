@@ -1,16 +1,20 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import { CustomerStakes } from '../redux/roadmaps/types';
+import css from './CustomerWeightsVisualization.module.scss';
+import { apiV2 } from '../api/api';
 import { Dot } from './Dot';
 import { percent } from '../utils/string';
-import { CustomerStakes } from '../redux/roadmaps/types';
-import css from './CustomerStakesVisualization.module.scss';
 import { PercentageBar } from './PercentageBar';
 
 const classes = classNames.bind(css);
 
-export const StakesTooltipContent: FC<{
+export const CustomerWeightsTooltipContent: FC<{
   customerStakes: CustomerStakes[];
   totalValue: number;
   showPercentageBar?: boolean;
@@ -19,11 +23,15 @@ export const StakesTooltipContent: FC<{
   const { t } = useTranslation();
 
   if (customerStakes.length === 0)
-    return <div className={classes(css.stakesTooltip)}>{t('No ratings')}</div>;
+    return (
+      <div className={classes(css.stakesTooltip)}>
+        {t('No client weights set')}
+      </div>
+    );
 
   return (
     <div className={classes(css.stakesTooltip)}>
-      {!noTitle && <div>{t('Client shares')}</div>}
+      {!noTitle && <div>{t('Client weights')}</div>}
       {showPercentageBar && (
         <PercentageBar
           stakes={customerStakes}
@@ -49,7 +57,7 @@ export const StakesTooltipContent: FC<{
   );
 };
 
-export const CustomerStakesVisualization: FC<{
+const CustomerWeightsPercentageBar: FC<{
   customerStakes: CustomerStakes[];
   totalValue: number;
   vertical?: boolean;
@@ -72,7 +80,7 @@ export const CustomerStakesVisualization: FC<{
         tooltip: classes(css.tooltip),
       }}
       title={
-        <StakesTooltipContent
+        <CustomerWeightsTooltipContent
           customerStakes={customerStakes}
           totalValue={totalValue}
         />
@@ -87,5 +95,59 @@ export const CustomerStakesVisualization: FC<{
         width={barWidth}
       />
     </Tooltip>
+  );
+};
+
+export const CustomerWeightsVisualization: FC<{
+  width: number;
+  height: number;
+  barWidth?: number;
+  noTooltip?: true;
+  vertical?: boolean;
+  light?: true;
+}> = ({ width, height, noTooltip, vertical, light, barWidth = 37 }) => {
+  const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const { data: customers } = apiV2.useGetCustomersQuery(
+    roadmapId ?? skipToken,
+  );
+  const [data, setData] = useState<CustomerStakes[]>([]);
+  const totalValue = data.reduce((acc, { value }) => acc + value, 0);
+
+  useEffect(() => {
+    if (!customers) return;
+
+    setData(
+      [...customers]
+        .sort((a, b) => b.weight - a.weight)
+        .map(({ id, name, color, weight }) => ({
+          id,
+          name,
+          value: weight,
+          color,
+        })),
+    );
+  }, [customers, setData]);
+
+  return (
+    <div className={classes(css.stakes, { [css.light]: light })}>
+      <div style={{ width, height }}>
+        <CustomerWeightsPercentageBar
+          customerStakes={data}
+          totalValue={totalValue}
+          noTooltip={noTooltip}
+          vertical={vertical}
+          barWidth={barWidth}
+        />
+      </div>
+      {noTooltip && (
+        <div className={classes(css.stakesDescription)}>
+          <CustomerWeightsTooltipContent
+            customerStakes={data}
+            totalValue={totalValue}
+            noTitle
+          />
+        </div>
+      )}
+    </div>
   );
 };

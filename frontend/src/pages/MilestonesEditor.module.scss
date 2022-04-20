@@ -1,6 +1,11 @@
 @import '../shared.scss';
 @import '../components/SortableTaskList.module.scss';
+@import '../shared.scss';
 
+.tooltipIcon {
+  width: 30px;
+  height: 30px;
+}
 .loadingSpinnerContainer {
   position: relative;
   top: 50%;
@@ -87,12 +92,9 @@
 }
 
 .infoBackground {
-  position: absolute;
-  right: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(white, 0.4);
   width: 34px;
   height: 34px;
 }
@@ -111,4 +113,26 @@
     padding: 15px;
     padding-bottom: 0;
   }
+}
+
+.topbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid $COLOR_BLACK40;
+  margin-left: 23px;
+  padding: 10px 0px;
+}
+
+.topbarShares {
+  @extend .typography-pre-title;
+  @extend .layout-column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0px 10px;
+}
+
+.clientWeightsLink {
+  margin-top: 1em;
 }

@@ -14,26 +14,25 @@ import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
-interface VersionComplexityAndTotalValue extends Version {
-  complexity: number;
-  totalValue: number;
-}
-
 export const TaskValueCreatedVisualization: FC<{
-  version: VersionComplexityAndTotalValue;
+  versions: Version[];
   width: number;
   height: number;
+  barWidth?: number;
   noTooltip?: true;
-}> = ({ version, width, height, noTooltip }) => {
+  vertical?: boolean;
+}> = ({ versions, width, height, noTooltip, vertical, barWidth = 37 }) => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
+
   const [data, setData] = useState<CustomerStakes[]>([]);
   const totalValue = data.reduce((acc, { value }) => acc + value, 0);
 
   useEffect(() => {
-    const customerStakes = totalCustomerStakes(version.tasks, customers);
+    const allTasks = versions.flatMap((version) => version.tasks);
+    const customerStakes = totalCustomerStakes(allTasks, customers);
     setData(
       Array.from(customerStakes)
         .sort(([a], [b]) => b.weight - a.weight)
@@ -44,7 +43,7 @@ export const TaskValueCreatedVisualization: FC<{
           color,
         })),
     );
-  }, [version.tasks, customers]);
+  }, [versions, customers]);
 
   return (
     <div className={classes(css.stakes)}>
@@ -53,11 +52,12 @@ export const TaskValueCreatedVisualization: FC<{
           customerStakes={data}
           totalValue={totalValue}
           noTooltip={noTooltip}
-          vertical
+          vertical={vertical}
+          barWidth={barWidth}
         />
       </div>
       {noTooltip && (
-        <div className={classes(css.stakesDescription)}>
+        <div>
           <StakesTooltipContent
             customerStakes={data}
             totalValue={totalValue}

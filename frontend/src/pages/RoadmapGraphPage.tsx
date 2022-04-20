@@ -225,11 +225,9 @@ export const RoadmapGraphPage = () => {
                 <TaskValueCreatedVisualization
                   width={width}
                   height={height}
-                  version={{
-                    ...ver,
-                    totalValue: ver.unweightedTotalValue,
-                  }}
+                  versions={[ver]}
                   key={ver.id}
+                  vertical
                 />
               )}
             </BlockView>

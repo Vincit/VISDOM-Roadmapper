@@ -1,0 +1,30 @@
+@import '../shared.scss';
+
+.stakes {
+  @extend .layout-row;
+  border-radius: 10px;
+  overflow: hidden;
+
+  // Default to horizontal style
+  width: 100%;
+  height: max-content;
+
+  &.vertical {
+    height: 100%;
+    width: max-content;
+    flex-direction: column;
+  }
+}
+
+.barSection {
+  z-index: 10;
+  user-select: none;
+  background-color: var(--color);
+
+  height: var(--barThickness);
+  width: calc(100% * var(--size, 1));
+  &.vertical {
+    height: calc(100% * var(--size, 1));
+    width: var(--barThickness);
+  }
+}

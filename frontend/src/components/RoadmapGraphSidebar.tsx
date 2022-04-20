@@ -141,12 +141,10 @@ export const RoadmapGraphSidebar = forwardRef<
           <TaskValueCreatedVisualization
             width={37}
             height={visualizationHeight}
-            version={{
-              ...version,
-              totalValue: unweightedTotalValue,
-            }}
+            versions={[version]}
             key={version.id}
             noTooltip
+            vertical
           />
         </div>
       </div>
