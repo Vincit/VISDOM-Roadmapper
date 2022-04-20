@@ -61,8 +61,7 @@
 }
 
 .withButtonsContainer {
-  display: flex;
-  flex-direction: row;
+  @extend .layout-row;
   div:nth-child(1) {
     max-height: 84px;
   }
