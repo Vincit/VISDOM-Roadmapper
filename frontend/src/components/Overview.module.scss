@@ -104,15 +104,15 @@
     padding-bottom: 2px;
     line-height: 21px;
     overflow-wrap: anywhere;
-    overflow: scroll;
+    overflow: auto;
     max-height: 63px;
+    align-items: center;
 
     &.bold {
       @extend .typography-body-bold;
     }
     &.NOT_STARTED {
       @extend .typography-pre-title;
-      align-items: center;
     }
     &.IN_PROGRESS {
       @extend .NOT_STARTED;
