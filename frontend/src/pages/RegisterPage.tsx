@@ -1,23 +1,21 @@
 import { FormEvent, useState } from 'react';
-import withStyles from '@mui/styles/withStyles';
 import Alert from '@mui/material/Alert';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import Checkbox from '@mui/material/Checkbox';
 import { Link, useLocation, Redirect, matchPath } from 'react-router-dom';
 import { userActions } from '../redux/user';
 import { ModalContent } from '../components/modals/modalparts/ModalContent';
 import { ModalHeader } from '../components/modals/modalparts/ModalHeader';
 import { Footer } from '../components/Footer';
 import { Input, FieldProps, errorState } from '../components/forms/FormField';
+import { Checkbox } from '../components/forms/Checkbox';
 import { paths } from '../routers/paths';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import css from './RegisterPage.module.scss';
-import colors from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -127,23 +125,6 @@ export const RegisterPage = () => {
     }
   };
 
-  const EmeraldCheckBox = withStyles({
-    root: {
-      color: '#DADADA',
-      '&$checked': {
-        color: colors.emerald,
-      },
-    },
-    checked: {},
-  })((props) => (
-    <Checkbox
-      color="default"
-      checked={checked}
-      onChange={(event) => setChecked(event.target.checked)}
-      {...props}
-    />
-  ));
-
   return (
     <>
       {userInfo && (
@@ -188,7 +169,10 @@ export const RegisterPage = () => {
             })}
 
             <div className={classes(css.termsLabel)}>
-              <EmeraldCheckBox />
+              <Checkbox
+                checked={checked}
+                onChange={(changed) => setChecked(changed)}
+              />
               <Trans i18nKey="Terms of use">
                 I agree to the <Link to="/terms">terms of use</Link> and{' '}
                 <Link to="/privacy">privacy policy</Link>

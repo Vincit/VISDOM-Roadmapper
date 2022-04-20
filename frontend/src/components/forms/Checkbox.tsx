@@ -10,7 +10,7 @@ const classes = classNames.bind(css);
 
 export const Checkbox: FC<{
   checked: boolean;
-  label: string;
+  label?: string;
   onChange: (checked: boolean) => void;
 }> = ({ checked, label, onChange }) => {
   const EmeraldCheckBox = withStyles({
@@ -31,6 +31,7 @@ export const Checkbox: FC<{
     />
   ));
 
+  if (!label) return <EmeraldCheckBox />;
   return (
     <FormControlLabel
       className={classes(css.checkBoxDiv, {
