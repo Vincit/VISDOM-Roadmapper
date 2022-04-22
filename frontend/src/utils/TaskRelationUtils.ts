@@ -150,3 +150,53 @@ export const getTaskRelations = (
   ids.delete(task);
   return ids;
 };
+
+export type RelationCheckData = {
+  id: number;
+  badRelations: TaskRelation[];
+};
+
+const equal = (a: TaskRelation, b: TaskRelation) =>
+  a.from === b.from && a.to === b.to && a.type === b.type;
+
+const setDifference = (xs: TaskRelation[], ys: TaskRelation[]) =>
+  xs.filter((x) => !ys.some((y) => equal(x, y)));
+
+/**
+ * @param versions in chronological order, the first is the unordered tasks
+ */
+export const checkBadRelations = (
+  versions: number[][],
+  relations: TaskRelation[],
+): RelationCheckData[][] => {
+  const taskById = new Map<number, RelationCheckData>(
+    versions.flatMap((tasks) =>
+      tasks.map((id) => [id, { id, badRelations: [] }]),
+    ),
+  );
+  const deps = relations.filter(
+    ({ type }) => type === TaskRelationType.Dependency,
+  );
+  const done = new Set<number>();
+  const markAsDone = ({ id }: RelationCheckData) => {
+    done.add(id);
+  };
+  const markUnmetDependencies = (task: RelationCheckData) => {
+    const unmet = deps.filter((d) => d.to === task.id && !done.has(d.from));
+    const unmarked = setDifference(unmet, task.badRelations);
+    task.badRelations.push(...unmarked);
+    unmarked.forEach((dep) => {
+      taskById.get(dep.from)?.badRelations.push(dep);
+    });
+  };
+  return versions.map((tasks, index) => {
+    const ts = tasks.map((id) => taskById.get(id)!);
+    if (index > 0) {
+      // mark all tasks in the current milestone as done first,
+      // since dependent tasks may be in the same milestone
+      ts.forEach(markAsDone);
+      ts.forEach(markUnmetDependencies);
+    }
+    return ts;
+  });
+};
