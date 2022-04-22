@@ -30,6 +30,10 @@ import {
   hasRatingsOnEachDimension,
   isCompletedMilestone,
 } from '../utils/TaskUtils';
+import {
+  checkBadRelations,
+  RelationCheckData,
+} from '../utils/TaskRelationUtils';
 import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
 import { move } from '../utils/array';
 import { InfoTooltip } from '../components/InfoTooltip';
@@ -52,7 +56,7 @@ type DropWithDestination = DropResult & {
 };
 
 interface VersionListsObject {
-  [K: string]: Task[];
+  [K: string]: (Task & RelationCheckData)[];
 }
 
 const copyVersionLists = (originalLists: VersionListsObject) => {
@@ -84,6 +88,9 @@ export const MilestonesEditor = () => {
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
+  const { data: relations } = apiV2.useGetTaskRelationsQuery(
+    roadmapId ?? skipToken,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [expandUnordered, setExpandUnordered] = useState(true);
@@ -106,10 +113,11 @@ export const MilestonesEditor = () => {
   useEffect(() => {
     if (!roadmapsVersions) return;
 
-    const newVersionLists: VersionListsObject = {};
+    const newVersionLists: { [k: string]: Task[] } = {};
     const ratedTasks = new Map(
       tasks?.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
     );
+    const tasksById = new Map(ratedTasks);
 
     roadmapsVersions.forEach((version) => {
       newVersionLists[version.id] = version.tasks;
@@ -121,8 +129,19 @@ export const MilestonesEditor = () => {
       SortingOrders.DESCENDING,
     )(Array.from(ratedTasks.values()));
 
-    setVersionLists(newVersionLists);
-  }, [customers, tasks, roadmapsVersions, isError]);
+    const ids = [ROADMAP_LIST_ID, ...roadmapsVersions.map(({ id }) => `${id}`)];
+    const result: VersionListsObject = {};
+    checkBadRelations(
+      ids.map((key) => newVersionLists[key].map(({ id }) => id)),
+      relations ?? [],
+    ).forEach((check, index) => {
+      result[ids[index]] = check.map(({ id, ...rest }) => ({
+        ...tasksById.get(id)!,
+        ...rest,
+      }));
+    });
+    setVersionLists(result);
+  }, [customers, tasks, roadmapsVersions, isError, relations]);
 
   const addVersion = (e: MouseEvent) => {
     e.stopPropagation();
