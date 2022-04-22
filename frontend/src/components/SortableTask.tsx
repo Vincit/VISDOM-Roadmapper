@@ -8,17 +8,16 @@ import css from './SortableTask.module.scss';
 
 const classes = classNames.bind(css);
 
-export const StaticTask = forwardRef<
-  HTMLDivElement,
-  {
-    task: Task;
-    showRatings: boolean;
-    hideDragIndicator?: boolean;
-    provided?: DraggableProvided;
-    style?: CSSProperties;
-    className?: string;
-  }
->(
+interface TaskProps {
+  task: Task;
+  showRatings: boolean;
+  hideDragIndicator?: boolean;
+  provided?: DraggableProvided;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
   (
     { task, showRatings, hideDragIndicator, provided, style, className },
     ref,
@@ -28,7 +27,7 @@ export const StaticTask = forwardRef<
       ref={provided?.innerRef}
       {...provided?.draggableProps}
       {...provided?.dragHandleProps}
-      style={{ ...provided?.draggableProps.style, ...(style && { ...style }) }}
+      style={{ ...provided?.draggableProps.style, ...style }}
     >
       <div className={css.leftSideDiv} ref={ref}>
         {task.name}
@@ -41,35 +40,19 @@ export const StaticTask = forwardRef<
   ),
 );
 
-export const SortableTask: FC<{
-  task: Task;
-  index: number;
-  disableDragging: boolean;
-  showRatings: boolean;
-  hideDragIndicator?: boolean;
-  style?: CSSProperties;
-}> = ({
-  task,
-  index,
-  disableDragging,
-  showRatings,
-  hideDragIndicator,
-  style,
-}) => (
+export const SortableTask: FC<
+  {
+    task: Task;
+    index: number;
+    disableDragging: boolean;
+  } & Omit<TaskProps, 'task' | 'provided'>
+> = ({ task, index, disableDragging, children, ...rest }) => (
   <Draggable
     key={task.id}
     draggableId={`${task.id}`}
     index={index}
     isDragDisabled={disableDragging}
   >
-    {(provided) => (
-      <StaticTask
-        task={task}
-        showRatings={showRatings}
-        provided={provided}
-        style={style}
-        hideDragIndicator={hideDragIndicator}
-      />
-    )}
+    {(provided) => <StaticTask task={task} provided={provided} {...rest} />}
   </Draggable>
 );
