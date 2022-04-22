@@ -13,6 +13,7 @@
 
 .horizontalScroller {
   margin-left: 8px;
+  cursor: default;
 }
 
 .unorderedCol {
@@ -42,6 +43,10 @@
   @extend .typography-body-bold;
 
   text-align: left;
+
+  svg {
+    margin-right: 10px;
+  }
 }
 
 .milestoneFooter {
@@ -80,14 +85,25 @@
     background-color: transparent;
   }
   &.completed {
-    border: 1px solid $COLOR_FOREST;
-    background-color: $COLOR_MINT;
+    border: 1px solid $COLOR_EMERALD;
+    background-color: lighten($COLOR_MINT, 2);
     .milestoneHeader {
-      color: $COLOR_FOREST;
+      color: $COLOR_EMERALD;
     }
     .milestoneTasks {
       color: $COLOR_BLACK60;
     }
+  }
+  &:hover:not(.addNewBtnWrapper, .dragging),
+  &:focus:not(.addNewBtnWrapper, .dragging) {
+    outline: none;
+    border: 1px solid $COLOR_SKY;
+    transform: scale(0.99, 0.99);
+  }
+  &.selected {
+    background-color: $COLOR_CLOUD;
+    border: 1px solid $COLOR_AZURE !important;
+    transform: scale(0.97, 0.97) !important;
   }
 }
 

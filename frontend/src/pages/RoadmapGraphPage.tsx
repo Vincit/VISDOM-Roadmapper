@@ -152,7 +152,7 @@ export const RoadmapGraphPage = () => {
                 <div className={classes(css.ratingDiv)}>
                   <BusinessIcon
                     size="xxsmall"
-                    color={completed ? colors.forest : colors.azure}
+                    color={completed ? colors.emerald : colors.azure}
                   />
                   <p>
                     {numFormat.format(
@@ -163,7 +163,7 @@ export const RoadmapGraphPage = () => {
                 <div className={classes(css.ratingDiv)}>
                   <WorkRoundIcon
                     size="xxsmall"
-                    color={completed ? colors.forest : colors.azure}
+                    color={completed ? colors.emerald : colors.azure}
                   />
                   <p>{numFormat.format(complexity)}</p>
                 </div>

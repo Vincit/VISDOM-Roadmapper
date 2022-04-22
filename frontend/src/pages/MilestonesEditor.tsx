@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, KeyboardEvent, useEffect, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -10,6 +10,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
+import DoneAll from '@mui/icons-material/DoneAll';
 import { Link } from 'react-router-dom';
 import {
   DeleteButton,
@@ -85,6 +86,8 @@ export const MilestonesEditor = () => {
   const [versionLists, setVersionLists] = useState<VersionListsObject>({});
   const [expandUnordered, setExpandUnordered] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedVersions, setSelectedVersions] = useState<number[]>([]);
 
   useEffect(() => {
     if (!isLoading || !versionLists[ROADMAP_LIST_ID]) return;
@@ -248,6 +251,7 @@ export const MilestonesEditor = () => {
   };
 
   const onDragEnd = async (result: DropResult) => {
+    setIsDragging(false);
     const { source, destination } = result;
 
     // Ignore drag if dropping in same position
@@ -264,6 +268,20 @@ export const MilestonesEditor = () => {
     } else if (result.type === 'VERSIONS') {
       await onVersionDragEnd(result as DropWithDestination);
     }
+  };
+
+  const selectVersions = (e: MouseEvent | KeyboardEvent, id: number) => {
+    e.stopPropagation();
+    const containsClicked = selectedVersions.includes(id);
+    if (e.ctrlKey || e.metaKey) {
+      if (containsClicked)
+        setSelectedVersions(selectedVersions.filter((num) => num !== id));
+      else setSelectedVersions([...selectedVersions, id]);
+      return;
+    }
+    if (containsClicked && selectedVersions.length === 1)
+      setSelectedVersions([]);
+    else setSelectedVersions([id]);
   };
 
   const renderTopBar = () => {
@@ -289,7 +307,15 @@ export const MilestonesEditor = () => {
           </div>
           {roadmapsVersions && (
             <TaskValueCreatedVisualization
-              versions={[...roadmapsVersions]}
+              versions={
+                selectedVersions.length > 0
+                  ? [
+                      ...roadmapsVersions.filter(({ id }) =>
+                        selectedVersions.includes(id),
+                      ),
+                    ]
+                  : [...roadmapsVersions]
+              }
               width={200}
               height={20}
               barWidth={20}
@@ -334,6 +360,10 @@ export const MilestonesEditor = () => {
             { 'loading-cursor': disableDrag },
           )}
           ref={droppableProvided.innerRef}
+          role="button"
+          tabIndex={0}
+          onClick={() => setSelectedVersions([])}
+          onKeyPress={() => setSelectedVersions([])}
         >
           {roadmapsVersions?.map((version, index) => {
             const completed = isCompletedMilestone(version);
@@ -351,14 +381,23 @@ export const MilestonesEditor = () => {
                     {...draggableProvided.draggableProps}
                   >
                     <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => selectVersions(e, version.id)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') selectVersions(e, version.id);
+                      }}
                       className={classes(css.milestoneWrapper, {
+                        [css.dragging]: isDragging,
                         [css.completed]: completed,
+                        [css.selected]: selectedVersions.includes(version.id),
                       })}
                     >
                       <div
                         className={classes(css.milestoneHeader)}
                         {...draggableProvided.dragHandleProps}
                       >
+                        {completed && <DoneAll />}
                         {version.name}
                       </div>
                       {versionLists[version.id]?.length === 0 ? (
@@ -473,7 +512,10 @@ export const MilestonesEditor = () => {
       </div>
     );
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext
+      onDragEnd={onDragEnd}
+      onDragStart={() => setIsDragging(true)}
+    >
       <div className={classes(css.layoutRow, css.overflowYAuto)}>
         <ExpandableColumn
           className={classes(css.unorderedCol)}

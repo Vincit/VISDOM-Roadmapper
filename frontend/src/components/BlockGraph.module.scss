@@ -74,12 +74,11 @@ $GRAPH_ITEM_MARGIN: 11px;
   }
   &.selected {
     background: $COLOR_CLOUD;
+    border: 1px solid $COLOR_AZURE;
   }
-  &.completed {
+  &.completed:not(.selected) {
     border: 1px solid $COLOR_FOREST;
-    &.selected {
-      background: $COLOR_MINT;
-    }
+    background-color: lighten($COLOR_MINT, 2);
   }
   user-select: none;
 }

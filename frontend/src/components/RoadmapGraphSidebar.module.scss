@@ -15,11 +15,13 @@
 .header {
   @extend .layout-row;
   @extend .typography-h3;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
 
-  svg {
-    margin-top: 3px;
+  &.completed {
+    color: $COLOR_EMERALD;
+  }
+  .close {
     margin-left: auto;
     margin-right: 5px;
   }

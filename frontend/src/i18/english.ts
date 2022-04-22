@@ -317,7 +317,7 @@ export const english = {
     'Planner customerStakes tooltip':
       'Values are calculated using the average value of tasks for a client.',
     'Planner milestones tooltip':
-      'Milestones create your project’s <1>roadmap.</1>',
+      'Milestones create your project’s <1>roadmap.</1>\n\nMilestones can be selected by clicking. Hold the Ctrl or command -key for multiselection.',
     'Planner weights tooltip':
       'Client weights affect the scaling of milestone`s total values in the roadmap graph. Weight of 0% will ignore the ratings of the client in question.',
     'Compare milestone durations with different estimates.':

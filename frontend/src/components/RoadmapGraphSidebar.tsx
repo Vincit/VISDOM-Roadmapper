@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import ListIcon from '@mui/icons-material/List';
+import DoneAll from '@mui/icons-material/DoneAll';
 import { userRoleSelector } from '../redux/user/selectors';
 import { ModalCloseButton } from './forms/SvgButton';
 import { VersionComplexityAndValues } from '../redux/roadmaps/types';
@@ -10,7 +11,10 @@ import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import { MetricsSummary } from './MetricsSummary';
 import { TaskTable } from './TaskTable';
 import { TaskValueCreatedVisualization } from './TaskValueCreatedVisualization';
-import { averageValueAndComplexity } from '../utils/TaskUtils';
+import {
+  averageValueAndComplexity,
+  isCompletedMilestone,
+} from '../utils/TaskUtils';
 import { percent } from '../utils/string';
 import { Permission } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
@@ -56,12 +60,15 @@ export const RoadmapGraphSidebar = forwardRef<
   const displayedValue = hasReadCustomerValuesPermission
     ? value
     : unweightedValue;
+  const completed = isCompletedMilestone(version);
 
   return (
     <div className={classes(css.versionWrapper)} ref={ref} {...props}>
-      <div className={classes(css.header)}>
-        {name}
-        <ModalCloseButton onClick={onClose} />
+      <div className={classes(css.header, { [css.completed]: completed })}>
+        {completed && <DoneAll />} {name}
+        <div className={classes(css.close)}>
+          <ModalCloseButton onClick={onClose} />
+        </div>
       </div>
       <div className={classes(css.metrics)}>
         {tasks.length === 0 ? (
