@@ -25,3 +25,13 @@
     color: $COLOR_BLACK40;
   }
 }
+
+.dependencyTooltip {
+  @extend .layout-row;
+  align-items: center;
+  gap: 10px;
+  & > svg {
+    width: 15px;
+    height: 100%;
+  }
+}
