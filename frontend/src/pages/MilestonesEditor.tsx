@@ -72,12 +72,12 @@ export const MilestonesEditor = () => {
     patchVersion,
     { isLoading: disableDrag, isError },
   ] = apiV2.usePatchVersionMutation();
-  const type = useSelector(userRoleSelector, shallowEqual);
-  const hasVersionEditPermission = hasPermission(type, Permission.VersionEdit);
+  const role = useSelector(userRoleSelector, shallowEqual);
+  const hasVersionEditPermission = hasPermission(role, Permission.VersionEdit);
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
     {
-      skip: !hasPermission(type, Permission.VersionRead),
+      skip: !hasPermission(role, Permission.VersionRead),
     },
   );
   const { data: customers } = apiV2.useGetCustomersQuery(
@@ -260,7 +260,7 @@ export const MilestonesEditor = () => {
 
   const onDragEnd = async (result: DropResult) => {
     setIsDragging(false);
-    const { source, destination } = result;
+    const { source, destination, type } = result;
 
     // Ignore drag if dropping in same position
     if (
@@ -271,9 +271,9 @@ export const MilestonesEditor = () => {
       return;
     }
 
-    if (result.type === 'TASKS') {
+    if (type === 'TASKS') {
       await onTaskDragEnd(result as DropWithDestination);
-    } else if (result.type === 'VERSIONS') {
+    } else if (type === 'VERSIONS') {
       await onVersionDragEnd(result as DropWithDestination);
     }
   };
