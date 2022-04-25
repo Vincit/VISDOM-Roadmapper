@@ -33,7 +33,6 @@
 
 .textContainer {
   @extend .layout-row;
-  min-width: 400px;
   div:nth-child(2) {
     flex-direction: column;
     order: 0;
@@ -42,8 +41,10 @@
     max-height: 100px;
     order: 1;
     textarea {
+      background-color: $COLOR_WHITE;
       overflow: scroll;
       max-height: 80px;
+      width: 325px;
     }
   }
 }

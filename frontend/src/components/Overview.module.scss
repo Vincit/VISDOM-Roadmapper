@@ -34,7 +34,8 @@
   }
   div {
     textarea {
-      overflow: scroll !important;
+      overflow: auto !important;
+      background-color: $COLOR_WHITE;
     }
     div:nth-child(2) {
       padding-right: 15%;
@@ -62,7 +63,7 @@
 .content {
   @extend .layout-row;
   width: 100%;
-  gap: 5%;
+  gap: 20px;
 }
 
 .metrics {
