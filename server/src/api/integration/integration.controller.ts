@@ -220,6 +220,10 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
         await existing.$query(trx).patchAndFetch({
           ...task,
           lastUpdatedByUserId: task.createdByUser,
+          // Don't update the status backwards from an import
+          // This assumes that the status does not go backwards in the source,
+          // or in the mapping.
+          status: Math.max(task.status, existing.status),
         });
       } else {
         await Task.query(trx).insert(task);
