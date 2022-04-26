@@ -14,23 +14,35 @@ import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
-export const TaskValueCreatedVisualization: FC<{
-  versions: Version[];
-  width: number;
-  height: number;
-  barWidth?: number;
-  noTooltip?: true;
-  vertical?: boolean;
-}> = ({ versions, width, height, noTooltip, vertical, barWidth = 37 }) => {
+// either provide versions or customer stakes
+export const TaskValueCreatedVisualization: FC<
+  ({ stakes: CustomerStakes[] } | { versions: Version[] }) & {
+    width: number;
+    height: number;
+    barWidth?: number;
+    noTooltip?: true;
+    vertical?: boolean;
+  }
+> = ({ width, height, noTooltip, vertical, barWidth = 37, ...props }) => {
+  const { stakes, versions } = {
+    stakes: undefined,
+    versions: undefined,
+    ...props,
+  };
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
+    { skip: stakes !== undefined },
   );
 
   const [data, setData] = useState<CustomerStakes[]>([]);
-  const totalValue = data.reduce((acc, { value }) => acc + value, 0);
+  const totalValue = (stakes || data).reduce(
+    (acc, { value }) => acc + value,
+    0,
+  );
 
   useEffect(() => {
+    if (!versions) return;
     const allTasks = versions.flatMap((version) => version.tasks);
     const customerStakes = totalCustomerStakes(allTasks, customers);
     setData(
@@ -46,10 +58,14 @@ export const TaskValueCreatedVisualization: FC<{
   }, [versions, customers]);
 
   return (
-    <div className={classes(css.stakes)}>
+    <div
+      className={classes(css.stakes, {
+        [css.vertical]: vertical,
+      })}
+    >
       <div style={{ width, height }}>
         <CustomerStakesVisualization
-          customerStakes={data}
+          customerStakes={stakes || data}
           totalValue={totalValue}
           noTooltip={noTooltip}
           vertical={vertical}
@@ -59,7 +75,7 @@ export const TaskValueCreatedVisualization: FC<{
       {noTooltip && (
         <div>
           <StakesTooltipContent
-            customerStakes={data}
+            customerStakes={stakes || data}
             totalValue={totalValue}
             noTitle
           />

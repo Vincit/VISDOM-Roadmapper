@@ -25,3 +25,16 @@ export const randomColor = (
 export const getCheckedIds = <T>(array: { checked: boolean; id: T }[]) => {
   return array.filter(({ checked }) => checked).map(({ id }) => id);
 };
+
+export const targetCustomerStakes = (customers: Customer[]) => {
+  const totalValue = customers.reduce((acc, { weight }) => acc + weight, 0);
+  return [...customers]
+    .sort((a, b) => b.weight - a.weight)
+    .map(({ id, weight }) => ({
+      id,
+      target: weight / totalValue,
+    }));
+};
+
+export const stakesDifferTooMuchFromTarget = (actual: number, target: number) =>
+  (actual - target) / target < -0.3;

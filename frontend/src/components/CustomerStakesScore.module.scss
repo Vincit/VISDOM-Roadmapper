@@ -1,0 +1,19 @@
+@import '../shared.scss';
+
+.score {
+  @extend .layout-row;
+  align-items: baseline;
+
+  .result {
+    @extend .typography-pre-title;
+    margin-left: auto;
+    color: $COLOR_AZURE;
+  }
+
+  &.differsFromPlanned {
+    margin-bottom: 10px;
+    .result {
+      color: $COLOR_RASPBERRY;
+    }
+  }
+}

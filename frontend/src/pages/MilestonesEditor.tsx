@@ -42,6 +42,7 @@ import { userRoleSelector } from '../redux/user/selectors';
 import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
 import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
+import { CustomerStakesScore } from '../components/CustomerStakesScore';
 import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
@@ -436,7 +437,17 @@ export const MilestonesEditor = () => {
                           hideDragIndicator={!hasVersionEditPermission}
                         />
                       )}
-                      <div className={classes(css.ratingsSummaryWrapper)}>
+                      <div
+                        className={classes(css.summaryWrapper, {
+                          [css.completed]: completed,
+                        })}
+                      >
+                        <CustomerStakesScore
+                          version={version}
+                          completed={completed}
+                        />
+                      </div>
+                      <div className={classes(css.summaryWrapper)}>
                         <MilestoneRatingsSummary
                           tasks={versionLists[version.id] || []}
                           completed={completed}

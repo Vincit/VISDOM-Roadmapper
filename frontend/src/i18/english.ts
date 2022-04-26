@@ -384,5 +384,8 @@ export const english = {
     'No client weights set': 'No client weights set',
     'Client weights': 'Client weights',
     'See client weights': 'See client weights',
+    'Client shares score': 'Client shares score',
+    Poor: 'Poor',
+    Great: 'Great',
   },
 };
