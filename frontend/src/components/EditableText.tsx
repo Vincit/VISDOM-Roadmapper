@@ -19,7 +19,6 @@ interface WithButtonsProps {
   value: string;
   fieldId: string;
   format: string | undefined;
-  multiline?: true;
 }
 
 const withButtons = (Component: typeof EditableText) => ({
@@ -27,7 +26,6 @@ const withButtons = (Component: typeof EditableText) => ({
   value,
   fieldId,
   format,
-  multiline,
 }: WithButtonsProps) => {
   const [editOpen, setEditOpen] = useState(false);
   const [editText, setEditText] = useState('');
@@ -59,7 +57,7 @@ const withButtons = (Component: typeof EditableText) => ({
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     switch (event.key) {
       case 'Enter':
-        if (multiline && !event.shiftKey) return;
+        if (format === 'multiline' && !event.shiftKey) return;
         event.preventDefault();
         handleConfirm();
         break;
