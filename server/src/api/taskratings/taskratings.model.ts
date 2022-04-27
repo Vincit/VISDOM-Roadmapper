@@ -1,4 +1,4 @@
-import { Model, QueryBuilder } from 'objection';
+import { Model, QueryBuilder, Pojo } from 'objection';
 import {
   TaskRatingDimension,
   RoleType,
@@ -6,6 +6,7 @@ import {
 import User from '../users/users.model';
 import Task from '../tasks/tasks.model';
 import Customer from '../customer/customer.model';
+import { convertScale } from '../../../../shared/utils/conversion';
 
 export default class TaskRating extends Model {
   id!: number;
@@ -94,5 +95,10 @@ export default class TaskRating extends Model {
       this.dimension === TaskRatingDimension.Complexity ||
       user.representativeFor.some(({ id }) => id === this.forCustomer)
     );
+  }
+  $parseDatabaseJson(json: Pojo): Pojo {
+    json = super.$parseDatabaseJson(json);
+    json.value = convertScale(json.value);
+    return json;
   }
 }
