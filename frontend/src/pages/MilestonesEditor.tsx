@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { MouseEvent, KeyboardEvent, useEffect, useState } from 'react';
 import {
   DragDropContext,
@@ -24,7 +25,7 @@ import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink } from '../components/modals/types';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { Task, Version } from '../redux/roadmaps/types';
+import { Task, Version, TaskRelation } from '../redux/roadmaps/types';
 import {
   weightedTaskPriority,
   hasRatingsOnEachDimension,
@@ -32,15 +33,19 @@ import {
 } from '../utils/TaskUtils';
 import {
   checkBadRelations,
-  RelationCheckData,
+  RelationAnnotation,
+  TaskRelationTableType,
 } from '../utils/TaskRelationUtils';
 import { sortKeyNumeric, sort, SortingOrders } from '../utils/SortUtils';
-import { move } from '../utils/array';
+import { move, partition } from '../utils/array';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './MilestonesEditor.module.scss';
 import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { Permission } from '../../../shared/types/customTypes';
+import {
+  Permission,
+  TaskRelationType,
+} from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
 import { userRoleSelector } from '../redux/user/selectors';
 import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
@@ -55,8 +60,40 @@ type DropWithDestination = DropResult & {
 };
 
 interface VersionListsObject {
-  [K: string]: (Task & RelationCheckData)[];
+  [K: string]: (Task & RelationAnnotation)[];
 }
+
+const markRelations = (relations: TaskRelation[], out: VersionListsObject) => (
+  task: VersionListsObject[string][number],
+) => {
+  const [deps, syns] = partition(
+    relations.filter(({ from, to }) => from === task.id || to === task.id),
+    (r) => r.type === TaskRelationType.Dependency,
+  );
+  const contributes = new Set(syns.flatMap(({ from, to }) => [from, to]));
+
+  const [before, after] = partition(deps, ({ to }) => to === task.id);
+  const precedes = new Set(after.map(({ to }) => to));
+  const requires = new Set(before.map(({ from }) => from));
+
+  Object.values(out).forEach((list) => {
+    list.forEach((x) => {
+      if (x.id === task.id) return;
+      if (x.relation === undefined) {
+        x.relation = null;
+      }
+      if (x.relation === null && contributes.has(x.id)) {
+        x.relation = TaskRelationTableType.Contributes;
+      }
+      if (x.relation !== TaskRelationTableType.Requires && precedes.has(x.id)) {
+        x.relation = TaskRelationTableType.Precedes;
+      }
+      if (requires.has(x.id)) {
+        x.relation = TaskRelationTableType.Requires;
+      }
+    });
+  });
+};
 
 const copyVersionLists = (originalLists: VersionListsObject) => {
   const copyList: VersionListsObject = {};
@@ -280,6 +317,13 @@ export const MilestonesEditor = () => {
   const onDragEnd = async (result: DropResult) => {
     setIsDragging(false);
     const { source, destination, type } = result;
+    const copy = copyVersionLists(versionLists);
+    Object.values(copy).forEach((list) =>
+      list.forEach((x) => {
+        x.relation = undefined;
+      }),
+    );
+    setVersionLists(copy);
 
     // Ignore drag if dropping in same position
     if (
@@ -539,9 +583,23 @@ export const MilestonesEditor = () => {
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
-      onDragStart={() => {
+      onDragStart={({ type, source: { droppableId, index } }) => {
         setIsDragging(true);
         setSelectedVersions([]);
+        if (!roadmapsVersions || !relations) return;
+        const copy = copyVersionLists(versionLists);
+        if (type === 'TASKS') {
+          const task = versionLists[droppableId][index];
+          markRelations(relations, copy)(task);
+          task.relation = null;
+        } else if (type === 'VERSIONS') {
+          const { id } = roadmapsVersions[index];
+          versionLists[id].forEach(markRelations(relations, copy));
+          versionLists[id].forEach((x) => {
+            x.relation = null;
+          });
+        }
+        setVersionLists(copy);
       }}
     >
       <div className={classes(css.layoutRow, css.overflowYAuto)}>
