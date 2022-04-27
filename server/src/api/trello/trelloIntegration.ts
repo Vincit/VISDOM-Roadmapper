@@ -13,7 +13,7 @@ const appName = 'VISDOM Roadmap tool';
 const requestURL = 'https://trello.com/1/OAuthGetRequestToken';
 const accessURL = 'https://trello.com/1/OAuthGetAccessToken';
 const authorizeURL = 'https://trello.com/1/OAuthAuthorizeToken';
-const expiration = '30days';
+const expiration = 'never';
 
 const oauth = (key: string, secret: string) =>
   new OAuth(requestURL, accessURL, key, secret, '1.0A', '', 'HMAC-SHA1');
