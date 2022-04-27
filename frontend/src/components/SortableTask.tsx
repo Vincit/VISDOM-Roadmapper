@@ -5,7 +5,10 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { ReactComponent as AlertIcon } from '../icons/alert-exclamation-mark.svg';
 import { RelationIcon } from './RelationIcon';
 import { Task, TaskRelation } from '../redux/roadmaps/types';
-import { TaskRelationTableType } from '../utils/TaskRelationUtils';
+import {
+  TaskRelationTableType,
+  RelationAnnotation,
+} from '../utils/TaskRelationUtils';
 import { TaskRatingsText } from './TaskRatingsText';
 import { InfoTooltip } from './InfoTooltip';
 import css from './SortableTask.module.scss';
@@ -13,7 +16,7 @@ import css from './SortableTask.module.scss';
 const classes = classNames.bind(css);
 
 interface TaskProps {
-  task: Task & { badRelations?: TaskRelation[] };
+  task: Task & Partial<RelationAnnotation>;
   showRatings: boolean;
   hideDragIndicator?: boolean;
   provided?: DraggableProvided;
@@ -34,6 +37,39 @@ const UnmetDependencyTooltip = () => (
   </div>
 );
 
+const RelationIndicator: FC<{ task: TaskProps['task'] }> = ({
+  task: { id, relation, badRelations },
+}) => {
+  if (relation === null) return null;
+
+  if (relation !== undefined) {
+    const isBadRelation = badRelations?.some(
+      ({ from, to }: TaskRelation) =>
+        (from === id && relation === TaskRelationTableType.Requires) ||
+        (to === id && relation === TaskRelationTableType.Precedes),
+    );
+    return <RelationIcon size={17} type={relation} incorrect={isBadRelation} />;
+  }
+
+  if (!badRelations?.length) return null;
+
+  return (
+    <InfoTooltip title={<UnmetDependencyTooltip />}>
+      <div>
+        <RelationIcon
+          incorrect
+          size={17}
+          type={
+            badRelations.some(({ from }) => from === id)
+              ? TaskRelationTableType.Requires
+              : TaskRelationTableType.Precedes
+          }
+        />
+      </div>
+    </InfoTooltip>
+  );
+};
+
 export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
   (
     { task, showRatings, hideDragIndicator, provided, style, className },
@@ -50,22 +86,8 @@ export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
         {task.name}
       </div>
       <div className={css.rightSideDiv}>
+        <RelationIndicator task={task} />
         {showRatings && <TaskRatingsText task={task} />}
-        {!!task.badRelations?.length && (
-          <InfoTooltip title={<UnmetDependencyTooltip />}>
-            <div>
-              <RelationIcon
-                incorrect
-                size={17}
-                type={
-                  task.badRelations.some(({ from }) => from === task.id)
-                    ? TaskRelationTableType.Requires
-                    : TaskRelationTableType.Precedes
-                }
-              />
-            </div>
-          </InfoTooltip>
-        )}
         {!hideDragIndicator && <DragIndicatorIcon fontSize="small" />}
       </div>
     </div>

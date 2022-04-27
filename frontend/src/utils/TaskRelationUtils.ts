@@ -151,10 +151,13 @@ export const getTaskRelations = (
   return ids;
 };
 
-export type RelationCheckData = {
-  id: number;
+export type RelationAnnotation = {
+  /** assuming bad relations to only be dependencies */
   badRelations: TaskRelation[];
+  relation?: TaskRelationTableType | null;
 };
+
+type RelationCheckData = { id: number } & RelationAnnotation;
 
 const equal = (a: TaskRelation, b: TaskRelation) =>
   a.from === b.from && a.to === b.to && a.type === b.type;
