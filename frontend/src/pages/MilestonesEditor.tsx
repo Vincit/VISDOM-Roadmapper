@@ -116,7 +116,8 @@ export const MilestonesEditor = () => {
     setVersionLists(newVersionLists);
   }, [customers, tasks, roadmapsVersions, isError]);
 
-  const addVersion = () => {
+  const addVersion = (e: MouseEvent) => {
+    e.stopPropagation();
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.ADD_VERSION_MODAL,
