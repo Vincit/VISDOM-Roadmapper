@@ -6,6 +6,7 @@ import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { ratingsSummaryByDimension } from '../utils/TaskUtils';
 import css from './TaskHeatmap.module.scss';
 import { apiV2 } from '../api/api';
+import { convertScale, revertScale } from '../../../shared/utils/conversion';
 
 const classes = classNames.bind(css);
 
@@ -25,8 +26,8 @@ export const TaskHeatmap = () => {
     const value = ratings.get(TaskRatingDimension.BusinessValue);
     const complexity = ratings.get(TaskRatingDimension.Complexity);
     if (value && complexity) {
-      const avgValue = Math.round(value.avg);
-      const avgComplexity = Math.round(complexity.avg);
+      const avgValue = Math.round(revertScale(value.avg));
+      const avgComplexity = Math.round(revertScale(complexity.avg));
       frequencies[5 - avgValue][avgComplexity - 1] += 1;
     }
   });
@@ -78,13 +79,13 @@ export const TaskHeatmap = () => {
             </div>
           ))}
         </div>
-        <p className={classes(css.yaxismax)}>5</p>
-        <p className={classes(css.yaxismin)}>1</p>
+        <p className={classes(css.yaxismin)}>{convertScale(1)}</p>
         <p className={classes(css.yaxislabel)}>Value</p>
+        <p className={classes(css.yaxismax)}>{convertScale(5)}</p>
       </div>
-      <p className={classes(css.xaxismin)}>1</p>
+      <p className={classes(css.xaxismin)}>{convertScale(1)}</p>
       <p className={classes(css.xaxislabel)}>Complexity</p>
-      <p className={classes(css.xaxismax)}>5</p>
+      <p className={classes(css.xaxismax)}>{convertScale(5)}</p>
     </div>
   );
 };
