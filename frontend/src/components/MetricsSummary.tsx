@@ -21,7 +21,7 @@ export const MetricsSummary: FC<MetricsProps> = ({
       <>
         <div className={classes(css.dash)} />
         <div className={classes(css.dataNumberWrapper)}>
-          {value}
+          {Math.round(Number(value))}
           <div>{children}</div>
         </div>
       </>
