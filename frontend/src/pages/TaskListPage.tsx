@@ -92,7 +92,10 @@ export const TaskListPage = () => {
           type="submit"
           onClick={onImportTasksClick(name)}
         >
-          <Trans i18nKey="Import tasks from" /> {titleCase(name)}
+          <Trans
+            i18nKey="Import tasks from"
+            values={{ name: titleCase(name) }}
+          />
         </button>
       );
     }

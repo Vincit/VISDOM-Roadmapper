@@ -39,6 +39,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Permission } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
 import { userRoleSelector } from '../redux/user/selectors';
+import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
 import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { paths } from '../routers/paths';
@@ -88,6 +89,12 @@ export const MilestonesEditor = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedVersions, setSelectedVersions] = useState<number[]>([]);
+
+  const versionsSelected = selectedVersions.length > 0;
+  const visualizedVersions =
+    (versionsSelected
+      ? roadmapsVersions?.filter(({ id }) => selectedVersions.includes(id))
+      : roadmapsVersions) || [];
 
   useEffect(() => {
     if (!isLoading || !versionLists[ROADMAP_LIST_ID]) return;
@@ -308,15 +315,7 @@ export const MilestonesEditor = () => {
           </div>
           {roadmapsVersions && (
             <TaskValueCreatedVisualization
-              versions={
-                selectedVersions.length > 0
-                  ? [
-                      ...roadmapsVersions.filter(({ id }) =>
-                        selectedVersions.includes(id),
-                      ),
-                    ]
-                  : [...roadmapsVersions]
-              }
+              versions={visualizedVersions}
               width={200}
               height={20}
               barWidth={20}
@@ -342,6 +341,12 @@ export const MilestonesEditor = () => {
             <Trans i18nKey="See client weights" />
           </Link>
         )}
+        <div className={classes(css.amountSummary)}>
+          <MilestonesAmountSummary
+            selected={versionsSelected}
+            versions={visualizedVersions}
+          />
+        </div>
       </div>
     );
   };

@@ -67,6 +67,12 @@
   letter-spacing: 0.02em;
 }
 
+.typography-body-mini {
+  @extend .typography-body;
+  font-size: 9px;
+  letter-spacing: 0.02em;
+}
+
 .typography-button {
   font-family: Work Sans;
   font-style: normal;

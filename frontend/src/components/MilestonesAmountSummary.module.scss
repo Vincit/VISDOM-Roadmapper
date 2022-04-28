@@ -1,0 +1,20 @@
+@import './../shared.scss';
+
+.summaryWrapper {
+  @extend .layout-column;
+  width: max-content;
+  align-items: center;
+}
+
+.summaryDetails {
+  @extend .typography-body-mini;
+  @extend .layout-row;
+  gap: 7px;
+
+  div:first-child {
+    color: $COLOR_BLACK60;
+  }
+  div:last-child {
+    color: $COLOR_FOREST;
+  }
+}
