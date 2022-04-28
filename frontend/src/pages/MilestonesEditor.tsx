@@ -514,7 +514,10 @@ export const MilestonesEditor = () => {
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
-      onDragStart={() => setIsDragging(true)}
+      onDragStart={() => {
+        setIsDragging(true);
+        setSelectedVersions([]);
+      }}
     >
       <div className={classes(css.layoutRow, css.overflowYAuto)}>
         <ExpandableColumn
