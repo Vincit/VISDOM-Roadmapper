@@ -93,6 +93,9 @@
     .milestoneTasks {
       color: $COLOR_BLACK60;
     }
+    &.selected {
+      background-color: $COLOR_CLOUD_MINT_MIX;
+    }
   }
   &:hover:not(.addNewBtnWrapper, .dragging),
   &:focus:not(.addNewBtnWrapper, .dragging) {

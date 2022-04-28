@@ -16,10 +16,13 @@ $COLOR_BLACK40: #c6c6c6;
 $COLOR_BLACK10: #e3e3e3;
 $COLOR_BLACK5: #f5f5f5;
 
+$COLOR_CLOUD_MINT_MIX: #ecfcfb;
+
 :export {
   emerald: $COLOR_EMERALD;
   azure: $COLOR_AZURE;
   forest: $COLOR_FOREST;
+  mint: $COLOR_MINT;
   sky: $COLOR_SKY;
   cloud: $COLOR_CLOUD;
   raspberry: $COLOR_RASPBERRY;
@@ -33,4 +36,6 @@ $COLOR_BLACK5: #f5f5f5;
   black40: $COLOR_BLACK40;
   black10: $COLOR_BLACK10;
   black5: $COLOR_BLACK5;
+
+  cloud_mint_mix: $COLOR_CLOUD_MINT_MIX;
 }

@@ -75,6 +75,9 @@ $GRAPH_ITEM_MARGIN: 11px;
   &.selected {
     background: $COLOR_CLOUD;
     border: 1px solid $COLOR_AZURE;
+    &.completed {
+      background-color: $COLOR_CLOUD_MINT_MIX;
+    }
   }
   &.completed:not(.selected) {
     border: 1px solid $COLOR_FOREST;
