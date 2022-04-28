@@ -72,6 +72,14 @@ export const english = {
     'Rate customer': 'Rate customer',
     milestones: 'milestones',
     Milestones: 'Milestones',
+    'Milestones amount_one': '<strong>{{count}}</strong> milestone',
+    'Milestones amount_other': '<strong>{{count}}</strong> milestones',
+    'Selected milestones amount_one':
+      '<strong>{{count}}</strong> milestone selected',
+    'Selected milestones amount_other':
+      '<strong>{{count}}</strong> milestones selected',
+    'In progress milestones amount': '<strong>{{amount}}</strong> in progress',
+    'Completed milestones amount': '<strong>{{amount}}</strong> completed',
     'Milestone task instructions': 'Drag & drop tasks here',
     'Add milestone': 'Add milestone',
     'Milestone name': 'Milestone name',

@@ -16,6 +16,7 @@ import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { BlockGraph, BlockView } from '../components/BlockGraph';
+import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
 import { RoadmapGraphSidebar } from '../components/RoadmapGraphSidebar';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { VersionComplexityAndValues } from '../redux/roadmaps/types';
@@ -116,6 +117,9 @@ export const RoadmapGraphPage = () => {
               <InfoTooltip title={t('Planner complexityValue tooltip')}>
                 <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
               </InfoTooltip>
+              <div className={classes(css.amountSummary)}>
+                <MilestonesAmountSummary versions={versions || []} />
+              </div>
             </div>
           }
           xLabel="Total complexity"
