@@ -2,21 +2,24 @@ import { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { Slider } from '../components/forms/Slider';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Customer } from '../redux/roadmaps/types';
 import { Dot } from '../components/Dot';
-import { percent } from '../utils/string';
+import { MetricsSummary } from '../components/MetricsSummary';
 import { InfoTooltip } from '../components/InfoTooltip';
+import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
+import { percent } from '../utils/string';
 import css from './PlannerWeightsPage.module.scss';
 import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
 export const PlannerWeightsPage = () => {
+  const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
 
   const { data: customers } = apiV2.useGetCustomersQuery(
@@ -54,6 +57,18 @@ export const PlannerWeightsPage = () => {
             <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
           </InfoTooltip>
         </h2>
+        <div className={classes(css.clientShares)}>
+          <MetricsSummary label={t('Target weighted shares')} value={null}>
+            <div className={classes(css.visualizationWrapper)}>
+              <CustomerWeightsVisualization
+                width={180}
+                height={20}
+                barWidth={20}
+                light
+              />
+            </div>
+          </MetricsSummary>
+        </div>
       </header>
       {errorMessage.length > 0 && (
         <Alert

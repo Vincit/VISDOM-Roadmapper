@@ -6,7 +6,7 @@ const classes = classNames.bind(css);
 
 export interface MetricsProps {
   label: string;
-  value?: string | number;
+  value?: string | number | null;
   children?: any;
 }
 
