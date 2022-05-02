@@ -142,7 +142,7 @@ export const ProjectSummary: FC<{
           </div>
         )}
         <div
-          className={classes(css.moreButton)}
+          className={classes(css.rightSide)}
           role="button"
           onClick={(e) => setAnchorEl(e.currentTarget)}
           onKeyPress={(e) => setAnchorEl(e.currentTarget)}

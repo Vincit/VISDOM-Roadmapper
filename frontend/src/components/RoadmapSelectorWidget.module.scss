@@ -9,11 +9,11 @@
 
 .dropButton {
   @extend .typography-body-small;
+  @extend .rightSide;
   position: relative;
   align-items: center;
   white-space: nowrap;
   margin-right: 0;
-  margin-left: auto;
   border-radius: 16px;
   border: 2px solid $COLOR_EMERALD;
   height: 32px;

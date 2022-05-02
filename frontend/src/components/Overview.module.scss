@@ -51,7 +51,7 @@
 
 .buttons {
   @extend .layout-row;
-  margin-left: auto;
+  @extend .rightSide;
   flex-wrap: nowrap;
 
   .disabled path:first-child {
