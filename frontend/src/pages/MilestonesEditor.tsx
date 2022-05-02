@@ -290,20 +290,6 @@ export const MilestonesEditor = () => {
   const renderTopBar = () => {
     return (
       <div className={classes(css.topbar)}>
-        <InfoTooltip
-          title={
-            <div>
-              <Trans i18nKey="Planner milestones tooltip">
-                Milestones create your project’s
-                <Link to={`/roadmap/${roadmapId}/planner/graph`}>roadmap.</Link>
-              </Trans>
-            </div>
-          }
-        >
-          <div className={classes(css.infoBackground)}>
-            <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-          </div>
-        </InfoTooltip>
         <div className={classes(css.topbarShares)}>
           <div>
             <Trans i18nKey="Actual weighted shares" />
@@ -344,7 +330,23 @@ export const MilestonesEditor = () => {
             <Trans i18nKey="See client weights" />
           </Link>
         )}
-        <div className={classes(css.amountSummary)}>
+        <div className={classes(css.topbarRightSide)}>
+          <InfoTooltip
+            title={
+              <div>
+                <Trans i18nKey="Planner milestones tooltip">
+                  Milestones create your project’s
+                  <Link to={`/roadmap/${roadmapId}/planner/graph`}>
+                    roadmap.
+                  </Link>
+                </Trans>
+              </div>
+            }
+          >
+            <div className={classes(css.infoBackground)}>
+              <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+            </div>
+          </InfoTooltip>
           <MilestonesAmountSummary
             selected={versionsSelected}
             versions={
