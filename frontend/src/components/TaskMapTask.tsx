@@ -133,7 +133,7 @@ const SingleTask: FC<
       >
         {task.name}
       </div>
-      <div className={classes(css.taskRatingTexts)}>
+      <div className={classes(css.rightSide)}>
         <TaskRatingsText
           task={task}
           selected={selected}

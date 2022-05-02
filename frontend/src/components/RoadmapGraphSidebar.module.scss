@@ -22,7 +22,7 @@
     color: $COLOR_EMERALD;
   }
   .close {
-    margin-left: auto;
+    @extend .rightSide;
     margin-right: 5px;
   }
 }
@@ -46,7 +46,7 @@
     align-items: center;
     .value {
       @extend .typography-pre-title;
-      margin-left: auto;
+      @extend .rightSide;
       color: $COLOR_AZURE;
     }
   }
@@ -61,7 +61,6 @@
   gap: 4.75px;
 
   .rightSide {
-    margin-left: auto;
     display: flex;
     gap: 11.75px;
 

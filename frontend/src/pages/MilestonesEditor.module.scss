@@ -162,8 +162,8 @@
 
 .topbarRightSide {
   @extend .layout-row;
+  @extend .rightSide;
   gap: 15px;
-  margin-left: auto;
   padding: 0 15px;
   border-left: 1px solid $COLOR_BLACK40;
 }
