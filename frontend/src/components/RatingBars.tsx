@@ -4,6 +4,7 @@ import { Rating as MaterialRating } from '@mui/material';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import css from './RatingBars.module.scss';
+import { revertScale, convertScale } from '../../../shared/utils/conversion';
 
 const classes = classNames.bind(css);
 
@@ -35,11 +36,11 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
       <MaterialRating
         name={'name' in rest ? rest.name : undefined}
         readOnly={readonly}
-        value={initialValue}
+        value={revertScale(initialValue)}
         max={5}
         onChange={(_, value) => {
           if (!onChange) return;
-          if (value) onChange(value);
+          if (value) onChange(convertScale(value));
           else {
             onChange(0);
             setHover(0);
@@ -58,7 +59,7 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
       {!readonly && (
         <div className={classes(css.rating)}>
           {hover > 0
-            ? hover
+            ? convertScale(hover)
             : initialValue || <div className={classes(css.unrated)}>-</div>}
         </div>
       )}
