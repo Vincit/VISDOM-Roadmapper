@@ -16,6 +16,7 @@ import {
 import Taskrating from './taskratings.model';
 import Task from '../tasks/tasks.model';
 import Customer from '../customer/customer.model';
+import { revertScale } from '../../../../shared/utils/conversion';
 
 export const getTaskratings: RouteHandlerFnc = async (ctx) => {
   const { user, role } = ctx.state;
@@ -85,7 +86,7 @@ export const postTaskRatings: RouteHandlerFnc = async (ctx) => {
           .for(taskId)
           .insertAndFetch({
             dimension,
-            value,
+            value: revertScale(value),
             comment,
             forCustomer,
             parentTask: taskId,
@@ -194,7 +195,13 @@ export const updateTaskratings: RouteHandlerFnc = async (ctx) => {
 
     const updated = await Promise.all(
       foundRatings.flatMap(({ rating, value, comment }) =>
-        rating ? [rating.$query(trx).patchAndFetch({ value, comment })] : [],
+        rating
+          ? [
+              rating
+                .$query(trx)
+                .patchAndFetch({ value: revertScale(value), comment }),
+            ]
+          : [],
       ),
     );
     return { deleted: toDelete, updated };
