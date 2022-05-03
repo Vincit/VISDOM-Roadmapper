@@ -1,12 +1,5 @@
-import {
-  CSSProperties,
-  FC,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-import { VariableSizeList } from 'react-window';
+import { CSSProperties, FC, useEffect, useState, useCallback } from 'react';
+import { FixedSizeList } from 'react-window';
 import { useTranslation } from 'react-i18next';
 import { Droppable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
@@ -46,28 +39,14 @@ export const SortableTaskList: FC<{
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [searched, setSearched] = useState(tasks);
-  const listRef = useRef<VariableSizeList<any> | null>(null);
-  const [measureRef, setMeasureRef] = useState<HTMLDivElement | null>(null);
-  const [rowHeights, setRowHeights] = useState<number[]>([]);
+  const itemHeight = 52; // enough for two lines for the task name
+  const itemMargin = 6;
 
   useEffect(() => {
     setSearched(
       tasks.filter(({ name }) => name.toLowerCase().includes(search)),
     );
   }, [search, tasks]);
-
-  useEffect(() => {
-    if (!measureRef) return;
-    const heights = searched.map(({ name }) => {
-      measureRef.textContent = name;
-      const textHeight = measureRef.offsetHeight;
-      measureRef.textContent = '';
-
-      return 22 + textHeight; // 22 = margin + padding
-    });
-    setRowHeights(heights);
-    listRef.current!.resetAfterIndex(0);
-  }, [searched, measureRef]);
 
   const Row = useCallback(
     ({ data, index, style }: RowProps) => {
@@ -79,6 +58,7 @@ export const SortableTaskList: FC<{
           key={data[index].id}
           task={data[index]}
           index={index}
+          height={itemHeight}
           disableDragging={disableDragging}
           showRatings={!!showRatings}
           hideDragIndicator={hideDragIndicator}
@@ -122,27 +102,18 @@ export const SortableTaskList: FC<{
           >
             <AutoSizer>
               {({ height, width }) => (
-                <VariableSizeList
+                <FixedSizeList
                   height={height}
                   width={width}
-                  ref={listRef}
                   itemCount={searched.length}
-                  itemSize={(idx) => rowHeights[idx] ?? 0}
+                  itemSize={itemHeight + itemMargin}
                   outerRef={provided.innerRef}
                   itemData={searched}
                 >
                   {Row}
-                </VariableSizeList>
+                </FixedSizeList>
               )}
             </AutoSizer>
-            {searched.length > 0 && (
-              <StaticTask
-                ref={setMeasureRef}
-                className="measure"
-                showRatings={!!showRatings}
-                task={searched[0]}
-              />
-            )}
           </div>
         )}
       </Droppable>
