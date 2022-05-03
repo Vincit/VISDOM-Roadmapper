@@ -30,7 +30,7 @@ export interface FieldProps<T extends FieldType> extends HTMLProps<T> {
   innerRef?: (elem: T) => void;
 }
 
-const FieldError = ({ msg }: { msg: string }) =>
+export const FieldError = ({ msg }: { msg: string }) =>
   !msg ? null : (
     <p className={classes(css.fieldError)}>
       <svg

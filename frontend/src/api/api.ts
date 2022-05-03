@@ -141,7 +141,7 @@ export const apiV2 = createApi({
       }),
     }),
     patchTask: build.mutation<Task, { roadmapId: number; task: TaskRequest }>({
-      invalidatesTags: ['Tasks'],
+      invalidatesTags: (result) => (result ? ['Tasks'] : []),
       query: ({ roadmapId, task }) => ({
         url: `roadmaps/${roadmapId}/tasks/${task.id}`,
         method: 'patch',

@@ -1,0 +1,16 @@
+@import '../shared.scss';
+@import './EditableText.module.scss';
+
+.editableSelect {
+  margin-right: 10px;
+}
+
+.buttonsDiv {
+  margin-top: 0;
+}
+
+.selectWrapper {
+  @extend .layout-column;
+  gap: 0.8rem;
+  align-items: stretch;
+}

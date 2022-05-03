@@ -1,11 +1,10 @@
-import { FC } from 'react';
+import { FC, ReactElement } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { IconButton } from '@mui/material';
 import { MetricsSummary, MetricsProps } from './MetricsSummary';
-import { EditableTextWithButtons } from './EditableText';
 import { ReactComponent as PreviousArrow } from '../icons/expand_less.svg';
 import { ReactComponent as NextArrow } from '../icons/expand_more.svg';
 import css from './Overview.module.scss';
@@ -24,19 +23,14 @@ interface PreviousAndNext {
 
 interface OverviewData {
   label: string;
-  keyName: string;
   value: any;
   format?: string;
-  editable: boolean;
+  EditComponent?: ReactElement;
 }
 
 interface OverviewContentProps {
   metrics: MetricsProps[];
   data: OverviewData[][];
-  onDataEditConfirm?: (
-    newValue: string,
-    fieldId: string,
-  ) => Promise<string | void>;
 }
 
 interface OverviewProps extends OverviewContentProps {
@@ -53,7 +47,6 @@ interface OverviewProps extends OverviewContentProps {
 export const OverviewContent: FC<OverviewContentProps> = ({
   metrics,
   data,
-  onDataEditConfirm,
 }) => (
   <div className={classes(css.content)}>
     <div className={classes(css.metrics)}>
@@ -67,17 +60,12 @@ export const OverviewContent: FC<OverviewContentProps> = ({
       {data.map((column, idx) => (
         // eslint-disable-next-line react/no-array-index-key
         <div className={classes(css.column)} key={idx}>
-          {column.map(({ label, keyName, value, format, editable }) => (
+          {column.map(({ label, value, format, EditComponent }) => (
             <div className={classes(css.row)} key={label}>
               <div className={classes(css.label)}>{label}</div>
-              {editable ? (
-                <div className={classes(css.editableTextContainer)}>
-                  <EditableTextWithButtons
-                    onOk={onDataEditConfirm!}
-                    value={value}
-                    fieldId={keyName}
-                    format={format}
-                  />
+              {EditComponent ? (
+                <div className={classes(css.editableContainer)}>
+                  {EditComponent}
                 </div>
               ) : (
                 <div className={classes(css.value, css[format!])}>{value}</div>
@@ -106,12 +94,7 @@ export const OverviewContent: FC<OverviewContentProps> = ({
  * @param {OverviewData[][]} props.data 2d array consisting of overview data objects.
  * Used to render label-value -type component. The Inner arrays define the displayed
  * columns. 'Format' property adds a css class to the value string/component.
- * 'Editable' true value indicates the data value can be changed. In this case, the
- * 'keyName' needs to be the edited value's key.
- * @param {function} props.onDataEditConfirm If prop.data consist of editable values, this
- * function needs to be provided. It should patch the overviewable object with the
- * updated value and return a void Promise if successful. In case of an error, return a
- * Promise containing an error string.
+ * If the value is editable, define 'EditComponent' as a property.
  */
 export const Overview: FC<OverviewProps> = ({
   backHref,
@@ -121,7 +104,6 @@ export const Overview: FC<OverviewProps> = ({
   onOverviewChange,
   metrics,
   data,
-  onDataEditConfirm,
 }) => {
   const { t } = useTranslation();
 
@@ -147,11 +129,7 @@ export const Overview: FC<OverviewProps> = ({
           ))}
         </div>
       </div>
-      <OverviewContent
-        metrics={metrics}
-        data={data}
-        onDataEditConfirm={onDataEditConfirm}
-      />
+      <OverviewContent metrics={metrics} data={data} />
     </div>
   );
 };

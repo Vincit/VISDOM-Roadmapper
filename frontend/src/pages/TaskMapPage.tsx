@@ -257,9 +257,7 @@ export const TaskMapPage = () => {
         </div>
         {selectedTask && (
           <div className={classes(css.taskOverviewContainer)}>
-            <OverviewContent
-              {...getTaskOverviewData(selectedTask, false, users!)}
-            />
+            <OverviewContent {...getTaskOverviewData(selectedTask, users)} />
           </div>
         )}
       </DragDropContext>

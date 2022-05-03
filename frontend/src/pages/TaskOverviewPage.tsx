@@ -33,15 +33,21 @@ import { MissingRatings } from '../components/MissingRatings';
 import { TaskModalButtons } from '../components/TaskModalButtons';
 import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { EditableTextWithButtons } from '../components/EditableText';
+import { EditableSelectWithButtons } from '../components/EditableSelect';
 
 const classes = classNames.bind(css);
 
 export const getTaskOverviewData = (
   task: Task,
-  editable: boolean,
-  users: RoadmapUser[],
+  users: RoadmapUser[] | undefined,
+  onEdit?: (
+    newValue: string | TaskStatus,
+    fieldId: string,
+  ) => Promise<string | void>,
 ) => {
   const { value, complexity } = valueAndComplexitySummary(task);
+
   const metrics = [
     {
       label: i18n.t('Avg Value'),
@@ -80,7 +86,7 @@ export const getTaskOverviewData = (
         date: updatedDate.toLocaleDateString(),
       });
     editedAtText = `${
-      users.find((u) => u.id === task.lastUpdatedByUserId)?.email ??
+      users?.find((u) => u.id === task.lastUpdatedByUserId)?.email ??
       i18n.t('deleted account')
     } (${datePart})`;
   }
@@ -89,41 +95,72 @@ export const getTaskOverviewData = (
     [
       {
         label: i18n.t('Title'),
-        keyName: 'name',
         value: task.name,
         format: 'bold',
-        editable,
+        ...(onEdit && {
+          EditComponent: (
+            <EditableTextWithButtons
+              onOk={onEdit}
+              value={task.name}
+              fieldId="name"
+              format="bold"
+            />
+          ),
+        }),
       },
       {
         label: i18n.t('Description'),
-        keyName: 'description',
         value: task.description,
         format: 'multiline',
-        editable,
+        ...(onEdit && {
+          EditComponent: (
+            <EditableTextWithButtons
+              onOk={onEdit}
+              value={task.description}
+              fieldId="description"
+              format="multiline"
+            />
+          ),
+        }),
       },
     ],
     [
       {
         label: i18n.t('Created on'),
-        keyName: 'createdAt',
         value: new Date(task.createdAt).toLocaleDateString(),
         format: 'bold',
-        editable: false,
       },
       {
         label: i18n.t('Status'),
-        keyName: 'status',
         value: taskStatusToText(task.status),
         format: TaskStatus[task.status],
-        editable: false,
+        ...(onEdit && {
+          EditComponent: (
+            <EditableSelectWithButtons
+              onOk={onEdit}
+              value={{
+                value: task.status,
+                label: taskStatusToText(task.status),
+              }}
+              fieldId="status"
+              format={TaskStatus[task.status]}
+              options={Object.values(TaskStatus)
+                .filter(
+                  (status): status is number => !Number.isNaN(Number(status)),
+                )
+                .map((status) => ({
+                  value: status,
+                  label: taskStatusToText(status),
+                }))}
+            />
+          ),
+        }),
       },
     ],
     [
       {
         label: i18n.t('Last modified by'),
-        keyName: 'lastUpdatedByUserId',
         value: editedAtText,
-        editable: false,
       },
     ],
   ];
@@ -166,22 +203,25 @@ const TaskOverview: FC<{
     },
   ];
 
-  const handleEditConfirm = async (newValue: string, fieldId: string) => {
+  const handleEditConfirm = async (
+    newValue: string | TaskStatus,
+    fieldId: string,
+  ) => {
     try {
       await patchTaskTrigger({
-        roadmapId: Number(roadmapId),
+        roadmapId: roadmapId!,
         task: {
           id: task.id,
           [fieldId]: newValue,
         },
       }).unwrap();
     } catch (err: any) {
-      return err.data?.message;
+      return err.data?.message ?? 'something went wrong';
     }
   };
 
   if (isLoading) return <LoadingSpinner />;
-
+  if (!roadmapId) return null;
   return (
     <div className="overviewContainer">
       <Overview
@@ -190,9 +230,12 @@ const TaskOverview: FC<{
         name={task.name}
         previousAndNext={siblingTasks}
         onOverviewChange={(id) => history.push(`${tasksPage}/${id}`)}
-        onDataEditConfirm={handleEditConfirm}
         key={task.id}
-        {...getTaskOverviewData(task, hasEditPermission, users!)}
+        {...getTaskOverviewData(
+          task,
+          users,
+          hasEditPermission ? handleEditConfirm : undefined,
+        )}
       />
       <div className={classes(css.section)}>
         <div className={classes(css.header)}>
