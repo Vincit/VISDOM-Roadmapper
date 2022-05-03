@@ -1,9 +1,15 @@
-export const convertScale = (rating: number) => {
-  const converted = rating ** 2;
-  return converted;
-};
+export function convertScale(rating: number): number;
+export function convertScale(rating: number | undefined): number | undefined;
+export function convertScale(rating: number | undefined) {
+  if (rating === undefined) return undefined;
+  else if (rating < 0 || rating > 5) return rating;
+  return rating ** 2;
+}
 
-export const revertScale = (rating: number) => {
-  const reverted = Math.sqrt(rating);
-  return reverted;
-};
+export function revertScale(rating: number): number;
+export function revertScale(rating: number | undefined): number | undefined;
+export function revertScale(rating: number | undefined) {
+  if (rating === undefined) return undefined;
+  else if (rating < 0 || rating > 25) return rating;
+  return Math.sqrt(rating);
+}
