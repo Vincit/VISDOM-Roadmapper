@@ -17,6 +17,7 @@ const classes = classNames.bind(css);
 
 interface TaskProps {
   task: Task & Partial<RelationAnnotation>;
+  height?: number;
   showRatings: boolean;
   hideDragIndicator?: boolean;
   provided?: DraggableProvided;
@@ -72,7 +73,15 @@ const RelationIndicator: FC<{ task: TaskProps['task'] }> = ({
 
 export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
   (
-    { task, showRatings, hideDragIndicator, provided, style, className },
+    {
+      task,
+      showRatings,
+      hideDragIndicator,
+      provided,
+      style,
+      className,
+      height,
+    },
     ref,
   ) => (
     <div
@@ -80,7 +89,7 @@ export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
       ref={provided?.innerRef}
       {...provided?.draggableProps}
       {...provided?.dragHandleProps}
-      style={{ ...provided?.draggableProps.style, ...style }}
+      style={{ ...provided?.draggableProps.style, ...style, height }}
     >
       <div className={css.leftSideDiv} ref={ref}>
         {task.name}

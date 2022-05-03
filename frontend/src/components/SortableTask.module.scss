@@ -4,14 +4,13 @@
   display: flex;
   border-radius: 5px;
   padding: 8px 16px;
-  margin-top: 3px;
-  margin-bottom: 3px;
   background-color: white;
   user-select: none;
 }
 
 .leftSideDiv {
   @extend .taskNameContainer;
+  margin: auto;
 }
 
 .rightSideDiv {
