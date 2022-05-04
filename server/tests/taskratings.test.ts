@@ -8,6 +8,7 @@ import {
 } from '../../shared/types/customTypes';
 import { withoutPermission } from './testUtils';
 import TaskRating from '../src/api/taskratings/taskratings.model';
+import { convertScale, revertScale } from '../../shared/utils/conversion';
 
 const getTestRatingData = async () => {
   const rating = await TaskRating.query()
@@ -107,7 +108,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .send([
           {
             dimension: TaskRatingDimension.Complexity,
-            value: 6,
+            value: convertScale(6),
           },
         ]);
       expect(res.status).to.equal(400);
@@ -168,7 +169,8 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
   describe('PATCH /roadmap/:roadmapId/tasks/:taskId/taskratings/:ratingId', function () {
     it('Should patch taskrating', async function () {
       const { rating, taskId, roadmapId } = await getTestRatingData();
-      const newValue = rating.value === 4 ? 3 : 4; // pick a different value
+      const newValue =
+        rating.value === convertScale(4) ? convertScale(3) : convertScale(4); // pick a different value
       const res = await loggedInAgent
         .patch(`/roadmaps/${roadmapId}/tasks/${taskId}/taskratings`)
         .type('json')
