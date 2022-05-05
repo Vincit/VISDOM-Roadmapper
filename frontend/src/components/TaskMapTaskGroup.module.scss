@@ -12,9 +12,12 @@
     cursor: all-scroll;
   }
 
+  // Needs to override dnd-default hover styles so !important is required
   &.unavailable {
+    max-height: var(--nodeHeight);
+    background-color: rgba($COLOR_CLOUD, 0.75) !important;
     filter: grayscale(100%) opacity(20%);
-    cursor: not-allowed;
+    cursor: not-allowed !important;
   }
 
   &.draggingSomething:not(.unavailable, .loading) {

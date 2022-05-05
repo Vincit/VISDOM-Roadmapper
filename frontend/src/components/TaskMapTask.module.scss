@@ -66,6 +66,8 @@
 
   &.dropDisabled {
     cursor: not-allowed !important;
+    -webkit-transform: none !important;
+    transform: none !important;
   }
 
   &.loading {
