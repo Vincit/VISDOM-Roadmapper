@@ -15,6 +15,7 @@ export const TaskGroup: FC<
     setSelectedTask: (task: Task | undefined) => void;
     allDependencies: { from: number; to: number }[];
     disableDrop?: boolean;
+    nodeHeight: number;
   } & Omit<TaskProps, 'taskId' | 'checked'>
 > = ({
   listId,
@@ -26,9 +27,10 @@ export const TaskGroup: FC<
   setGroupDraggable,
   draggingSomething,
   isLoading,
+  nodeHeight,
   ...rest
 }) => (
-  <Droppable isDropDisabled={disableDrop} droppableId={listId} type="TASKS">
+  <Droppable droppableId={listId} type="TASKS">
     {(provided, snapshot) => (
       <div
         className={classes(css.taskGroup, {
@@ -37,6 +39,9 @@ export const TaskGroup: FC<
           [css.unavailable]: disableDrop,
           [css.draggingSomething]: draggingSomething,
         })}
+        style={{
+          ['--nodeHeight' as any]: `${nodeHeight - 23}px`,
+        }}
         ref={provided.innerRef}
         {...provided.droppableProps}
       >

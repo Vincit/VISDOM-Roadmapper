@@ -130,6 +130,7 @@ export const TaskMapPage = () => {
     const destinationId = Number(destination.droppableId);
     const sourceId = Number(source.droppableId);
 
+    if (dropUnavailable.has(destination.droppableId)) return;
     if (sourceId === -1) {
       // unstaged task added to existing group
       setStagedTasks((prev) => [...prev, draggedTaskId]);
