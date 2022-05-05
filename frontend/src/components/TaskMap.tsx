@@ -144,6 +144,7 @@ export const TaskMap: FC<{
                   dragHandle={dragHandle}
                   setGroupDraggable={setGroupDraggable}
                   isLoading={isLoading}
+                  nodeHeight={node.height}
                 />
               ),
             },
