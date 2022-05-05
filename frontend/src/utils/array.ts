@@ -26,3 +26,18 @@ export const move = (count: number = 1) =>
         },
       } as const),
   } as const);
+
+/** group a `list` by given `key` */
+export const groupBy = <T, K>(list: T[], key: (t: T) => K) => {
+  const res = new Map<K, T[]>();
+  list.forEach((t) => {
+    const k = key(t);
+    const prev = res.get(k);
+    if (prev) {
+      prev.push(t);
+    } else {
+      res.set(k, [t]);
+    }
+  });
+  return res;
+};
