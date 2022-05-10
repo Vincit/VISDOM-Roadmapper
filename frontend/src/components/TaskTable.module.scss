@@ -65,8 +65,21 @@
   margin-left: 12px;
 }
 
+.milestoneName {
+  color: $COLOR_BLACK60;
+}
+
+.namesContainer {
+  @extend .layout-column;
+  gap: 5px;
+  & > div {
+    @extend .layout-row;
+  }
+}
+
 .task {
   @extend .singleTask;
+  justify-content: space-between;
   margin-top: 4px;
   margin-bottom: 4px;
   cursor: pointer;
