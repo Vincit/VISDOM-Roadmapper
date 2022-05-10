@@ -48,3 +48,21 @@
   padding-left: 5px;
   color: $COLOR_BLACK60;
 }
+
+.relationList {
+  overflow-y: auto;
+  width: 105%;
+}
+
+.relationAlert {
+  width: 20px;
+  svg {
+    width: 15px;
+    height: 100%;
+  }
+}
+
+.relationRow {
+  @extend .layout-row;
+  align-items: center;
+}

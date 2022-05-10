@@ -1,10 +1,9 @@
-import { FC, useRef, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { VariableSizeList } from 'react-window';
 import CachedIcon from '@mui/icons-material/Cached';
 import ClockIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
@@ -14,6 +13,7 @@ import { ModalFooter } from './modalparts/ModalFooter';
 import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Info } from './modalparts/Info';
+import { Checkbox } from '../forms/Checkbox';
 import { RelationIcon } from '../RelationIcon';
 import { Task, TaskRelation } from '../../redux/roadmaps/types';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
@@ -51,9 +51,7 @@ const BadRelationWarning: FC<{
           : 'Task is currently not placed before this dependent task'
       }
     >
-      <div>
-        <AlertIcon style={{ width: 15, height: '100%' }} />
-      </div>
+      <AlertIcon />
     </InfoTooltip>
   );
 };
@@ -88,20 +86,23 @@ const relationTable: (
   badRelations: TaskRelation[];
   height?: number;
   onTaskClick?: () => unknown;
+  showMilestoneNames?: boolean;
 }> = (type) => {
   const Icon = icons[type];
   const title = titles[type];
   const subTitle = subTitles[type];
-  return ({ task, badRelations, height = 500, onTaskClick }) => {
+  return ({
+    task,
+    badRelations,
+    height = 500,
+    onTaskClick,
+    showMilestoneNames,
+  }) => {
     const roadmapId = useSelector(chosenRoadmapIdSelector);
     const { data: relations } = apiV2.useGetTaskRelationsQuery(
       roadmapId ?? skipToken,
     );
     const { data: allTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
-    const listRef = useRef<VariableSizeList<any> | null>(null);
-    const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
-    const [rowHeights, setRowHeights] = useState<number[]>([]);
-    const [listHeight, setListHeight] = useState(0);
     const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
@@ -110,21 +111,6 @@ const relationTable: (
         setTasks(allTasks.filter(({ id }) => ids.has(id)));
       }
     }, [relations, allTasks, task.id]);
-
-    useEffect(() => {
-      if (!divRef || !tasks.length) return;
-      const heights = tasks.map(({ name }) => {
-        let taskHeight = 28; // padding + margin
-        // calculate text height
-        divRef.textContent = name;
-        taskHeight += divRef.offsetHeight;
-        divRef.textContent = '';
-        return taskHeight;
-      });
-      setRowHeights(heights);
-      setListHeight(heights.reduce((a, b) => a + b, 0));
-      listRef.current!.resetAfterIndex(0);
-    }, [tasks, divRef]);
 
     return (
       <div className={classes(css.listContainer)}>
@@ -145,35 +131,32 @@ const relationTable: (
             <Trans i18nKey="No relations" />
           </div>
         ) : (
-          <VariableSizeList
-            ref={listRef}
-            itemSize={(idx) => rowHeights[idx] ?? 0}
-            itemCount={tasks.length}
-            height={Math.min(height, listHeight)}
-            width="105%"
+          <div
+            className={classes(css.relationList)}
+            style={{ maxHeight: height }}
           >
-            {({ index, style }) => (
-              <div style={{ ...style, display: 'flex', alignItems: 'center' }}>
+            {tasks.map((t) => (
+              <div key={t.id} className={classes(css.relationRow)}>
                 <TaskRow
                   style={{
                     ['--background-color' as any]: colors.black5,
                     marginLeft: 0,
                   }}
-                  task={tasks[index]}
+                  task={t}
                   largeIcons
                   onClick={onTaskClick}
+                  showMilestoneName={showMilestoneNames}
                 />
-                <div style={{ width: 20 }}>
+                <div className={classes(css.relationAlert)}>
                   <BadRelationWarning
-                    relation={{ to: tasks[index].id, type }}
+                    relation={{ to: t.id, type }}
                     badRelations={badRelations}
                   />
                 </div>
               </div>
-            )}
-          </VariableSizeList>
+            ))}
+          </div>
         )}
-        <div ref={setDivRef} className={classes(css.measureTaskName)} />
       </div>
     );
   };
@@ -196,6 +179,7 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
     selectById(taskId),
   );
   const [openInfo, setOpenInfo] = useState(true);
+  const [showMilestoneNames, setShowMilestoneNames] = useState(false);
 
   return (
     <div>
@@ -216,19 +200,28 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
                 task={task}
                 badRelations={badRelations}
                 onTaskClick={closeModal}
+                showMilestoneNames={showMilestoneNames}
               />
               <RelationTableContributes
                 task={task}
                 badRelations={badRelations}
                 onTaskClick={closeModal}
+                showMilestoneNames={showMilestoneNames}
               />
               <RelationTablePrecedes
                 task={task}
                 badRelations={badRelations}
                 onTaskClick={closeModal}
+                showMilestoneNames={showMilestoneNames}
               />
             </>
           )}
+          <hr style={{ margin: 0 }} />
+          <Checkbox
+            label="Show milestone names in tasks"
+            checked={showMilestoneNames}
+            onChange={setShowMilestoneNames}
+          />
           <p>
             Tasks’ relations can be modified in task details page or through{' '}
             <Link
