@@ -4,9 +4,14 @@ import css from './MetricsSummary.module.scss';
 
 const classes = classNames.bind(css);
 
+const numFormat = (number: number) =>
+  new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: number < 10 ? 1 : 0,
+  }).format(number);
+
 export interface MetricsProps {
   label: string;
-  value?: string | number | null;
+  value?: number | null;
   children?: any;
 }
 
@@ -21,7 +26,7 @@ export const MetricsSummary: FC<MetricsProps> = ({
       <>
         <div className={classes(css.dash)} />
         <div className={classes(css.dataNumberWrapper)}>
-          {value !== null && Math.round(Number(value))}
+          {value !== null && numFormat(value)}
           <div>{children}</div>
         </div>
       </>
