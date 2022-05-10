@@ -1,12 +1,30 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { Rating as MaterialRating } from '@mui/material';
+import { Trans } from 'react-i18next';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
 import css from './RatingBars.module.scss';
 import { revertScale, convertScale } from '../../../shared/utils/conversion';
 
 const classes = classNames.bind(css);
+
+const labels: { [K in TaskRatingDimension]: { [index: string]: string } } = {
+  [TaskRatingDimension.BusinessValue]: {
+    1: 'Not Relevant',
+    2: 'A Bit Important',
+    3: 'Somewhat Important',
+    4: 'Important',
+    5: 'Business Critical',
+  },
+  [TaskRatingDimension.Complexity]: {
+    1: 'Trivial',
+    2: 'Simple',
+    3: 'Moderate',
+    4: 'Complex',
+    5: 'Extremely Complex',
+  },
+};
 
 type RatingBarProps = {
   onChange?: (value: number) => void;
@@ -58,9 +76,15 @@ export const TaskRatingBar: FC<RatingBarProps> = ({
       />
       {!readonly && (
         <div className={classes(css.rating)}>
-          {hover > 0
-            ? convertScale(hover)
-            : initialValue || <div className={classes(css.unrated)}>-</div>}
+          {hover > 0 ? (
+            <>
+              {convertScale(hover)}
+              {' - '}
+              <Trans i18nKey={labels[dimension][hover]} />
+            </>
+          ) : (
+            initialValue || <div className={classes(css.unrated)}>-</div>
+          )}
         </div>
       )}
     </div>
