@@ -21,7 +21,7 @@ const colorByStatus = (status: number) => {
 export const MilestoneCompletedness: FC<{
   tasks: Task[];
 }> = ({ tasks }) => {
-  const total = tasks.length;
+  const total = tasks.length || 1;
   const nums = tasks.reduce(
     (acc, { status }) => ({ ...acc, [status]: acc[status] + 1 }),
     {
@@ -30,9 +30,9 @@ export const MilestoneCompletedness: FC<{
       [TaskStatus.NOT_STARTED]: 0,
     },
   );
-  const orderedNums = Object.entries(nums).sort(
-    ([a], [b]) => Number(b) - Number(a),
-  );
+  const orderedNums = Object.entries(nums)
+    .map(([k, v]) => [Number(k), v])
+    .sort(([a], [b]) => b - a);
 
   return (
     <Tooltip
@@ -45,7 +45,7 @@ export const MilestoneCompletedness: FC<{
           {orderedNums.map(([status, num]) => (
             <div key={status}>
               <span>
-                <Trans i18nKey={taskStatusToText(Number(status))} />
+                <Trans i18nKey={taskStatusToText(status)} />
               </span>
               {percent(1).format(num / total)}
             </div>
@@ -65,7 +65,7 @@ export const MilestoneCompletedness: FC<{
               <BarSection
                 key={status}
                 size={num / total}
-                color={colorByStatus(Number(status))}
+                color={colorByStatus(status)}
                 barThicknessPx={10}
               />
             );

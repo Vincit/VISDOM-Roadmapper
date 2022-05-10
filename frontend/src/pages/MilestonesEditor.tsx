@@ -519,7 +519,7 @@ export const MilestonesEditor = () => {
                           completed={completed}
                         />
                       </div>
-                      {!completed && (
+                      {!completed && !!versionLists[version.id].length && (
                         <div className={classes(css.summaryWrapper)}>
                           <MilestoneCompletedness
                             tasks={versionLists[version.id] || []}
