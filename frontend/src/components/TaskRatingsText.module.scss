@@ -3,6 +3,8 @@
 .taskRatingRow {
   display: flex;
   gap: 11.75px;
+  flex: 1;
+  justify-content: flex-end;
 
   &.dragging {
     gap: calc(11.75px * #{$ZOOM});

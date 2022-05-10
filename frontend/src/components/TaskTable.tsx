@@ -32,9 +32,7 @@ export const TaskRow: FC<{
         <DoneAllIcon className={classes(css.doneIcon)} />
       )}
       <div className={classes(css.taskName)}>{task.name}</div>
-      <div className={classes(css.taskRatingTexts)}>
-        <TaskRatingsText task={task} largeIcons={largeIcons} />
-      </div>
+      <TaskRatingsText task={task} largeIcons={largeIcons} />
     </div>
   );
 };
