@@ -8,6 +8,7 @@ export default class Integration extends Model implements IntegrationConfig {
   id!: number;
   name!: string;
   host!: string;
+  projectId?: string;
   consumerkey!: string;
   privatekey!: string;
 
@@ -31,6 +32,7 @@ export default class Integration extends Model implements IntegrationConfig {
         minLength: 1,
         maxLength: 250,
       },
+      projectId: { type: 'string' },
       consumerkey: { type: 'string', minLength: 1, maxLength: 250 },
       privatekey: { type: 'string', minLength: 1, maxLength: 2048 },
       roadmapId: { type: 'integer' },

@@ -84,6 +84,7 @@ type OwnProps = {
   [ModalTypes.SETUP_OAUTH_MODAL]: {
     name: string;
     roadmapId: number;
+    code?: string;
   };
   [ModalTypes.USER_AUTH_TOKEN_MODAL]: {};
   [ModalTypes.ADD_ROADMAP_MODAL]: {};
