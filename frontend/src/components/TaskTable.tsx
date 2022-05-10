@@ -16,15 +16,22 @@ export const TaskRow: FC<{
   task: Task;
   style?: CSSProperties;
   largeIcons?: true;
-}> = ({ task, style, largeIcons }) => {
+  onClick?: () => unknown;
+}> = ({ task, style, largeIcons, onClick }) => {
   const history = useHistory();
   const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`;
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={() => history.push(toTask)}
-      onKeyPress={() => history.push(toTask)}
+      onClick={() => {
+        onClick?.();
+        history.push(toTask);
+      }}
+      onKeyPress={() => {
+        onClick?.();
+        history.push(toTask);
+      }}
       style={style}
       className={classes(css.task)}
     >

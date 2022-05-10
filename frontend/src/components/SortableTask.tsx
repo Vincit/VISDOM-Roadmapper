@@ -1,4 +1,5 @@
 import { CSSProperties, FC, forwardRef } from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
@@ -9,6 +10,7 @@ import {
   TaskRelationTableType,
   RelationAnnotation,
 } from '../utils/TaskRelationUtils';
+import { ModalTypes, modalLink } from './modals/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import { InfoTooltip } from './InfoTooltip';
 import css from './SortableTask.module.scss';
@@ -25,15 +27,20 @@ interface TaskProps {
   className?: string;
 }
 
-const UnmetDependencyTooltip = () => (
+const UnmetDependencyTooltip = (payload: {
+  taskId: number;
+  badRelations: TaskRelation[];
+}) => (
   <div className={classes(css.dependencyTooltip)}>
     <AlertIcon />
     <div>
       <p>Unmet dependency order</p>
-      {/* TODO: link to show relations */}
-      <a className="green" href="#todo">
+      <Link
+        className="green"
+        to={modalLink(ModalTypes.RELATIONS_MODAL, payload)}
+      >
         Show relations
-      </a>
+      </Link>
     </div>
   </div>
 );
@@ -45,7 +52,7 @@ const RelationIndicator: FC<{ task: TaskProps['task'] }> = ({
 
   if (relation !== undefined) {
     const isBadRelation = badRelations?.some(
-      ({ from, to }: TaskRelation) =>
+      ({ from, to }) =>
         (from === id && relation === TaskRelationTableType.Requires) ||
         (to === id && relation === TaskRelationTableType.Precedes),
     );
@@ -55,7 +62,9 @@ const RelationIndicator: FC<{ task: TaskProps['task'] }> = ({
   if (!badRelations?.length) return null;
 
   return (
-    <InfoTooltip title={<UnmetDependencyTooltip />}>
+    <InfoTooltip
+      title={<UnmetDependencyTooltip taskId={id} badRelations={badRelations} />}
+    >
       <div>
         <RelationIcon
           incorrect

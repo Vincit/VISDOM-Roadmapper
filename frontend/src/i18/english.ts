@@ -349,6 +349,8 @@ export const english = {
     'Personal auth token tooltip': 'TBD',
     'Taskmap-tooltip':
       'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
+    'Taskrelation info':
+      '<strong>Task relations</strong> show task’s relationship to other tasks in the roadmap and in which order should the tasks be implemented.',
     'Forgot password': 'Forgot password?',
     'Remembered password': 'Remembered password?',
     'Forgot password subtitle':

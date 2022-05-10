@@ -7,6 +7,7 @@ import {
   InfoModalContent,
   CheckableUserWithCustomers,
   Taskrating,
+  TaskRelation,
 } from '../../redux/roadmaps/types';
 import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
@@ -38,6 +39,7 @@ export enum ModalTypes {
   CHANGE_PASSWORD_MODAL = 'CHANGE_PASSWORD_MODAL',
   INFO_MODAL = 'INFO_MODAL',
   LEAVE_ROADMAP_MODAL = 'LEAVE_ROADMAP_MODAL',
+  RELATIONS_MODAL = 'RELATIONS_MODAL',
 }
 
 type OwnProps = {
@@ -106,6 +108,10 @@ type OwnProps = {
   [ModalTypes.INFO_MODAL]: { header: string; content: InfoModalContent };
   [ModalTypes.LEAVE_ROADMAP_MODAL]: {
     roadmapId: number;
+  };
+  [ModalTypes.RELATIONS_MODAL]: {
+    taskId: number;
+    badRelations: TaskRelation[];
   };
 };
 
