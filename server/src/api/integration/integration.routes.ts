@@ -26,9 +26,11 @@ import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import { JiraIntegration } from '../jira/jiraIntegration';
 import { TrelloIntegration } from '../trello/trelloIntegration';
+import { GitLabIntegration } from '../gitLab/gitLabIntergration';
 
 registerIntegration('jira', JiraIntegration);
 registerIntegration('trello', TrelloIntegration);
+registerIntegration('gitLab', GitLabIntegration);
 
 const integrationRouter = new KoaRouter<IKoaState, IKoaContext>({
   prefix: '/integrations',

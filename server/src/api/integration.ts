@@ -2,6 +2,7 @@ import { TaskStatus } from './../../../shared/types/customTypes';
 export interface IntegrationConfig {
   name: string;
   host: string;
+  projectId?: string;
   consumerkey: string;
   privatekey: string;
 }
