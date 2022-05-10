@@ -14,6 +14,7 @@ import {
   InviteRoadmapUser,
   RoadmapCreationCustomer,
 } from '../../../redux/roadmaps/types';
+import { Info } from './Info';
 import colors from '../../../colors.module.scss';
 import css from './TeamMemberModalParts.module.scss';
 import { Dot } from '../../Dot';
@@ -87,21 +88,10 @@ export const SelectCustomers: FC<{
   );
 };
 
-export const AddTeamMemberInfo: FC<{
-  open: boolean;
-  onChange: (open: boolean) => void;
-}> = ({ open, onChange }) => (
-  <div className={classes(css.instructions)}>
-    {open && <Trans i18nKey="Here’s how to add a team member" />}{' '}
-    <button
-      className={classes(css.linkButton, css.blue)}
-      tabIndex={0}
-      type="button"
-      onClick={() => onChange(!open)}
-    >
-      <Trans i18nKey={open ? 'Hide info' : 'Show info'} />
-    </button>
-  </div>
+export const AddTeamMemberInfo: typeof Info = ({ children, ...props }) => (
+  <Info {...props}>
+    <Trans i18nKey="Here’s how to add a team member" />
+  </Info>
 );
 
 export const isInviteUser = (
