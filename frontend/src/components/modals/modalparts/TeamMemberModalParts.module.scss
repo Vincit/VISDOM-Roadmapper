@@ -1,12 +1,5 @@
 @import './../../../shared.scss';
 
-.instructions {
-  min-width: 418px;
-  padding: 20px;
-  border-radius: 10px;
-  background: $COLOR_CLOUD;
-}
-
 .roleSelection {
   @extend .layout-column;
   margin: 2px 20px 0 20px;
