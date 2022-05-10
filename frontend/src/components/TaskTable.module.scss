@@ -71,6 +71,7 @@
   margin-bottom: 4px;
   cursor: pointer;
 
+  background-color: var(--background-color, white);
   &:hover {
     background-color: adjust-color($COLOR_SKY, $lightness: 11%);
   }

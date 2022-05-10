@@ -1,0 +1,50 @@
+@import '../../shared.scss';
+
+.content {
+  display: flex;
+  flex-flow: column;
+  gap: 20px;
+  width: 458px;
+}
+
+.listContainer {
+  flex-grow: 1;
+  min-width: 387px;
+  max-width: 420px;
+  margin-bottom: 5px;
+}
+
+.noRelations {
+  @extend .typography-pre-title;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.titleContainer {
+  @extend .layout-row;
+  line-height: 150%;
+  align-items: center;
+  text-align: start;
+  gap: 10px;
+
+  svg {
+    position: relative;
+    top: -4px;
+  }
+
+  &.Requires {
+    color: $COLOR_ORANGE;
+  }
+  &.Precedes {
+    color: $COLOR_FOREST;
+  }
+  &.Contributes {
+    color: $COLOR_AZURE;
+  }
+}
+
+.subTitle {
+  border-left: 4px solid $COLOR_BLACK10;
+  padding-left: 5px;
+  color: $COLOR_BLACK60;
+}
