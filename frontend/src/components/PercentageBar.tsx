@@ -5,7 +5,7 @@ import css from './PercentageBar.module.scss';
 
 const classes = classNames.bind(css);
 
-const BarSection: FC<{
+export const BarSection: FC<{
   size: number;
   color: string;
   vertical?: boolean;

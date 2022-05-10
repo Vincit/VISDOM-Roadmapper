@@ -52,6 +52,7 @@ import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
 import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { CustomerStakesScore } from '../components/CustomerStakesScore';
+import { MilestoneCompletedness } from '../components/MilestoneCompletedness';
 import { paths } from '../routers/paths';
 
 const classes = classNames.bind(css);
@@ -518,6 +519,13 @@ export const MilestonesEditor = () => {
                           completed={completed}
                         />
                       </div>
+                      {!completed && (
+                        <div className={classes(css.summaryWrapper)}>
+                          <MilestoneCompletedness
+                            tasks={versionLists[version.id] || []}
+                          />
+                        </div>
+                      )}
                       {hasVersionEditPermission && (
                         <div className={classes(css.milestoneFooter)}>
                           <DeleteButton

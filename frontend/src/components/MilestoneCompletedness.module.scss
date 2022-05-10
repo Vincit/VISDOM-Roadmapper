@@ -1,0 +1,28 @@
+@import '../shared.scss';
+
+.completedness {
+  @extend .layout-column;
+  text-align: left;
+  gap: 5px;
+}
+
+.completednessTooltip {
+  @extend .layout-column;
+  @extend .typography-body-small;
+  text-transform: none;
+  text-align: start;
+  gap: 10px;
+  div {
+    @extend .layout-row;
+    gap: 10px;
+  }
+}
+
+.progressIndicator {
+  @extend .layout-row;
+  border-radius: 10px;
+  overflow: hidden;
+
+  width: 100%;
+  height: max-content;
+}
