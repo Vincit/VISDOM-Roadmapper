@@ -8,7 +8,7 @@ import {
 } from '../../shared/types/customTypes';
 import { withoutPermission } from './testUtils';
 import TaskRating from '../src/api/taskratings/taskratings.model';
-import { convertScale, revertScale } from '../../shared/utils/conversion';
+import { convertScale } from '../../shared/utils/conversion';
 
 const getTestRatingData = async () => {
   const rating = await TaskRating.query()
@@ -66,7 +66,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .send([
           {
             dimension: TaskRatingDimension.Complexity,
-            value: 5,
+            value: convertScale(5),
           },
         ]);
       expect(res.status).to.equal(200);
@@ -87,7 +87,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
           .send([
             {
               dimension: TaskRatingDimension.Complexity,
-              value: 5,
+              value: convertScale(5),
             },
           ]),
       );
@@ -118,7 +118,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
         .send([
           {
             dimension: TaskRatingDimension.Complexity,
-            value: -1,
+            value: convertScale(-1),
           },
         ]);
       expect(res2.status).to.equal(400);
@@ -187,6 +187,8 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
     });
     it('Should not patch taskrating with incorrect permissions', async function () {
       const { rating, taskId, roadmapId } = await getTestRatingData();
+      const newValue =
+        rating.value === convertScale(4) ? convertScale(3) : convertScale(4); // pick a different value
       const res = await withoutPermission(
         roadmapId,
         Permission.TaskRatingEdit,
@@ -197,7 +199,7 @@ describe('Test /roadmap/:roadmapId/tasks/:taskId/taskratings/ api', function () 
             .send([
               {
                 id: rating.id,
-                value: rating.value === 4 ? 3 : 4, // pick a different value
+                value: newValue,
               },
             ]),
       );
