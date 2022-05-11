@@ -99,8 +99,8 @@ const markRelations = (relations: TaskRelation[], out: VersionListsObject) => (
 
 const copyVersionLists = (originalLists: VersionListsObject) => {
   const copyList: VersionListsObject = {};
-  Object.keys(originalLists).forEach((key) => {
-    copyList[key] = [...originalLists[key]];
+  Object.entries(originalLists).forEach(([key, value]) => {
+    copyList[key] = [...value];
   });
   return copyList;
 };
@@ -440,6 +440,7 @@ export const MilestonesEditor = () => {
         >
           {roadmapsVersions?.map((version, index) => {
             const completed = isCompletedMilestone(version);
+            const list = versionLists[version.id] ?? [];
             return (
               <Draggable
                 key={`ver-${version.id}`}
@@ -473,7 +474,7 @@ export const MilestonesEditor = () => {
                         {completed && <DoneAll />}
                         {version.name}
                       </div>
-                      {versionLists[version.id]?.length === 0 ? (
+                      {list.length === 0 ? (
                         <Droppable droppableId={`${version.id}`} type="TASKS">
                           {(provided, snapshot) => (
                             <div
@@ -495,7 +496,7 @@ export const MilestonesEditor = () => {
                       ) : (
                         <SortableTaskList
                           listId={`${version.id}`}
-                          tasks={versionLists[version.id] || []}
+                          tasks={list}
                           className={classes(css.milestoneTasks)}
                           disableDragging={
                             disableDrag || !hasVersionEditPermission
@@ -515,15 +516,13 @@ export const MilestonesEditor = () => {
                       </div>
                       <div className={classes(css.summaryWrapper)}>
                         <MilestoneRatingsSummary
-                          tasks={versionLists[version.id] || []}
+                          tasks={list}
                           completed={completed}
                         />
                       </div>
-                      {!completed && !!versionLists[version.id].length && (
+                      {!completed && list.length > 0 && (
                         <div className={classes(css.summaryWrapper)}>
-                          <MilestoneCompletedness
-                            tasks={versionLists[version.id] || []}
-                          />
+                          <MilestoneCompletedness tasks={list} />
                         </div>
                       )}
                       {hasVersionEditPermission && (
