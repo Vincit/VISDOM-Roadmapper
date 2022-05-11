@@ -26,6 +26,7 @@ import {
 } from '../pages/VerifyEmailPage';
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage';
 import { ResetPasswordPage } from '../pages/ResetPasswordPage';
+import { OauthRedirectPage } from '../pages/OauthRedirectPage';
 
 const Home = () => {
   const loggedInUser = useSelector<RootState, UserInfo | undefined>(
@@ -105,6 +106,11 @@ const routes = [
     path: paths.resetPassword,
     component: () => <NavLayout Content={ResetPasswordPage} />,
     exact: false,
+  },
+  {
+    path: paths.oauthRedirect,
+    component: () => <OauthRedirectPage />,
+    exact: true,
   },
   {
     path: '',
