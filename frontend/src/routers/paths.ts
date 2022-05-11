@@ -30,6 +30,7 @@ export const paths = checkPaths({
   notFound: '/404',
   forgotPassword: '/forgotpassword',
   resetPassword: `/resetPassword/:token(${uuidPattern})`,
+  oauthRedirect: '/oauth/redirect',
   roadmapRouter: '/roadmap/:roadmapId([0-9]+)',
   roadmapRelative: {
     dashboard: '/dashboard',
