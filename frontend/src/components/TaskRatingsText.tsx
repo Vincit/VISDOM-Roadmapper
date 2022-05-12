@@ -13,8 +13,7 @@ export const TaskRatingsText: FC<{
   task: Task;
   selected?: boolean;
   largeIcons?: true;
-  dragging?: boolean;
-}> = ({ task, selected, largeIcons, dragging }) => {
+}> = ({ task, selected, largeIcons }) => {
   const { complexity, value } = averageValueAndComplexity([task]);
   const numFormat = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 1,
@@ -22,11 +21,7 @@ export const TaskRatingsText: FC<{
   });
   const color = selected ? colors.white : colors.azure;
   return (
-    <div
-      className={classes(css.taskRatingRow, {
-        [css.dragging]: dragging,
-      })}
-    >
+    <div className={classes(css.taskRatingRow)}>
       <div className={classes(css.taskRating)}>
         <BusinessIcon size={largeIcons ? 'small' : 'xxsmall'} color={color} />
         {numFormat.format(value)}

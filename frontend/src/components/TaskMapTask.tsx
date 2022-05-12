@@ -5,9 +5,8 @@ import { Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Task } from '../redux/roadmaps/types';
-import { TaskRatingsText } from './TaskRatingsText';
-import css from './TaskMapTask.module.scss';
 import { TaskStatus } from '../../../shared/types/customTypes';
+import css from './TaskMapTask.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -132,14 +131,6 @@ const SingleTask: FC<
         })}
       >
         {task.name}
-      </div>
-      <div className={classes(css.rightSide)}>
-        <TaskRatingsText
-          task={task}
-          selected={selected}
-          largeIcons
-          dragging={isDragging}
-        />
       </div>
       {handle('source')}
     </div>

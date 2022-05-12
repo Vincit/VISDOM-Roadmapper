@@ -3,19 +3,6 @@
 .taskRatingRow {
   display: flex;
   gap: 11.75px;
-
-  &.dragging {
-    gap: calc(11.75px * #{$ZOOM});
-
-    .taskRating {
-      font-size: calc(12px * #{$ZOOM});
-      gap: calc(4.75px * #{$ZOOM});
-    }
-    svg {
-      width: calc(15px * #{$ZOOM});
-      height: calc(15px * #{$ZOOM});
-    }
-  }
 }
 
 .taskRating {
