@@ -36,11 +36,6 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const classes = classNames.bind(css);
 
-const numFormat = new Intl.NumberFormat(undefined, {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 1,
-});
-
 export const getTaskOverviewData = (
   task: Task,
   editable: boolean,
@@ -50,12 +45,12 @@ export const getTaskOverviewData = (
   const metrics = [
     {
       label: i18n.t('Avg Value'),
-      value: numFormat.format(value.avg),
+      value: value.avg,
       children: <BusinessIcon color={colors.black100} />,
     },
     {
       label: i18n.t('Avg Complexity'),
-      value: numFormat.format(complexity.avg),
+      value: complexity.avg,
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
