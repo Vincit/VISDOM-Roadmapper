@@ -10,7 +10,7 @@ import {
   TaskRelationTableType,
   RelationAnnotation,
 } from '../utils/TaskRelationUtils';
-import { ModalTypes, modalLink } from './modals/types';
+import { ModalTypes, modalDrawerLink } from './modals/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import { InfoTooltip } from './InfoTooltip';
 import css from './SortableTask.module.scss';
@@ -37,7 +37,7 @@ const UnmetDependencyTooltip = (payload: {
       <p>Unmet dependency order</p>
       <Link
         className="green"
-        to={modalLink(ModalTypes.RELATIONS_MODAL, payload)}
+        to={modalDrawerLink(ModalTypes.RELATIONS_MODAL, payload)}
       >
         Show relations
       </Link>

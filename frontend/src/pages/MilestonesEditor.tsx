@@ -10,6 +10,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
+import Drawer from '@mui/material/Drawer';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import DoneAll from '@mui/icons-material/DoneAll';
 import { Link } from 'react-router-dom';
@@ -23,7 +24,8 @@ import { ExpandableColumn } from '../components/ExpandableColumn';
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes, modalLink } from '../components/modals/types';
+import { ModalTypes, modalLink, useModal } from '../components/modals/types';
+import { RelationsModal } from '../components/modals/RelationsModal';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Task, Version, TaskRelation } from '../redux/roadmaps/types';
 import {
@@ -108,6 +110,8 @@ const copyVersionLists = (originalLists: VersionListsObject) => {
 const ROADMAP_LIST_ID = '-1';
 
 export const MilestonesEditor = () => {
+  const drawer = useModal('openDrawer', ModalTypes.RELATIONS_MODAL);
+
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
@@ -663,6 +667,22 @@ export const MilestonesEditor = () => {
           {renderTopBar()}
           <div className={classes(css.layoutRow, css.overflowYAuto)}>
             {versionLists && renderMilestones()}
+            <Drawer
+              anchor="right"
+              variant="persistent"
+              open={!!drawer.payload}
+              BackdropProps={{ invisible: true }}
+              className={classes(css.drawer)}
+            >
+              {drawer.payload && (
+                <div style={{ marginTop: 20 }}>
+                  <RelationsModal
+                    closeModal={drawer.close}
+                    {...drawer.payload.modalProps}
+                  />
+                </div>
+              )}
+            </Drawer>
           </div>
         </div>
       </div>

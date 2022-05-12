@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { FC, useMemo, useCallback } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
   Customer,
   RoadmapUser,
@@ -140,10 +141,46 @@ export type ModalsState<T = ModalTypes> = ShowModalPayload<T> & {
   showModal: boolean;
 };
 
-export const modalLink = <T extends ModalTypes>(
+type ModalAction = 'openModal' | 'openDrawer';
+
+const link = (action: ModalAction) => <T extends ModalTypes>(
   modalType: T,
   payload: Props[T],
 ) =>
-  `?openModal=${modalType}&modalProps=${encodeURIComponent(
+  `?${action}=${modalType}&modalProps=${encodeURIComponent(
     JSON.stringify(payload),
   )}`;
+
+export const modalLink = link('openModal');
+export const modalDrawerLink = link('openDrawer');
+
+export const useModal = <T extends ModalTypes>(
+  action: ModalAction,
+  type?: T,
+) => {
+  const history = useHistory();
+  const { pathname, search } = useLocation();
+
+  const payload = useMemo(() => {
+    const query = new URLSearchParams(search);
+    const modalType = query.get(action);
+    const queryProps = query.get('modalProps');
+    if (!modalType || !queryProps) return null;
+
+    const isValidType = type ? modalType === type : modalType in ModalTypes;
+    if (!isValidType) return null;
+
+    try {
+      const modalProps = JSON.parse(queryProps);
+      return { modalType, modalProps } as ShowModalPayload<T>;
+    } catch {
+      return null;
+    }
+  }, [search, action, type]);
+
+  const close = useCallback(() => {
+    history.replace(pathname);
+  }, [history, pathname]);
+
+  return { payload, close };
+};
