@@ -28,11 +28,6 @@ const numFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 1,
 });
 
-const metricsFormat = new Intl.NumberFormat(undefined, {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 1,
-});
-
 export const RoadmapGraphSidebar = forwardRef<
   HTMLDivElement,
   {
@@ -79,18 +74,15 @@ export const RoadmapGraphSidebar = forwardRef<
               label={t(
                 hasReadCustomerValuesPermission ? 'Weighted value' : 'Value',
               )}
-              value={metricsFormat.format(
+              value={
                 hasReadCustomerValuesPermission
                   ? totalValue
-                  : unweightedTotalValue,
-              )}
+                  : unweightedTotalValue
+              }
             >
               <BusinessIcon color={colors.black100} />
             </MetricsSummary>
-            <MetricsSummary
-              label={t('Complexity')}
-              value={metricsFormat.format(complexity)}
-            >
+            <MetricsSummary label={t('Complexity')} value={complexity}>
               <WorkRoundIcon color={colors.black100} />
             </MetricsSummary>
           </>

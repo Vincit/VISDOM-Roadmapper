@@ -35,10 +35,6 @@ export const RoadmapOverview = () => {
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
   const { value, complexity } = averageValueAndComplexity(tasks ?? []);
-  const numFormat = new Intl.NumberFormat(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
 
   const metrics = [
     {
@@ -51,12 +47,12 @@ export const RoadmapOverview = () => {
     },
     {
       label: 'Avg Value',
-      metricsValue: numFormat.format(value),
+      metricsValue: value,
       children: <BusinessIcon color={colors.black100} />,
     },
     {
       label: 'Avg Complexity',
-      metricsValue: numFormat.format(complexity),
+      metricsValue: complexity,
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
