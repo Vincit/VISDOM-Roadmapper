@@ -58,6 +58,10 @@
   border-radius: 10px 0px 0px 10px;
 }
 
+.drawer:global(.MuiDrawer-root .MuiDrawer-paper) {
+  position: relative;
+}
+
 label {
   @extend .typography-pre-title;
   color: $COLOR_AZURE;

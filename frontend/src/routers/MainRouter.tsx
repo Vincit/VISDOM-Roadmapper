@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/types';
 import { UserInfo } from '../redux/user/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
-import { ModalTypes } from '../components/modals/types';
+import { useModal } from '../components/modals/types';
 import { NavLayout } from '../components/NavLayout';
 import { HomePage } from '../pages/HomePage';
 import { LandingPage } from '../pages/LandingPage';
@@ -114,36 +114,13 @@ const routes = [
 ];
 
 export const MainRouter = () => {
-  const query = new URLSearchParams(useLocation().search);
+  const { payload } = useModal('openModal');
   const dispatch = useDispatch<StoreDispatchType>();
-
-  // Parse query params
-  let queryModal = query.get('openModal');
-  if (
-    !queryModal ||
-    !Object.values(ModalTypes).includes(queryModal as ModalTypes)
-  ) {
-    queryModal = null;
-  }
-  let queryProps = query.get('modalProps');
-  try {
-    queryProps = JSON.parse(queryProps!);
-  } catch (e) {
-    queryProps = null;
-  }
 
   useEffect(() => {
     // Open modals for corresponding query params
-    if (!queryModal) return;
-    if (!queryProps) return;
-
-    dispatch(
-      modalsActions.showModal({
-        modalType: queryModal as any,
-        modalProps: queryProps as any,
-      }),
-    );
-  }, [queryModal, queryProps, dispatch]);
+    if (payload) dispatch(modalsActions.showModal(payload));
+  }, [payload, dispatch]);
 
   return (
     <Switch>

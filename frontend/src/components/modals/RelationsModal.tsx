@@ -9,8 +9,6 @@ import ClockIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
 import { ModalTypes, Modal } from './types';
 import { ModalContent } from './modalparts/ModalContent';
-import { ModalFooter } from './modalparts/ModalFooter';
-import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Info } from './modalparts/Info';
 import { Checkbox } from '../forms/Checkbox';
@@ -238,17 +236,6 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
           </p>
         </div>
       </ModalContent>
-      <ModalFooter>
-        <ModalFooterButtonDiv>
-          <button
-            className="button-large"
-            type="button"
-            onClick={() => closeModal()}
-          >
-            <Trans i18nKey="Ok" />
-          </button>
-        </ModalFooterButtonDiv>
-      </ModalFooter>
     </div>
   );
 };
