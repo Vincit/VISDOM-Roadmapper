@@ -1,3 +1,4 @@
+@import '../shared.scss';
 @import './TaskMapTask.module.scss';
 
 // Bottom and top left radius for clean looking hover
@@ -70,6 +71,8 @@
 }
 
 .namesContainer {
+  @extend .taskNameContainer;
+  max-height: unset;
   @extend .layout-column;
   gap: 5px;
   & > div {
