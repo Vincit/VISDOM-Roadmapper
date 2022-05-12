@@ -153,11 +153,11 @@ export const MilestonesEditor = () => {
   }, [isLoading, versionLists]);
 
   useEffect(() => {
-    if (!roadmapsVersions) return;
+    if (!roadmapsVersions || !tasks) return;
 
     const newVersionLists: { [k: string]: Task[] } = {};
     const ratedTasks = new Map(
-      tasks?.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
+      tasks.filter(hasRatingsOnEachDimension).map((task) => [task.id, task]),
     );
     const tasksById = new Map(ratedTasks);
 
@@ -177,10 +177,14 @@ export const MilestonesEditor = () => {
       ids.map((key) => newVersionLists[key].map(({ id }) => id)),
       relations ?? [],
     ).forEach((check, index) => {
-      result[ids[index]] = check.map(({ id, ...rest }) => ({
-        ...tasksById.get(id)!,
-        ...rest,
-      }));
+      result[ids[index]] = check.flatMap(({ id, ...rest }) => {
+        const task = tasksById.get(id);
+        if (!task) {
+          console.error(`Failed to find task by id ${id}`);
+          return [];
+        }
+        return [{ ...task, ...rest }];
+      });
     });
     setVersionLists(result);
   }, [customers, tasks, roadmapsVersions, isError, relations]);
