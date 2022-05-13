@@ -72,5 +72,6 @@ export enum RoleType {
     Permission.CustomerRepresent |
     Permission.RoadmapReadUsers |
     Permission.EditRelations |
-    Permission.VersionRead,
+    Permission.VersionRead |
+    Permission.RoadmapReadCustomerValues,
 }
