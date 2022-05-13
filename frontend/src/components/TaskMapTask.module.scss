@@ -4,13 +4,12 @@
   @extend .layout-row;
   width: 96%;
   min-width: 330px;
-  min-height: 40px;
-  max-height: 90px;
+  height: 52px; // enough for two lines for the task name
   background-color: $COLOR_WHITE;
   margin: 10px;
   border-radius: 5px;
   border: 0px;
-  padding: 10px 16px;
+  padding: 10px 20px 10px 16px;
   position: relative;
   align-items: center;
   cursor: grabbing;
@@ -27,7 +26,17 @@
 
   .doneIcon {
     color: $COLOR_EMERALD;
-    margin-right: 5px;
+    margin-right: 10px;
+  }
+
+  .taskName {
+    @extend .taskNameContainer;
+    width: 100%;
+
+    &.dragging {
+      width: calc(210px * #{$ZOOM});
+      height: calc(52px * #{$ZOOM});
+    }
   }
 
   &.dragging {

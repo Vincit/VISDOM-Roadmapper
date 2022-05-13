@@ -88,7 +88,6 @@ export const TaskMap: FC<{
   const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
   const dispatch = useDispatch<StoreDispatchType>();
   const mapPosition = useSelector(taskmapPositionSelector, shallowEqual);
-  const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const [flowElements, setFlowElements] = useState<(Edge | Group)[]>([]);
   const [flowInstance, setFlowInstance] = useState<OnLoadParams | undefined>();
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
@@ -105,23 +104,13 @@ export const TaskMap: FC<{
   }, [flowInstance, flowElements, mapPosition]);
 
   useEffect(() => {
-    if (!divRef) return;
-
-    const measuredRelations = taskRelations.map((relation, idx) => {
-      // calculate taskgroup height
-      let height = 40;
-
-      relation.synergies.forEach((taskId) => {
-        const task = tasks?.find(({ id }) => id === taskId);
-        if (!task) return;
-        height += 40;
-        // calculate text height
-        divRef.textContent = task.name;
-        height += divRef.offsetHeight;
-        divRef.textContent = '';
-      });
-      return { id: `${idx}`, width: 436, height, ...relation };
-    });
+    const measuredRelations = taskRelations.map((relation, idx) => ({
+      id: `${idx}`,
+      width: 436,
+      // group padding + (task margin + task height) * task amount
+      height: 20 + (20 + 52) * relation.synergies.length,
+      ...relation,
+    }));
 
     const graph = getAutolayout(measuredRelations);
 
@@ -191,7 +180,6 @@ export const TaskMap: FC<{
   }, [
     unavailable,
     draggedTask,
-    divRef,
     dragHandle,
     selectedTask,
     setSelectedTask,
@@ -276,7 +264,6 @@ export const TaskMap: FC<{
           </InfoTooltip>
         </Controls>
       </ReactFlow>
-      <div ref={setDivRef} className={classes(css.measureTaskName)} />
     </div>
   );
 };

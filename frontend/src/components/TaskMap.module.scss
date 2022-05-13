@@ -13,17 +13,3 @@ $ZOOM: var(--zoom, 1);
   bottom: 26px;
   width: 16px;
 }
-
-.taskName {
-  @extend .taskNameContainer;
-
-  &.dragging {
-    width: calc(210px * #{$ZOOM});
-    max-height: calc(40px * #{$ZOOM});
-  }
-}
-
-.measureTaskName {
-  @extend .taskName;
-  visibility: hidden;
-}
