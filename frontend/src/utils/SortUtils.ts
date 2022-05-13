@@ -73,10 +73,11 @@ export const sort = <T, K>(
   return (list: T[]) => [...list].sort((a, b) => by.compare(a, b) * order);
 };
 
-export const useSorting = <SortingType, ItemType>(
+export const useSorting = <SortingType, ItemType, Default extends SortingType>(
   getSort: (t: SortingType | undefined) => SortBy<ItemType>,
+  defaultType?: Default,
 ) => {
-  const [type, setType] = useState<SortingType | undefined>();
+  const [type, setType] = useState<SortingType | undefined>(defaultType);
   const [order, setOrder] = useState(SortingOrders.ASCENDING);
   return [
     useMemo(() => sort(getSort(type), order), [getSort, order, type]),

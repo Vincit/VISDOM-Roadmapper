@@ -1,4 +1,4 @@
-@import '../shared.scss';
+@import './RoadmapSelectorWidget.module.scss';
 
 .ratingContainer {
   min-width: 450px;
@@ -14,6 +14,19 @@
   margin: 16px 0 26px 26px;
   align-items: center;
   text-align: start;
+
+  .rightSide {
+    @extend .typography-body-small;
+    @extend .layout-row;
+    color: $COLOR_BLACK60;
+    gap: 10px;
+    align-items: center;
+    width: max-content;
+
+    .dropContainer {
+      margin: 0;
+    }
+  }
 }
 
 .subtitleContainer {

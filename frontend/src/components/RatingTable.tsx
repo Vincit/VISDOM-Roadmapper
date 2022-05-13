@@ -5,12 +5,14 @@ import {
   useState,
   useEffect,
   MouseEvent,
+  useMemo,
 } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { VariableSizeList } from 'react-window';
 import classNames from 'classnames';
 import { Task, Taskrating } from '../redux/roadmaps/types';
+import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { FilterTypes } from '../utils/TaskUtils';
 import { titleCase } from '../utils/string';
 import { StoreDispatchType } from '../redux';
@@ -21,9 +23,15 @@ import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
+import { Dropdown } from './forms/Dropdown';
+import {
+  TaskRatingSortingTypes,
+  TaskRatingSortingTypesToText,
+  taskRatingsSort,
+} from '../utils/SortRatingsUtils';
+import { useSorting } from '../utils/SortUtils';
 import colors from '../colors.module.scss';
 import css from './RatingTable.module.scss';
-import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 
 const classes = classNames.bind(css);
 
@@ -66,6 +74,10 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   const listRef = useRef<VariableSizeList<any> | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const { t } = useTranslation();
+  const [sort, sorting] = useSorting(
+    taskRatingsSort,
+    TaskRatingSortingTypes.SORT_FOR_CUSTOMER,
+  );
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
   const [rowHeights, setRowHeights] = useState<number[]>([]);
   const [listHeight, setListHeight] = useState(0);
@@ -73,9 +85,11 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
     type === TaskRatingDimension.BusinessValue ? 'value' : 'complexity';
   const roadmapId = useSelector(chosenRoadmapIdSelector);
 
+  const sorted = useMemo(() => sort(ratings), [ratings, sort]);
+
   useEffect(() => {
     if (!divRef) return;
-    const heights = ratings.map(({ comment }) => {
+    const heights = sorted.map(({ comment }) => {
       if (comment.length === 0)
         return type === TaskRatingDimension.Complexity ? 60 : 70;
 
@@ -88,7 +102,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
     setRowHeights(heights);
     setListHeight(heights.reduce((a, b) => a + b, 0));
     listRef.current!.resetAfterIndex(0);
-  }, [ratings, divRef]);
+  }, [sorted, divRef]);
 
   const openRateModal = (e: MouseEvent) => {
     e.preventDefault();
@@ -121,6 +135,30 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
     <div className={classes(css.ratingContainer)}>
       <div className={classes(css.titleContainer)}>
         <h3>{titleCase(t(typeString))}</h3>
+        <div className={classes(css.rightSide)}>
+          <Trans i18nKey="List order" />
+          <Dropdown
+            css={css}
+            title={t(TaskRatingSortingTypesToText(sorting.type.get()))}
+            maxLength={20}
+          >
+            {Object.values(TaskRatingSortingTypes)
+              .filter(
+                (sortingType): sortingType is TaskRatingSortingTypes =>
+                  typeof sortingType !== 'string',
+              )
+              .map((value) => (
+                <button
+                  className={classes(css.dropItem)}
+                  key={value}
+                  onClick={() => sorting.type.set(value)}
+                  type="button"
+                >
+                  {t(TaskRatingSortingTypesToText(value))}
+                </button>
+              ))}
+          </Dropdown>
+        </div>
       </div>
       <div
         style={{ marginRight: scrollBarWidth }}
@@ -140,7 +178,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
       <VariableSizeList
         ref={listRef}
         itemSize={(idx) => rowHeights[idx] ?? 0}
-        itemCount={ratings.length}
+        itemCount={sorted.length}
         height={Math.min(height, listHeight)}
         width="100%"
         outerRef={(div) => {
@@ -152,10 +190,10 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
         {({ index, style }) => (
           <Row
             style={style}
-            rating={ratings[index]}
+            rating={sorted[index]}
             user={userInfo}
             onEdit={openRateModal}
-            onDelete={() => openDeleteModal(ratings[index])}
+            onDelete={() => openDeleteModal(sorted[index])}
           />
         )}
       </VariableSizeList>
