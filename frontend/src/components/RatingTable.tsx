@@ -57,7 +57,7 @@ type RatingTableProps = {
 export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   Row,
   type,
-}) => ({ task, ratings, avg, height = 500 }) => {
+}) => ({ task, ratings, avg, height = 800 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,

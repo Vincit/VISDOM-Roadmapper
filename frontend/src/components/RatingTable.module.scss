@@ -72,14 +72,23 @@
 }
 
 .comment {
-  background-color: white;
+  background-color: $COLOR_WHITE;
   color: $COLOR_BLACK60;
+
   padding: 15px 20px;
   margin-top: 15px;
   border-radius: 10px;
+
   text-align: start;
+  white-space: pre-line;
+  max-height: 250px;
+  overflow: auto;
+  word-wrap: break-word;
 }
 
 .measureComment {
+  @extend .comment;
   visibility: hidden;
+  padding: 0;
+  margin: 0;
 }
