@@ -117,6 +117,10 @@ export const MilestonesEditor = () => {
   ] = apiV2.usePatchVersionMutation();
   const role = useSelector(userRoleSelector, shallowEqual);
   const hasVersionEditPermission = hasPermission(role, Permission.VersionEdit);
+  const hasCustomerReadPermission = hasPermission(
+    role,
+    Permission.RoadmapReadCustomerValues,
+  );
   const { data: roadmapsVersions } = apiV2.useGetVersionsQuery(
     roadmapId ?? skipToken,
     {
@@ -373,24 +377,28 @@ export const MilestonesEditor = () => {
             />
           )}
         </div>
-        <div className={classes(css.topbarShares)}>
-          <Trans i18nKey="Target weighted shares" />
-          {roadmapsVersions && (
-            <CustomerWeightsVisualization
-              width={200}
-              height={20}
-              barWidth={20}
-              light
-            />
-          )}
-        </div>
-        {roadmapsVersions && (
-          <Link
-            className={classes(css.clientWeightsLink, 'green')}
-            to={`/roadmap/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.weights}`}
-          >
-            <Trans i18nKey="See client weights" />
-          </Link>
+        {hasCustomerReadPermission && (
+          <>
+            <div className={classes(css.topbarShares)}>
+              <Trans i18nKey="Target weighted shares" />
+              {roadmapsVersions && (
+                <CustomerWeightsVisualization
+                  width={200}
+                  height={20}
+                  barWidth={20}
+                  light
+                />
+              )}
+            </div>
+            {roadmapsVersions && (
+              <Link
+                className={classes(css.clientWeightsLink, 'green')}
+                to={`/roadmap/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.weights}`}
+              >
+                <Trans i18nKey="See client weights" />
+              </Link>
+            )}
+          </>
         )}
         <div className={classes(css.topbarRightSide)}>
           <MilestonesAmountSummary
@@ -504,16 +512,18 @@ export const MilestonesEditor = () => {
                           hideDragIndicator={!hasVersionEditPermission}
                         />
                       )}
-                      <div
-                        className={classes(css.summaryWrapper, {
-                          [css.completed]: completed,
-                        })}
-                      >
-                        <CustomerStakesScore
-                          version={version}
-                          completed={completed}
-                        />
-                      </div>
+                      {hasCustomerReadPermission && (
+                        <div
+                          className={classes(css.summaryWrapper, {
+                            [css.completed]: completed,
+                          })}
+                        >
+                          <CustomerStakesScore
+                            version={version}
+                            completed={completed}
+                          />
+                        </div>
+                      )}
                       <div className={classes(css.summaryWrapper)}>
                         <MilestoneRatingsSummary
                           tasks={list}
