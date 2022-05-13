@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
+import { userRoleSelector } from '../redux/user/selectors';
 import { Slider } from '../components/forms/Slider';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Customer } from '../redux/roadmaps/types';
@@ -13,6 +14,8 @@ import { MetricsSummary } from '../components/MetricsSummary';
 import { InfoTooltip } from '../components/InfoTooltip';
 import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
 import { percent } from '../utils/string';
+import { Permission } from '../../../shared/types/customTypes';
+import { hasPermission } from '../../../shared/utils/permission';
 import css from './PlannerWeightsPage.module.scss';
 import { apiV2 } from '../api/api';
 
@@ -21,6 +24,8 @@ const classes = classNames.bind(css);
 export const PlannerWeightsPage = () => {
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const role = useSelector(userRoleSelector, shallowEqual);
+  const hasEditPermission = hasPermission(role, Permission.RoadmapEdit);
 
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
@@ -107,6 +112,7 @@ export const PlannerWeightsPage = () => {
             onChange={(_, value) =>
               handleSliderChange(customer.id, Number(value))
             }
+            disabled={!hasEditPermission}
           />
         </div>
       ))}
