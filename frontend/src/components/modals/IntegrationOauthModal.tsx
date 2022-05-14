@@ -16,6 +16,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
   closeModal,
   roadmapId,
   name,
+  code,
 }) => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
@@ -49,7 +50,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
         const response = await api.getIntegrationOauthURL(name, roadmapId);
         const { url, token, tokenSecret } = response;
         setFormValues({
-          oauthVerifierCode: '',
+          oauthVerifierCode: code || '',
           token,
           tokenSecret,
         });
@@ -61,7 +62,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
     };
 
     getOAuthURL();
-  }, [currentConfiguration, roadmapId, name, retry, t]);
+  }, [currentConfiguration, roadmapId, name, retry, t, code]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -107,7 +108,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
             Please visit{' '}
             <a
               href={oauthURL.toString()}
-              target="_blank"
+              target={name !== 'gitLab' ? '_blank' : ''}
               rel="noopener noreferrer"
             >
               this URL

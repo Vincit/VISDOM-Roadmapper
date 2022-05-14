@@ -50,7 +50,7 @@ export const TrelloIntegration: IntegrationEntry = {
           verifierToken,
           (error, token) => {
             if (error) reject(error);
-            else resolve(token);
+            else resolve({ accessToken: token });
           },
         );
       }),

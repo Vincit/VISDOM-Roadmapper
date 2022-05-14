@@ -67,7 +67,7 @@ export const JiraIntegration: IntegrationEntry = {
             if (error) {
               reject(error);
             } else {
-              resolve(oauth as string);
+              resolve({ accessToken: oauth as string });
             }
           },
         );

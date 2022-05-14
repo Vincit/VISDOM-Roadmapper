@@ -361,7 +361,10 @@ export const apiV2 = createApi({
       query: ({ roadmapId, name, id, ...data }) => ({
         url: `roadmaps/${roadmapId}/integrations/${name}/configuration/${id}/statusmapping`,
         method: 'post',
-        data,
+        data: {
+          fromColumn: data.fromColumn.toString(),
+          toStatus: data.toStatus,
+        },
       }),
     }),
     getIntegrations: build.query<Integrations, number>({

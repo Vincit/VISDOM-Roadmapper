@@ -153,7 +153,7 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
             {columns &&
               statusMapping?.map(({ id: mappingId, fromColumn, toStatus }) => {
                 const columnName = columns.find(
-                  (column) => column.id === fromColumn,
+                  (column) => column.id.toString() === fromColumn,
                 )?.name;
                 if (!columnName) return undefined;
                 return (
@@ -344,6 +344,7 @@ const Config: FC<{
     configuration || {
       name,
       host: undefined,
+      projectId: undefined,
       consumerkey: '',
       privatekey: '',
       roadmapId: roadmapId!,

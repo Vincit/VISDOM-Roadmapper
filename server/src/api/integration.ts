@@ -23,7 +23,9 @@ export interface TaskFilters {
 
 export interface OAuthProvider {
   instance: string;
-  authorizationURL(): Promise<{
+  authorizationURL(
+    roadmapId: string,
+  ): Promise<{
     url: string;
     token: string;
     tokenSecret: string;
@@ -32,7 +34,10 @@ export interface OAuthProvider {
     verifierToken: string;
     token: string;
     tokenSecret: string;
-  }): Promise<string>;
+    roadmapId: string;
+  }): Promise<{ accessToken: string; refreshToken?: string }>;
+
+  //tokenRefresh(): Promise<{ token: string; refreshToken: string }>;
 }
 
 export class InvalidTokenError extends Error {}
@@ -52,7 +57,11 @@ export interface IntegrationEntry {
   }[];
   getIntegrationProvider: (
     config: IntegrationConfig,
-    tokens: { accessToken: string; accessTokenSecret: string },
+    tokens: {
+      accessToken: string;
+      accessTokenSecret: string;
+      refreshToken: string;
+    },
   ) => IntegrationProvider;
   getOAuthProvider: (config: IntegrationConfig) => OAuthProvider;
 }

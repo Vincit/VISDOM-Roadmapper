@@ -10,14 +10,12 @@ import {
   InvalidTokenError,
 } from '../integration';
 
-const appName = 'VISDOM Roadmap tool';
-const authorizeURL = 'https://gitlab.com/oauth/authorize';
-const tokenURL = 'https://gitlab.com/oauth/token';
-const redirectURL = '';
-const expiration = '30days';
+const authorizePath = '/oauth/authorize';
+const tokenPath = '/oauth/token';
+const redirectBaseURL = `${process.env.FRONTEND_BASE_URL}/oauth/redirect`;
 
 const oauth2 = (key: string, secret: string, host: string) =>
-  new OAuth2(key, secret, host, authorizeURL, tokenURL);
+  new OAuth2(key, secret, host, authorizePath, tokenPath);
 
 export const GitLabIntegration: IntegrationEntry = {
   defaultConfig: { host: 'gitlab.com' },
@@ -30,27 +28,40 @@ export const GitLabIntegration: IntegrationEntry = {
     new GitLabImporter(config, tokens),
   getOAuthProvider: (config) => ({
     instance: config.host,
-    authorizationURL: () =>
+    authorizationURL: (roadmapId) =>
       new Promise((resolve, reject) => {
         const state = randomBytes(10).toString('hex');
-        const redirectURL = '';
+
+        const redirectUri = encodeURIComponent(
+          `${redirectBaseURL}?roadmapId=${roadmapId}&integrationName=gitLab`,
+        );
         resolve({
-          url: `${authorizeURL}?client_id=${config.consumerkey}&response_type=code&state=${state}&scope=read_api&redirect_uri=https://localhost:3000`,
+          url: `https://${config.host}${authorizePath}?client_id=${config.consumerkey}&response_type=code&state=${state}&scope=read_api&redirect_uri=${redirectUri}`,
           token: '',
           tokenSecret: '',
         });
       }),
-    swapOAuthToken: ({ verifierToken, token, tokenSecret }) =>
+    swapOAuthToken: ({ verifierToken, token, tokenSecret, roadmapId }) =>
       new Promise((resolve, reject) => {
+        const redirectUri = `${redirectBaseURL}?roadmapId=${roadmapId}&integrationName=gitLab`;
+
         oauth2(
           config.consumerkey,
           config.privatekey,
-          config.host,
+          `https://${config.host}`,
         ).getOAuthAccessToken(
           verifierToken,
+          {
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri,
+          },
           (err, access_token, refresh_token, result) => {
             if (err) reject(err);
-            else resolve(access_token);
+            else
+              resolve({
+                accessToken: access_token,
+                refreshToken: refresh_token,
+              });
           },
         );
       }),
@@ -61,18 +72,31 @@ class GitLabImporter implements IntegrationProvider {
   private readonly projectId: string;
   private readonly oauth2: OAuth2;
   private readonly accessToken: string;
+  private lastUsedRedirectUri: string;
 
   constructor(
     { projectId, consumerkey, privatekey, host }: IntegrationConfig,
     tokens: { accessToken: string },
   ) {
     this.projectId = projectId || '';
+    this.lastUsedRedirectUri = '';
     this.accessToken = tokens.accessToken;
     this.oauth2 = oauth2(consumerkey, privatekey, host);
   }
 
+  setLastUsedRedirectUri(uri: string) {
+    this.lastUsedRedirectUri = uri;
+  }
+  getLastUsedRedirectUri() {
+    return this.lastUsedRedirectUri;
+  }
+
   async boards() {
-    return await this.fetch<{ id: string; name: string }[]>('boards');
+    const response = await this.fetch<{ id: string; name: string }[]>('boards');
+    return (response as any[]).map((board) => ({
+      id: board.id as string,
+      name: board.name as string,
+    }));
   }
 
   // In GitLab, columns ("lists") can only be created out of labels.
@@ -112,19 +136,19 @@ class GitLabImporter implements IntegrationProvider {
 
     return issues.map(
       (card): ImportedTask => ({
-        id: card.id,
+        id: card.id.toString(),
         link: card.web_url,
         name: card.title,
         description: card.description || 'No description',
         createdAt: card.created_at,
-        columnId: card.columnId,
+        columnId: card.columnId.toString(),
       }),
     );
   }
 
   private fetch<T>(resource: string): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.oauth2.getProtectedResource(
+      this.oauth2.get(
         `https://gitlab.com/api/v4/projects/${this.projectId}/${resource}`,
         this.accessToken,
         (err, result) => {
@@ -139,7 +163,7 @@ class GitLabImporter implements IntegrationProvider {
 
   private async getIssuesForLabel(labelName: string) {
     return await this.fetch<{ [key: string]: string }[]>(
-      `issues?labels=${labelName.replaceAll(' ', '+')}`,
+      `issues?labels=${labelName.replace(/ /g, '+')}`,
     );
   }
 }

@@ -26,7 +26,7 @@ import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import { JiraIntegration } from '../jira/jiraIntegration';
 import { TrelloIntegration } from '../trello/trelloIntegration';
-import { GitLabIntegration } from '../gitLab/gitLabIntergration';
+import { GitLabIntegration } from '../gitLab/gitLabIntegration';
 
 registerIntegration('jira', JiraIntegration);
 registerIntegration('trello', TrelloIntegration);

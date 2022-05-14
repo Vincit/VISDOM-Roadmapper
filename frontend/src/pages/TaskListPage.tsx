@@ -128,6 +128,7 @@ export const TaskListPage = () => {
             <>
               {renderImportButton('trello')}
               {renderImportButton('jira')}
+              {renderImportButton('gitLab')}
             </>
           )}
         </div>
