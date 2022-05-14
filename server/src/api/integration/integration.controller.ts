@@ -21,19 +21,21 @@ const integrationConfig = async (name: string, roadmapId: number) => {
 const integrationTokens = async (config: Integration, forUser?: number) => {
   const query = Token.query()
     .where({ forIntegration: config.id })
-    .whereIn('type', ['access_token', 'access_token_secret']);
+    .whereIn('type', ['access_token', 'access_token_secret', 'refresh_token']);
   if (forUser) query.where({ user: forUser });
   const tokens = await query;
   const accessToken = tokens?.find(({ type }) => type === 'access_token');
   const accessTokenSecret = tokens?.find(
     ({ type }) => type === 'access_token_secret',
   );
-  if (!accessToken || !accessTokenSecret) {
+  const refreshToken = tokens?.find(({ type }) => type === 'refresh_token');
+  if (!accessToken || (!accessTokenSecret && !refreshToken)) {
     throw new InvalidTokenError('Missing tokens.');
   }
   return {
     accessToken: accessToken.value,
-    accessTokenSecret: accessTokenSecret.value,
+    accessTokenSecret: accessTokenSecret ? accessTokenSecret.value : '',
+    refreshToken: refreshToken ? refreshToken.value : '',
   };
 };
 
@@ -60,7 +62,7 @@ const oAuthProvider = async (ctx: IKoaContext) => {
 
 export const postConfigurations: RouteHandlerFnc = async (ctx) => {
   const { defaultConfig } = getIntegration(ctx.params.integrationName);
-  const { host, consumerkey, privatekey, boardId } = {
+  const { host, consumerkey, privatekey, boardId, projectId } = {
     ...defaultConfig,
     ...ctx.request.body,
   } as any;
@@ -70,6 +72,7 @@ export const postConfigurations: RouteHandlerFnc = async (ctx) => {
     host,
     consumerkey,
     privatekey,
+    projectId,
     boardId,
     roadmapId: Number(ctx.params.roadmapId),
   });
@@ -138,7 +141,9 @@ export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
   if (!boardId) {
     throw new Error('Invalid config: board id missing');
   }
-  ctx.body = (await provider.boards()).find(({ id }) => id === boardId);
+  ctx.body = (await provider.boards()).find(
+    ({ id }) => id.toString() === boardId,
+  );
 };
 
 export const getBoardColumns: RouteHandlerFnc = async (ctx) => {
@@ -250,9 +255,10 @@ export const getOauthAuthorizationURL: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
+  const { roadmapId } = ctx.params;
   const provider = await oAuthProvider(ctx);
   try {
-    ctx.body = await provider.authorizationURL();
+    ctx.body = await provider.authorizationURL(roadmapId);
     ctx.status = 200;
   } catch (error) {
     throw new Error(
@@ -274,13 +280,14 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx) => {
   const provider = getOAuthProvider(config);
 
   try {
-    const newToken = await provider.swapOAuthToken({
+    const newTokens = await provider.swapOAuthToken({
+      verifierToken,
       token,
       tokenSecret,
-      verifierToken,
+      roadmapId,
     });
 
-    if (!newToken) {
+    if (!newTokens) {
       throw new Error('Empty response on authorization token swap.');
     }
 
@@ -307,8 +314,11 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx) => {
           await Token.query(trx).insert(newToken);
         }
       };
-      await upsertToken('access_token', newToken);
-      await upsertToken('access_token_secret', tokenSecret);
+      await upsertToken('access_token', newTokens.accessToken);
+      if (tokenSecret && tokenSecret.length > 0)
+        await upsertToken('access_token_secret', tokenSecret);
+      if (newTokens.refreshToken && newTokens.refreshToken.length > 0)
+        await upsertToken('refresh_token', newTokens.refreshToken);
     });
 
     ctx.status = 200;

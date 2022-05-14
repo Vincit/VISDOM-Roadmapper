@@ -183,6 +183,7 @@ export interface IntegrationConfiguration {
   name: string;
   roadmapId: number;
   host?: string;
+  projectId?: string;
   consumerkey: string;
   privatekey: string;
   boardId?: string;
