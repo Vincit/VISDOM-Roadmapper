@@ -153,7 +153,7 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
             {columns &&
               statusMapping?.map(({ id: mappingId, fromColumn, toStatus }) => {
                 const columnName = columns.find(
-                  (column) => column.id.toString() === fromColumn,
+                  (column) => column.id === fromColumn,
                 )?.name;
                 if (!columnName) return undefined;
                 return (

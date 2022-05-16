@@ -92,10 +92,10 @@ class GitLabImporter implements IntegrationProvider {
   }
 
   async boards() {
-    const response = await this.fetch<{ id: string; name: string }[]>('boards');
+    const response = await this.fetch<{ id: number; name: string }[]>('boards');
     return (response as any[]).map((board) => ({
-      id: board.id as string,
-      name: board.name as string,
+      id: `${board.id}`,
+      name: board.name,
     }));
   }
 
@@ -104,9 +104,9 @@ class GitLabImporter implements IntegrationProvider {
   // Therefore, this returns the column id and the label's name.
   async columns(boardId: string) {
     const lists = await this.fetch<
-      Array<{ id: string; label: { name: string } }>
+      Array<{ id: number; label: { name: string } }>
     >(`boards/${boardId}/lists`);
-    return lists.map((list) => ({ id: list.id, name: list.label.name }));
+    return lists.map((list) => ({ id: `${list.id}`, name: list.label.name }));
   }
 
   async labels(boardId: string) {
@@ -136,12 +136,12 @@ class GitLabImporter implements IntegrationProvider {
 
     return issues.filter(this.importFilter(filters)).map(
       (issue): ImportedTask => ({
-        id: issue.id.toString(),
+        id: `${issue.id}`,
         link: issue.web_url,
         name: issue.title,
         description: issue.description || 'No description',
         createdAt: issue.created_at,
-        columnId: issue.columnId.toString(),
+        columnId: `${issue.columnId}`,
       }),
     );
   }
