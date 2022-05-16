@@ -1,9 +1,9 @@
-import { FC, CSSProperties, useRef, useState, useEffect } from 'react';
+import { FC, CSSProperties, ComponentPropsWithoutRef } from 'react';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { useHistory } from 'react-router-dom';
 import { Trans } from 'react-i18next';
-import { VariableSizeList } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import classNames from 'classnames';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
@@ -65,52 +65,53 @@ export const TaskRow: FC<{
   );
 };
 
+// TODO: maybe define these in one place
+const taskHeight = 52;
+const taskMargin = 6;
+
 export const TaskTable: FC<{
   tasks: Task[];
   height?: number;
-}> = ({ tasks, height = 500 }) => {
-  const listRef = useRef<VariableSizeList<any> | null>(null);
-  const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
-  const [rowHeights, setRowHeights] = useState<number[]>([]);
-  const [listHeight, setListHeight] = useState(0);
+}> = ({ tasks, height = 500 }) => (
+  <div className={classes(css.listContainer)}>
+    {!tasks.length ? (
+      <div className={classes(css.noTasks)}>
+        <Trans i18nKey="No tasks" />
+      </div>
+    ) : (
+      <FixedSizeList
+        itemSize={taskHeight + taskMargin}
+        itemCount={tasks.length}
+        height={Math.min(height, (taskHeight + taskMargin) * tasks.length)}
+        width="100%"
+      >
+        {({ index, style }) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { height: _, width, ...rest } = style;
+          return <TaskRow style={{ ...rest }} task={tasks[index]} />;
+        }}
+      </FixedSizeList>
+    )}
+  </div>
+);
 
-  useEffect(() => {
-    if (!divRef || !tasks.length) return;
-    const heights = tasks.map(({ name }) => {
-      let taskHeight = 28; // padding + margin
-      // calculate text height
-      divRef.textContent = name;
-      taskHeight += divRef.offsetHeight;
-      divRef.textContent = '';
-      return taskHeight;
-    });
-    setRowHeights(heights);
-    setListHeight(heights.reduce((a, b) => a + b, 0));
-    listRef.current!.resetAfterIndex(0);
-  }, [tasks, divRef]);
-
-  return (
-    <div className={classes(css.listContainer)}>
-      {!tasks.length ? (
-        <div className={classes(css.noTasks)}>
-          <Trans i18nKey="No tasks" />
+export const TaskRelationTable: FC<{
+  tasks: Task[];
+  height?: number;
+  Action: FC<{ task: Task }>;
+  taskProps?: Omit<ComponentPropsWithoutRef<typeof TaskRow>, 'task'>;
+}> = ({ tasks, height = 500, Action, taskProps }) =>
+  !tasks.length ? (
+    <div className={classes(css.noRelations)}>
+      <Trans i18nKey="No relations" />
+    </div>
+  ) : (
+    <div className={classes(css.relationList)} style={{ maxHeight: height }}>
+      {tasks.map((t) => (
+        <div key={t.id} className={classes(css.relationRow)}>
+          <TaskRow task={t} {...taskProps} />
+          <Action task={t} />
         </div>
-      ) : (
-        <VariableSizeList
-          ref={listRef}
-          itemSize={(idx) => rowHeights[idx] ?? 0}
-          itemCount={tasks.length}
-          height={Math.min(height, listHeight)}
-          width="100%"
-        >
-          {({ index, style }) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { height: _, width, ...rest } = style;
-            return <TaskRow style={{ ...rest }} task={tasks[index]} />;
-          }}
-        </VariableSizeList>
-      )}
-      <div ref={setDivRef} className={classes(css.measureTaskName)} />
+      ))}
     </div>
   );
-};

@@ -97,3 +97,13 @@
   margin-left: 26px;
   text-align: left;
 }
+
+.relationList {
+  overflow-y: auto;
+  width: 105%;
+}
+
+.relationRow {
+  @extend .layout-row;
+  align-items: center;
+}
