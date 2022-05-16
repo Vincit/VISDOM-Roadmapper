@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import classNames from 'classnames';
@@ -21,7 +21,7 @@ import {
   TaskRelationTableType,
   getTaskRelations,
 } from '../../utils/TaskRelationUtils';
-import { TaskRow } from '../TaskTable';
+import { TaskRelationTable } from '../TaskTable';
 import { paths } from '../../routers/paths';
 import colors from '../../colors.module.scss';
 import css from './RelationsModal.module.scss';
@@ -29,29 +29,27 @@ import { apiV2, selectById } from '../../api/api';
 
 const classes = classNames.bind(css);
 
-const BadRelationWarning: FC<{
-  relation: { to: number; type: TaskRelationTableType };
-  badRelations: TaskRelation[];
-}> = ({ relation, badRelations }) => {
-  const bad = badRelations.some(
-    ({ from, to }) =>
-      (relation.type === TaskRelationTableType.Requires &&
-        from === relation.to) ||
-      (relation.type === TaskRelationTableType.Precedes && to === relation.to),
-  );
-  if (!bad) return null;
+const badRelationWarning = (
+  type: TaskRelationTableType,
+): FC<{ target: number; badRelations: TaskRelation[] }> => {
+  const title =
+    type === TaskRelationTableType.Requires
+      ? 'Task is currently placed before this dependency'
+      : 'Task is currently not placed before this dependent task';
 
-  return (
-    <InfoTooltip
-      title={
-        relation.type === TaskRelationTableType.Requires
-          ? 'Task is currently placed before this dependency'
-          : 'Task is currently not placed before this dependent task'
-      }
-    >
-      <AlertIcon />
-    </InfoTooltip>
-  );
+  // Synergy can't be bad at the moment.
+  if (type === TaskRelationTableType.Contributes) return () => null;
+
+  const targetKey = type === TaskRelationTableType.Requires ? 'from' : 'to';
+  return ({ target, badRelations }) => {
+    const bad = badRelations.some((relation) => relation[targetKey] === target);
+    if (!bad) return null;
+    return (
+      <InfoTooltip title={title}>
+        <AlertIcon />
+      </InfoTooltip>
+    );
+  };
 };
 
 const icons = {
@@ -89,6 +87,7 @@ const relationTable: (
   const Icon = icons[type];
   const title = titles[type];
   const subTitle = subTitles[type];
+  const BadRelationWarning = badRelationWarning(type);
   return ({
     task,
     badRelations,
@@ -110,6 +109,15 @@ const relationTable: (
       }
     }, [relations, allTasks, task.id]);
 
+    const RelationWarning = useCallback(
+      ({ task: { id } }: { task: Task }) => (
+        <div className={classes(css.relationAlert)}>
+          <BadRelationWarning target={id} badRelations={badRelations} />
+        </div>
+      ),
+      [badRelations],
+    );
+
     return (
       <div className={classes(css.listContainer)}>
         <div
@@ -124,37 +132,20 @@ const relationTable: (
           </h3>
         </div>
         <p className={classes(css.subTitle)}>{subTitle}</p>
-        {!tasks.length ? (
-          <div className={classes(css.noRelations)}>
-            <Trans i18nKey="No relations" />
-          </div>
-        ) : (
-          <div
-            className={classes(css.relationList)}
-            style={{ maxHeight: height }}
-          >
-            {tasks.map((t) => (
-              <div key={t.id} className={classes(css.relationRow)}>
-                <TaskRow
-                  style={{
-                    ['--background-color' as any]: colors.black5,
-                    marginLeft: 0,
-                  }}
-                  task={t}
-                  largeIcons
-                  onClick={onTaskClick}
-                  showMilestoneName={showMilestoneNames}
-                />
-                <div className={classes(css.relationAlert)}>
-                  <BadRelationWarning
-                    relation={{ to: t.id, type }}
-                    badRelations={badRelations}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <TaskRelationTable
+          height={height}
+          tasks={tasks}
+          taskProps={{
+            style: {
+              ['--background-color' as any]: colors.black5,
+              marginLeft: 0,
+            },
+            largeIcons: true,
+            onClick: onTaskClick,
+            showMilestoneName: showMilestoneNames,
+          }}
+          Action={RelationWarning}
+        />
       </div>
     );
   };

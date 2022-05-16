@@ -1,8 +1,7 @@
-import { FC, useRef, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Trans } from 'react-i18next';
-import { VariableSizeList } from 'react-window';
 import Select from 'react-select';
 import classNames from 'classnames';
 import CachedIcon from '@mui/icons-material/Cached';
@@ -18,7 +17,7 @@ import {
   groupTaskRelations,
   reachable,
 } from '../utils/TaskRelationUtils';
-import { TaskRow } from './TaskTable';
+import { TaskRelationTable } from './TaskTable';
 import { CloseButton } from './forms/SvgButton';
 import css from './TaskRelationTable.module.scss';
 import { apiV2 } from '../api/api';
@@ -49,10 +48,6 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
   const [addSynergies] = apiV2.useAddSynergyRelationsMutation();
   const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
-  const listRef = useRef<VariableSizeList<any> | null>(null);
-  const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
-  const [rowHeights, setRowHeights] = useState<number[]>([]);
-  const [listHeight, setListHeight] = useState(0);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [availableConnections, setAvailableConnections] = useState<Task[]>([]);
 
@@ -76,20 +71,27 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
     }
   }, [relations, allTasks, tasks, task.id]);
 
-  useEffect(() => {
-    if (!divRef || !tasks.length) return;
-    const heights = tasks.map(({ name }) => {
-      let taskHeight = 28; // padding + margin
-      // calculate text height
-      divRef.textContent = name;
-      taskHeight += divRef.offsetHeight;
-      divRef.textContent = '';
-      return taskHeight;
-    });
-    setRowHeights(heights);
-    setListHeight(heights.reduce((a, b) => a + b, 0));
-    listRef.current!.resetAfterIndex(0);
-  }, [tasks, divRef]);
+  const RemoveRelation = useCallback(
+    ({ task: { id } }: { task: Task }) => (
+      <CloseButton
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (roadmapId) {
+            if (type === TaskRelationTableType.Contributes) {
+              addSynergies({ roadmapId, from: id, to: [] });
+            } else {
+              removeTaskRelation({
+                roadmapId,
+                relation: buildRelation(task.id, id),
+              });
+            }
+          }
+        }}
+      />
+    ),
+    [roadmapId, task, removeTaskRelation, addSynergies],
+  );
 
   return (
     <div className={classes(css.listContainer)}>
@@ -138,45 +140,12 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
         }))}
       />
       <br />
-      {!tasks.length ? (
-        <div className={classes(css.noRelations)}>
-          <Trans i18nKey="No relations" />
-        </div>
-      ) : (
-        <VariableSizeList
-          ref={listRef}
-          itemSize={(idx) => rowHeights[idx] ?? 0}
-          itemCount={tasks.length}
-          height={Math.min(height, listHeight)}
-          width="105%"
-        >
-          {({ index, style }) => {
-            const { id } = tasks[index];
-            return (
-              <div style={{ ...style, display: 'flex', alignItems: 'center' }}>
-                <TaskRow task={tasks[index]} largeIcons />
-                <CloseButton
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (roadmapId) {
-                      if (type === TaskRelationTableType.Contributes) {
-                        addSynergies({ roadmapId, from: id, to: [] });
-                      } else {
-                        removeTaskRelation({
-                          roadmapId,
-                          relation: buildRelation(task.id, id),
-                        });
-                      }
-                    }
-                  }}
-                />
-              </div>
-            );
-          }}
-        </VariableSizeList>
-      )}
-      <div ref={setDivRef} className={classes(css.measureTaskName)} />
+      <TaskRelationTable
+        height={height}
+        tasks={tasks}
+        taskProps={{ largeIcons: true }}
+        Action={RemoveRelation}
+      />
     </div>
   );
 };
