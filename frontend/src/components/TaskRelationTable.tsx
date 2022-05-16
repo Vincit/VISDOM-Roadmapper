@@ -47,6 +47,7 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
   );
   const { data: allTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
+  const [addSynergies] = apiV2.useAddSynergyRelationsMutation();
   const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
   const listRef = useRef<VariableSizeList<any> | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
@@ -117,10 +118,18 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
         escapeClearsValue
         onChange={(selected) => {
           if (selected && roadmapId) {
-            addTaskRelation({
-              roadmapId,
-              relation: buildRelation(task.id, selected.value),
-            });
+            if (type === TaskRelationTableType.Contributes) {
+              addSynergies({
+                roadmapId,
+                from: selected.value,
+                to: [task.id, ...tasks.map(({ id }) => id)],
+              });
+            } else {
+              addTaskRelation({
+                roadmapId,
+                relation: buildRelation(task.id, selected.value),
+              });
+            }
           }
         }}
         options={availableConnections.map(({ id, name }) => ({
@@ -151,10 +160,14 @@ const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
                     e.preventDefault();
                     e.stopPropagation();
                     if (roadmapId) {
-                      removeTaskRelation({
-                        roadmapId,
-                        relation: buildRelation(task.id, id),
-                      });
+                      if (type === TaskRelationTableType.Contributes) {
+                        addSynergies({ roadmapId, from: id, to: [] });
+                      } else {
+                        removeTaskRelation({
+                          roadmapId,
+                          relation: buildRelation(task.id, id),
+                        });
+                      }
                     }
                   }}
                 />
