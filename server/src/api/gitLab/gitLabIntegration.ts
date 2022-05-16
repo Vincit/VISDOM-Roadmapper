@@ -119,7 +119,7 @@ class GitLabImporter implements IntegrationProvider {
   // Inefficient, as GitLab offers no method to get tasks for a given board.
   // We have to get columns (=labels) for a board, and then get issues for the labels.
   // This also has to be done one by one, as /issues?labels= filter is AND only.
-  async tasks(boardId: string) {
+  async tasks(boardId: string, filters?: TaskFilters) {
     const boardColumns = await this.columns(boardId);
 
     const issues: { [key: string]: string }[] = (
@@ -134,14 +134,14 @@ class GitLabImporter implements IntegrationProvider {
       )
     ).flat();
 
-    return issues.map(
-      (card): ImportedTask => ({
-        id: card.id.toString(),
-        link: card.web_url,
-        name: card.title,
-        description: card.description || 'No description',
-        createdAt: card.created_at,
-        columnId: card.columnId.toString(),
+    return issues.filter(this.importFilter(filters)).map(
+      (issue): ImportedTask => ({
+        id: issue.id.toString(),
+        link: issue.web_url,
+        name: issue.title,
+        description: issue.description || 'No description',
+        createdAt: issue.created_at,
+        columnId: issue.columnId.toString(),
       }),
     );
   }
@@ -159,6 +159,13 @@ class GitLabImporter implements IntegrationProvider {
         },
       );
     });
+  }
+
+  private importFilter(filters?: TaskFilters) {
+    const include = new Set(filters?.labels || []);
+    if (include.size === 0) return () => true;
+    return (issue: any) =>
+      (issue.labels || []).some((label: string) => include.has(label));
   }
 
   private async getIssuesForLabel(labelName: string) {
