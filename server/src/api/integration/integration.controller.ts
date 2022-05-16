@@ -141,9 +141,7 @@ export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
   if (!boardId) {
     throw new Error('Invalid config: board id missing');
   }
-  ctx.body = (await provider.boards()).find(
-    ({ id }) => id.toString() === boardId,
-  );
+  ctx.body = (await provider.boards()).find(({ id }) => id === boardId);
 };
 
 export const getBoardColumns: RouteHandlerFnc = async (ctx) => {
