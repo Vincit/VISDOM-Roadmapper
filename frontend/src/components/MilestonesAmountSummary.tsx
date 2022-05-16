@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { Trans } from 'react-i18next';
 import { Version } from '../redux/roadmaps/types';
 import { isCompletedMilestone } from '../utils/TaskUtils';
+import { TaskStatus } from '../../../shared/types/customTypes';
 import css from './MilestonesAmountSummary.module.scss';
 
 const classes = classNames.bind(css);
@@ -13,6 +14,10 @@ export const MilestonesAmountSummary: FC<{
 }> = ({ versions, selected }) => {
   const versionsAmount = versions.length;
   const completedAmount = versions.filter(isCompletedMilestone).length;
+  const started = versions.filter(({ tasks }) =>
+    tasks.some((task) => task.status !== TaskStatus.NOT_STARTED),
+  ).length;
+  const inProgress = started - completedAmount;
   return (
     <div className={classes(css.summaryWrapper)}>
       <div>
@@ -27,7 +32,7 @@ export const MilestonesAmountSummary: FC<{
         <div>
           <Trans
             i18nKey="In progress milestones amount"
-            values={{ amount: versionsAmount - completedAmount }}
+            values={{ amount: inProgress }}
           />
         </div>
         <div>
