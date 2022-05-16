@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
+import { modalLink, ModalTypes } from '../components/modals/types';
 
 const useQuery = () => {
   const { search } = useLocation();
@@ -11,13 +12,14 @@ export const OauthRedirectPage = () => {
   const query = useQuery();
   return (
     <Redirect
-      to={`/roadmap/${query.get(
-        'roadmapId',
-      )}/configure?openModal=SETUP_OAUTH_MODAL&modalProps=%7B%22name%22%3A%22${query.get(
-        'integrationName',
-      )}%22%2C%22roadmapId%22%3A${query.get(
-        'roadmapId',
-      )}%2C%22code%22%3A%22${query.get('code')}%22%7D`}
+      to={`/roadmap/${query.get('roadmapId')}/configure${modalLink(
+        ModalTypes.SETUP_OAUTH_MODAL,
+        {
+          name: query.get('integrationName')!,
+          roadmapId: +query.get('roadmapId')!,
+          code: query.get('code')!,
+        },
+      )}`}
     />
   );
 };
