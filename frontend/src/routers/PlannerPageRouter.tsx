@@ -51,12 +51,12 @@ export const PlannerPageRouter = () => {
 
   const headers = [
     {
-      url: '/graph',
-      text: t('Roadmap'),
-    },
-    {
       url: '/editor',
       text: t('Milestones'),
+    },
+    {
+      url: '/graph',
+      text: t('Roadmap'),
     },
     ...(hasReadCustomerValuesPermission
       ? [
