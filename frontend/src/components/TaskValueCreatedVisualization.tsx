@@ -4,7 +4,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Version, CustomerStakes } from '../redux/roadmaps/types';
-import { totalCustomerStakes } from '../utils/TaskUtils';
+import { customerStakesSummary } from '../utils/TaskUtils';
 import {
   CustomerStakesVisualization,
   StakesTooltipContent,
@@ -44,14 +44,14 @@ export const TaskValueCreatedVisualization: FC<
   useEffect(() => {
     if (!versions) return;
     const allTasks = versions.flatMap((version) => version.tasks);
-    const customerStakes = totalCustomerStakes(allTasks, customers);
+    const customerStakes = customerStakesSummary(allTasks, customers);
     setData(
       Array.from(customerStakes)
         .sort(([a], [b]) => b.weight - a.weight)
         .map(([{ id, name, color }, value]) => ({
           id,
           name,
-          value,
+          value: value.total,
           color,
         })),
     );

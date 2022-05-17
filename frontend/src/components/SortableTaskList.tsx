@@ -23,6 +23,7 @@ export const SortableTaskList: FC<{
   disableDragging: boolean;
   isDropDisabled?: boolean;
   showRatings?: boolean;
+  showInfoIcon?: boolean;
   hideDragIndicator?: boolean;
   showSearch?: boolean;
   className?: string;
@@ -31,6 +32,7 @@ export const SortableTaskList: FC<{
   tasks,
   disableDragging,
   showRatings,
+  showInfoIcon,
   hideDragIndicator,
   showSearch,
   className,
@@ -61,11 +63,12 @@ export const SortableTaskList: FC<{
           height={itemHeight}
           disableDragging={disableDragging}
           showRatings={!!showRatings}
+          showInfoIcon={!!showInfoIcon}
           hideDragIndicator={hideDragIndicator}
         />
       );
     },
-    [disableDragging, hideDragIndicator, showRatings],
+    [disableDragging, hideDragIndicator, showInfoIcon, showRatings],
   );
 
   return (
@@ -88,6 +91,7 @@ export const SortableTaskList: FC<{
           <StaticTask
             task={searched[rubric.source.index]}
             showRatings={!!showRatings}
+            showInfoIcon={!!showInfoIcon}
             provided={provided}
           />
         )}

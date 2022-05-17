@@ -223,22 +223,21 @@ const ratingValues = (customers: Customer[] | undefined) => (
   };
 };
 
-const taskRatingsCustomerStakes = (customers: Customer[] | undefined) => (
-  result: Map<Customer, number>,
-  task: Task,
-) =>
+export const taskRatingsCustomerStakes = (
+  customers: Customer[] | undefined,
+) => (result: Map<Customer, RatingsSummary>, task: Task) =>
   task.ratings
     .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
     .map(ratingValueAndCreator(customers, true))
     .reduce((acc, rating) => {
       if (!rating.customer) return acc;
-      const previousVal = acc.get(rating.customer) || 0;
-      return acc.set(rating.customer, previousVal + rating.value);
+      const prevSummary = acc.get(rating.customer) || new RatingsSummary();
+      return acc.set(rating.customer, prevSummary.add(rating.value));
     }, result);
 
 // Calculate total sum of task values in the milestone
 // And map values of how much each user has rated in these tasks
-export const totalCustomerStakes = (
+export const customerStakesSummary = (
   tasks: Task[],
   customers: Customer[] | undefined,
 ) => tasks.reduce(taskRatingsCustomerStakes(customers), new Map());

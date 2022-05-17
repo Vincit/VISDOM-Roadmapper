@@ -4,11 +4,3 @@
   display: flex;
   gap: 11.75px;
 }
-
-.taskRating {
-  display: flex;
-  align-items: center;
-  gap: 4.75px;
-
-  @extend .typography-pre-title;
-}

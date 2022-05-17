@@ -518,6 +518,7 @@ export const MilestonesEditor = () => {
                             disableDrag || !hasVersionEditPermission
                           }
                           hideDragIndicator={!hasVersionEditPermission}
+                          showInfoIcon
                         />
                       )}
                       {hasCustomerReadPermission && (

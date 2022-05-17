@@ -16,7 +16,7 @@ import { RoleType } from '../../../shared/types/customTypes';
 import { Overview, ArrowType } from '../components/Overview';
 import { BusinessIcon } from '../components/RoleIcons';
 import { Dot } from '../components/Dot';
-import { unratedTasksAmount, totalCustomerStakes } from '../utils/TaskUtils';
+import { unratedTasksAmount, customerStakesSummary } from '../utils/TaskUtils';
 import { RepresentativeTable } from '../components/RepresentativeTable';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import colors from '../colors.module.scss';
@@ -53,7 +53,7 @@ const ClientOverview: FC<{
     users,
     customers,
   );
-  const allCustomerStakes = totalCustomerStakes(tasks, customers);
+  const allCustomerStakes = customerStakesSummary(tasks, customers);
   const clientsListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.clients}`;
 
   const siblingClients = [
@@ -71,7 +71,7 @@ const ClientOverview: FC<{
   const metrics = [
     {
       label: t('Total Value'),
-      value: allCustomerStakes.get(client) || 0,
+      value: allCustomerStakes.get(client)?.total || 0,
       children: <BusinessIcon color={colors.black100} />,
     },
     {

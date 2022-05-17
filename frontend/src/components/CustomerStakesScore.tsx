@@ -6,7 +6,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Tooltip } from '@mui/material';
 import { Version, CustomerStakes } from '../redux/roadmaps/types';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { totalCustomerStakes } from '../utils/TaskUtils';
+import { customerStakesSummary } from '../utils/TaskUtils';
 import {
   targetCustomerStakes,
   stakesDifferTooMuchFromTarget,
@@ -45,10 +45,10 @@ export const CustomerStakesScore: FC<{
     if (!targetData) return;
 
     const customerStakes = Array.from(
-      totalCustomerStakes(version.tasks, customers),
+      customerStakesSummary(version.tasks, customers),
     );
     const stakesTotalValue = customerStakes.reduce(
-      (acc, [, value]) => acc + value,
+      (acc, [, value]) => acc + value.total,
       0,
     );
     setTotalValue(stakesTotalValue);
@@ -61,11 +61,11 @@ export const CustomerStakesScore: FC<{
           return {
             id,
             name,
-            value,
+            value: value.total,
             color,
             ...(target && {
               differsTooMuchFromPlanned: stakesDifferTooMuchFromTarget(
-                value / stakesTotalValue,
+                value.total / stakesTotalValue,
                 target,
               ),
             }),

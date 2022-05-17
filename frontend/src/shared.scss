@@ -714,6 +714,13 @@ a.green {
   -webkit-line-clamp: 2;
 }
 
+.taskRating {
+  @extend .layout-row;
+  @extend .typography-pre-title;
+  align-items: center;
+  gap: 5px;
+}
+
 .measure {
   visibility: hidden;
 }

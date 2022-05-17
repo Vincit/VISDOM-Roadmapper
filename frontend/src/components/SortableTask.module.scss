@@ -34,3 +34,20 @@
     height: 100%;
   }
 }
+
+.taskDetailsTooltip {
+  @extend .layout-column;
+  align-items: center;
+  gap: 20px;
+
+  .title {
+    margin-bottom: 2px;
+  }
+
+  .customerValues {
+    @extend .layout-row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+}

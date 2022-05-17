@@ -2,7 +2,9 @@ import { CSSProperties, FC, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { Trans } from 'react-i18next';
 import { ReactComponent as AlertIcon } from '../icons/alert-exclamation-mark.svg';
 import { RelationIcon } from './RelationIcon';
 import { Task, TaskRelation } from '../redux/roadmaps/types';
@@ -10,9 +12,12 @@ import {
   TaskRelationTableType,
   RelationAnnotation,
 } from '../utils/TaskRelationUtils';
+import { taskRatingsCustomerStakes } from '../utils/TaskUtils';
 import { ModalTypes, modalDrawerLink } from './modals/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import { InfoTooltip } from './InfoTooltip';
+import { Dot } from './Dot';
+import { apiV2 } from '../api/api';
 import css from './SortableTask.module.scss';
 
 const classes = classNames.bind(css);
@@ -21,11 +26,38 @@ interface TaskProps {
   task: Task & Partial<RelationAnnotation>;
   height?: number;
   showRatings: boolean;
+  showInfoIcon: boolean;
   hideDragIndicator?: boolean;
   provided?: DraggableProvided;
   style?: CSSProperties;
   className?: string;
 }
+
+const numFormat = new Intl.NumberFormat(undefined, {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+const TaskDetailsTooltip: FC<{ task: Task }> = ({ task }) => {
+  const { data: customers } = apiV2.useGetCustomersQuery(task.roadmapId);
+  const customerValues = taskRatingsCustomerStakes(customers)(new Map(), task);
+  return (
+    <div className={classes(css.taskDetailsTooltip)}>
+      <div className={classes(css.title)}>
+        <Trans i18nKey="Average values" />
+      </div>
+      <TaskRatingsText task={task} />
+      <div className={classes(css.customerValues)}>
+        {Array.from(customerValues).map(([{ id, color }, { avg }]) => (
+          <div key={id} className={classes(css.taskRating)}>
+            <Dot fill={color} />
+            {numFormat.format(avg)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const UnmetDependencyTooltip = (payload: {
   taskId: number;
@@ -85,6 +117,7 @@ export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
     {
       task,
       showRatings,
+      showInfoIcon,
       hideDragIndicator,
       provided,
       style,
@@ -105,6 +138,11 @@ export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
       </div>
       <div className={css.rightSideDiv}>
         <RelationIndicator task={task} />
+        {showInfoIcon && (
+          <InfoTooltip title={<TaskDetailsTooltip task={task} />}>
+            <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
+          </InfoTooltip>
+        )}
         {showRatings && <TaskRatingsText task={task} />}
         {!hideDragIndicator && <DragIndicatorIcon fontSize="small" />}
       </div>
