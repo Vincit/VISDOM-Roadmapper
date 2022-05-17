@@ -75,6 +75,7 @@ export const SortableTaskList: FC<{
           <SearchField
             placeholder={t('Search for type', { searchType: 'tasks' })}
             onChange={setSearch}
+            searchThreshold={0}
           />
         </div>
       )}
