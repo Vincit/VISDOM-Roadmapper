@@ -17,6 +17,7 @@ import { Task, TaskRelation } from '../../redux/roadmaps/types';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { ReactComponent as AlertIcon } from '../../icons/alert-exclamation-mark.svg';
 import { InfoTooltip } from '../InfoTooltip';
+import { LoadingSpinner } from '../LoadingSpinner';
 import {
   TaskRelationTableType,
   getTaskRelations,
@@ -183,7 +184,9 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
           <Info open={openInfo} onChange={setOpenInfo}>
             <Trans i18nKey="Taskrelation info" />
           </Info>
-          {task && (
+          {!task ? (
+            <LoadingSpinner />
+          ) : (
             <>
               <RelationTableRequires
                 task={task}
@@ -203,28 +206,27 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
                 onTaskClick={closeModal}
                 showMilestoneNames={showMilestoneNames}
               />
+              <hr style={{ margin: 0 }} />
+              <Checkbox
+                label="Show milestone names in tasks"
+                checked={showMilestoneNames}
+                onChange={setShowMilestoneNames}
+              />
+              <p>
+                Tasks’ relations can be modified in task details page or through{' '}
+                <Link
+                  className="green"
+                  to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskmap}`}
+                  onClick={() => {
+                    closeModal();
+                  }}
+                >
+                  task map
+                </Link>
+                .
+              </p>
             </>
           )}
-          <hr style={{ margin: 0 }} />
-          <Checkbox
-            label="Show milestone names in tasks"
-            checked={showMilestoneNames}
-            onChange={setShowMilestoneNames}
-          />
-          <p>
-            Tasks’ relations can be modified in task details page or through{' '}
-            <Link
-              // TODO: maybe also link to the current "task details page"
-              className="green"
-              to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskmap}`}
-              onClick={() => {
-                closeModal();
-              }}
-            >
-              task map
-            </Link>
-            .
-          </p>
         </div>
       </ModalContent>
     </div>
