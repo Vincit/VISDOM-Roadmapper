@@ -66,6 +66,18 @@ export const RoadmapCompletionMeter = () => {
         },
       },
     },
+    states: {
+      active: {
+        filter: {
+          type: 'none',
+        },
+      },
+      hover: {
+        filter: {
+          type: 'none',
+        },
+      },
+    },
   };
 
   return (
