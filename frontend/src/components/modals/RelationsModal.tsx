@@ -213,7 +213,17 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
                 onChange={setShowMilestoneNames}
               />
               <p>
-                Tasks’ relations can be modified in task details page or through{' '}
+                Tasks’ relations can be modified in{' '}
+                <Link
+                  className="green"
+                  to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
+                  onClick={() => {
+                    closeModal();
+                  }}
+                >
+                  task details page
+                </Link>{' '}
+                or through{' '}
                 <Link
                   className="green"
                   to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskmap}`}
