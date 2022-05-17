@@ -109,7 +109,11 @@ export const TaskRelationTable: FC<{
     <div className={classes(css.relationList)} style={{ maxHeight: height }}>
       {tasks.map((t) => (
         <div key={t.id} className={classes(css.relationRow)}>
-          <TaskRow task={t} {...taskProps} />
+          <TaskRow
+            task={t}
+            {...taskProps}
+            style={{ height: 'unset', ...taskProps?.style }}
+          />
           <Action task={t} />
         </div>
       ))}
