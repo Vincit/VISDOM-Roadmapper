@@ -239,7 +239,6 @@ export const TaskMapPage = () => {
                     type === TaskRelationType.Dependency,
                 )
               }
-              showRatings
               showSearch
             />
           </ExpandableColumn>
