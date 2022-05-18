@@ -160,7 +160,7 @@ export const english = {
     'Setup OAuth for': 'Setup OAuth for {{name}}',
     'OAuth URL': 'OAuth URL:',
     'Oauth authorization link':
-      'Please visit <2>this URL</2> and input the code below:',
+      'Please visit <2>this link</2> and input the code below:',
     'Oauth token swap error':
       'Unable to swap {{name}} OAuth token. Please contact an administrator if the problem persists.',
     'Oauth url query error':

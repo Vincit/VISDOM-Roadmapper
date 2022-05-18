@@ -111,7 +111,7 @@ export const OauthModal: Modal<ModalTypes.SETUP_OAUTH_MODAL> = ({
               target={name !== 'gitLab' ? '_blank' : ''}
               rel="noopener noreferrer"
             >
-              this URL
+              this link
             </a>{' '}
             and input the code below:
           </Trans>
