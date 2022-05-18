@@ -62,12 +62,14 @@
 
 .withButtonsContainer {
   @extend .layout-row;
+  align-items: center;
   div:nth-child(1) {
     max-height: 84px;
   }
 }
 
 .withButtonsContainerEditMode {
+  align-items: start;
   div:nth-child(1) {
     flex-grow: 1;
     max-height: 400px;
