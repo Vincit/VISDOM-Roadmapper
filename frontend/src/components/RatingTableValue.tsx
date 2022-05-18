@@ -15,6 +15,7 @@ import css from './RatingTable.module.scss';
 import { apiV2, selectById } from '../api/api';
 import { userRoleSelector } from '../redux/user/selectors';
 import { hasPermission } from '../../../shared/utils/permission';
+import { TaskRatingSortingTypes } from '../utils/SortRatingsUtils';
 
 const classes = classNames.bind(css);
 
@@ -83,4 +84,5 @@ const TableValueRatingRow: RatingRow = ({
 export const RatingTableValue = ratingTable({
   type: TaskRatingDimension.BusinessValue,
   Row: TableValueRatingRow,
+  defaultSort: TaskRatingSortingTypes.SORT_FOR_CUSTOMER,
 });

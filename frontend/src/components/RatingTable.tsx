@@ -51,6 +51,7 @@ export type RatingRow = FC<{
 interface RatingTableDef {
   type: TaskRatingDimension;
   Row: RatingRow;
+  defaultSort: TaskRatingSortingTypes;
 }
 
 type RatingTableProps = {
@@ -65,6 +66,7 @@ type RatingTableProps = {
 export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   Row,
   type,
+  defaultSort,
 }) => ({ task, ratings, avg, height = 800 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -74,10 +76,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   const listRef = useRef<VariableSizeList<any> | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const { t } = useTranslation();
-  const [sort, sorting] = useSorting(
-    taskRatingsSort,
-    TaskRatingSortingTypes.SORT_FOR_CUSTOMER,
-  );
+  const [sort, sorting] = useSorting(taskRatingsSort, defaultSort);
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
   const [rowHeights, setRowHeights] = useState<number[]>([]);
   const [listHeight, setListHeight] = useState(0);

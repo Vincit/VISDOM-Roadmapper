@@ -14,6 +14,7 @@ import css from './RatingTable.module.scss';
 import { apiV2, selectById } from '../api/api';
 import { userRoleSelector } from '../redux/user/selectors';
 import { hasPermission } from '../../../shared/utils/permission';
+import { TaskRatingSortingTypes } from '../utils/SortRatingsUtils';
 
 const classes = classNames.bind(css);
 
@@ -70,4 +71,5 @@ const TableComplexityRatingRow: RatingRow = ({
 export const RatingTableComplexity = ratingTable({
   type: TaskRatingDimension.Complexity,
   Row: TableComplexityRatingRow,
+  defaultSort: TaskRatingSortingTypes.SORT_CREATED_BY_USER,
 });
