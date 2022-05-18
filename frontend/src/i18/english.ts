@@ -367,8 +367,10 @@ export const english = {
       'estimate with a custom value for work amount in working days.',
     'config-jira-tooltip': 'Settings for JIRA for task imports',
     'config-trello-tooltip': 'Settings for TRELLO for task imports',
+    'config-gitLab-tooltip': 'Settings for GITLAB for task imports',
     'oauth-jira-tooltip': 'TBD',
     'oauth-trello-tooltip': 'TBD',
+    'oauth-gitLab-tooltip': 'TBD',
     'Personal auth token tooltip': 'TBD',
     'Taskmap-tooltip':
       'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
