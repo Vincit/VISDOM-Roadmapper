@@ -26,7 +26,6 @@ const classes = classNames.bind(css);
 
 const DropdownIndicator = () => <SearchIcon />;
 
-// TODO: translations
 const relationTableTitles = {
   [TaskRelationTableType.Requires]: 'Depends on',
   [TaskRelationTableType.Precedes]: 'Prerequisite for',

@@ -365,6 +365,21 @@ export const english = {
       'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
     'Taskrelation info':
       '<strong>Task relations</strong> show task’s relationship to other tasks in the roadmap and in which order should the tasks be implemented.',
+    'Task relation edit links': `Tasks’ relations can be modified in <2>task details page</2> or through <4>task map</4>.`,
+    'Task relations': 'Task relations',
+    'Depends on': 'Depends on',
+    'Prerequisite for': 'Prerequisite for',
+    'In synergy with': 'In synergy with',
+    'Task is currently placed before this dependency':
+      'Task is currently placed before this dependency',
+    'Task is currently not placed before this dependent task':
+      'Task is currently not placed before this dependent task',
+    'Tasks that has to be implemented before this task.':
+      'Tasks that has to be implemented before this task.',
+    'Tasks that can’t be implemented until this task is completed.':
+      'Tasks that can’t be implemented until this task is completed.',
+    'Tasks that are related to this task':
+      'Tasks that are related to this task',
     'Forgot password': 'Forgot password?',
     'Remembered password': 'Remembered password?',
     'Forgot password subtitle':

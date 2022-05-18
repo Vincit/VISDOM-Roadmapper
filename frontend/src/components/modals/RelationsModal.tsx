@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
@@ -41,10 +41,11 @@ const badRelationWarning = (
 
   const targetKey = type === TaskRelationTableType.Requires ? 'from' : 'to';
   return ({ target, badRelations }) => {
+    const { t } = useTranslation();
     const bad = badRelations.some((relation) => relation[targetKey] === target);
     if (!bad) return null;
     return (
-      <InfoTooltip title={title}>
+      <InfoTooltip title={t(title)}>
         <AlertIcon />
       </InfoTooltip>
     );
@@ -74,6 +75,7 @@ const RelationTables = relationTables<{
     onTaskClick,
     showMilestoneName,
   }) => {
+    const { t } = useTranslation();
     const roadmapId = useSelector(chosenRoadmapIdSelector);
     const { data: relations } = apiV2.useGetTaskRelationsQuery(
       roadmapId ?? skipToken,
@@ -100,7 +102,7 @@ const RelationTables = relationTables<{
     return (
       <div className={classes(css.listContainer)}>
         <Title count={tasks.length} />
-        <p className={classes(css.subTitle)}>{subTitle}</p>
+        <p className={classes(css.subTitle)}>{t(subTitle)}</p>
         <TaskRelationTable
           height={height}
           tasks={tasks}
@@ -125,6 +127,7 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
   badRelations,
   closeModal,
 }) => {
+  const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: task } = apiV2.useGetTasksQuery(
     roadmapId ?? skipToken,
@@ -158,32 +161,37 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
               />
               <hr style={{ margin: 0 }} />
               <Checkbox
-                label="Show milestone names in tasks"
+                label={t('Show milestone names in tasks')}
                 checked={showMilestoneNames}
                 onChange={setShowMilestoneNames}
               />
               <p>
-                Tasks’ relations can be modified in{' '}
-                <Link
-                  className="green"
-                  to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
-                  onClick={() => {
-                    closeModal();
-                  }}
+                <Trans
+                  // NOTE: the links must be the 2. and 4. child
+                  i18nKey="Task relation edit links"
                 >
-                  task details page
-                </Link>{' '}
-                or through{' '}
-                <Link
-                  className="green"
-                  to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskmap}`}
-                  onClick={() => {
-                    closeModal();
-                  }}
-                >
-                  task map
-                </Link>
-                .
+                  Tasks’ relations can be modified in{' '}
+                  <Link
+                    className="green"
+                    to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
+                    onClick={() => {
+                      closeModal();
+                    }}
+                  >
+                    task details page
+                  </Link>
+                  {' or through '}
+                  <Link
+                    className="green"
+                    to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskmap}`}
+                    onClick={() => {
+                      closeModal();
+                    }}
+                  >
+                    task map
+                  </Link>
+                  .
+                </Trans>
               </p>
             </>
           )}
