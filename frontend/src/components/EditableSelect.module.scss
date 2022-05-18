@@ -9,6 +9,15 @@
   margin-top: 0;
 }
 
+.editButtonDiv {
+  margin-top: 0;
+  text-align: start;
+}
+
+.value {
+  margin: 0;
+  flex-grow: 1;
+}
 .selectWrapper {
   @extend .layout-column;
   gap: 0.8rem;
