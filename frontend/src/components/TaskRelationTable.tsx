@@ -24,155 +24,162 @@ import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
 
-interface RelationTableDef {
-  type: TaskRelationTableType;
-  buildRelation: (task: number, other: number) => TaskRelation;
-}
-
-type RelationTableProps = {
-  task: Task;
-  height?: number;
-};
-
 const DropdownIndicator = () => <SearchIcon />;
 
-const relationTable: (def: RelationTableDef) => FC<RelationTableProps> = ({
-  type,
-  buildRelation,
-}) => ({ task, height = 500 }) => {
-  const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: relations } = apiV2.useGetTaskRelationsQuery(
-    roadmapId ?? skipToken,
-  );
-  const { data: allTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
-  const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
-  const [addSynergies] = apiV2.useAddSynergyRelationsMutation();
-  const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [availableConnections, setAvailableConnections] = useState<Task[]>([]);
+// TODO: translations
+const relationTableTitles = {
+  [TaskRelationTableType.Requires]: 'Depends on',
+  [TaskRelationTableType.Precedes]: 'Prerequisite for',
+  [TaskRelationTableType.Contributes]: 'In synergy with',
+} as const;
 
-  useEffect(() => {
-    if (relations && allTasks) {
-      const ids = getTaskRelations(task.id, relations, type);
-      setTasks(allTasks.filter(({ id }) => ids.has(id)));
-    }
-  }, [relations, allTasks, task.id]);
+const relationTableIcons = {
+  [TaskRelationTableType.Requires]: ClockIcon,
+  [TaskRelationTableType.Precedes]: CheckIcon,
+  [TaskRelationTableType.Contributes]: CachedIcon,
+};
 
-  useEffect(() => {
-    if (relations && allTasks) {
-      const groups = groupTaskRelations(relations);
-      const ids = new Set(tasks.map(({ id }) => id));
-      ids.add(task.id);
-      if (type !== TaskRelationTableType.Requires)
-        reachable(task.id, groups, 'source').forEach((id) => ids.add(id));
-      if (type !== TaskRelationTableType.Precedes)
-        reachable(task.id, groups, 'target').forEach((id) => ids.add(id));
-      setAvailableConnections(allTasks.filter(({ id }) => !ids.has(id)));
-    }
-  }, [relations, allTasks, tasks, task.id]);
-
-  const RemoveRelation = useCallback(
-    ({ task: { id } }: { task: Task }) => (
-      <CloseButton
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (roadmapId) {
-            if (type === TaskRelationTableType.Contributes) {
-              addSynergies({ roadmapId, from: id, to: [] });
-            } else {
-              removeTaskRelation({
-                roadmapId,
-                relation: buildRelation(task.id, id),
-              });
-            }
-          }
-        }}
-      />
-    ),
-    [roadmapId, task, removeTaskRelation, addSynergies],
-  );
-
-  return (
-    <div className={classes(css.listContainer)}>
-      <div
-        className={classes(
-          css.titleContainer,
-          css[TaskRelationTableType[type]],
-        )}
-      >
-        {type === TaskRelationTableType.Requires && <ClockIcon />}
-        {type === TaskRelationTableType.Precedes && <CheckIcon />}
-        {type === TaskRelationTableType.Contributes && <CachedIcon />}
-        <h3>
-          <Trans i18nKey={TaskRelationTableType[type]} />
-        </h3>
-      </div>
-      <Select
-        components={{ DropdownIndicator }}
-        name="relation"
-        id="new-relation"
-        classNamePrefix="react-select-relation"
-        styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-        placeholder="Add relation"
-        isDisabled={availableConnections.length === 0}
-        value={null}
-        escapeClearsValue
-        onChange={(selected) => {
-          if (selected && roadmapId) {
-            if (type === TaskRelationTableType.Contributes) {
-              addSynergies({
-                roadmapId,
-                from: selected.value,
-                to: [task.id, ...tasks.map(({ id }) => id)],
-              });
-            } else {
-              addTaskRelation({
-                roadmapId,
-                relation: buildRelation(task.id, selected.value),
-              });
-            }
-          }
-        }}
-        options={availableConnections.map(({ id, name }) => ({
-          value: id,
-          label: name,
-        }))}
-      />
-      <br />
-      <TaskRelationTable
-        height={height}
-        tasks={tasks}
-        taskProps={{ largeIcons: true }}
-        Action={RemoveRelation}
-      />
+export const relationTableTitle = (
+  type: TaskRelationTableType,
+): FC<{ count?: number }> => {
+  const Icon = relationTableIcons[type];
+  const title = relationTableTitles[type];
+  const typeClass = css[TaskRelationTableType[type]];
+  return ({ count }) => (
+    <div className={classes(css.titleContainer, typeClass)}>
+      <Icon />
+      <h3>
+        <Trans i18nKey={title} /> {count !== undefined && `(${count})`}
+      </h3>
     </div>
   );
 };
 
-export const RelationTableRequires = relationTable({
-  type: TaskRelationTableType.Requires,
-  buildRelation: (task, other) => ({
-    from: other,
-    to: task,
-    type: TaskRelationType.Dependency,
-  }),
-});
+type Table<T> = FC<{ task: Task; height?: number } & T>;
 
-export const RelationTablePrecedes = relationTable({
-  type: TaskRelationTableType.Precedes,
-  buildRelation: (task, other) => ({
-    from: task,
-    to: other,
-    type: TaskRelationType.Dependency,
-  }),
-});
+export const relationTables = <T,>(
+  builder: (type: TaskRelationTableType) => Table<T>,
+): Table<T> => {
+  const Requires = builder(TaskRelationTableType.Requires);
+  const Contributes = builder(TaskRelationTableType.Contributes);
+  const Precedes = builder(TaskRelationTableType.Precedes);
 
-export const RelationTableContributes = relationTable({
-  type: TaskRelationTableType.Contributes,
-  buildRelation: (task, other) => ({
-    from: task,
-    to: other,
-    type: TaskRelationType.Synergy,
-  }),
+  return ({ ...props }) => (
+    <>
+      <Requires {...props} />
+      <Contributes {...props} />
+      <Precedes {...props} />
+    </>
+  );
+};
+
+export const RelationTables = relationTables((type) => {
+  // not used with TaskRelationTableType.Contributes
+  const buildRelation: (task: number, other: number) => TaskRelation =
+    type === TaskRelationTableType.Requires
+      ? (to, from) => ({ from, to, type: TaskRelationType.Dependency })
+      : (from, to) => ({ from, to, type: TaskRelationType.Dependency });
+
+  const Title = relationTableTitle(type);
+
+  return ({ task, height = 500 }) => {
+    const roadmapId = useSelector(chosenRoadmapIdSelector);
+    const { data: relations } = apiV2.useGetTaskRelationsQuery(
+      roadmapId ?? skipToken,
+    );
+    const { data: allTasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
+    const [addTaskRelation] = apiV2.useAddTaskRelationMutation();
+    const [addSynergies] = apiV2.useAddSynergyRelationsMutation();
+    const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [availableConnections, setAvailableConnections] = useState<Task[]>(
+      [],
+    );
+
+    useEffect(() => {
+      if (relations && allTasks) {
+        const ids = getTaskRelations(task.id, relations, type);
+        setTasks(allTasks.filter(({ id }) => ids.has(id)));
+      }
+    }, [relations, allTasks, task.id]);
+
+    useEffect(() => {
+      if (relations && allTasks) {
+        const groups = groupTaskRelations(relations);
+        const ids = new Set(tasks.map(({ id }) => id));
+        ids.add(task.id);
+        if (type !== TaskRelationTableType.Requires)
+          reachable(task.id, groups, 'source').forEach((id) => ids.add(id));
+        if (type !== TaskRelationTableType.Precedes)
+          reachable(task.id, groups, 'target').forEach((id) => ids.add(id));
+        setAvailableConnections(allTasks.filter(({ id }) => !ids.has(id)));
+      }
+    }, [relations, allTasks, tasks, task.id]);
+
+    const RemoveRelation = useCallback(
+      ({ task: { id } }: { task: Task }) => (
+        <CloseButton
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (roadmapId) {
+              if (type === TaskRelationTableType.Contributes) {
+                addSynergies({ roadmapId, from: id, to: [] });
+              } else {
+                removeTaskRelation({
+                  roadmapId,
+                  relation: buildRelation(task.id, id),
+                });
+              }
+            }
+          }}
+        />
+      ),
+      [roadmapId, task, removeTaskRelation, addSynergies],
+    );
+
+    return (
+      <div className={classes(css.listContainer)}>
+        <Title />
+        <Select
+          components={{ DropdownIndicator }}
+          name="relation"
+          id="new-relation"
+          classNamePrefix="react-select-relation"
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          placeholder="Add relation"
+          isDisabled={availableConnections.length === 0}
+          value={null}
+          escapeClearsValue
+          onChange={(selected) => {
+            if (selected && roadmapId) {
+              if (type === TaskRelationTableType.Contributes) {
+                addSynergies({
+                  roadmapId,
+                  from: selected.value,
+                  to: [task.id, ...tasks.map(({ id }) => id)],
+                });
+              } else {
+                addTaskRelation({
+                  roadmapId,
+                  relation: buildRelation(task.id, selected.value),
+                });
+              }
+            }
+          }}
+          options={availableConnections.map(({ id, name }) => ({
+            value: id,
+            label: name,
+          }))}
+        />
+        <br />
+        <TaskRelationTable
+          height={height}
+          tasks={tasks}
+          taskProps={{ largeIcons: true }}
+          Action={RemoveRelation}
+        />
+      </div>
+    );
+  };
 });

@@ -20,11 +20,7 @@ import { RoadmapUser, Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableComplexity } from '../components/RatingTableComplexity';
 import { RatingTableValue } from '../components/RatingTableValue';
-import {
-  RelationTableRequires,
-  RelationTableContributes,
-  RelationTablePrecedes,
-} from '../components/TaskRelationTable';
+import { RelationTables } from '../components/TaskRelationTable';
 import { Overview, ArrowType } from '../components/Overview';
 import { hasPermission } from '../../../shared/utils/permission';
 import colors from '../colors.module.scss';
@@ -242,9 +238,7 @@ const TaskOverview: FC<{
           <h2>{t('Relations')}</h2>
         </div>
         <div className={classes(css.relations)}>
-          <RelationTableRequires task={task} />
-          <RelationTableContributes task={task} />
-          <RelationTablePrecedes task={task} />
+          <RelationTables task={task} />
         </div>
       </div>
 

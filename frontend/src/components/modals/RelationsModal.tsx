@@ -4,9 +4,6 @@ import { Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import CachedIcon from '@mui/icons-material/Cached';
-import ClockIcon from '@mui/icons-material/Schedule';
-import CheckIcon from '@mui/icons-material/Check';
 import { ModalTypes, Modal } from './types';
 import { ModalContent } from './modalparts/ModalContent';
 import { ModalHeader } from './modalparts/ModalHeader';
@@ -23,6 +20,7 @@ import {
   getTaskRelations,
 } from '../../utils/TaskRelationUtils';
 import { TaskRelationTable } from '../TaskTable';
+import { relationTableTitle, relationTables } from '../TaskRelationTable';
 import { paths } from '../../routers/paths';
 import colors from '../../colors.module.scss';
 import css from './RelationsModal.module.scss';
@@ -53,20 +51,6 @@ const badRelationWarning = (
   };
 };
 
-const icons = {
-  [TaskRelationTableType.Requires]: ClockIcon,
-  [TaskRelationTableType.Precedes]: CheckIcon,
-  [TaskRelationTableType.Contributes]: CachedIcon,
-};
-
-// TODO: translations
-// NOTE: should the titles be same as in task overview?
-const titles = {
-  [TaskRelationTableType.Requires]: 'Depends on',
-  [TaskRelationTableType.Precedes]: 'Prerequisite for',
-  [TaskRelationTableType.Contributes]: 'In synergy with',
-};
-
 const subTitles = {
   [TaskRelationTableType.Requires]:
     'Tasks that has to be implemented before this task.',
@@ -75,18 +59,12 @@ const subTitles = {
   [TaskRelationTableType.Contributes]: 'Tasks that are related to this task',
 };
 
-// TODO: some sharing with TaskRelationTable
-const relationTable: (
-  type: TaskRelationTableType,
-) => FC<{
-  task: Task;
+const RelationTables = relationTables<{
   badRelations: TaskRelation[];
-  height?: number;
   onTaskClick?: () => unknown;
-  showMilestoneNames?: boolean;
-}> = (type) => {
-  const Icon = icons[type];
-  const title = titles[type];
+  showMilestoneName?: boolean;
+}>((type) => {
+  const Title = relationTableTitle(type);
   const subTitle = subTitles[type];
   const BadRelationWarning = badRelationWarning(type);
   return ({
@@ -94,7 +72,7 @@ const relationTable: (
     badRelations,
     height = 500,
     onTaskClick,
-    showMilestoneNames,
+    showMilestoneName,
   }) => {
     const roadmapId = useSelector(chosenRoadmapIdSelector);
     const { data: relations } = apiV2.useGetTaskRelationsQuery(
@@ -121,17 +99,7 @@ const relationTable: (
 
     return (
       <div className={classes(css.listContainer)}>
-        <div
-          className={classes(
-            css.titleContainer,
-            css[TaskRelationTableType[type]],
-          )}
-        >
-          <Icon />
-          <h3>
-            <Trans i18nKey={title} /> ({tasks.length ?? 0})
-          </h3>
-        </div>
+        <Title count={tasks.length} />
         <p className={classes(css.subTitle)}>{subTitle}</p>
         <TaskRelationTable
           height={height}
@@ -143,20 +111,14 @@ const relationTable: (
             },
             largeIcons: true,
             onClick: onTaskClick,
-            showMilestoneName: showMilestoneNames,
+            showMilestoneName,
           }}
           Action={RelationWarning}
         />
       </div>
     );
   };
-};
-
-const RelationTableRequires = relationTable(TaskRelationTableType.Requires);
-const RelationTablePrecedes = relationTable(TaskRelationTableType.Precedes);
-const RelationTableContributes = relationTable(
-  TaskRelationTableType.Contributes,
-);
+});
 
 export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
   taskId,
@@ -188,23 +150,11 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
             <LoadingSpinner />
           ) : (
             <>
-              <RelationTableRequires
+              <RelationTables
                 task={task}
                 badRelations={badRelations}
                 onTaskClick={closeModal}
-                showMilestoneNames={showMilestoneNames}
-              />
-              <RelationTableContributes
-                task={task}
-                badRelations={badRelations}
-                onTaskClick={closeModal}
-                showMilestoneNames={showMilestoneNames}
-              />
-              <RelationTablePrecedes
-                task={task}
-                badRelations={badRelations}
-                onTaskClick={closeModal}
-                showMilestoneNames={showMilestoneNames}
+                showMilestoneName={showMilestoneNames}
               />
               <hr style={{ margin: 0 }} />
               <Checkbox
