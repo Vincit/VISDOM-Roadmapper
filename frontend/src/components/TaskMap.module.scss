@@ -7,17 +7,26 @@ $ZOOM: var(--zoom, 1);
   width: 100%;
 }
 
-.info {
-  position: relative;
-  left: 48px;
-  bottom: 26px;
-  width: 16px;
+.controlsContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 80px;
 }
 
-.restart {
+.controls {
+  display: flex;
+  align-items: center;
   position: relative;
+  box-shadow: none;
+  top: 10px;
+  gap: 7px;
+}
+
+.controlButton {
   cursor: pointer;
-  left: 28px;
-  bottom: 49.5px;
-  width: 16px;
+}
+
+.taskmapInfo {
+  width: 27px;
+  height: 27px;
 }

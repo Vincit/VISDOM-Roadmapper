@@ -11,6 +11,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import classNames from 'classnames';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { useTranslation } from 'react-i18next';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
@@ -279,19 +280,38 @@ export const TaskMap: FC<{
           dispatch(roadmapsActions.setTaskmapPosition(viewport));
         }}
       >
-        <Controls showInteractive={false} showZoom={false}>
-          <InfoTooltip title={t('Taskmap-tooltip')}>
-            <InfoIcon
-              className={classes(css.info, css.tooltipIcon, css.infoIcon)}
-            />
-          </InfoTooltip>
-          <InfoTooltip title={t('Reset taskgroup positions')}>
-            <RestartAltIcon
-              className={classes(css.restart)}
-              onClick={resetCanvas}
-            />
-          </InfoTooltip>
-        </Controls>
+        <div className={classes(css.controlsContainer)}>
+          <Controls
+            className={classes(css.controls)}
+            showInteractive={false}
+            showZoom={false}
+            showFitView={false}
+          >
+            <InfoTooltip title={t('Fit view -tooltip')}>
+              <FullscreenIcon
+                className={classes(css.controlButton)}
+                onClick={() => {
+                  if (flowInstance) flowInstance.fitView();
+                }}
+              />
+            </InfoTooltip>
+            <InfoTooltip title={t('Taskgroup reset -tooltip')}>
+              <RestartAltIcon
+                className={classes(css.controlButton)}
+                onClick={resetCanvas}
+              />
+            </InfoTooltip>
+            <InfoTooltip title={t('Taskmap-tooltip')}>
+              <InfoIcon
+                className={classes(
+                  css.taskmapInfo,
+                  css.tooltipIcon,
+                  css.infoIcon,
+                )}
+              />
+            </InfoTooltip>
+          </Controls>
+        </div>
       </ReactFlow>
     </div>
   );
