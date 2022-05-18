@@ -10,6 +10,7 @@ import {
   TaskRatingDimension,
   Permission,
 } from '../../../shared/types/customTypes';
+import { RoleIcon } from './RoleIcons';
 import css from './RatingTable.module.scss';
 import { apiV2, selectById } from '../api/api';
 import { userRoleSelector } from '../redux/user/selectors';
@@ -54,8 +55,11 @@ const TableValueRatingRow: RatingRow = ({
             <Dot fill={customer.color} />
             <div className={classes(css.name)}>{customer.name}</div>
           </div>
-          <div className={classes(css.bottomRow, css.name)}>
-            {createdBy?.email ?? `<${t('deleted account')}>`}
+          <div className={classes(css.bottomRow)}>
+            {createdBy && <RoleIcon type={createdBy.type} small tooltip />}
+            <div className={classes(css.name)}>
+              {createdBy?.email ?? `<${t('deleted account')}>`}
+            </div>
           </div>
         </div>
         <div className={classes(css.rightSide)}>

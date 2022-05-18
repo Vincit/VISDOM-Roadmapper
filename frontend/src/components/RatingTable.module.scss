@@ -54,14 +54,17 @@
 .valueRating {
   @extend .layout-row;
   align-items: center;
+  gap: 10px;
 
   .leftSide {
     @extend .layout-column;
+    @extend .hide-text-ellipsis;
     flex: 1;
   }
   .bottomRow {
     @extend .topRow;
     color: $COLOR_BLACK40;
+    padding-left: 25px;
   }
 }
 
@@ -70,7 +73,7 @@
   @extend .layout-row;
   justify-content: flex-end;
   align-items: center;
-  width: 90px;
+  width: fit-content;
   gap: 10px;
 
   .value {
@@ -79,7 +82,7 @@
 }
 
 .name {
-  max-width: 40%;
+  max-width: 100%;
   text-align: start;
   @extend .hide-text-ellipsis;
 }
