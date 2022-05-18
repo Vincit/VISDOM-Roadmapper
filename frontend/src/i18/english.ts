@@ -419,6 +419,7 @@ export const english = {
     'Client shares score': 'Client shares score',
     Poor: 'Poor',
     Great: 'Great',
-    'Reset taskgroup positions': 'Reset taskgroup positions',
+    'Fit view -tooltip': 'Fit groups to the viewport',
+    'Taskgroup reset -tooltip': 'Reset group positions',
   },
 };
