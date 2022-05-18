@@ -11,6 +11,7 @@ export const english = {
     'Add new milestone': 'Add new milestone',
     'Add new': 'Add new',
     'Task name': 'Task name',
+    'Roadmap name': 'Roadmap name',
     Description: 'Description',
     Tasks: 'Tasks',
     Task: 'Task',

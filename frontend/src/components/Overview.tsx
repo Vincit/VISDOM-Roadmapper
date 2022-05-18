@@ -29,7 +29,7 @@ interface OverviewData {
 }
 
 interface OverviewContentProps {
-  metrics: MetricsProps[];
+  metrics?: MetricsProps[];
   data: OverviewData[][];
 }
 
@@ -49,13 +49,15 @@ export const OverviewContent: FC<OverviewContentProps> = ({
   data,
 }) => (
   <div className={classes(css.content)}>
-    <div className={classes(css.metrics)}>
-      {metrics.map(({ label, value, children }) => (
-        <MetricsSummary key={label} label={label} value={value}>
-          {children}
-        </MetricsSummary>
-      ))}
-    </div>
+    {metrics && (
+      <div className={classes(css.metrics)}>
+        {metrics.map(({ label, value, children }) => (
+          <MetricsSummary key={label} label={label} value={value}>
+            {children}
+          </MetricsSummary>
+        ))}
+      </div>
+    )}
     <div className={classes(css.data)}>
       {data.map((column, idx) => (
         // eslint-disable-next-line react/no-array-index-key

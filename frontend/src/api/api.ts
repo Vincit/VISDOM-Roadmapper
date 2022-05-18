@@ -238,6 +238,14 @@ export const apiV2 = createApi({
         method: 'delete',
       }),
     }),
+    patchRoadmap: build.mutation<Roadmap, RoadmapRequest>({
+      invalidatesTags: (result) => (result ? ['Roadmaps'] : []),
+      query: ({ id, name, description }) => ({
+        url: `/roadmaps/${id}`,
+        method: 'patch',
+        data: { name, description },
+      }),
+    }),
     addRoadmap: build.mutation<Roadmap, RoadmapCreation>({
       invalidatesTags: ['Roadmaps'],
       query: (roadmap) => ({ url: '/roadmaps', method: 'post', data: roadmap }),
