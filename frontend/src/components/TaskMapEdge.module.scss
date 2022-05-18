@@ -24,8 +24,48 @@
     cursor: -webkit-grabbing !important;
     stroke: transparent !important;
   }
+  &.open {
+    opacity: 0.1 !important;
+  }
 }
 
 .loading {
   cursor: wait !important;
+}
+
+.menu :global .MuiMenu-paper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  height: 30px;
+  border-radius: 20px;
+}
+
+.menuItem {
+  background-color: $COLOR_WHITE !important; // !important to override MUI default styles
+  color: $COLOR_BLACK10; // Adds color for default effect from MUI: turn background color of the menu item to lower shade of the "color" on click
+  width: 48px;
+  &:hover {
+    transition: width 0.4s;
+    width: 185px;
+  }
+}
+
+.deleteText {
+  @extend .typography-pre-title;
+  visibility: hidden;
+  opacity: 0;
+  margin-left: 5px;
+}
+
+.menuItem:hover .deleteText {
+  transition: 0.3s;
+  visibility: visible;
+  opacity: 1;
+  color: $COLOR_BLACK100;
+}
+
+.deleteIcon {
+  color: $COLOR_RASPBERRY;
+  width: 16px;
 }

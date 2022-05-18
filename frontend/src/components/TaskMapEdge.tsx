@@ -7,6 +7,9 @@ import {
   Position,
   MarkerType,
 } from 'react-flow-renderer';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './TaskMapEdge.module.scss';
 import { apiV2 } from '../api/api';
@@ -33,6 +36,15 @@ const DrawPath: FC<DrawPathProps> = ({
   const [selected, setSelected] = useState<string | undefined>(undefined);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
+  const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
+  const getCoordinates = (e: MouseEvent) => {
+    setPosition({ mouseX: e.clientX, mouseY: e.clientY });
+  };
 
   // Should be given 'id' as param in the form: 'from-taskId-to-taskId'
   const deleteRelation = useCallback(
@@ -68,10 +80,14 @@ const DrawPath: FC<DrawPathProps> = ({
     };
   }, [deleteRelation, disableInteraction, selected]);
 
-  const handleMouseClick = (e: MouseEvent) => {
-    if (disableInteraction) return;
-    // To do: Add functionalities for left click later.
-    if (e.button === 2) deleteRelation(id);
+  const handleClose = () => {
+    setOpen(false);
+    setPosition(null);
+  };
+
+  const handleClick = (e: MouseEvent) => {
+    if (!position) setPosition({ mouseX: e.clientX, mouseY: e.clientY });
+    setOpen(true);
   };
 
   return (
@@ -96,13 +112,39 @@ const DrawPath: FC<DrawPathProps> = ({
         className={`react-flow__edge-path ${classes(css.invisiblePath, {
           [css.disableInteraction]: disableInteraction,
           [css.loading]: isLoading,
+          [css.open]: open,
         })}`}
         d={d}
+        onClick={handleClick}
+        onAuxClick={handleClick}
         markerEnd={markerEnd}
-        onAuxClick={handleMouseClick}
         onMouseEnter={() => setSelected(id)}
         onMouseLeave={() => setSelected(undefined)}
+        onMouseMove={getCoordinates}
       />
+      <Menu
+        className={classes(css.menu)}
+        id="basic-menu"
+        anchorReference="anchorPosition"
+        anchorPosition={
+          open && position
+            ? { top: position.mouseY - 20, left: position.mouseX + 5 }
+            : undefined
+        }
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem
+          className={classes(css.menuItem)}
+          onClick={() => deleteRelation(id)}
+        >
+          <DeleteIcon className={classes(css.deleteIcon)} />
+          <div className={classes(css.deleteText)}>Remove relation</div>
+        </MenuItem>
+      </Menu>
     </>
   );
 };
