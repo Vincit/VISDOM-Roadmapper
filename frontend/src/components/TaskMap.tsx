@@ -285,10 +285,12 @@ export const TaskMap: FC<{
               className={classes(css.info, css.tooltipIcon, css.infoIcon)}
             />
           </InfoTooltip>
-          <RestartAltIcon
-            className={classes(css.restart)}
-            onClick={resetCanvas}
-          />
+          <InfoTooltip title={t('Reset taskgroup positions')}>
+            <RestartAltIcon
+              className={classes(css.restart)}
+              onClick={resetCanvas}
+            />
+          </InfoTooltip>
         </Controls>
       </ReactFlow>
     </div>
