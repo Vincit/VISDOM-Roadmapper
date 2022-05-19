@@ -78,6 +78,56 @@ export const postConfigurations: RouteHandlerFnc = async (ctx) => {
   });
 };
 
+const withTokenRefresh = async (
+  ctx: IKoaContext,
+  resourceCall: () => Promise<any>,
+) => {
+  try {
+    return await resourceCall();
+  } catch (err) {
+    const provider = await oAuthProvider(ctx);
+    if (err instanceof InvalidTokenError && provider.tokenRefresh) {
+      const { roadmapId, integrationName } = ctx.params;
+      const userId = ctx.state.user.id;
+      const config = await integrationConfig(
+        integrationName,
+        Number(roadmapId),
+      );
+      const tokens = await integrationTokens(config, userId);
+      const { accessToken, refreshToken } = await provider.tokenRefresh(
+        tokens.refreshToken,
+        roadmapId,
+      );
+      await Token.transaction(async (trx) => {
+        // TODO: interface, class or something else to represent the token contents.
+        const upsertToken = async (type: string, value: string) => {
+          // TODO: Extract providers and token types somewhere to avoid magic numbers.
+          const newToken = {
+            forIntegration: config.id,
+            provider: integrationName,
+            instance: provider.instance,
+            user: userId,
+            type,
+            value,
+          };
+          const existing = await Token.query(trx).findOne({
+            forIntegration: newToken.forIntegration,
+            type: newToken.type,
+          });
+          if (existing) {
+            await existing.$query(trx).patchAndFetch(newToken);
+          } else {
+            await Token.query(trx).insert(newToken);
+          }
+        };
+        await upsertToken('access_token', accessToken);
+        await upsertToken('refresh_token', refreshToken);
+      });
+      return await resourceCall();
+    } else throw err;
+  }
+};
+
 export const patchConfigurations: RouteHandlerFnc = async (ctx) => {
   const {
     id,
@@ -127,7 +177,7 @@ export const getBoards: RouteHandlerFnc = async (ctx) => {
     throw new Error('User is required');
   }
   const { provider } = await integrationProvider(ctx, ctx.state.user.id);
-  ctx.body = await provider.boards();
+  ctx.body = await withTokenRefresh(ctx, () => provider.boards());
 };
 
 export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
@@ -141,7 +191,9 @@ export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
   if (!boardId) {
     throw new Error('Invalid config: board id missing');
   }
-  ctx.body = (await provider.boards()).find(({ id }) => id === boardId);
+  ctx.body = await withTokenRefresh(ctx, async () =>
+    (await provider.boards()).find(({ id }: { id: string }) => id === boardId),
+  );
 };
 
 export const getBoardColumns: RouteHandlerFnc = async (ctx) => {
@@ -155,7 +207,7 @@ export const getBoardColumns: RouteHandlerFnc = async (ctx) => {
   if (!boardId) {
     throw new Error('Invalid config: board id missing');
   }
-  ctx.body = await provider.columns(boardId);
+  ctx.body = await withTokenRefresh(ctx, () => provider.columns(boardId));
   ctx.status = 200;
 };
 
