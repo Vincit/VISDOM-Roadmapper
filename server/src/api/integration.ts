@@ -37,10 +37,14 @@ export interface OAuthProvider {
     roadmapId: string;
   }): Promise<{ accessToken: string; refreshToken?: string }>;
 
-  //tokenRefresh(): Promise<{ token: string; refreshToken: string }>;
+  tokenRefresh?(
+    refreshToken: string,
+    roadmapId: string,
+  ): Promise<{ accessToken: string; refreshToken: string }>;
 }
 
 export class InvalidTokenError extends Error {}
+export class InvalidGrantError extends Error {}
 
 export interface IntegrationProvider {
   boards(): Promise<{ id: string; name: string }[]>;

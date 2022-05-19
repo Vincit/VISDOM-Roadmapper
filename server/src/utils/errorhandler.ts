@@ -7,7 +7,7 @@ import {
   NotNullViolationError,
 } from 'objection';
 import { ForbiddenError } from './checkPermissions';
-import { InvalidTokenError } from '../api/integration';
+import { InvalidGrantError, InvalidTokenError } from '../api/integration';
 
 // clean up column name e.g. "lower(email::text)" => "email"
 export const cleanColumnName = (column: string) =>
@@ -70,6 +70,12 @@ export const errorHandler = async (ctx: Context, next: () => Promise<any>) => {
       ctx.status = 403;
       ctx.body = {
         error: 'InvalidTokenError',
+        message: err.message,
+      };
+    } else if (err instanceof InvalidGrantError) {
+      ctx.status = 403;
+      ctx.body = {
+        error: 'InvalidGrantError',
         message: err.message,
       };
     } else {

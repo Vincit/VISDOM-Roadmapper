@@ -8,6 +8,7 @@ import {
   IntegrationEntry,
   IntegrationConfig,
   InvalidTokenError,
+  InvalidGrantError,
 } from '../integration';
 
 const authorizePath = '/oauth/authorize';
@@ -56,8 +57,42 @@ export const GitLabIntegration: IntegrationEntry = {
             redirect_uri: redirectUri,
           },
           (err, access_token, refresh_token, result) => {
-            if (err) reject(err);
-            else
+            if (err) {
+              if (err.statusCode === 401 && /token/i.test(err.data))
+                reject(new InvalidTokenError(err.data));
+              else if (err.statusCode === 400 && /grant/i.test(err.data))
+                reject(new InvalidGrantError(err.data));
+              else reject(err);
+            } else
+              resolve({
+                accessToken: access_token,
+                refreshToken: refresh_token,
+              });
+          },
+        );
+      }),
+    tokenRefresh: (refreshToken, roadmapId) =>
+      new Promise((resolve, reject) => {
+        const redirectUri = `${redirectBaseURL}?roadmapId=${roadmapId}&integrationName=gitLab`;
+
+        oauth2(
+          config.consumerkey,
+          config.privatekey,
+          `https://${config.host}`,
+        ).getOAuthAccessToken(
+          refreshToken,
+          {
+            grant_type: 'refresh_token',
+            redirect_uri: redirectUri,
+          },
+          (err, access_token, refresh_token, result) => {
+            if (err) {
+              if (err.statusCode === 401 && /token/i.test(err.data))
+                reject(new InvalidTokenError(err.data));
+              else if (err.statusCode === 400 && /grant/i.test(err.data))
+                reject(new InvalidGrantError(err.data));
+              else reject(err);
+            } else
               resolve({
                 accessToken: access_token,
                 refreshToken: refresh_token,
@@ -155,6 +190,8 @@ class GitLabImporter implements IntegrationProvider {
           if (!err) return resolve(JSON.parse(result as string));
           if (err.statusCode === 401 && /token/i.test(err.data))
             reject(new InvalidTokenError(err.data));
+          else if (err.statusCode === 400 && /grant/i.test(err.data))
+            reject(new InvalidGrantError(err.data));
           else reject(err);
         },
       );
