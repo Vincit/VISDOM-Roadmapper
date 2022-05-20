@@ -65,7 +65,7 @@ const RoadmapConfigurationPageComponent = ({
   const overviewData = [
     [
       {
-        label: t('Roadmap name'),
+        label: t('Name'),
         value: roadmap.name,
         format: 'bold',
         EditComponent: (
@@ -95,29 +95,40 @@ const RoadmapConfigurationPageComponent = ({
     ],
   ];
 
+  const settings = [
+    { title: t('Project'), content: <OverviewContent data={overviewData} /> },
+    {
+      title: t('Integrations'),
+      content: roadmapId && integrations && (
+        <div className={classes(css.integrations)}>
+          {Object.keys(integrations).map((name) => (
+            <IntegrationConfig roadmapId={roadmapId} name={name} key={name} />
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: t('Delete project'),
+      content: (
+        <button
+          className={classes(css['button-small-filled'], css.deleteButton)}
+          type="submit"
+          onClick={openDeleteRoadmapModal}
+        >
+          <Trans i18nKey="Delete project" />
+        </button>
+      ),
+    },
+  ];
+
   return (
-    <div className={classes(css.configurationPage)}>
-      <OverviewContent data={overviewData} />
-      {roadmapId &&
-        integrations &&
-        Object.keys(integrations).map((name) => (
-          <div key={name}>
-            <IntegrationConfig roadmapId={roadmapId} name={name} />
-          </div>
-        ))}
-      <div className={classes(css.layoutRow)}>
-        <span className={classes(css.columnHeader)}>
-          <Trans i18nKey="Delete roadmap" />
-          <br />
-          <button
-            className={classes(css['button-small-filled'], css.deleteButton)}
-            type="submit"
-            onClick={openDeleteRoadmapModal}
-          >
-            <Trans i18nKey="Delete roadmap" />
-          </button>
-        </span>
-      </div>
+    <div className={classes(css.settingsPage)}>
+      {settings.map(({ title, content }) => (
+        <div className={classes(css.setting)} key={title}>
+          <h2>{title}</h2>
+          {content}
+        </div>
+      ))}
     </div>
   );
 };
