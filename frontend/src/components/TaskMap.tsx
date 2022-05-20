@@ -216,6 +216,7 @@ export const TaskMap: FC<{
       style={{
         ['--zoom' as any]: mapPosition?.zoom || 1,
       }}
+      id="taskmap"
     >
       <ReactFlow
         connectionLineComponent={ConnectionLine}

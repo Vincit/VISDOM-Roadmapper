@@ -203,7 +203,6 @@ export const TaskMapPage = () => {
 
   return (
     <div
-      id="taskmap"
       className={classes(css.taskmap, css.grow, { [css.loading]: isLoading })}
     >
       <DragDropContext

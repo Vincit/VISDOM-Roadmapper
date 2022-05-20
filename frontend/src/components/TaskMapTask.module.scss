@@ -34,8 +34,7 @@
     width: 100%;
 
     &.dragging {
-      width: calc(210px * #{$ZOOM});
-      height: calc(52px * #{$ZOOM});
+      max-height: calc(40px * #{$ZOOM});
     }
   }
 
@@ -54,7 +53,7 @@
     }
 
     .doneIcon {
-      margin-right: calc(5px * #{$ZOOM});
+      margin-right: calc(10px * #{$ZOOM});
       width: calc(1em * #{$ZOOM});
       height: calc(1em * #{$ZOOM});
     }
