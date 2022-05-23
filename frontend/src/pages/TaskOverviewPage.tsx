@@ -15,7 +15,10 @@ import {
 } from '../utils/TaskUtils';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
-import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import {
+  chosenRoadmapIdSelector,
+  fromMilestonesEditorSelector,
+} from '../redux/roadmaps/selectors';
 import { RoadmapUser, Task } from '../redux/roadmaps/types';
 import { paths } from '../routers/paths';
 import { RatingTableComplexity } from '../components/RatingTableComplexity';
@@ -174,6 +177,7 @@ const TaskOverview: FC<{
   const role = useSelector(userRoleSelector, shallowEqual);
   const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
   const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const fromPlanner = useSelector(fromMilestonesEditorSelector, shallowEqual);
   const { value, complexity } = valueAndComplexitySummary(task);
   const {
     value: valueRatings,
@@ -221,7 +225,11 @@ const TaskOverview: FC<{
   return (
     <div className="overviewContainer">
       <Overview
-        backHref={`${tasksPage}${paths.tasksRelative.tasklist}`}
+        backHref={
+          fromPlanner
+            ? `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.editor}`
+            : `${tasksPage}${paths.tasksRelative.tasklist}`
+        }
         overviewType={t('Task')}
         name={task.name}
         previousAndNext={siblingTasks}

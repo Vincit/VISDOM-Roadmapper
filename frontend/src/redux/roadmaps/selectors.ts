@@ -5,3 +5,6 @@ export const chosenRoadmapIdSelector = (state: RootState) =>
 
 export const taskmapPositionSelector = (state: RootState) =>
   state.roadmaps.taskmapPosition;
+
+export const fromMilestonesEditorSelector = (state: RootState) =>
+  state.roadmaps.fromMilestonesEditor;

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Redirect,
   Route,
@@ -7,6 +7,7 @@ import {
   useHistory,
   useParams,
   useRouteMatch,
+  matchPath,
 } from 'react-router-dom';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ConfigurationPage } from '../pages/ConfigurationPage';
@@ -15,7 +16,10 @@ import { ClientsListPage } from '../pages/ClientsListPage';
 import { ClientOverviewPage } from '../pages/ClientOverviewPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
-import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
+import {
+  chosenRoadmapIdSelector,
+  fromMilestonesEditorSelector,
+} from '../redux/roadmaps/selectors';
 import { requireVerifiedEmail } from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
@@ -70,6 +74,10 @@ const RoadmapRouterComponent = () => {
   const previousRoadmapId = usePrevious<number | undefined | null>(
     selectedRoadmapId,
   );
+  const fromMilestonesEditor = useSelector(
+    fromMilestonesEditorSelector,
+    shallowEqual,
+  );
   const dispatch = useDispatch<StoreDispatchType>();
   const { data: roadmap, isFetching } = apiV2.useGetRoadmapsQuery(
     undefined,
@@ -107,6 +115,17 @@ const RoadmapRouterComponent = () => {
     history,
     urlRoadmapId,
   ]);
+
+  useEffect(() => {
+    if (
+      fromMilestonesEditor &&
+      !matchPath(history.location.pathname, {
+        path: `${paths.roadmapRouter}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskOverview}`,
+        exact: true,
+      })
+    )
+      dispatch(roadmapsActions.clearFromMilestonesEditor());
+  }, [dispatch, fromMilestonesEditor, history.location.pathname]);
 
   if (selectedRoadmapId && !isFetching && !roadmap)
     return <Redirect to={paths.notFound} />;

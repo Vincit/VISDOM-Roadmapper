@@ -2,7 +2,7 @@ import { FC, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { ModalTypes, Modal } from './types';
 import { ModalContent } from './modalparts/ModalContent';
@@ -12,6 +12,8 @@ import { Checkbox } from '../forms/Checkbox';
 import { RelationIcon } from '../RelationIcon';
 import { Task, TaskRelation } from '../../redux/roadmaps/types';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
+import { StoreDispatchType } from '../../redux';
+import { roadmapsActions } from '../../redux/roadmaps';
 import { ReactComponent as AlertIcon } from '../../icons/alert-exclamation-mark.svg';
 import { InfoTooltip } from '../InfoTooltip';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -128,6 +130,7 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch<StoreDispatchType>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: task } = apiV2.useGetTasksQuery(
     roadmapId ?? skipToken,
@@ -175,6 +178,7 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
                     className="green"
                     to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
                     onClick={() => {
+                      dispatch(roadmapsActions.setFromMilestonesEditor());
                       closeModal();
                     }}
                   >
