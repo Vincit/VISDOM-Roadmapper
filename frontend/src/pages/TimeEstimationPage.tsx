@@ -149,84 +149,76 @@ export const TimeEstimationPage = () => {
   const renderMilestoneTimeline = () => {
     return (
       <div className={classes(css.timelineContainer)}>
-        <p className={classes(css.graphTitle)}>
+        <h3 className={classes(css.graphTitle)}>
           <Trans i18nKey="This is how other milestones look" />
-        </p>
-        <div className={classes(css.graphInner)}>
-          <div className={classes(css.graphItems)}>
-            <table className={classes(css.timelineTable)}>
-              <tbody>
-                <tr className={classes(css.graphItemRow)}>
-                  {roadmapsVersions?.map((ver) => {
-                    return (
-                      <td
-                        key={`graphItem-${ver.id}`}
-                        className={classes(css.graphItemWrapper)}
+        </h3>
+        <div className={classes(css.graphItems)}>
+          <table className={classes(css.timelineTable)}>
+            <tbody>
+              <tr className={classes(css.graphItemRow)}>
+                {roadmapsVersions?.map(({ id, name, tasks }) => {
+                  return (
+                    <td
+                      key={`graphItem-${id}`}
+                      className={classes(css.graphItemWrapper)}
+                    >
+                      <div
+                        className={classes(css.graphItem, {
+                          [css.selected]: name === selectedTitle,
+                        })}
                       >
+                        <p
+                          className={classes(css.versionData, css.versionTitle)}
+                        >
+                          {name}
+                        </p>
+                        <hr className={classes(css.horizontalLine)} />
                         <div
                           className={
-                            ver.name === selectedTitle
-                              ? classes(css.selectedGraphItem)
-                              : classes(css.graphItem)
+                            (name === selectedTitle && classes(css.test)) ||
+                            undefined
                           }
                         >
-                          <p
-                            className={classes(
-                              css.versionData,
-                              css.versionTitle,
-                            )}
-                          >
-                            {ver.name}
-                          </p>
-                          <hr className={classes(css.horizontalLine)} />
-                          <div
-                            className={
-                              (ver.name === selectedTitle &&
-                                classes(css.test)) ||
-                              undefined
-                            }
-                          >
-                            <MilestoneRatingsSummary tasks={ver.tasks || []} />
-                          </div>
+                          <MilestoneRatingsSummary tasks={tasks || []} />
                         </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-                <tr className={classes(css.verticalLineRow)}>
-                  {roadmapsVersions?.map((ver) => {
-                    return (
-                      <td key={`verticalLine-${ver.id}`}>
-                        <div className={classes(css.verticalLine)} />
-                      </td>
-                    );
-                  })}
-                </tr>
-                <tr>
-                  {roadmapsVersions?.map((ver) => {
-                    const { complexity } = totalValueAndComplexity(ver.tasks);
-                    const duration = complexity * calculatedDaysPerWork!;
-                    return (
-                      <td
-                        key={`graphItemDuration-${ver.id}`}
-                        className={
-                          ver.name === selectedTitle
-                            ? classes(css.selectedGraphItemDuration)
-                            : classes(css.graphItemDuration)
-                        }
-                      >
-                        {duration.toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 1,
-                        })}{' '}
-                        days
-                      </td>
-                    );
-                  })}
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr className={classes(css.verticalLineRow)}>
+                {roadmapsVersions?.map((ver) => {
+                  return (
+                    <td key={`verticalLine-${ver.id}`}>
+                      <div className={classes(css.verticalLine)} />
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr>
+                {roadmapsVersions?.map((ver) => {
+                  const { complexity } = totalValueAndComplexity(ver.tasks);
+                  const duration = complexity * calculatedDaysPerWork!;
+                  return (
+                    <td
+                      key={`graphItemDuration-${ver.id}`}
+                      className={
+                        ver.name === selectedTitle
+                          ? classes(css.selectedGraphItemDuration)
+                          : classes(css.graphItemDuration)
+                      }
+                    >
+                      {duration.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 1,
+                      })}{' '}
+                      days
+                    </td>
+                  );
+                })}
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     );
@@ -234,13 +226,13 @@ export const TimeEstimationPage = () => {
 
   return (
     <div className={classes(css.plannerPagecontainer, css.timeEstimation)}>
-      <p className={classes(css.graphTitle)}>
+      <h2 className={classes(css.graphTitle)}>
         <Trans i18nKey="Estimate milestone durations" />
         <InfoIcon
           onClick={handleTooltipModal}
           className={classes(css.tooltipClickable, css.infoIcon)}
         />
-      </p>
+      </h2>
       <div className={classes(css.inputContainer)}>
         <div>
           <div className={classes(css.formLabel)}>
@@ -254,14 +246,14 @@ export const TimeEstimationPage = () => {
                 {roadmapsVersions
                   .filter((e) => e.name !== selectedTitle)
                   .map((ver) => (
-                    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-                    <div
+                    <button
                       className={classes(css.dropItem)}
                       key={ver.id}
                       onClick={() => handleMilestoneChange(ver)}
+                      type="button"
                     >
                       {ver.name}
-                    </div>
+                    </button>
                   ))}
               </Dropdown>
             ))}

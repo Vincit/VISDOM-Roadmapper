@@ -49,24 +49,6 @@
   background-color: white;
 }
 
-.dropItem {
-  @extend .typography-body-small;
-  display: block;
-  border: none;
-  padding: 3px 10px;
-  color: $COLOR_BLACK100;
-  text-align: left;
-  width: 100%;
-  background-color: $COLOR_WHITE;
-
-  &:hover,
-  &:focus {
-    background-color: $COLOR_BLACK5;
-    color: $COLOR_BLACK100;
-    text-decoration: none;
-  }
-}
-
 .expandIcon {
   position: absolute;
   top: 6px;

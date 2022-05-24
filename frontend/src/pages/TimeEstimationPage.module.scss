@@ -1,51 +1,36 @@
 @import '../shared.scss';
 
 .graphTitle {
-  font-size: 28px;
-  font-weight: 600;
   text-align: start;
+  margin-bottom: 20px;
 }
 
 .formLabel {
-  text-align: start;
   @extend .typography-pre-title;
   color: $COLOR_AZURE;
-}
-
-.graphInner {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  overflow-x: auto;
-  justify-content: flex-start;
+  text-align: start;
 }
 
 .graphItems {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  overflow-x: visible;
+  @extend .layout-row;
+  flex-grow: 1;
+  overflow-x: auto;
 }
 
 .graphItem {
   @extend .shadow-roadmapblock;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #f1f1f1;
+  @extend .layout-column;
+  border: 1px solid $COLOR_WHITE;
   overflow-x: visible;
   border-radius: 8px;
   padding: 8px;
-  background-color: #fbfbfb;
-  border: 1px solid #f1f1f1;
+  background-color: $COLOR_WHITE;
   width: 200px;
-  display: inline-block;
-  overflow-wrap: break-word;
-}
 
-.selectedGraphItem {
-  @extend .graphItem;
-  color: $COLOR_FOREST;
-  border: 1px solid $COLOR_FOREST;
+  &.selected {
+    color: $COLOR_FOREST;
+    border: 1px solid $COLOR_FOREST;
+  }
 }
 
 .graphItemWrapper {
@@ -104,7 +89,7 @@
 }
 
 .durationInput {
-  background-color: white;
+  background-color: $COLOR_WHITE;
   height: 54px;
   margin-top: 5px;
 }
@@ -118,8 +103,10 @@
 }
 
 .verticalLine {
+  display: flex;
   border-left: 1.5px solid $COLOR_BLACK40;
-  height: 95px;
+  align-items: stretch;
+  min-height: 95px;
   margin-top: 10px;
   margin-left: 50%;
   margin-bottom: 10px;
@@ -161,14 +148,10 @@
   padding: 13px 20px 13px 20px;
   border: none;
   border-radius: 10px;
-  background-color: white;
+  background-color: $COLOR_WHITE;
   text-align: left;
   margin-top: 5px;
   position: relative;
-}
-
-.dropButton:focus {
-  outline: none;
 }
 
 .dropButton:disabled {
@@ -182,17 +165,17 @@
 .dropMenu {
   width: auto;
   min-width: 144px;
-  margin-top: -10px;
+  margin-top: -5px;
   border-radius: 0px 0px 10px 10px;
-  display: flex;
+  @extend .layout-column;
   align-items: center;
-  flex-direction: column;
   overflow: hidden;
   z-index: 999;
 }
 
 .menuCanvas {
-  background-color: white;
+  background-color: $COLOR_WHITE;
+  border: 2px solid $COLOR_WHITE;
   width: 100%;
   z-index: 999;
 }
@@ -203,40 +186,21 @@
 }
 
 .emptyTitle {
-  color: #696969;
+  color: $COLOR_BLACK60;
 }
 
 .notSelected {
-  color: #696969;
+  color: $COLOR_BLACK60;
   font-weight: normal;
 }
 
 .dropItem {
-  @extend .typography-body;
-  color: $COLOR_BLACK100;
-  text-align: left;
+  font-size: 14px;
   padding: 10px 20px 10px 20px;
-  max-width: 500px;
-  overflow: hidden;
-}
 
-.dropItem:first-child {
-  padding-top: 8px;
-}
-
-.dropItem:last-child {
-  padding-bottom: 16px;
-}
-
-.dropItem:hover {
-  background-color: #ededed;
-  color: $COLOR_BLACK100;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.dropItem:focus {
-  outline: none;
+  &:last-child {
+    border-radius: 0px 0px 10px 10px;
+  }
 }
 
 .disabledItem {
