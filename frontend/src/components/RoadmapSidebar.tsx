@@ -100,10 +100,10 @@ export const RoadmapSidebar: FC = () => {
         )}
         {role === RoleType.Admin && (
           <Link
-            to={url + paths.roadmapRelative.configure}
+            to={url + paths.roadmapRelative.settings}
             className={classes(css.navButton, css.settings, {
               [css.selected]: pathname.startsWith(
-                url + paths.roadmapRelative.configure,
+                url + paths.roadmapRelative.settings,
               ),
             })}
           >

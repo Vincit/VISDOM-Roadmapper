@@ -38,7 +38,7 @@ export const paths = checkPaths({
     team: '/team',
     tasks: '/tasks',
     planner: '/planner',
-    configure: '/configure',
+    settings: '/settings',
   },
   plannerRelative: {
     graph: '/graph',
