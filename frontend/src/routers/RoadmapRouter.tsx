@@ -50,7 +50,7 @@ const routes = [
     component: PlannerPageRouter,
   },
   {
-    path: paths.roadmapRelative.configure,
+    path: paths.roadmapRelative.settings,
     component: ConfigurationPage,
   },
   {
