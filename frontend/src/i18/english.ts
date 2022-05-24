@@ -117,6 +117,7 @@ export const english = {
     'Unassigned tasks': 'Unassigned tasks',
     'Time Estimation': 'Time Estimation',
     'Total value': 'Total value',
+    'Weighted total value': 'Weighted total value',
     'Total complexity': 'Total complexity',
     'Estimate milestone durations': 'Estimate milestone durations',
     'Milestone to be compared to': 'Milestone to be compared to',
