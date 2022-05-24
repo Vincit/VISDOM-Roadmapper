@@ -13,7 +13,7 @@ import { RoadmapsState } from './types';
 const initialState: RoadmapsState = {
   selectedRoadmapId: null,
   taskmapPosition: undefined,
-  fromMilestonesEditor: false,
+  fromMilestonesEditor: undefined,
 };
 
 export const roadmapsSlice = createSlice({

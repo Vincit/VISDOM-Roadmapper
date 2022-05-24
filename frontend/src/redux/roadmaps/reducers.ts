@@ -23,14 +23,15 @@ export const CLEAR_TASKMAP_POSITION: CaseReducer<RoadmapsState> = (state) => {
   state.taskmapPosition = undefined;
 };
 
-export const SET_FROM_MILESTONES_EDITOR: CaseReducer<RoadmapsState> = (
-  state,
-) => {
-  state.fromMilestonesEditor = true;
+export const SET_FROM_MILESTONES_EDITOR: CaseReducer<
+  RoadmapsState,
+  PayloadAction<string>
+> = (state, action) => {
+  state.fromMilestonesEditor = action.payload;
 };
 
 export const CLEAR_FROM_MILESTONES_EDITOR: CaseReducer<RoadmapsState> = (
   state,
 ) => {
-  state.fromMilestonesEditor = false;
+  state.fromMilestonesEditor = undefined;
 };

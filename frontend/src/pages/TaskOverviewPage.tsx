@@ -177,7 +177,10 @@ const TaskOverview: FC<{
   const role = useSelector(userRoleSelector, shallowEqual);
   const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const fromPlanner = useSelector(fromMilestonesEditorSelector, shallowEqual);
+  const fromMilestonesEditorLink = useSelector(
+    fromMilestonesEditorSelector,
+    shallowEqual,
+  );
   const { value, complexity } = valueAndComplexitySummary(task);
   const {
     value: valueRatings,
@@ -226,9 +229,8 @@ const TaskOverview: FC<{
     <div className="overviewContainer">
       <Overview
         backHref={
-          fromPlanner
-            ? `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.editor}`
-            : `${tasksPage}${paths.tasksRelative.tasklist}`
+          fromMilestonesEditorLink ||
+          `${tasksPage}${paths.tasksRelative.tasklist}`
         }
         overviewType={t('Task')}
         name={task.name}

@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -130,6 +130,7 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
+  const { pathname, search } = useLocation();
   const dispatch = useDispatch<StoreDispatchType>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: task } = apiV2.useGetTasksQuery(
@@ -178,7 +179,11 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
                     className="green"
                     to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
                     onClick={() => {
-                      dispatch(roadmapsActions.setFromMilestonesEditor());
+                      dispatch(
+                        roadmapsActions.setFromMilestonesEditor(
+                          `${pathname}${search}`,
+                        ),
+                      );
                       closeModal();
                     }}
                   >

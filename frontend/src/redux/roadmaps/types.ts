@@ -8,7 +8,7 @@ import {
 export interface RoadmapsState {
   selectedRoadmapId?: number | null;
   taskmapPosition: TaskmapPosition | undefined;
-  fromMilestonesEditor?: boolean;
+  fromMilestonesEditor?: string;
 }
 
 export interface Customer {
