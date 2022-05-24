@@ -71,5 +71,8 @@ const TableComplexityRatingRow: RatingRow = ({
 export const RatingTableComplexity = ratingTable({
   type: TaskRatingDimension.Complexity,
   Row: TableComplexityRatingRow,
-  defaultSort: TaskRatingSortingTypes.SORT_CREATED_BY_USER,
+  sortingOptions: [
+    TaskRatingSortingTypes.SORT_CREATED_BY_USER,
+    TaskRatingSortingTypes.SORT_VALUE,
+  ],
 });

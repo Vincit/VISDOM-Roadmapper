@@ -84,5 +84,9 @@ const TableValueRatingRow: RatingRow = ({
 export const RatingTableValue = ratingTable({
   type: TaskRatingDimension.BusinessValue,
   Row: TableValueRatingRow,
-  defaultSort: TaskRatingSortingTypes.SORT_FOR_CUSTOMER,
+  sortingOptions: [
+    TaskRatingSortingTypes.SORT_FOR_CUSTOMER,
+    TaskRatingSortingTypes.SORT_CREATED_BY_USER,
+    TaskRatingSortingTypes.SORT_VALUE,
+  ],
 });
