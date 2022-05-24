@@ -72,7 +72,9 @@ export const RoadmapGraphSidebar = forwardRef<
           <>
             <MetricsSummary
               label={t(
-                hasReadCustomerValuesPermission ? 'Weighted value' : 'Value',
+                hasReadCustomerValuesPermission
+                  ? 'Weighted total value'
+                  : 'Value',
               )}
               value={
                 hasReadCustomerValuesPermission
@@ -82,7 +84,7 @@ export const RoadmapGraphSidebar = forwardRef<
             >
               <BusinessIcon color={colors.black100} />
             </MetricsSummary>
-            <MetricsSummary label={t('Complexity')} value={complexity}>
+            <MetricsSummary label={t('Total complexity')} value={complexity}>
               <WorkRoundIcon color={colors.black100} />
             </MetricsSummary>
           </>
