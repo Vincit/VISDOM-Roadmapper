@@ -51,7 +51,7 @@ export type RatingRow = FC<{
 interface RatingTableDef {
   type: TaskRatingDimension;
   Row: RatingRow;
-  defaultSort: TaskRatingSortingTypes;
+  sortingOptions: [TaskRatingSortingTypes, ...TaskRatingSortingTypes[]];
 }
 
 type RatingTableProps = {
@@ -66,7 +66,7 @@ type RatingTableProps = {
 export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   Row,
   type,
-  defaultSort,
+  sortingOptions,
 }) => ({ task, ratings, avg, height = 800 }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const userInfo = useSelector<RootState, UserInfo | undefined>(
@@ -76,7 +76,7 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
   const listRef = useRef<VariableSizeList<any> | null>(null);
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
   const { t } = useTranslation();
-  const [sort, sorting] = useSorting(taskRatingsSort, defaultSort);
+  const [sort, sorting] = useSorting(taskRatingsSort, sortingOptions[0]);
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
   const [rowHeights, setRowHeights] = useState<number[]>([]);
   const [listHeight, setListHeight] = useState(0);
@@ -141,21 +141,16 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
             title={t(TaskRatingSortingTypesToText(sorting.type.get()))}
             maxLength={20}
           >
-            {Object.values(TaskRatingSortingTypes)
-              .filter(
-                (sortingType): sortingType is TaskRatingSortingTypes =>
-                  typeof sortingType !== 'string',
-              )
-              .map((value) => (
-                <button
-                  className={classes(css.dropItem)}
-                  key={value}
-                  onClick={() => sorting.type.set(value)}
-                  type="button"
-                >
-                  {t(TaskRatingSortingTypesToText(value))}
-                </button>
-              ))}
+            {sortingOptions.map((value) => (
+              <button
+                className={classes(css.dropItem)}
+                key={value}
+                onClick={() => sorting.type.set(value)}
+                type="button"
+              >
+                {t(TaskRatingSortingTypesToText(value))}
+              </button>
+            ))}
           </Dropdown>
         </div>
       </div>
