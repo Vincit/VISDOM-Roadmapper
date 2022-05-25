@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
-import { completed } from '../utils/TaskUtils';
+import { isCompletedTask } from '../utils/TaskUtils';
 import { paths } from '../routers/paths';
 import { TaskRatingsText } from './TaskRatingsText';
 import { apiV2 } from '../api/api';
@@ -46,7 +46,9 @@ export const TaskRow: FC<{
     >
       <div className={classes(css.namesContainer)}>
         <div>
-          {completed(task) && <DoneAllIcon className={classes(css.doneIcon)} />}
+          {isCompletedTask(task) && (
+            <DoneAllIcon className={classes(css.doneIcon)} />
+          )}
           <div className={classes(css.taskName)}>{task.name}</div>
         </div>
         {showMilestoneName && (

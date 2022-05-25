@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { partition } from '../utils/array';
-import { completed as isCompleted } from '../utils/TaskUtils';
+import { isCompletedTask } from '../utils/TaskUtils';
 import css from './RoadmapCompletionMeter.module.scss';
 import { apiV2 } from '../api/api';
 
@@ -15,7 +15,7 @@ export const RoadmapCompletionMeter = () => {
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
-  const [completed, uncompleted] = partition(tasks ?? [], isCompleted).map(
+  const [completed, uncompleted] = partition(tasks ?? [], isCompletedTask).map(
     (a) => a.length,
   );
 

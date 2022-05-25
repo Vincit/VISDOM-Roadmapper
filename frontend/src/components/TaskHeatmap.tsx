@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
-import { completed, ratingsSummaryByDimension } from '../utils/TaskUtils';
+import { isCompletedTask, ratingsSummaryByDimension } from '../utils/TaskUtils';
 import css from './TaskHeatmap.module.scss';
 import { apiV2 } from '../api/api';
 import { convertScale, revertScale } from '../../../shared/utils/conversion';
@@ -23,7 +23,7 @@ export const TaskHeatmap = () => {
 
   const frequencies = matrix2d({ rows: 5, cols: 5 });
   tasks
-    ?.filter((task) => !completed(task))
+    ?.filter((task) => !isCompletedTask(task))
     .map(ratingsSummaryByDimension)
     .forEach((ratings) => {
       const value = ratings.get(TaskRatingDimension.BusinessValue);

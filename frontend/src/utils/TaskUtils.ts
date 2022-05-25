@@ -150,10 +150,11 @@ export const ratedByCustomer = (
       rating.forCustomer === customer.id && rating.createdByUser === rep.id,
   );
 
-export const completed = (task: Task) => task.status === TaskStatus.COMPLETED;
+export const isCompletedTask = (task: Task) =>
+  task.status === TaskStatus.COMPLETED;
 
 export const isCompletedMilestone = ({ tasks }: Version) =>
-  tasks.length > 0 && tasks.every(completed);
+  tasks.length > 0 && tasks.every(isCompletedTask);
 
 export const taskFilter = (
   type: FilterTypes | undefined,
@@ -165,9 +166,9 @@ export const taskFilter = (
     case FilterTypes.RATED_BY_ME:
       return user && ratedByUser(user);
     case FilterTypes.COMPLETED:
-      return completed;
+      return isCompletedTask;
     case FilterTypes.NOT_COMPLETED:
-      return not(completed);
+      return not(isCompletedTask);
     default:
       break;
   }
@@ -332,7 +333,7 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
 
     // Otherwise filter for tasks that lack ratings from at least one represented customer
     return (task: Task) =>
-      !completed(task) &&
+      !isCompletedTask(task) &&
       task.roadmapId === roadmapId &&
       !filteredCustomers.every((customer) =>
         ratedByCustomer(customer, user)(task),
@@ -340,7 +341,7 @@ export const awaitsUserRatings = <T extends UserInfo | RoadmapUser>(
   }
 
   // For other user types just look for missing ratings by them
-  return not(or(completed, ratedByUser(user)));
+  return not(or(isCompletedTask, ratedByUser(user)));
 };
 
 export const unratedTasksByUserCount = (
@@ -389,7 +390,7 @@ export const isUnrated = (
     if (getType(user, roadmapId) === RoleType.Admin)
       condition = or(condition, hasMissingRatings(users, customers));
   }
-  return and(not(completed), condition);
+  return and(not(isCompletedTask), condition);
 };
 
 export const unratedTasksAmount = (
@@ -401,14 +402,14 @@ export const unratedTasksAmount = (
 ) => tasks.filter(isUnrated(user, roadmapId, users, customers)).length;
 
 export const missingDeveloper = (task: Task) => {
-  if (completed(task)) return () => false;
+  if (isCompletedTask(task)) return () => false;
   const ratedBy = hasUserRating(task);
   return (user: RoadmapUser) =>
     user.type === RoleType.Developer && !ratedBy(user);
 };
 
 export const missingCustomer = (task: Task) => (customer: Customer) =>
-  !completed(task) &&
+  !isCompletedTask(task) &&
   !customer.representatives?.every((rep) =>
     ratedByCustomer(customer, rep)(task),
   );
@@ -426,7 +427,7 @@ export const getMissingRepresentatives = (
   allUsers: RoadmapUser[],
   task: Task,
 ) => {
-  if (completed(task)) return [];
+  if (isCompletedTask(task)) return [];
   const missingRepresentativeIds = new Set<number>();
   const ratingsForTask = task.ratings
     .filter((rating) => rating.forCustomer === customer.id)
