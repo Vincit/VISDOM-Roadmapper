@@ -125,7 +125,8 @@ export const english = {
     'Working days estimation': 'Working days estimation',
     'Unable to calculate working days estimate':
       'Unable to calculate working days estimate',
-    'Predicted milestone durations': 'Predicted milestone durations',
+    'This is how other milestones look': 'This is how other milestones look',
+    days: 'days',
     'Client shares': 'Client shares',
     'Set different weighting for clients':
       'Set different weighting for clients',

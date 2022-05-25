@@ -157,77 +157,49 @@ export const TimeEstimationPage = () => {
           <Trans i18nKey="This is how other milestones look" />
         </h3>
         <div className={classes(css.graphItems)}>
-          <table className={classes(css.timelineTable)}>
-            <tbody>
-              <tr className={classes(css.graphItemRow)}>
-                {roadmapsVersions?.map((version) => {
-                  const { id, name, tasks } = version;
-                  const completed = isCompletedMilestone(version);
-                  return (
-                    <td
-                      key={`graphItem-${id}`}
-                      className={classes(css.graphItemWrapper)}
-                    >
-                      <div
-                        className={classes(css.graphItem, {
-                          [css.selected]: name === selectedTitle,
-                          [css.completed]: completed,
-                        })}
-                      >
-                        <p
-                          className={classes(css.versionData, css.versionTitle)}
-                        >
-                          {name}
-                        </p>
-                        <hr />
-                        <MilestoneRatingsSummary
-                          tasks={tasks}
-                          completed={completed}
-                        />
-                        {!completed && tasks.length > 0 && (
-                          <>
-                            <hr />
-                            <MilestoneCompletedness tasks={tasks} />
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-              <tr className={classes(css.verticalLineRow)}>
-                {roadmapsVersions?.map((ver) => {
-                  return (
-                    <td key={`verticalLine-${ver.id}`}>
-                      <div className={classes(css.verticalLine)} />
-                    </td>
-                  );
-                })}
-              </tr>
-              <tr>
-                {roadmapsVersions?.map((ver) => {
-                  const { complexity } = totalValueAndComplexity(ver.tasks);
-                  const duration = complexity * calculatedDaysPerWork!;
-                  return (
-                    <td
-                      key={`graphItemDuration-${ver.id}`}
-                      className={
-                        ver.name === selectedTitle
-                          ? classes(css.selectedGraphItemDuration)
-                          : classes(css.graphItemDuration)
-                      }
-                    >
-                      {duration.toLocaleString(undefined, {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 1,
-                      })}{' '}
-                      days
-                    </td>
-                  );
-                })}
-              </tr>
-            </tbody>
-          </table>
+          {roadmapsVersions?.map((version) => {
+            const { id, name, tasks } = version;
+            const selected = name === selectedTitle;
+            const completed = isCompletedMilestone(version);
+            const { complexity } = totalValueAndComplexity(tasks);
+            const duration = complexity * calculatedDaysPerWork!;
+            return (
+              <div
+                key={`graphItem-${id}`}
+                className={classes(css.graphItemWrapper)}
+              >
+                <div
+                  className={classes(css.graphItem, {
+                    [css.selected]: selected,
+                    [css.completed]: completed,
+                  })}
+                >
+                  <p className={classes(css.versionTitle)}>{name}</p>
+                  <MilestoneRatingsSummary
+                    tasks={tasks}
+                    completed={completed}
+                  />
+                  {!completed && tasks.length > 0 && (
+                    <MilestoneCompletedness tasks={tasks} />
+                  )}
+                </div>
+                <div className={classes(css.verticalLine)} />
+                <div
+                  className={classes(css.graphItemDuration, {
+                    [css.selected]: selected,
+                  })}
+                >
+                  <div className={classes(css.duration)}>
+                    {duration.toLocaleString(undefined, {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 1,
+                    })}{' '}
+                  </div>
+                  <Trans i18nKey="days" />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
