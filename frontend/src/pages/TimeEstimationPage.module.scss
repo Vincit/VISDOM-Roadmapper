@@ -28,8 +28,20 @@
   width: 200px;
 
   &.selected {
-    color: $COLOR_FOREST;
-    border: 1px solid $COLOR_FOREST;
+    background-color: $COLOR_CLOUD;
+    border: 1px solid $COLOR_AZURE;
+  }
+  &.completed {
+    border: 1px solid $COLOR_EMERALD;
+    background-color: lighten($COLOR_MINT, 2);
+
+    .versionTitle {
+      color: $COLOR_EMERALD;
+    }
+
+    &.selected {
+      background-color: $COLOR_CLOUD_MINT_MIX;
+    }
   }
 }
 
@@ -46,7 +58,7 @@
 
 .selectedGraphItemDuration {
   @extend .graphItemDuration;
-  color: $COLOR_FOREST;
+  color: $COLOR_AZURE;
 }
 
 .versionSelect {
@@ -94,10 +106,6 @@
   margin-top: 5px;
 }
 
-.notSelected {
-  color: $COLOR_FOREST;
-}
-
 .infoIcon {
   margin-left: 12px;
 }
@@ -130,14 +138,10 @@
   vertical-align: middle;
 }
 
-.horizontalLine {
+hr {
   margin-left: -8px;
   margin-right: -8.15px; // extra 0.15px to remove small white space
   width: auto;
-}
-
-.test > div > div > div {
-  color: $COLOR_FOREST;
 }
 
 //Drop-down stylings
@@ -181,7 +185,7 @@
 }
 
 .dropTitle {
-  color: $COLOR_FOREST;
+  color: $COLOR_AZURE;
   font-weight: bold;
 }
 

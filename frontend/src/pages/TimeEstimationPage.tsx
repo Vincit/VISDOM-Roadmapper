@@ -10,12 +10,16 @@ import { Version } from '../redux/roadmaps/types';
 import { RootState } from '../redux/types';
 import { plannerTimeEstimatesSelector } from '../redux/versions/selectors';
 import { TimeEstimate } from '../redux/versions/types';
-import { totalValueAndComplexity } from '../utils/TaskUtils';
+import {
+  isCompletedMilestone,
+  totalValueAndComplexity,
+} from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
 import css from './TimeEstimationPage.module.scss';
 
 import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
+import { MilestoneCompletedness } from '../components/MilestoneCompletedness';
 import { Dropdown } from '../components/forms/Dropdown';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from '../components/modals/types';
@@ -156,7 +160,9 @@ export const TimeEstimationPage = () => {
           <table className={classes(css.timelineTable)}>
             <tbody>
               <tr className={classes(css.graphItemRow)}>
-                {roadmapsVersions?.map(({ id, name, tasks }) => {
+                {roadmapsVersions?.map((version) => {
+                  const { id, name, tasks } = version;
+                  const completed = isCompletedMilestone(version);
                   return (
                     <td
                       key={`graphItem-${id}`}
@@ -165,6 +171,7 @@ export const TimeEstimationPage = () => {
                       <div
                         className={classes(css.graphItem, {
                           [css.selected]: name === selectedTitle,
+                          [css.completed]: completed,
                         })}
                       >
                         <p
@@ -172,15 +179,17 @@ export const TimeEstimationPage = () => {
                         >
                           {name}
                         </p>
-                        <hr className={classes(css.horizontalLine)} />
-                        <div
-                          className={
-                            (name === selectedTitle && classes(css.test)) ||
-                            undefined
-                          }
-                        >
-                          <MilestoneRatingsSummary tasks={tasks || []} />
-                        </div>
+                        <hr />
+                        <MilestoneRatingsSummary
+                          tasks={tasks}
+                          completed={completed}
+                        />
+                        {!completed && tasks.length > 0 && (
+                          <>
+                            <hr />
+                            <MilestoneCompletedness tasks={tasks} />
+                          </>
+                        )}
                       </div>
                     </td>
                   );
