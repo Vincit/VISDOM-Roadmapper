@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { TaskRatingDimension } from '../../../shared/types/customTypes';
-import { ratingsSummaryByDimension } from '../utils/TaskUtils';
+import { completed, ratingsSummaryByDimension } from '../utils/TaskUtils';
 import css from './TaskHeatmap.module.scss';
 import { apiV2 } from '../api/api';
 import { convertScale, revertScale } from '../../../shared/utils/conversion';
@@ -22,15 +22,18 @@ export const TaskHeatmap = () => {
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
   const frequencies = matrix2d({ rows: 5, cols: 5 });
-  tasks?.map(ratingsSummaryByDimension).forEach((ratings) => {
-    const value = ratings.get(TaskRatingDimension.BusinessValue);
-    const complexity = ratings.get(TaskRatingDimension.Complexity);
-    if (value && complexity) {
-      const avgValue = Math.round(revertScale(value.avg));
-      const avgComplexity = Math.round(revertScale(complexity.avg));
-      frequencies[5 - avgValue][avgComplexity - 1] += 1;
-    }
-  });
+  tasks
+    ?.filter((task) => !completed(task))
+    .map(ratingsSummaryByDimension)
+    .forEach((ratings) => {
+      const value = ratings.get(TaskRatingDimension.BusinessValue);
+      const complexity = ratings.get(TaskRatingDimension.Complexity);
+      if (value && complexity) {
+        const avgValue = Math.round(revertScale(value.avg));
+        const avgComplexity = Math.round(revertScale(complexity.avg));
+        frequencies[5 - avgValue][avgComplexity - 1] += 1;
+      }
+    });
 
   const [minFreq, median, maxFreq] = (() => {
     const nonZero = frequencies

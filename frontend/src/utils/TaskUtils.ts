@@ -150,7 +150,7 @@ export const ratedByCustomer = (
       rating.forCustomer === customer.id && rating.createdByUser === rep.id,
   );
 
-const completed = (task: Task) => task.status === TaskStatus.COMPLETED;
+export const completed = (task: Task) => task.status === TaskStatus.COMPLETED;
 
 export const isCompletedMilestone = ({ tasks }: Version) =>
   tasks.length > 0 && tasks.every(completed);
