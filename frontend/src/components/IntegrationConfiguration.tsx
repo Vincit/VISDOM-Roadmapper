@@ -176,13 +176,15 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
 };
 
 const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
-  configuration: { id, name, roadmapId, boardId },
+  configuration,
 }) => {
+  const { id, name, roadmapId, boardId } = configuration;
   const { t } = useTranslation();
 
   const [errorMessage, setErrorMessage] = useState('');
   const [patch] = apiV2.usePatchIntegrationConfigurationMutation();
 
+  const [boardsTokenError, setBoardsTokenError] = useState(false);
   const [tokenError, setTokenError] = useState(false);
   const selected = apiV2.useGetIntegrationSelectedBoardQuery(
     { name, roadmapId },
@@ -197,15 +199,23 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
   const isTokenError = (err: any) => err?.data?.error === 'InvalidTokenError';
 
   useEffect(() => {
-    setTokenError(selected.isSuccess && isTokenError(boards.error));
-  }, [boards, selected]);
+    setBoardsTokenError(selected.isSuccess && isTokenError(boards.error));
+    if (
+      selected.isError &&
+      (isTokenError(selected.error) || isTokenError(boards.error))
+    ) {
+      setTokenError(true);
+      setErrorMessage(t('Token is expired'));
+    }
+  }, [boards, selected, t]);
 
-  if (selected.isError) return null;
   if (
     !selected.isLoading &&
     !selected.data &&
+    !selected.error &&
     !boards.isLoading &&
-    !boards.data
+    !boards.data &&
+    !boards.error
   )
     return null;
 
@@ -218,11 +228,16 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
         <LoadingSpinner />
       ) : (
         <>
-          {(tokenError || errorMessage) && (
+          {(tokenError || boardsTokenError || errorMessage) && (
             <Alert
               severity={errorMessage ? 'error' : 'info'}
               onClose={() => {
-                if (tokenError) setTokenError(false);
+                if (boardsTokenError) setBoardsTokenError(false);
+                if (tokenError) {
+                  boards.refetch();
+                  selected.refetch();
+                  setTokenError(false);
+                }
                 if (errorMessage) setErrorMessage('');
               }}
               icon={false}
@@ -230,37 +245,42 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
               {errorMessage || t('Oauth can not select board')}
             </Alert>
           )}
-          <Select
-            name="board"
-            id="board"
-            className="react-select"
-            classNamePrefix="react-select"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            placeholder="Select board"
-            isDisabled={boards.isError}
-            menuPortalTarget={document.body}
-            onChange={(entry) => {
-              if (entry) {
-                patch({ id, name, roadmapId, boardId: entry.value })
-                  .unwrap()
-                  .catch((err) => {
-                    setErrorMessage(
-                      err.data?.message ?? 'something went wrong',
-                    );
-                  });
+          {!boards.isError && !selected.isError && (
+            <Select
+              name="board"
+              id="board"
+              className="react-select"
+              classNamePrefix="react-select"
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+              placeholder="Select board"
+              isDisabled={boards.isError}
+              menuPortalTarget={document.body}
+              onChange={(entry) => {
+                if (entry) {
+                  patch({ id, name, roadmapId, boardId: entry.value })
+                    .unwrap()
+                    .catch((err) => {
+                      setErrorMessage(
+                        err.data?.message ?? 'something went wrong',
+                      );
+                    });
+                }
+              }}
+              defaultValue={
+                selected.data && {
+                  value: selected.data.id,
+                  label: selected.data.name,
+                }
               }
-            }}
-            defaultValue={
-              selected.data && {
-                value: selected.data.id,
-                label: selected.data.name,
-              }
-            }
-            options={boards.data?.map((board) => ({
-              value: board.id,
-              label: board.name,
-            }))}
-          />
+              options={boards.data?.map((board) => ({
+                value: board.id,
+                label: board.name,
+              }))}
+            />
+          )}
+          {boardId && !boards.isError && !selected.isError && (
+            <MapStates configuration={configuration} />
+          )}
         </>
       )}
     </div>
@@ -468,9 +488,6 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
               <Oauth configuration={configuration} />
               <SelectBoard configuration={configuration} />
             </>
-          )}
-          {configuration?.boardId && (
-            <MapStates configuration={configuration} />
           )}
           {configuration && <Remove configuration={configuration} />}
         </div>
