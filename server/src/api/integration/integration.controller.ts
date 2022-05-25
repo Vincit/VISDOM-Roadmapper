@@ -78,6 +78,43 @@ export const postConfigurations: RouteHandlerFnc = async (ctx) => {
   });
 };
 
+const saveTokens = async (
+  forIntegration: number,
+  provider: string,
+  instance: string,
+  user: number,
+  tokens: { name: string; token: string }[],
+) => {
+  await Token.transaction(async (trx) => {
+    // TODO: interface, class or something else to represent the token contents.
+    const upsertToken = async (type: string, value: string) => {
+      // TODO: Extract providers and token types somewhere to avoid magic numbers.
+      const newToken = {
+        forIntegration,
+        provider,
+        instance,
+        user,
+        type,
+        value,
+      };
+      const existing = await Token.query(trx).findOne({
+        forIntegration: newToken.forIntegration,
+        type: newToken.type,
+      });
+      if (existing) {
+        await existing.$query(trx).patchAndFetch(newToken);
+      } else {
+        await Token.query(trx).insert(newToken);
+      }
+    };
+    await Promise.all(
+      tokens.map(async ({ name, token }) => {
+        await upsertToken(name, token);
+      }),
+    );
+  });
+};
+
 const withTokenRefresh = async (
   ctx: IKoaContext,
   resourceCall: () => Promise<any>,
@@ -98,31 +135,10 @@ const withTokenRefresh = async (
         tokens.refreshToken,
         roadmapId,
       );
-      await Token.transaction(async (trx) => {
-        // TODO: interface, class or something else to represent the token contents.
-        const upsertToken = async (type: string, value: string) => {
-          // TODO: Extract providers and token types somewhere to avoid magic numbers.
-          const newToken = {
-            forIntegration: config.id,
-            provider: integrationName,
-            instance: provider.instance,
-            user: userId,
-            type,
-            value,
-          };
-          const existing = await Token.query(trx).findOne({
-            forIntegration: newToken.forIntegration,
-            type: newToken.type,
-          });
-          if (existing) {
-            await existing.$query(trx).patchAndFetch(newToken);
-          } else {
-            await Token.query(trx).insert(newToken);
-          }
-        };
-        await upsertToken('access_token', accessToken);
-        await upsertToken('refresh_token', refreshToken);
-      });
+      await saveTokens(config.id, integrationName, provider.instance, userId, [
+        { name: 'access_token', token: accessToken },
+        { name: 'refresh_token', token: refreshToken },
+      ]);
     }
     throw err;
   }
@@ -343,35 +359,24 @@ export const swapOauthAuthorizationToken: RouteHandlerFnc = async (ctx) => {
     }
 
     const userId = ctx.state.user.id;
-    await Token.transaction(async (trx) => {
-      // TODO: interface, class or something else to represent the token contents.
-      const upsertToken = async (type: string, value: string) => {
-        // TODO: Extract providers and token types somewhere to avoid magic numbers.
-        const newToken = {
-          forIntegration: config.id,
-          provider: integrationName,
-          instance: provider.instance,
-          user: userId,
-          type,
-          value,
-        };
-        const existing = await Token.query(trx).findOne({
-          forIntegration: newToken.forIntegration,
-          type: newToken.type,
-        });
-        if (existing) {
-          await existing.$query(trx).patchAndFetch(newToken);
-        } else {
-          await Token.query(trx).insert(newToken);
-        }
-      };
-      await upsertToken('access_token', newTokens.accessToken);
-      if (tokenSecret && tokenSecret.length > 0)
-        await upsertToken('access_token_secret', tokenSecret);
-      if (newTokens.refreshToken && newTokens.refreshToken.length > 0)
-        await upsertToken('refresh_token', newTokens.refreshToken);
-    });
 
+    const tokensToSave = [
+      { name: 'access_token', token: newTokens.accessToken },
+    ];
+    if (tokenSecret && tokenSecret.length > 0)
+      tokensToSave.push({ name: 'access_token_secret', token: tokenSecret });
+    if (newTokens.refreshToken && newTokens.refreshToken.length > 0)
+      tokensToSave.push({
+        name: 'refresh_token',
+        token: newTokens.refreshToken,
+      });
+    await saveTokens(
+      config.id,
+      integrationName,
+      provider.instance,
+      userId,
+      tokensToSave,
+    );
     ctx.status = 200;
     ctx.body = 'OAuth token swapped successfully.';
   } catch (error) {
