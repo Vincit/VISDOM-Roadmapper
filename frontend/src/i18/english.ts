@@ -330,6 +330,8 @@ export const english = {
       'Do you want to log in again with different email to join?',
     'Yes, log in again': 'Yes, log in again',
     Oops: 'Oops...',
+    'Delete project note':
+      'Note: Do not delete the project if you only want to leave it.',
     'Page not found description 1/2':
       'It seems we can’t find the page you’re looking for.',
     'Page not found description 2/2':

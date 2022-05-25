@@ -2,21 +2,21 @@
 
 .settingsPage {
   @extend .layoutCol;
-  margin: 25px 20px;
-  gap: 60px;
+  margin: 10px 20px;
+  gap: 80px;
 }
 
 .setting {
   @extend .layout-column;
   align-items: flex-start;
 
-  &:last-child {
-    margin-top: auto;
-  }
-
   h2 {
     text-align: left;
     margin-bottom: 20px;
+  }
+  h3 {
+    text-align: left;
+    margin-bottom: 0;
   }
 }
 
@@ -24,4 +24,20 @@
   @extend .layout-row;
   flex-wrap: wrap;
   gap: 70px;
+}
+
+.projectInfo {
+  @extend .layout-column;
+  width: 100%;
+  gap: 20px;
+
+  .deleteContent {
+    @extend .layout-row;
+    gap: 100px;
+    align-items: flex-end;
+
+    button {
+      width: max-content;
+    }
+  }
 }

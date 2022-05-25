@@ -96,7 +96,32 @@ const RoadmapConfigurationPageComponent = ({
   ];
 
   const settings = [
-    { title: t('Project'), content: <OverviewContent data={overviewData} /> },
+    {
+      title: t('Project'),
+      content: (
+        <div className={classes(css.projectInfo)}>
+          <OverviewContent data={overviewData} />
+          <div>
+            <h3>
+              <Trans i18nKey="Delete project" />
+            </h3>
+            <div className={classes(css.deleteContent)}>
+              <Trans i18nKey="Delete project note" />
+              <button
+                className={classes(
+                  css['button-small-filled'],
+                  css.deleteButton,
+                )}
+                type="submit"
+                onClick={openDeleteRoadmapModal}
+              >
+                <Trans i18nKey="Delete project" />
+              </button>
+            </div>
+          </div>
+        </div>
+      ),
+    },
     {
       title: t('Integrations'),
       content: roadmapId && integrations && (
@@ -105,18 +130,6 @@ const RoadmapConfigurationPageComponent = ({
             <IntegrationConfig roadmapId={roadmapId} name={name} key={name} />
           ))}
         </div>
-      ),
-    },
-    {
-      title: t('Delete project'),
-      content: (
-        <button
-          className={classes(css['button-small-filled'], css.deleteButton)}
-          type="submit"
-          onClick={openDeleteRoadmapModal}
-        >
-          <Trans i18nKey="Delete project" />
-        </button>
       ),
     },
   ];
