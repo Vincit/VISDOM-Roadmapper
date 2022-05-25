@@ -123,8 +123,8 @@ const withTokenRefresh = async (
         await upsertToken('access_token', accessToken);
         await upsertToken('refresh_token', refreshToken);
       });
-      return await resourceCall();
-    } else throw err;
+    }
+    throw err;
   }
 };
 
@@ -191,6 +191,7 @@ export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
   if (!boardId) {
     throw new Error('Invalid config: board id missing');
   }
+
   ctx.body = await withTokenRefresh(ctx, async () =>
     (await provider.boards()).find(({ id }: { id: string }) => id === boardId),
   );
