@@ -7,6 +7,7 @@ import { MouseEvent } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Task } from '../redux/roadmaps/types';
 import {
+  completed,
   SortingTypes,
   valueAndComplexitySummary,
   taskSort,
@@ -58,13 +59,11 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
       <div
         style={style}
         className={classes(css.virtualizedTableRow, {
-          [css.completedRow]: task.status === TaskStatus.COMPLETED,
+          [css.completedRow]: completed(task),
         })}
       >
         <div className={classes(css.ratedTitle)}>
-          {task.status === TaskStatus.COMPLETED && (
-            <DoneAllIcon className={classes(css.doneIcon)} />
-          )}
+          {completed(task) && <DoneAllIcon className={classes(css.doneIcon)} />}
           {task.name}
         </div>
         <div>{numFormat.format(value.avg)}</div>

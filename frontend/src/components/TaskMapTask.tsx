@@ -5,7 +5,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Task } from '../redux/roadmaps/types';
-import { TaskStatus } from '../../../shared/types/customTypes';
+import { completed } from '../utils/TaskUtils';
 import css from './TaskMapTask.module.scss';
 
 const classes = classNames.bind(css);
@@ -122,9 +122,7 @@ const SingleTask: FC<
       {...provided.dragHandleProps}
     >
       {handle('target')}
-      {task.status === TaskStatus.COMPLETED && (
-        <DoneAllIcon className={classes(css.doneIcon)} />
-      )}
+      {completed(task) && <DoneAllIcon className={classes(css.doneIcon)} />}
       <div
         className={classes(css.taskName, {
           [css.dragging]: isDragging,
