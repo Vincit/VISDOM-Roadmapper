@@ -109,6 +109,12 @@ export const totalValueAndComplexity = (tasks: Task[]) =>
       { value: 0, complexity: 0 },
     );
 
+export const isCompletedTask = (task: Task) =>
+  task.status === TaskStatus.COMPLETED;
+
+export const remainingTotalValueAndComplexity = (tasks: Task[]) =>
+  totalValueAndComplexity(tasks.filter((task) => !isCompletedTask(task)));
+
 export const averageValueAndComplexity = (tasks: Task[]) => {
   const ratings = tasks.reduce(ratingsSummaryByDimensionInto, new Map());
   return {
@@ -149,9 +155,6 @@ export const ratedByCustomer = (
     (rating) =>
       rating.forCustomer === customer.id && rating.createdByUser === rep.id,
   );
-
-export const isCompletedTask = (task: Task) =>
-  task.status === TaskStatus.COMPLETED;
 
 export const isCompletedMilestone = ({ tasks }: Version) =>
   tasks.length > 0 && tasks.every(isCompletedTask);

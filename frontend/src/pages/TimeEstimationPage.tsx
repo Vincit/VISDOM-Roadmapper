@@ -12,6 +12,7 @@ import { plannerTimeEstimatesSelector } from '../redux/versions/selectors';
 import { TimeEstimate } from '../redux/versions/types';
 import {
   isCompletedMilestone,
+  remainingTotalValueAndComplexity,
   totalValueAndComplexity,
 } from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
@@ -46,6 +47,9 @@ export const TimeEstimationPage = () => {
     {
       skip: !hasPermission(type, Permission.VersionRead),
     },
+  );
+  const estimationVersions = roadmapsVersions?.filter(
+    (version) => !isCompletedMilestone(version),
   );
   const dispatch = useDispatch<StoreDispatchType>();
   const timeEstimates = useSelector<RootState, TimeEstimate[]>(
@@ -99,11 +103,11 @@ export const TimeEstimationPage = () => {
       : undefined;
 
   useEffect(() => {
-    if (!roadmapsVersions || !roadmapId) {
+    if (!estimationVersions || !roadmapId) {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    const selectedMilestone = roadmapsVersions.find(
+    const selectedMilestone = estimationVersions.find(
       (ver) => ver.id === selectedMilestoneId,
     );
     if (!selectedMilestone || milestoneDuration === undefined) {
@@ -116,7 +120,7 @@ export const TimeEstimationPage = () => {
       return;
     }
     setCalculatedDaysPerWork(milestoneDuration / complexity);
-  }, [selectedMilestoneId, milestoneDuration, roadmapId, roadmapsVersions]);
+  }, [selectedMilestoneId, milestoneDuration, roadmapId, estimationVersions]);
 
   const handleTooltipModal = () => {
     dispatch(
@@ -125,9 +129,7 @@ export const TimeEstimationPage = () => {
         modalProps: {
           header: t('Estimate milestone durations'),
           content: {
-            subHeader: t(
-              'Compare milestone durations with different estimates',
-            ),
+            subHeader: t('Compare milestone durations description'),
             columns: [
               {
                 header: t('Realization'),
@@ -157,11 +159,10 @@ export const TimeEstimationPage = () => {
           <Trans i18nKey="This is how other milestones look" />
         </h3>
         <div className={classes(css.graphItems)}>
-          {roadmapsVersions?.map((version) => {
+          {estimationVersions?.map((version) => {
             const { id, name, tasks } = version;
             const selected = name === selectedTitle;
-            const completed = isCompletedMilestone(version);
-            const { complexity } = totalValueAndComplexity(tasks);
+            const { complexity } = remainingTotalValueAndComplexity(tasks);
             const duration = complexity * calculatedDaysPerWork!;
             return (
               <div
@@ -171,17 +172,11 @@ export const TimeEstimationPage = () => {
                 <div
                   className={classes(css.graphItem, {
                     [css.selected]: selected,
-                    [css.completed]: completed,
                   })}
                 >
                   <p className={classes(css.versionTitle)}>{name}</p>
-                  <MilestoneRatingsSummary
-                    tasks={tasks}
-                    completed={completed}
-                  />
-                  {!completed && tasks.length > 0 && (
-                    <MilestoneCompletedness tasks={tasks} />
-                  )}
+                  <MilestoneRatingsSummary tasks={tasks} />
+                  {tasks.length > 0 && <MilestoneCompletedness tasks={tasks} />}
                 </div>
                 <div className={classes(css.verticalLine)} />
                 <div
@@ -219,25 +214,24 @@ export const TimeEstimationPage = () => {
           <div className={classes(css.formLabel)}>
             <Trans i18nKey="Milestone to be compared to" />
           </div>
-          {!roadmapsVersions ||
-            (roadmapsVersions.length === 0 ? (
-              <Dropdown css={css} title="No milestones available" empty />
-            ) : (
-              <Dropdown title={selectedTitle} css={css} maxLength={40}>
-                {roadmapsVersions
-                  .filter((e) => e.name !== selectedTitle)
-                  .map((ver) => (
-                    <button
-                      className={classes(css.dropItem)}
-                      key={ver.id}
-                      onClick={() => handleMilestoneChange(ver)}
-                      type="button"
-                    >
-                      {ver.name}
-                    </button>
-                  ))}
-              </Dropdown>
-            ))}
+          {!estimationVersions || estimationVersions.length === 0 ? (
+            <Dropdown css={css} title="No milestones available" empty />
+          ) : (
+            <Dropdown title={selectedTitle} css={css} maxLength={40}>
+              {estimationVersions
+                .filter((e) => e.name !== selectedTitle)
+                .map((ver) => (
+                  <button
+                    className={classes(css.dropItem)}
+                    key={ver.id}
+                    onClick={() => handleMilestoneChange(ver)}
+                    type="button"
+                  >
+                    {ver.name}
+                  </button>
+                ))}
+            </Dropdown>
+          )}
         </div>
 
         {selectedMilestoneId && (

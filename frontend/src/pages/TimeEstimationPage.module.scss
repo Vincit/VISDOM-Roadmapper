@@ -41,17 +41,6 @@
     background-color: $COLOR_CLOUD;
     border: 1px solid $COLOR_AZURE;
   }
-  &.completed {
-    border: 1px solid $COLOR_EMERALD;
-    background-color: lighten($COLOR_MINT, 2);
-
-    .versionTitle {
-      color: $COLOR_EMERALD;
-    }
-    &.selected {
-      background-color: $COLOR_CLOUD_MINT_MIX;
-    }
-  }
 }
 
 .verticalLine {

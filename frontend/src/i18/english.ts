@@ -349,8 +349,8 @@ export const english = {
       'Milestones create your project’s <1>roadmap.</1>\n\nMilestones can be selected by clicking. Hold the Ctrl or command -key for multiselection.',
     'Planner weights tooltip':
       'Client weights affect the scaling of milestone`s total values in the roadmap graph. Weight of 0% will ignore the ratings of the client in question.',
-    'Compare milestone durations with different estimates.':
-      'Compare milestone durations with different estimates.',
+    'Compare milestone durations description':
+      'Compare milestone durations with different estimates.\n\nCompleted tasks are not counted in the estimation results.',
     'Bad request - password':
       'Bad request error - is current password correct?',
     Realization: 'Realization',
