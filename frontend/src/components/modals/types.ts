@@ -9,6 +9,7 @@ import {
   CheckableUserWithCustomers,
   Taskrating,
   TaskRelation,
+  VersionComplexityAndValues,
 } from '../../redux/roadmaps/types';
 import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
@@ -41,6 +42,7 @@ export enum ModalTypes {
   INFO_MODAL = 'INFO_MODAL',
   LEAVE_ROADMAP_MODAL = 'LEAVE_ROADMAP_MODAL',
   RELATIONS_MODAL = 'RELATIONS_MODAL',
+  VERSION_DETAILS_MODAL = 'VERSION_DETAILS_MODAL',
 }
 
 type OwnProps = {
@@ -113,6 +115,9 @@ type OwnProps = {
   [ModalTypes.RELATIONS_MODAL]: {
     taskId: number;
     badRelations: TaskRelation[];
+  };
+  [ModalTypes.VERSION_DETAILS_MODAL]: {
+    version: VersionComplexityAndValues;
   };
 };
 

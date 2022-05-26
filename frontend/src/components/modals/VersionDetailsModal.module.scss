@@ -1,10 +1,9 @@
-@import '../pages/RoadmapGraphPage.module.scss';
+@import '../../pages/RoadmapGraphPage.module.scss';
 
-.versionWrapper {
+.content {
   @extend .layout-column;
   gap: 20px;
-  padding: 25px;
-  min-width: 400px;
+  min-width: 350px;
 
   > hr {
     margin: 0;
@@ -14,16 +13,11 @@
 
 .header {
   @extend .layout-row;
-  @extend .typography-h3;
   align-items: center;
   gap: 14px;
 
   &.completed {
     color: $COLOR_EMERALD;
-  }
-  .close {
-    @extend .rightSide;
-    margin-right: 5px;
   }
 }
 

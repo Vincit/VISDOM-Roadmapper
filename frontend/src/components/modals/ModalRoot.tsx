@@ -35,6 +35,7 @@ import { ChangePasswordModal } from './ChangePasswordModal';
 import { InfoModal } from './InfoModal';
 import { LeaveRoadmapModal } from './LeaveRoadmapModal';
 import { RelationsModal } from './RelationsModal';
+import { VersionDetailsModal } from './VersionDetailsModal';
 
 const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
@@ -65,6 +66,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.INFO_MODAL]: InfoModal,
   [ModalTypes.LEAVE_ROADMAP_MODAL]: LeaveRoadmapModal,
   [ModalTypes.RELATIONS_MODAL]: RelationsModal,
+  [ModalTypes.VERSION_DETAILS_MODAL]: VersionDetailsModal,
 } as const;
 
 // TODO: move this to css file

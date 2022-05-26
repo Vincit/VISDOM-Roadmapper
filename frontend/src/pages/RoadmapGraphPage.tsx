@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +13,17 @@ import {
 } from '../utils/TaskUtils';
 import { percent } from '../utils/string';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
+import { VersionDetailsModal } from '../components/modals/VersionDetailsModal';
 import { InfoTooltip } from '../components/InfoTooltip';
 import css from './RoadmapGraphPage.module.scss';
 import { BusinessIcon, WorkRoundIcon } from '../components/RoleIcons';
 import { BlockGraph, BlockView } from '../components/BlockGraph';
 import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
-import { RoadmapGraphSidebar } from '../components/RoadmapGraphSidebar';
+import {
+  useModal,
+  ModalTypes,
+  modalDrawerLink,
+} from '../components/modals/types';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { VersionComplexityAndValues } from '../redux/roadmaps/types';
 import colors from '../colors.module.scss';
@@ -29,8 +35,10 @@ import { userRoleSelector } from '../redux/user/selectors';
 const classes = classNames.bind(css);
 
 export const RoadmapGraphPage = () => {
+  const drawer = useModal('openDrawer', ModalTypes.VERSION_DETAILS_MODAL);
+  const selectedIndex = drawer.payload?.modalProps.version?.sortingRank ?? -1;
   const { t } = useTranslation();
-  const [selectedVersion, setSelectedVersion] = useState(-1);
+  const history = useHistory();
   const [versions, setVersions] = useState<
     undefined | VersionComplexityAndValues[]
   >(undefined);
@@ -96,15 +104,13 @@ export const RoadmapGraphPage = () => {
   };
 
   const height = 160;
-  const sideBarOpen = selectedVersion >= 0;
-  const clearSelection = () => setSelectedVersion(-1);
 
   return (
     <div className={classes(css.plannerContainer)}>
       <div
         className={classes(css.plannerPagecontainer)}
-        onClick={clearSelection}
-        onKeyPress={clearSelection}
+        onClick={() => drawer.close()}
+        onKeyPress={() => drawer.close()}
         role="button"
         tabIndex={0}
       >
@@ -124,8 +130,14 @@ export const RoadmapGraphPage = () => {
           }
           xLabel="Total complexity"
           yLabel="Total value"
-          selected={selectedVersion}
-          setSelected={setSelectedVersion}
+          selected={selectedIndex}
+          setSelected={(idx) =>
+            history.replace(
+              modalDrawerLink(ModalTypes.VERSION_DETAILS_MODAL, {
+                version: versions![idx],
+              }),
+            )
+          }
           items={
             versions?.map((version) => ({
               ...version,
@@ -183,7 +195,7 @@ export const RoadmapGraphPage = () => {
               </div>
               <p
                 className={classes(css.versionTitle, {
-                  [css.selected]: index === selectedVersion,
+                  [css.selected]: index === selectedIndex,
                   [css.completed]: completed,
                 })}
               >
@@ -241,16 +253,17 @@ export const RoadmapGraphPage = () => {
       <Drawer
         anchor="right"
         variant="persistent"
-        open={sideBarOpen}
-        onClose={clearSelection}
+        open={!!drawer.payload}
         BackdropProps={{ invisible: true }}
         className={classes(css.drawer)}
       >
-        {sideBarOpen && (
-          <RoadmapGraphSidebar
-            version={versions![selectedVersion]}
-            onClose={clearSelection}
-          />
+        {drawer.payload && (
+          <div style={{ marginTop: 20 }}>
+            <VersionDetailsModal
+              closeModal={drawer.close}
+              {...drawer.payload.modalProps}
+            />
+          </div>
         )}
       </Drawer>
     </div>
