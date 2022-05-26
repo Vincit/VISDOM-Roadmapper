@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -128,6 +128,7 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
+  const { pathname, search } = useLocation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: task } = apiV2.useGetTasksQuery(
     roadmapId ?? skipToken,
@@ -173,7 +174,10 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
                   Tasks’ relations can be modified in{' '}
                   <Link
                     className="green"
-                    to={`${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`}
+                    to={{
+                      pathname: `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.tasks}/${task.id}`,
+                      state: { from: `${pathname}${search}` },
+                    }}
                     onClick={() => {
                       closeModal();
                     }}

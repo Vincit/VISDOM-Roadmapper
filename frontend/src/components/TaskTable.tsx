@@ -1,7 +1,7 @@
 import { FC, CSSProperties, ComponentPropsWithoutRef } from 'react';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { useHistory } from 'react-router-dom';
+import { matchPath, useHistory, useLocation } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import { FixedSizeList } from 'react-window';
 import classNames from 'classnames';
@@ -24,23 +24,29 @@ export const TaskRow: FC<{
   showMilestoneName?: boolean;
 }> = ({ task, style, largeIcons, onClick, showMilestoneName }) => {
   const history = useHistory();
-  const toTask = `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`;
+  const { pathname, search } = useLocation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const { data: versions } = apiV2.useGetVersionsQuery(roadmapId ?? skipToken, {
     skip: !showMilestoneName,
   });
+  const fromTaskOverview = !!matchPath(pathname, {
+    path: `${paths.roadmapRouter}${paths.roadmapRelative.tasks}${paths.tasksRelative.taskOverview}`,
+  });
+
+  const clickHandler = () => {
+    onClick?.();
+    history.push({
+      pathname: `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`,
+      ...(!fromTaskOverview && { state: { from: `${pathname}${search}` } }),
+    });
+  };
+
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={() => {
-        onClick?.();
-        history.push(toTask);
-      }}
-      onKeyPress={() => {
-        onClick?.();
-        history.push(toTask);
-      }}
+      onClick={clickHandler}
+      onKeyPress={clickHandler}
       style={style}
       className={classes(css.task)}
     >

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { useSelector, shallowEqual } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { useParams, useHistory, Redirect } from 'react-router-dom';
+import { useParams, useHistory, Redirect, useLocation } from 'react-router-dom';
 import { Permission, TaskStatus } from '../../../shared/types/customTypes';
 import { isToday, isYesterday } from '../../../shared/utils/date';
 import {
@@ -164,12 +164,17 @@ export const getTaskOverviewData = (
   return { metrics, data };
 };
 
+interface LocationState {
+  from: string | undefined;
+}
+
 const TaskOverview: FC<{
   tasks: Task[];
   task: Task;
   taskIdx: number;
 }> = ({ tasks, task, taskIdx }) => {
   const history = useHistory();
+  const { state } = useLocation<LocationState | undefined>();
   const { t } = useTranslation();
   const role = useSelector(userRoleSelector, shallowEqual);
   const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
@@ -221,11 +226,16 @@ const TaskOverview: FC<{
   return (
     <div className="overviewContainer">
       <Overview
-        backHref={`${tasksPage}${paths.tasksRelative.tasklist}`}
+        backHref={state?.from || `${tasksPage}${paths.tasksRelative.tasklist}`}
         overviewType={t('Task')}
         name={task.name}
         previousAndNext={siblingTasks}
-        onOverviewChange={(id) => history.push(`${tasksPage}/${id}`)}
+        onOverviewChange={(id) =>
+          history.push({
+            pathname: `${tasksPage}/${id}`,
+            state,
+          })
+        }
         key={task.id}
         {...getTaskOverviewData(
           task,
