@@ -87,6 +87,7 @@ export const RatingTableValue = ratingTable({
   sortingOptions: [
     TaskRatingSortingTypes.SORT_FOR_CUSTOMER,
     TaskRatingSortingTypes.SORT_CREATED_BY_USER,
-    TaskRatingSortingTypes.SORT_VALUE,
+    TaskRatingSortingTypes.SORT_VALUE_DESCENDING,
+    TaskRatingSortingTypes.SORT_VALUE_ASCENDING,
   ],
 });

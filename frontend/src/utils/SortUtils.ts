@@ -29,19 +29,26 @@ export type SortBy<T, K = any> =
     }
   | { compare: Comparison<T> };
 
-const sortKeyCompare = <T, K>(
+const reverse = <T>(cmp: Comparison<T>): Comparison<T> => (a, b) =>
+  cmp(a, b) * -1;
+
+const sortKeyCompare = <K>(compare: Comparison<K>) => <T>(
   key: Key<T, K>,
-  compare: Comparison<K>,
-): SortBy<T, K> => ({ key, compare });
+  options?: Partial<{ reverse: boolean }>,
+): SortBy<T, K> => ({
+  key,
+  compare: options?.reverse ? reverse(compare) : compare,
+});
 
-export const sortKeyNumeric = <T>(key: Key<T, number>) =>
-  sortKeyCompare(key, (a, b) => a - b);
+export const sortKeyNumeric = sortKeyCompare<number>((a, b) => a - b);
 
-export const sortKeyBoolean = <T>(key: Key<T, boolean>) =>
-  sortKeyCompare(key, (a, b) => Number(a) - Number(b));
+export const sortKeyBoolean = sortKeyCompare<boolean>(
+  (a, b) => Number(a) - Number(b),
+);
 
-export const sortKeyLocale = <T>(key: Key<T, string>) =>
-  sortKeyCompare(key, (a, b) => a.localeCompare(b));
+export const sortKeyLocale = sortKeyCompare<string>((a, b) =>
+  a.localeCompare(b),
+);
 
 export const sort = <T, K>(
   by: SortBy<T, K>,
