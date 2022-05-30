@@ -214,12 +214,14 @@ export const TimeEstimationPage = () => {
           <div className={classes(css.formLabel)}>
             <Trans i18nKey="Milestone to be compared to" />
           </div>
-          {!estimationVersions || estimationVersions.length === 0 ? (
+          {!estimationVersions ||
+          estimationVersions.length === 0 ||
+          estimationVersions.every((e) => !e.tasks.length) ? (
             <Dropdown css={css} title="No milestones available" empty />
           ) : (
             <Dropdown title={selectedTitle} css={css} maxLength={40}>
               {estimationVersions
-                .filter((e) => e.name !== selectedTitle)
+                .filter((e) => e.name !== selectedTitle && e.tasks.length)
                 .map((ver) => (
                   <button
                     className={classes(css.dropItem)}
