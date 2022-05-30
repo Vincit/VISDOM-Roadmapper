@@ -85,10 +85,10 @@ const ClientOverview: FC<{
   ];
 
   const clientDotName = (
-    <>
+    <div className={classes(css.clientName)}>
       <Dot fill={client.color} />
       {client.name}
-    </>
+    </div>
   );
 
   const clientData = [

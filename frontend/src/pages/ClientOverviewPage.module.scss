@@ -4,3 +4,9 @@
   min-width: 400px;
   width: 20%;
 }
+
+.clientName {
+  @extend .layout-row;
+  align-items: center;
+  gap: 10px;
+}
