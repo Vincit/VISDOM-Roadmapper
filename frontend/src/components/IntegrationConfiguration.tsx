@@ -185,7 +185,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
   const [patch] = apiV2.usePatchIntegrationConfigurationMutation();
 
   const [boardsTokenError, setBoardsTokenError] = useState(false);
-  const [tokenError, setTokenError] = useState(false);
+  const [selectedError, setSelectedError] = useState(false);
   const selected = apiV2.useGetIntegrationSelectedBoardQuery(
     { name, roadmapId },
     { skip: !boardId },
@@ -193,16 +193,16 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
 
   const boards = apiV2.useGetIntegrationBoardsQuery(
     { name, roadmapId },
-    { skip: selected.isError },
+    { skip: !selected.isSuccess },
   );
 
   const isTokenError = (err: any) => err?.data?.error === 'InvalidTokenError';
 
   useEffect(() => {
     setBoardsTokenError(selected.isSuccess && isTokenError(boards.error));
-    if (selected.isError && isTokenError(selected.error)) {
-      setTokenError(true);
-      setErrorMessage(t('Token is expired'));
+    if (selected.isError) {
+      setSelectedError(true);
+      setErrorMessage(t('Selected call failed'));
     }
   }, [boards, selected, t]);
 
@@ -225,15 +225,14 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
         <LoadingSpinner />
       ) : (
         <>
-          {(tokenError || boardsTokenError || errorMessage) && (
+          {(selectedError || boardsTokenError || errorMessage) && (
             <Alert
               severity={errorMessage ? 'error' : 'info'}
               onClose={() => {
                 if (boardsTokenError) setBoardsTokenError(false);
-                if (tokenError) {
-                  boards.refetch();
+                if (selectedError) {
                   selected.refetch();
-                  setTokenError(false);
+                  setSelectedError(false);
                 }
                 if (errorMessage) setErrorMessage('');
               }}
@@ -242,7 +241,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
               {errorMessage || t('Oauth can not select board')}
             </Alert>
           )}
-          {!selected.isError && (
+          {selected.isSuccess && (
             <Select
               name="board"
               id="board"
@@ -275,7 +274,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
               }))}
             />
           )}
-          {boardId && !boards.isError && !selected.isError && (
+          {boardId && selected.isSuccess && (
             <MapStates configuration={configuration} />
           )}
         </>
