@@ -6,7 +6,7 @@ import {
   IntegrationProvider,
   IntegrationEntry,
   IntegrationConfig,
-  InvalidTokenError,
+  convertError,
 } from '../integration';
 
 const appName = 'VISDOM Roadmap tool';
@@ -116,10 +116,8 @@ class TrelloImporter implements IntegrationProvider {
         this.accessToken,
         this.accessTokenSecret,
         (err, result) => {
-          if (!err) return resolve(JSON.parse(result as string));
-          if (err.statusCode === 401 && /token/i.test(err.data))
-            reject(new InvalidTokenError(err.data));
-          else reject(err);
+          if (!err) resolve(JSON.parse(result as string));
+          else reject(convertError(err));
         },
       );
     });

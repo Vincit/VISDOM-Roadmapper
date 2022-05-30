@@ -24,7 +24,7 @@ export interface TaskFilters {
 export interface OAuthProvider {
   instance: string;
   authorizationURL(
-    roadmapId: string,
+    roadmapId: number,
   ): Promise<{
     url: string;
     token: string;
@@ -34,17 +34,25 @@ export interface OAuthProvider {
     verifierToken: string;
     token: string;
     tokenSecret: string;
-    roadmapId: string;
+    roadmapId: number;
   }): Promise<{ accessToken: string; refreshToken?: string }>;
 
   tokenRefresh?(
     refreshToken: string,
-    roadmapId: string,
+    roadmapId: number,
   ): Promise<{ accessToken: string; refreshToken: string }>;
 }
 
 export class InvalidTokenError extends Error {}
 export class InvalidGrantError extends Error {}
+
+export const convertError = (err: { statusCode: number; data?: any }) => {
+  if (err.statusCode === 401 && /token/i.test(err.data))
+    return new InvalidTokenError(err.data);
+  if (err.statusCode === 400 && /grant/i.test(err.data))
+    return new InvalidGrantError(err.data);
+  return err;
+};
 
 export interface IntegrationProvider {
   boards(): Promise<{ id: string; name: string }[]>;
