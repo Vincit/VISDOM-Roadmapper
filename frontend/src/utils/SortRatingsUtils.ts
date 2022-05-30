@@ -4,7 +4,8 @@ import { SortBy, sortKeyNumeric } from './SortUtils';
 export enum TaskRatingSortingTypes {
   SORT_FOR_CUSTOMER,
   SORT_CREATED_BY_USER,
-  SORT_VALUE,
+  SORT_VALUE_ASCENDING,
+  SORT_VALUE_DESCENDING,
 }
 
 export const TaskRatingSortingTypesToText = (
@@ -15,8 +16,10 @@ export const TaskRatingSortingTypesToText = (
       return 'Customer';
     case TaskRatingSortingTypes.SORT_CREATED_BY_USER:
       return 'Creator';
-    case TaskRatingSortingTypes.SORT_VALUE:
-      return 'Value';
+    case TaskRatingSortingTypes.SORT_VALUE_ASCENDING:
+      return 'Value ascending';
+    case TaskRatingSortingTypes.SORT_VALUE_DESCENDING:
+      return 'Value descending';
     default:
       return 'Unspecified';
   }
@@ -30,8 +33,10 @@ export const taskRatingsSort = (
       return sortKeyNumeric('forCustomer');
     case TaskRatingSortingTypes.SORT_CREATED_BY_USER:
       return sortKeyNumeric('createdByUser');
-    case TaskRatingSortingTypes.SORT_VALUE:
+    case TaskRatingSortingTypes.SORT_VALUE_ASCENDING:
       return sortKeyNumeric('value');
+    case TaskRatingSortingTypes.SORT_VALUE_DESCENDING:
+      return sortKeyNumeric('value', { reverse: true });
     default:
       break;
   }

@@ -69,6 +69,8 @@ export const english = {
     'Created on': 'Created on',
     Name: 'Name',
     Value: 'Value',
+    'Value ascending': 'Value, lowest first',
+    'Value descending': 'Value, highest first',
     'List order': 'List order',
     Customer: 'Customer',
     Creator: 'Creator',

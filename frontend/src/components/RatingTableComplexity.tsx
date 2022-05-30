@@ -73,6 +73,7 @@ export const RatingTableComplexity = ratingTable({
   Row: TableComplexityRatingRow,
   sortingOptions: [
     TaskRatingSortingTypes.SORT_CREATED_BY_USER,
-    TaskRatingSortingTypes.SORT_VALUE,
+    TaskRatingSortingTypes.SORT_VALUE_DESCENDING,
+    TaskRatingSortingTypes.SORT_VALUE_ASCENDING,
   ],
 });
