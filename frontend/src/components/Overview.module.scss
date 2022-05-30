@@ -134,3 +134,8 @@
     }
   }
 }
+.separator {
+  border-left: 1px solid $COLOR_BLACK40;
+  width: 0px;
+  height: 50px;
+}

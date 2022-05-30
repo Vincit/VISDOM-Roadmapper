@@ -63,20 +63,25 @@ export const OverviewContent: FC<OverviewContentProps> = ({
     <div className={classes(css.data)}>
       {data.map((column, idx) => (
         // eslint-disable-next-line react/no-array-index-key
-        <div className={classes(css.column)} key={idx}>
-          {column.map(({ label, value, format, EditComponent }) => (
-            <div className={classes(css.row)} key={label}>
-              <div className={classes(css.label)}>{label}</div>
-              {EditComponent ? (
-                <div className={classes(css.editableContainer)}>
-                  {EditComponent}
-                </div>
-              ) : (
-                <div className={classes(css.value, css[format!])}>{value}</div>
-              )}
-            </div>
-          ))}
-        </div>
+        <>
+          <div className={classes(css.separator)} />
+          <div className={classes(css.column)} key={idx}>
+            {column.map(({ label, value, format, EditComponent }) => (
+              <div className={classes(css.row)} key={label}>
+                <div className={classes(css.label)}>{label}</div>
+                {EditComponent ? (
+                  <div className={classes(css.editableContainer)}>
+                    {EditComponent}
+                  </div>
+                ) : (
+                  <div className={classes(css.value, css[format!])}>
+                    {value}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       ))}
     </div>
   </div>
