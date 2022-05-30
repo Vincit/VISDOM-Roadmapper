@@ -155,8 +155,8 @@ export const english = {
       'Invalid or missing configuration, please contact an administrator if the problem persists.',
     'Oauth can not select board':
       'The Oauth is authorised by another user. To select a board, reauthorise first with your own account.',
-    'Token is expired':
-      'The Oauth token is invalid. Try refreshing by closing this message.',
+    'Selected call failed':
+      'Error when fetching selected board. You can retry by closing this message.',
     'Terms of use':
       'I agree to the <1>terms of use</1> and <4> privacy policy </4>',
     'Setup OAuth for': 'Setup OAuth for {{name}}',

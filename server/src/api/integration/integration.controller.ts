@@ -123,20 +123,27 @@ const withTokenRefresh = async <T>(
     const provider = await oAuthProvider(ctx);
     if (!(err instanceof InvalidTokenError && provider.tokenRefresh)) throw err;
     const { roadmapId, integrationName } = ctx.params;
-    if (!ctx.state.user) {
-      throw new Error('User is required');
-    }
-    const userId = ctx.state.user.id;
+
     const config = await integrationConfig(integrationName, Number(roadmapId));
-    const tokens = await integrationTokens(config, userId);
+    const token = await Token.query().findOne({
+      forIntegration: config.id,
+      type: 'refresh_token',
+    });
+    if (!token) throw err;
     const { accessToken, refreshToken } = await provider.tokenRefresh(
-      tokens.refreshToken,
+      token.value,
       Number(roadmapId),
     );
-    await saveTokens(config.id, integrationName, provider.instance, userId, [
-      { name: 'access_token', token: accessToken },
-      { name: 'refresh_token', token: refreshToken },
-    ]);
+    await saveTokens(
+      config.id,
+      integrationName,
+      provider.instance,
+      token.user,
+      [
+        { name: 'access_token', token: accessToken },
+        { name: 'refresh_token', token: refreshToken },
+      ],
+    );
     return await resourceCall();
   }
 };
@@ -192,7 +199,7 @@ export const getBoards: RouteHandlerFnc = async (ctx) => {
     throw new Error('User is required');
   }
   ctx.body = await withTokenRefresh(ctx, async () => {
-    const { provider } = await integrationProvider(ctx, ctx.state.user?.id);
+    const { provider } = await integrationProvider(ctx, ctx.state.user!.id);
     return provider.boards();
   });
 };
@@ -201,29 +208,31 @@ export const getSelectedBoard: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const {
-    provider,
-    config: { boardId },
-  } = await integrationProvider(ctx);
-  if (!boardId) {
-    throw new Error('Invalid config: board id missing');
-  }
 
-  ctx.body = (await provider.boards()).find(({ id }) => id === boardId);
+  ctx.body = await withTokenRefresh(ctx, async () => {
+    const {
+      provider,
+      config: { boardId },
+    } = await integrationProvider(ctx);
+    if (!boardId) {
+      throw new Error('Invalid config: board id missing');
+    }
+    return (await provider.boards()).find(({ id }) => id === boardId);
+  });
 };
 
 export const getBoardColumns: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const {
-    config: { boardId },
-  } = await integrationProvider(ctx);
-  if (!boardId) {
-    throw new Error('Invalid config: board id missing');
-  }
   ctx.body = await withTokenRefresh(ctx, async () => {
-    const { provider } = await integrationProvider(ctx, ctx.state.user?.id);
+    const {
+      provider,
+      config: { boardId },
+    } = await integrationProvider(ctx);
+    if (!boardId) {
+      throw new Error('Invalid config: board id missing');
+    }
     return provider.columns(boardId);
   });
   ctx.status = 200;
@@ -233,14 +242,14 @@ export const getBoardLabels: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const {
-    config: { boardId },
-  } = await integrationProvider(ctx);
-  if (!boardId) {
-    throw new Error('Invalid config: board id missing');
-  }
   ctx.body = await withTokenRefresh(ctx, async () => {
-    const { provider } = await integrationProvider(ctx, ctx.state.user?.id);
+    const {
+      provider,
+      config: { boardId },
+    } = await integrationProvider(ctx);
+    if (!boardId) {
+      throw new Error('Invalid config: board id missing');
+    }
     return provider.labels(boardId);
   });
   ctx.status = 200;
@@ -250,36 +259,37 @@ export const importBoard: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const {
-    config: { boardId, statusMapping },
-  } = await integrationProvider(ctx);
-  if (!boardId) {
-    throw new Error('Invalid config: board id missing');
-  }
+
   const createdByUser = ctx.state.user.id;
   const name = ctx.params.integrationName;
   const { filters } = ctx.request.body;
   const roadmapId = Number(ctx.params.roadmapId);
 
-  const tasks = (
-    await withTokenRefresh(ctx, async () => {
-      const { provider } = await integrationProvider(ctx, ctx.state.user?.id);
-      return provider.tasks(boardId, filters);
-    })
-  ).map(({ id, link, description, status, columnId, ...issue }) => ({
-    ...issue,
-    description: description.substring(0, 1000), // TODO: should we allow longer description?
-    importedFrom: name,
-    externalId: id,
-    externalLink: link,
-    createdByUser,
-    roadmapId,
-    status:
-      statusMapping?.find(({ fromColumn }) => fromColumn === columnId)
-        ?.toStatus ??
-      status ??
-      TaskStatus.NOT_STARTED,
-  }));
+  const tasks = await withTokenRefresh(ctx, async () => {
+    const {
+      provider,
+      config: { boardId, statusMapping },
+    } = await integrationProvider(ctx);
+    if (!boardId) {
+      throw new Error('Invalid config: board id missing');
+    }
+    return (await provider.tasks(boardId, filters)).map(
+      ({ id, link, description, status, columnId, ...issue }) => ({
+        ...issue,
+        description: description.substring(0, 1000), // TODO: should we allow longer description?
+        importedFrom: name,
+        externalId: id,
+        externalLink: link,
+        createdByUser,
+        roadmapId,
+        status:
+          statusMapping?.find(({ fromColumn }) => fromColumn === columnId)
+            ?.toStatus ??
+          status ??
+          TaskStatus.NOT_STARTED,
+      }),
+    );
+  });
 
   const ok = await Roadmap.transaction(async (trx) => {
     const roadmap = await Roadmap.query(trx).findById(roadmapId);
