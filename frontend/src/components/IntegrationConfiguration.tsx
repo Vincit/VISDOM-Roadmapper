@@ -200,10 +200,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
 
   useEffect(() => {
     setBoardsTokenError(selected.isSuccess && isTokenError(boards.error));
-    if (
-      selected.isError &&
-      (isTokenError(selected.error) || isTokenError(boards.error))
-    ) {
+    if (selected.isError && isTokenError(selected.error)) {
       setTokenError(true);
       setErrorMessage(t('Token is expired'));
     }
@@ -245,7 +242,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
               {errorMessage || t('Oauth can not select board')}
             </Alert>
           )}
-          {!boards.isError && !selected.isError && (
+          {!selected.isError && (
             <Select
               name="board"
               id="board"

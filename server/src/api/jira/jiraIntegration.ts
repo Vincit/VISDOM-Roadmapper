@@ -8,7 +8,7 @@ import {
   IntegrationProvider,
   IntegrationEntry,
   IntegrationConfig,
-  InvalidTokenError,
+  convertError,
 } from '../integration';
 import { TaskStatus } from '../../../../shared/types/customTypes';
 
@@ -164,8 +164,6 @@ class JiraImporter implements IntegrationProvider {
   }
 
   private errorHandler(err: any): never {
-    if (err.statusCode === 401 && /token/i.test(err.error))
-      throw new InvalidTokenError(err.error);
-    throw err;
+    throw convertError(err);
   }
 }
