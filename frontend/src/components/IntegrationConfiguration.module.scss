@@ -14,6 +14,12 @@
   text-align: left;
 }
 
+.columnHeader {
+  @extend .typography-h3;
+  text-align: left;
+  padding-top: 16px;
+}
+
 .configHeader {
   @extend .layout-row;
   align-items: center;
