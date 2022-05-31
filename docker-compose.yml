@@ -11,6 +11,8 @@ services:
       - POSTGRES_PASSWORD=testpassword
     ports:
       - "5432:5432"
+    volumes:
+      - ./testdata/dump.sql:/docker-entrypoint-initdb.d/dump.sql
 
   roadmapper-server:
     container_name: roadmapper-server
