@@ -193,7 +193,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
 
   const boards = apiV2.useGetIntegrationBoardsQuery(
     { name, roadmapId },
-    { skip: !selected.isSuccess },
+    { skip: !!boardId && !selected.isSuccess },
   );
 
   const isTokenError = (err: any) => err?.data?.error === 'InvalidTokenError';
@@ -241,7 +241,7 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
               {errorMessage || t('Oauth can not select board')}
             </Alert>
           )}
-          {selected.isSuccess && (
+          {!selected.isError && (
             <Select
               name="board"
               id="board"
@@ -483,9 +483,9 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
             <>
               <Oauth configuration={configuration} />
               <SelectBoard configuration={configuration} />
+              <Remove configuration={configuration} />
             </>
           )}
-          {configuration && <Remove configuration={configuration} />}
         </div>
       )}
     </div>
