@@ -2,7 +2,7 @@
 
 .settingsPage {
   @extend .layoutCol;
-  margin: 10px 20px;
+  margin: 0 20px 20px;
   gap: 80px;
 }
 
@@ -14,7 +14,7 @@
     text-align: left;
     margin-bottom: 20px;
   }
-  h3 {
+  .deleteHeader {
     text-align: left;
     margin-bottom: 0;
   }
@@ -23,7 +23,7 @@
 .integrations {
   @extend .layout-row;
   flex-wrap: wrap;
-  gap: 70px;
+  gap: 50px;
 }
 
 .projectInfo {

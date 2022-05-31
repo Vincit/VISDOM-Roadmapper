@@ -20,7 +20,6 @@
     font-size: 12px !important;
     line-height: 18px !important;
     color: $COLOR_BLACK40;
-    padding: 3px;
     cursor: not-allowed;
   }
 
@@ -49,6 +48,7 @@
   .dropTitle {
     color: $COLOR_BLACK100;
     font-weight: bold;
+    width: 90%;
   }
 
   .emptyTitle {
@@ -56,6 +56,7 @@
   }
 
   .notSelected {
+    @extend .dropTitle;
     color: $COLOR_BLACK60;
     font-weight: normal;
   }

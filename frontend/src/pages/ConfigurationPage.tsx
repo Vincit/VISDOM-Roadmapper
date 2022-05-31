@@ -102,7 +102,7 @@ const RoadmapConfigurationPageComponent = ({
         <div className={classes(css.projectInfo)}>
           <OverviewContent data={overviewData} vertical />
           <div>
-            <h3>
+            <h3 className={classes(css.deleteHeader)}>
               <Trans i18nKey="Delete project" />
             </h3>
             <div className={classes(css.deleteContent)}>

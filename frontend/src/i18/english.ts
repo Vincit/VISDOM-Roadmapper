@@ -167,8 +167,8 @@ export const english = {
       'Unable to swap {{name}} OAuth token. Please contact an administrator if the problem persists.',
     'Oauth url query error':
       'Unable to query {{name}} OAuth URL. Please contact an administrator if the problem persists.',
-    'Select labels to import': 'Select labels to import:',
-    'Select integration board': 'Select {{name}} board:',
+    'Select labels to import': 'Labels to import',
+    'Select integration board': '{{name}} board',
     'Missing configuration error':
       'No {{name}} configuration found. Please configure {{name}} first.',
     'Internal server error': 'Internal server error',
@@ -367,6 +367,8 @@ export const english = {
     Custom: 'Custom',
     'estimate with a custom value for work amount in working days':
       'estimate with a custom value for work amount in working days.',
+    'integration-relation-tooltip':
+      'By default, tasks are imported as "Not started".',
     'config-jira-tooltip': 'Settings for JIRA for task imports',
     'config-trello-tooltip': 'Settings for TRELLO for task imports',
     'config-gitLab-tooltip': 'Settings for GITLAB for task imports',
@@ -434,5 +436,9 @@ export const english = {
     'Fit view -tooltip': 'Fit groups to the viewport',
     'Taskgroup reset -tooltip': 'Reset group positions',
     'Remove relation': 'Remove relation',
+    'Roadmapper state': 'Roadmapper state',
+    'Task state': 'Task state',
+    'Remove configuration': 'Remove Configuration',
+    'Remove configuration button': 'Remove {{name}} settings',
   },
 };

@@ -1,27 +1,35 @@
-import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import classNames from 'classnames';
 
 export const Dropdown: FC<{
   css: { readonly [k: string]: string };
   title?: string;
+  placeholder?: string;
   disabled?: boolean;
   empty?: boolean;
   maxLength?: number;
+  id?: string;
 }> = ({
   css,
-  title = 'Not selected',
+  title,
+  placeholder = 'Not selected',
   children,
   disabled,
   empty,
   maxLength,
+  id,
 }) => {
   const classes = classNames.bind(css);
   const [open, setOpen] = useState(false);
 
-  const closeMenu = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+  const closeMenu = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      setOpen(false);
+    },
+    [setOpen],
+  );
 
   useEffect(() => {
     if (open) {
@@ -34,7 +42,7 @@ export const Dropdown: FC<{
     };
   }, [open, closeMenu]);
 
-  const showMenu = (e: MouseEvent) => {
+  const showMenu = (e: React.MouseEvent) => {
     if (!open) {
       e.preventDefault();
       e.stopPropagation();
@@ -56,8 +64,11 @@ export const Dropdown: FC<{
           type="button"
           className={classes(css.dropButton)}
           disabled={disabled}
+          id={id}
         >
-          <div className={classes(css.emptyTitle)}>{shortenString(title)}</div>
+          <div className={classes(css.emptyTitle)}>
+            {shortenString(title ?? placeholder)}
+          </div>
         </button>
       </div>
     );
@@ -70,13 +81,10 @@ export const Dropdown: FC<{
         className={classes(css.dropButton)}
         onClick={showMenu}
         disabled={disabled}
+        id={id}
       >
-        <div
-          className={classes(
-            title === 'Not selected' ? css.notSelected : css.dropTitle,
-          )}
-        >
-          {shortenString(title)}
+        <div className={classes(title ? css.dropTitle : css.notSelected)}>
+          {shortenString(title ?? placeholder)}
         </div>
         <ExpandMoreIcon className={classes(css.expandIcon)} />
       </button>

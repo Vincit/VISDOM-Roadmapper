@@ -1,6 +1,5 @@
 import { FC, FormEvent, useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
-import Select from 'react-select';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
@@ -24,8 +23,8 @@ import { InfoTooltip } from './InfoTooltip';
 import { LoadingSpinner } from './LoadingSpinner';
 import { Input } from './forms/FormField';
 import { CloseButton } from './forms/SvgButton';
+import { Dropdown } from './forms/Dropdown';
 
-import '../shared.scss';
 import css from './IntegrationConfiguration.module.scss';
 import colors from '../colors.module.scss';
 
@@ -38,36 +37,40 @@ const SetMapping: FC<{
   remove?: () => unknown;
 }> = ({ name, status, select, remove }) => {
   const { t } = useTranslation();
+
   return (
-    <div style={{ width: '100%', display: 'flex', gap: 10 }}>
-      <span style={{ flexGrow: 1 }}>{name}</span>
-      <ArrowIcon style={{ alignSelf: 'center' }} htmlColor={colors.black40} />
-      <select
-        value={status}
-        onChange={(e) => {
-          select(Number(e.currentTarget.value));
-        }}
+    <div className={classes(css.mapping)}>
+      <span className={classes(css.name)}>{name}</span>
+      <ArrowIcon htmlColor={colors.black40} />
+      <Dropdown
+        css={css}
+        title={status === undefined ? undefined : taskStatusToText(status)}
+        placeholder={taskStatusToText(TaskStatus.NOT_STARTED)}
       >
         {Object.values(TaskStatus).map(
           (value) =>
-            typeof value !== 'string' && (
-              <option key={value} value={value}>
+            typeof value !== 'string' &&
+            value !== TaskStatus.NOT_STARTED && (
+              <button
+                key={value}
+                type="button"
+                onClick={() => select(value)}
+                className={classes(css.dropItem)}
+              >
                 {t(taskStatusToText(value))}
-              </option>
+              </button>
             ),
         )}
-      </select>
-      <div style={{ alignSelf: 'center', width: 21 }}>
-        {remove && (
-          <CloseButton
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              remove();
-            }}
-          />
-        )}
-      </div>
+      </Dropdown>
+      {remove && (
+        <CloseButton
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            remove();
+          }}
+        />
+      )}
     </div>
   );
 };
@@ -75,6 +78,7 @@ const SetMapping: FC<{
 const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
   configuration: { id, name, roadmapId, boardId, statusMapping },
 }) => {
+  const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState('');
 
   const {
@@ -87,8 +91,8 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
   });
 
   const [selected, setSelected] = useState<{
-    value: string;
-    label: string;
+    id: string;
+    name: string;
   } | null>();
 
   const [setMapping] = apiV2.useSetIntegrationStatusMappingMutation();
@@ -119,36 +123,34 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
               {errorMessage}
             </Alert>
           )}
-          <Select
-            name="status-mapping"
-            id="status-mapping"
-            className="react-select"
-            classNamePrefix="react-select"
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            placeholder="Select list"
-            isClearable
-            menuPortalTarget={document.body}
-            value={selected}
-            onChange={setSelected}
-            options={columns
+          <Dropdown css={css} title={selected?.name} id="status-mapping">
+            {columns
               ?.filter(
                 (column) =>
                   !statusMapping?.some(
                     ({ fromColumn }) => fromColumn === column.id,
                   ),
               )
-              .map((column) => ({
-                value: column.id,
-                label: column.name,
-              }))}
-          />
-          {(selected || statusMapping) && <br />}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              .map((column) => (
+                <button
+                  key={column.id}
+                  type="button"
+                  onClick={() => setSelected(column)}
+                  className={classes(css.dropItem)}
+                >
+                  {column.name}
+                </button>
+              ))}
+          </Dropdown>
+          {(selected || !!statusMapping?.length) && (
+            <div className={classes(css.statusMappingLabel)}>
+              <div>{t('Task state')}</div>
+              <div>{t('Roadmapper state')}</div>
+            </div>
+          )}
+          <div className={classes(css.mappings)}>
             {selected && (
-              <SetMapping
-                name={selected.label}
-                select={select(selected.value)}
-              />
+              <SetMapping name={selected.name} select={select(selected.id)} />
             )}
             {columns &&
               statusMapping?.map(({ id: mappingId, fromColumn, toStatus }) => {
@@ -218,6 +220,12 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
 
   return (
     <div>
+      <div className={classes(css.columnHeader)}>
+        {t('Relations')}
+        <InfoTooltip title={t(`integration-relation-tooltip`)}>
+          <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
+        </InfoTooltip>
+      </div>
       <label htmlFor="board">
         {t('Select integration board', { name: titleCase(name) })}
       </label>
@@ -242,37 +250,31 @@ const SelectBoard: FC<{ configuration: IntegrationConfiguration }> = ({
             </Alert>
           )}
           {!selected.isError && (
-            <Select
-              name="board"
+            <Dropdown
+              css={css}
+              title={selected.data?.name}
+              disabled={boards.isError}
               id="board"
-              className="react-select"
-              classNamePrefix="react-select"
-              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              placeholder="Select board"
-              isDisabled={boards.isError}
-              menuPortalTarget={document.body}
-              onChange={(entry) => {
-                if (entry) {
-                  patch({ id, name, roadmapId, boardId: entry.value })
-                    .unwrap()
-                    .catch((err) => {
-                      setErrorMessage(
-                        err.data?.message ?? 'something went wrong',
-                      );
-                    });
-                }
-              }}
-              defaultValue={
-                selected.data && {
-                  value: selected.data.id,
-                  label: selected.data.name,
-                }
-              }
-              options={boards.data?.map((board) => ({
-                value: board.id,
-                label: board.name,
-              }))}
-            />
+            >
+              {boards.data?.map((board) => (
+                <button
+                  key={board.id}
+                  type="button"
+                  onClick={() =>
+                    patch({ id, name, roadmapId, boardId: board.id })
+                      .unwrap()
+                      .catch((err) => {
+                        setErrorMessage(
+                          err.data?.message ?? 'something went wrong',
+                        );
+                      })
+                  }
+                  className={classes(css.dropItem)}
+                >
+                  {board.name}
+                </button>
+              ))}
+            </Dropdown>
           )}
           {boardId && selected.isSuccess && (
             <MapStates configuration={configuration} />
@@ -288,23 +290,24 @@ const Remove: FC<{ configuration: IntegrationConfiguration }> = ({
 }) => {
   const [remove] = apiV2.useDeleteIntegrationConfigurationMutation();
   return (
-    <div className={classes(css.layoutRow)}>
+    <div className={classes(css.layoutCol)}>
       <span className={classes(css.columnHeader)}>
-        <button
-          className={classes(css['button-small-filled'], css.deleteButton)}
-          type="submit"
-          onClick={(e) => {
-            e.preventDefault();
-            // TODO: ask confirmation
-            remove(configuration);
-          }}
-        >
-          <Trans
-            i18nKey="Remove configuration"
-            values={{ name: titleCase(configuration.name) }}
-          />
-        </button>
+        <Trans i18nKey="Remove configuration" />
       </span>
+      <button
+        className={classes(css.deleteButton)}
+        type="submit"
+        onClick={(e) => {
+          e.preventDefault();
+          // TODO: ask confirmation
+          remove(configuration);
+        }}
+      >
+        <Trans
+          i18nKey="Remove configuration button"
+          values={{ name: titleCase(configuration.name) }}
+        />
+      </button>
     </div>
   );
 };
@@ -316,29 +319,28 @@ const Oauth: FC<{ configuration: IntegrationConfiguration }> = ({
   const dispatch = useDispatch<StoreDispatchType>();
 
   return (
-    <div className={classes(css.layoutRow)}>
+    <div className={classes(css.layoutCol)}>
       <span className={classes(css.columnHeader)}>
         {titleCase(name)} <Trans i18nKey="authentication" />
         <InfoTooltip title={t(`oauth-${name}-tooltip`)}>
           <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
         </InfoTooltip>
-        <br />
-        <button
-          className={classes(css['button-small-filled'])}
-          type="submit"
-          onClick={(e) => {
-            e.preventDefault();
-            dispatch(
-              modalsActions.showModal({
-                modalType: ModalTypes.SETUP_OAUTH_MODAL,
-                modalProps: { name, roadmapId },
-              }),
-            );
-          }}
-        >
-          + <Trans i18nKey="OAuth" />
-        </button>
       </span>
+      <button
+        className={classes(css.authButton)}
+        type="submit"
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(
+            modalsActions.showModal({
+              modalType: ModalTypes.SETUP_OAUTH_MODAL,
+              modalProps: { name, roadmapId },
+            }),
+          );
+        }}
+      >
+        + <Trans i18nKey="OAuth" />
+      </button>
     </div>
   );
 };
@@ -449,7 +451,7 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div>
+    <div className={classes(css.configContainer)}>
       <div
         onClick={() => setExpanded((prev) => !prev)}
         onKeyPress={() => setExpanded((prev) => !prev)}
@@ -469,7 +471,7 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
         </h3>
       </div>
       {expanded && (
-        <div className={classNames(css.configContainer)}>
+        <div className={classNames(css.configContent)}>
           {isLoading ? (
             <LoadingSpinner />
           ) : (
