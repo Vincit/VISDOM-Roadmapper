@@ -65,6 +65,7 @@ export const SocketListener = () => {
 
       socket.current.on(ClientEvents.CUSTOMER_UPDATED, () => {
         refetchCustomers();
+        dispatch(userActions.getUserInfo()); // user.representativeFor
       });
 
       socket.current.on(ClientEvents.VERSION_UPDATED, () => {

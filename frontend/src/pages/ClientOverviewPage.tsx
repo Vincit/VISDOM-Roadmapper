@@ -38,9 +38,6 @@ const ClientOverview: FC<{
   const { data: users } = apiV2.useGetRoadmapUsersQuery(roadmapId ?? skipToken);
   const representatives =
     users?.filter(({ id }) => representativeIds?.includes(id)) ?? [];
-  const { data: customers } = apiV2.useGetCustomersQuery(
-    roadmapId ?? skipToken,
-  );
   const { tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken, {
     selectFromResult: ({ data }) => ({ tasks: data ?? [] }),
   });
@@ -51,9 +48,9 @@ const ClientOverview: FC<{
     roadmapId,
     tasks,
     users,
-    customers,
+    clients,
   );
-  const allCustomerStakes = customerStakesSummary(tasks, customers);
+  const allCustomerStakes = customerStakesSummary(tasks, clients);
   const clientsListPage = `${paths.roadmapHome}/${roadmapId}${paths.roadmapRelative.clients}`;
 
   const siblingClients = [

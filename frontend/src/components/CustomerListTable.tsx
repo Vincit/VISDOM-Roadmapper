@@ -46,7 +46,7 @@ export const CustomerList: FC<{
             <Trans i18nKey="Clients" />
           </h2>
         ),
-        getSort: customerSort(roadmapId, tasks, users, customers),
+        getSort: customerSort(roadmapId, tasks, users, selectedCustomers),
         Row: TableCustomerRow,
         header: [
           {
@@ -72,7 +72,7 @@ export const CustomerList: FC<{
           { label: '', width: role === RoleType.Admin ? 1 : 0.5 },
         ],
       }),
-    [customers, roadmapId, role, tasks, users],
+    [selectedCustomers, roadmapId, role, tasks, users],
   );
 
   return selectedCustomers.length > 0 ? (
