@@ -20,8 +20,8 @@
   "main": "src/server.ts",
   "scripts": {
     "migrate": "knex --knexfile=./knexfile.ts migrate:latest",
-    "seed-db": "knex --knexfile=./knexfile.ts seed:run",
-    "start": "knex --knexfile=./knexfile.ts migrate:latest && knex --knexfile=./knexfile.ts seed:run && ts-node ./src/server.ts",
+    "seed-db": "yarn migrate && knex --knexfile=./knexfile.ts seed:run",
+    "start": "yarn migrate && ts-node ./src/server.ts",
     "start-db": "cd .. && docker-compose -f docker-compose.yml up -d roadmapper-database",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 10000",
     "start-prod": "knex --knexfile=./build/server/knexfile.js migrate:latest && node ./build/server/src/server.js",

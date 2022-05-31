@@ -24,7 +24,9 @@ local postgres database.
 2. Install yarn (`npm install --global yarn `) and install required packages
    by simply running `yarn` in **/frontend** and **/backend** respectively.
 
-3. Start your development database by running `yarn start-db` in **/server**
+3. Start your development database by running the following steps in **/server**:
+    - `yarn start-db` to start the database service
+    - optionally, `yarn seed-db` to use test data from `src/seeds/testdata.ts`
 
 4. Start your backend by running `yarn start` in **/server**
 
