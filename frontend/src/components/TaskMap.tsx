@@ -19,7 +19,6 @@ import {
   taskmapPositionSelector,
 } from '../redux/roadmaps/selectors';
 import { roadmapsActions } from '../redux/roadmaps';
-import { Task } from '../redux/roadmaps/types';
 import { StoreDispatchType } from '../redux';
 import {
   GroupedRelation,
@@ -51,16 +50,16 @@ const edgeTypes = { custom: CustomEdge };
 export const TaskMap: FC<{
   taskRelations: GroupedRelation[];
   draggedTask: number | undefined;
-  selectedTask: Task | undefined;
-  setSelectedTask: (task: Task | undefined) => void;
+  selectedId: number | undefined;
+  setSelectedId: (id: number | undefined) => void;
   dropUnavailable: Set<string>;
   isLoading: boolean;
-  setIsLoading: any;
+  setIsLoading: (_: boolean) => void;
 }> = ({
   taskRelations,
   draggedTask,
-  selectedTask,
-  setSelectedTask,
+  selectedId,
+  setSelectedId,
   dropUnavailable,
   isLoading,
   setIsLoading,
@@ -133,8 +132,8 @@ export const TaskMap: FC<{
                   listId={id}
                   taskIds={synergies.sort((a, b) => a - b)} // FIXME: ordering prevents render bugs
                   tasks={tasks}
-                  selectedTask={selectedTask}
-                  setSelectedTask={setSelectedTask}
+                  selectedId={selectedId}
+                  setSelectedId={setSelectedId}
                   allDependencies={taskRelations.flatMap(
                     ({ dependencies }) => dependencies,
                   )}
@@ -185,9 +184,9 @@ export const TaskMap: FC<{
     dropUnavailable,
     flowKey,
     isLoading,
-    selectedTask,
+    selectedId,
     setIsLoading,
-    setSelectedTask,
+    setSelectedId,
     taskRelations,
     tasks,
     unavailable,

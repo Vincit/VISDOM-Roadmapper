@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { ReactFlowProvider } from 'react-flow-renderer';
@@ -46,7 +46,11 @@ export const TaskMapPage = () => {
   const [taskRelations, setTaskRelations] = useState<GroupedRelation[]>([]);
   const [stagedTasks, setStagedTasks] = useState<number[]>([]);
   const [unstagedTasks, setUnstagedTasks] = useState<Task[]>([]);
-  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
+  const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
+  const selectedTask = useMemo(
+    () => tasks?.find(({ id }) => id === selectedId),
+    [tasks, selectedId],
+  );
   const [draggedTask, setDraggedTask] = useState<number | undefined>();
   const [dropUnavailable, setDropUnavailable] = useState<Set<string>>(
     new Set(),
@@ -246,8 +250,8 @@ export const TaskMapPage = () => {
             <TaskMap
               taskRelations={taskRelations}
               draggedTask={draggedTask}
-              selectedTask={selectedTask}
-              setSelectedTask={setSelectedTask}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
               dropUnavailable={dropUnavailable}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
