@@ -284,12 +284,12 @@ const TaskOverview: FC<{
 export const TaskOverviewPage = () => {
   const { taskId } = useParams<{ taskId: string | undefined }>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: tasks, isFetching } = apiV2.useGetTasksQuery(
+  const { data: tasks, isLoading } = apiV2.useGetTasksQuery(
     roadmapId ?? skipToken,
   );
 
   const taskIdx = tasks?.findIndex(({ id }) => Number(taskId) === id);
-  if (!roadmapId || isFetching) return <LoadingSpinner />;
+  if (!roadmapId || isLoading) return <LoadingSpinner />;
   if (!tasks || taskIdx === undefined || taskIdx < 0)
     return <Redirect to={paths.notFound} />;
   return <TaskOverview tasks={tasks} task={tasks[taskIdx]} taskIdx={taskIdx} />;
