@@ -129,23 +129,18 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
   );
   const [addRoadmap] = apiV2.useAddRoadmapMutation();
 
-  const memberExists = (email: string, oldEmail?: string) => {
-    const alreadyExists = members.find(
-      (member) => member.email === email && member.email !== oldEmail,
-    );
-    return alreadyExists || userInfo.email === email;
-  };
+  const memberExists = (email: string, oldEmail?: string) =>
+    userInfo.email === email ||
+    (email !== oldEmail && members.some((member) => member.email === email));
 
   const customerExists = (
     customer: RoadmapCreationCustomer,
     oldCustomer?: RoadmapCreationCustomer,
   ) =>
-    customers.find(
-      ({ name, email }) =>
-        name === customer.name &&
-        email === customer.email &&
-        (oldCustomer?.name !== customer.name ||
-          oldCustomer?.email !== customer.email),
+    (oldCustomer?.name !== customer.name ||
+      oldCustomer?.email !== customer.email) &&
+    customers.some(
+      ({ name, email }) => name === customer.name && email === customer.email,
     );
 
   const handleSubmit = async () => {
