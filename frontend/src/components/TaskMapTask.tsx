@@ -13,11 +13,11 @@ const classes = classNames.bind(css);
 export interface TaskProps {
   taskId: number;
   tasks: Task[];
-  selected?: boolean;
-  setSelectedTask?: any;
+  selectedId: number | undefined;
+  setSelectedId: (id: number | undefined) => void;
   checked: { from: boolean; to: boolean };
   disableDragging: boolean;
-  dropDisabled?: boolean;
+  disableDrop?: boolean;
   setGroupDraggable: (_: boolean) => unknown;
   unavailable: Set<number>;
   isLoading: boolean;
@@ -37,12 +37,12 @@ const SingleTask: FC<
 > = ({
   taskId,
   tasks,
-  setSelectedTask,
-  selected,
+  selectedId,
+  setSelectedId,
   checked,
   provided,
   snapshot,
-  dropDisabled,
+  disableDrop,
   unavailable,
   dragHandle,
   setGroupDraggable,
@@ -55,7 +55,7 @@ const SingleTask: FC<
   const selectTask = (e: MouseEvent) => {
     e.stopPropagation();
     if (isLoading) return;
-    setSelectedTask(selected ? undefined : task);
+    setSelectedId(selectedId === taskId ? undefined : taskId);
   };
 
   if (!task) return null;
@@ -81,7 +81,7 @@ const SingleTask: FC<
             [css.connectable]: handleConnectable,
             [css.connectStart]:
               dragHandle?.from === taskId && dragHandle.type === type,
-            [css.dropDisabled]: dropDisabled,
+            [css.dropDisabled]: disableDrop,
             [css.draggingSomething]: draggingSomething,
             [css.loading]: isLoading,
           })}
@@ -105,7 +105,7 @@ const SingleTask: FC<
       onFocus={() => setGroupDraggable(false)}
       onBlur={() => setGroupDraggable(true)}
       className={classes(css.singleTask, {
-        [css.selectedTask]: selected,
+        [css.selectedTask]: selectedId === taskId,
         [css.dragging]: isDragging,
         [css.draggingOutside]: !snapshot.draggingOver,
         [css.unavailable]:
@@ -113,7 +113,7 @@ const SingleTask: FC<
         [css.connecting]: dragHandle,
         [css.connectable]: connectable,
         [css.connectStart]: dragHandle?.from === taskId,
-        [css.dropDisabled]: dropDisabled,
+        [css.dropDisabled]: disableDrop,
         [css.draggingSomething]: draggingSomething,
         [css.loading]: isLoading,
       })}

@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
-import { Task } from '../redux/roadmaps/types';
 import { DraggableSingleTask, TaskProps } from './TaskMapTask';
 import css from './TaskMapTaskGroup.module.scss';
 
@@ -11,16 +10,12 @@ export const TaskGroup: FC<
   {
     listId: string;
     taskIds: number[];
-    selectedTask: Task | undefined;
-    setSelectedTask: (task: Task | undefined) => void;
     allDependencies: { from: number; to: number }[];
-    disableDrop?: boolean;
     nodeHeight: number;
   } & Omit<TaskProps, 'taskId' | 'checked'>
 > = ({
   listId,
   taskIds,
-  selectedTask,
   allDependencies,
   disableDragging,
   disableDrop,
@@ -49,14 +44,13 @@ export const TaskGroup: FC<
           <div key={taskId}>
             <DraggableSingleTask
               taskId={taskId}
-              selected={selectedTask?.id === taskId}
               index={index}
               checked={{
                 to: allDependencies.some(({ to }) => to === taskId),
                 from: allDependencies.some(({ from }) => from === taskId),
               }}
               disableDragging={disableDragging}
-              dropDisabled={disableDrop}
+              disableDrop={disableDrop}
               setGroupDraggable={setGroupDraggable}
               draggingSomething={draggingSomething}
               isLoading={isLoading}
