@@ -163,11 +163,9 @@ export const AddOrModifyCustomer: FC<{
       .filter(({ type }) => hasPermission(type, Permission.CustomerRepresent))
       .map((member) => ({
         ...member,
-        checked: initialCustomer
-          ? !!initialCustomer.representatives.find(
-              ({ email, checked }) => email === member.email && checked,
-            )
-          : false,
+        checked: !!initialCustomer?.representatives.some(
+          ({ email, checked }) => email === member.email && checked,
+        ),
       })),
   );
   const [validEmail, setValidEmail] = useState(!!initialCustomer);
