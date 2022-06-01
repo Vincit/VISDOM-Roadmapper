@@ -154,7 +154,7 @@ export const AddRoadmapModal: Modal<ModalTypes.ADD_ROADMAP_MODAL> = ({
         invitations: members.map((member) => ({
           ...member,
           representativeFor: customers.filter(({ representatives }) =>
-            representatives.find(
+            representatives.some(
               ({ email, checked }) => email === member.email && checked,
             ),
           ),

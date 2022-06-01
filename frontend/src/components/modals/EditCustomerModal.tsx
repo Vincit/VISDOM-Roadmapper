@@ -69,7 +69,7 @@ export const EditCustomerModal: Modal<ModalTypes.EDIT_CUSTOMER_MODAL> = ({
             user.type === RoleType.Admin || user.type === RoleType.Business,
         )
         .map((obj) =>
-          customer.representatives?.find((rep) => rep.id === obj.id)
+          customer.representatives?.some((rep) => rep.id === obj.id)
             ? { ...obj, checked: true }
             : { ...obj, checked: false },
         ),
