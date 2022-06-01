@@ -136,7 +136,7 @@ const ClientOverview: FC<{
 export const ClientOverviewPage = () => {
   const { clientId } = useParams<{ clientId: string | undefined }>();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { data: customers, isFetching } = apiV2.useGetCustomersQuery(
+  const { data: customers, isLoading } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
   const userInfoCustomers = useSelector<RootState, Customer[]>(
@@ -150,7 +150,7 @@ export const ClientOverviewPage = () => {
   const client =
     clientIdx !== undefined && clientIdx >= 0 ? clients[clientIdx] : undefined;
 
-  if (!roadmapId || isFetching) return <LoadingSpinner />;
+  if (!roadmapId || isLoading) return <LoadingSpinner />;
   if (!client) return <Redirect to={paths.notFound} />;
   return (
     <ClientOverview clients={clients} client={client} clientIdx={clientIdx} />

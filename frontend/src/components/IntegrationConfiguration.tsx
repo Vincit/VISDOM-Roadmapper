@@ -435,7 +435,7 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
   name,
 }) => {
   const { t } = useTranslation();
-  const { configuration, isFetching } = apiV2.useGetRoadmapsQuery(undefined, {
+  const { configuration, isLoading } = apiV2.useGetRoadmapsQuery(undefined, {
     selectFromResult: ({ data, ...rest }) => {
       return {
         ...rest,
@@ -470,7 +470,7 @@ export const IntegrationConfig: FC<{ roadmapId: number; name: string }> = ({
       </div>
       {expanded && (
         <div className={classNames(css.configContainer)}>
-          {isFetching ? (
+          {isLoading ? (
             <LoadingSpinner />
           ) : (
             <Config

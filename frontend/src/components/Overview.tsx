@@ -82,18 +82,18 @@ export const OverviewContent: FC<OverviewContentProps> = ({
 
 /**
  * Renders a <Overview /> component, which can be used in task, client etc. overviews.
- * @param {object} props Component props
- * @param {string} props.backHref Href for the back button's link
- * @param {string} props.overviewType Type of the overview. Appears in the header text
- * @param {any} props.name Name of the overviewed object. Appears in the header
- * @param {PreviousAndNext[]} props.previousAndNext Array of the previous and next
+ * @param props Component props
+ * @param props.backHref Href for the back button's link
+ * @param props.overviewType Type of the overview. Appears in the header text
+ * @param props.name Name of the overviewed object. Appears in the header
+ * @param props.previousAndNext Array of the previous and next
  * overviewable object id's. Is used for rendering buttons for changing the overview
  * page to previous or next overviewable.
- * @param {function} props.onOverviewChange Callback that runs when next or previous
+ * @param props.onOverviewChange Callback that runs when next or previous
  * button is clicked. Callback should change the overview page according to the id
- * @param {MetricsProps[]} props.metrics Array of metrics data that is used to render
+ * @param props.metrics Array of metrics data that is used to render
  * MetricsSummary components
- * @param {OverviewData[][]} props.data 2d array consisting of overview data objects.
+ * @param props.data 2d array consisting of overview data objects.
  * Used to render label-value -type component. The Inner arrays define the displayed
  * columns. 'Format' property adds a css class to the value string/component.
  * If the value is editable, define 'EditComponent' as a property.
