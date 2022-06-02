@@ -218,7 +218,7 @@ export const SkipPeopleAddition: FC<{
     <div className={classes(css.skip)}>
       <Trans i18nKey="Skip adding 1/3" values={{ type }} />{' '}
       <ControlledTooltip
-        content={
+        title={
           <div className={classes(css.skipTooltip)}>
             <Trans i18nKey="Skip warning">
               Created list will be lost if you skip.
