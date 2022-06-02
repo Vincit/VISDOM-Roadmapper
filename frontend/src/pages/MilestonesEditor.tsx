@@ -660,7 +660,7 @@ export const MilestonesEditor = () => {
             disableDragging={disableDrag || !hasVersionEditPermission}
             className={classes({ 'loading-cursor': disableDrag })}
             hideDragIndicator={!hasVersionEditPermission}
-            showRatings
+            showInfoIcon
             showSearch
           />
         </ExpandableColumn>
