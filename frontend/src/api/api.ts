@@ -559,14 +559,14 @@ const register = async (newUser: UserRegisterRequest) => {
 
 const patchUser = async (userPatch: UserModifyRequest) => {
   const response = await axios.patch(`/users/${userPatch.id}`, userPatch);
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const deleteUser = async (userDelete: UserDeleteRequest) => {
   const response = await axios.delete(`/users/${userDelete.id}`, {
     data: userDelete,
   });
-  return response.status === 200;
+  return successful(response.status);
 };
 
 const getIntegrationOauthURL = async (name: string, roadmapId: number) => {
