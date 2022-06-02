@@ -45,9 +45,12 @@ export const setSubscribedRoadmap = (socket: ExtendedSocket) => async (
   roadmapId: number | undefined | null,
   sendResponse?: (res: SocketStatusResponse) => void,
 ) => {
-  // -1 or no roadmapId arg leaves all rooms
+  socket.rooms.forEach((room) => {
+    if (room.startsWith('roadmap-')) {
+      socket.leave(room);
+    }
+  });
   if (!roadmapId || roadmapId === -1) {
-    socket.rooms.forEach((room) => socket.leave(room));
     sendResponse?.({ status: 200 });
     return;
   }
@@ -63,12 +66,6 @@ export const setSubscribedRoadmap = (socket: ExtendedSocket) => async (
     });
     return;
   }
-
-  socket.rooms.forEach((room) => {
-    if (room.startsWith('roadmap-')) {
-      socket.leave(room);
-    }
-  });
   socket.join(`roadmap-${roadmapId}`);
 
   sendResponse?.({ status: 200 });
