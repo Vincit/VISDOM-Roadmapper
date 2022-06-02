@@ -10,7 +10,6 @@ import {
   IntegrationConfig,
   convertError,
 } from '../integration';
-import { TaskStatus } from '../../../../shared/types/customTypes';
 
 const PRIVATE_KEY_EXPORT_FORMAT = 'pkcs1';
 
