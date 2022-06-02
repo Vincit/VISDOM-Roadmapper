@@ -138,8 +138,9 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
           <Trans i18nKey="List order" />
           <Dropdown
             css={css}
-            title={t(TaskRatingSortingTypesToText(sorting.type.get()))}
-            maxLength={20}
+            title={t(TaskRatingSortingTypesToText(sorting.type.get()), {
+              type: t(typeString),
+            })}
           >
             {sortingOptions.map((value) => (
               <button
@@ -148,7 +149,9 @@ export const ratingTable: (def: RatingTableDef) => FC<RatingTableProps> = ({
                 onClick={() => sorting.type.set(value)}
                 type="button"
               >
-                {t(TaskRatingSortingTypesToText(value))}
+                {t(TaskRatingSortingTypesToText(value), {
+                  type: t(typeString),
+                })}
               </button>
             ))}
           </Dropdown>
