@@ -204,29 +204,27 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
   }
 };
 
-const ratingValues = (customers: Customer[] | undefined) => (
-  rating: Taskrating,
-) => {
-  const creator = customers?.find(({ id }) => id === rating.forCustomer);
-  const weight = creator?.weight ?? 0;
-  return {
-    weighted: rating.value * weight,
-    unweighted: rating.value,
-    creator,
-  };
-};
+const ratingValues = (task: Task, customers: Customer[] | undefined) =>
+  task.ratings
+    .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
+    .map(({ value, forCustomer }) => {
+      const creator = customers?.find(({ id }) => id === forCustomer);
+      const weight = creator?.weight ?? 0;
+      return {
+        weighted: value * weight,
+        unweighted: value,
+        creator,
+      };
+    });
 
 export const taskRatingsCustomerStakes = (
   customers: Customer[] | undefined,
 ) => (result: Map<Customer, RatingsSummary>, task: Task) =>
-  task.ratings
-    .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValues(customers))
-    .reduce((acc, { creator, unweighted }) => {
-      if (!creator) return acc;
-      const prevSummary = acc.get(creator) || new RatingsSummary();
-      return acc.set(creator, prevSummary.add(unweighted));
-    }, result);
+  ratingValues(task, customers).reduce((acc, { creator, unweighted }) => {
+    if (!creator) return acc;
+    const prevSummary = acc.get(creator) || new RatingsSummary();
+    return acc.set(creator, prevSummary.add(unweighted));
+  }, result);
 
 // Calculate total sum of task values in the milestone
 // And map values of how much each user has rated in these tasks
@@ -236,19 +234,16 @@ export const customerStakesSummary = (
 ) => tasks.reduce(taskRatingsCustomerStakes(customers), new Map());
 
 const taskValuesSummary = (task: Task, customers: Customer[] | undefined) =>
-  task.ratings
-    .filter(({ dimension }) => dimension === TaskRatingDimension.BusinessValue)
-    .map(ratingValues(customers))
-    .reduce(
-      (acc, { weighted, unweighted }) => ({
-        weighted: acc.weighted.add(weighted),
-        unweighted: acc.unweighted.add(unweighted),
-      }),
-      {
-        weighted: new RatingsSummary(),
-        unweighted: new RatingsSummary(),
-      },
-    );
+  ratingValues(task, customers).reduce(
+    (acc, { weighted, unweighted }) => ({
+      weighted: acc.weighted.add(weighted),
+      unweighted: acc.unweighted.add(unweighted),
+    }),
+    {
+      weighted: new RatingsSummary(),
+      unweighted: new RatingsSummary(),
+    },
+  );
 
 export const totalValuesAndComplexity = (
   tasks: Task[],
