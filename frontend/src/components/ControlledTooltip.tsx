@@ -6,23 +6,23 @@ import css from './InfoTooltip.module.scss';
 const classes = classNames.bind(css);
 
 export const ControlledTooltip: React.FC<{
-  open: boolean;
-  onClose: (value: boolean) => void;
-  content: any;
+  open?: boolean;
+  onClose?: (value: boolean) => void;
+  title: React.ReactNode;
   children?: any;
   placement?: 'bottom' | 'left' | 'right' | 'top';
-}> = ({ open, onClose, content, children, placement }) => {
+}> = ({ open, onClose, title, children, placement }) => {
   return (
     <Tooltip
       classes={{
         arrow: classes(css.tooltipArrow),
         tooltip: classes(css.tooltip),
       }}
-      title={content}
+      title={title ?? ''}
       placement={placement || 'top'}
       arrow
       open={open}
-      onClose={() => onClose(false)}
+      onClose={() => onClose?.(false)}
       leaveDelay={500}
     >
       {children}
