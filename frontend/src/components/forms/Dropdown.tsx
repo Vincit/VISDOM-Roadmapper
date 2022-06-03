@@ -3,9 +3,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import classNames from 'classnames';
 
 export const Dropdown: FC<{
-  css: any;
+  css: { readonly [k: string]: string };
   title?: string;
-  children?: any;
   disabled?: boolean;
   empty?: boolean;
   maxLength?: number;
@@ -73,11 +72,9 @@ export const Dropdown: FC<{
         disabled={disabled}
       >
         <div
-          className={
-            title === 'Not selected'
-              ? classes(css.notSelected)
-              : classes(css.dropTitle)
-          }
+          className={classes(
+            title === 'Not selected' ? css.notSelected : css.dropTitle,
+          )}
         >
           {shortenString(title)}
         </div>
