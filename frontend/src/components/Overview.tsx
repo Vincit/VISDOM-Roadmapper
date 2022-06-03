@@ -63,10 +63,9 @@ export const OverviewContent: FC<OverviewContentProps> = ({
     <div className={classes(css.data)}>
       {data.map((column, idx) => (
         <div
-          className={classes(
-            css.column,
-            `${idx + 1 === data.length && css.lastColumn}`,
-          )}
+          className={classes(css.column, {
+            [css.borderless]: idx + 1 === data.length || vertical,
+          })}
           // eslint-disable-next-line react/no-array-index-key
           key={idx}
         >

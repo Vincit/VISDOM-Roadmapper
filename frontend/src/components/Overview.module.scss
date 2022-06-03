@@ -32,14 +32,11 @@
     overflow-wrap: anywhere;
     align-items: start;
   }
+  padding-right: 10px;
   div {
     textarea {
       overflow: auto !important;
       background-color: $COLOR_WHITE;
-    }
-    div:nth-child(2) {
-      padding-right: 5%;
-      justify-content: left;
     }
   }
 }
@@ -90,7 +87,7 @@
     height: min-content;
     border-right: 1px solid $COLOR_BLACK40;
   }
-  .lastColumn {
+  .borderless {
     border: none;
   }
   .row {
