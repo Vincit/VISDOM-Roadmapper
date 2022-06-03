@@ -19,7 +19,6 @@
     @extend .typography-body-small;
     @extend .layout-row;
     color: $COLOR_BLACK60;
-    gap: 10px;
     align-items: center;
     width: max-content;
 
@@ -27,8 +26,9 @@
       margin: 0;
     }
     .dropMenu {
-      min-width: max-content;
-      width: 100%;
+      width: max-content;
+      left: unset;
+      right: 0;
     }
   }
 }
