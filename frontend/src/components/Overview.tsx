@@ -29,6 +29,7 @@ interface OverviewData {
 }
 
 interface OverviewContentProps {
+  vertical?: boolean;
   metrics?: MetricsProps[];
   data: OverviewData[][];
 }
@@ -47,8 +48,9 @@ interface OverviewProps extends OverviewContentProps {
 export const OverviewContent: FC<OverviewContentProps> = ({
   metrics,
   data,
+  vertical,
 }) => (
-  <div className={classes(css.content)}>
+  <div className={classes(css.content, { [css.vertical]: vertical })}>
     {metrics && (
       <div className={classes(css.metrics)}>
         {metrics.map(({ label, value, children }) => (
@@ -106,6 +108,7 @@ export const Overview: FC<OverviewProps> = ({
   onOverviewChange,
   metrics,
   data,
+  vertical,
 }) => {
   const { t } = useTranslation();
 
@@ -131,7 +134,7 @@ export const Overview: FC<OverviewProps> = ({
           ))}
         </div>
       </div>
-      <OverviewContent metrics={metrics} data={data} />
+      <OverviewContent metrics={metrics} data={data} vertical={vertical} />
     </div>
   );
 };
