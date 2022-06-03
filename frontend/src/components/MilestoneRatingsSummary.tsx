@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { Task } from '../redux/roadmaps/types';
+import { Customer, Task } from '../redux/roadmaps/types';
 import css from './MilestoneRatingsSummary.module.scss';
 import { milestoneRatingSummary } from '../utils/TaskUtils';
 
@@ -24,6 +24,21 @@ const Rating: FC<{
           <span>-</span>
         )}
       </div>
+    </div>
+  );
+};
+
+export const MilestoneWeightedRatingsSummary: FC<{
+  tasks: Task[];
+  customers: Customer[] | undefined;
+  completed?: boolean;
+}> = ({ tasks, customers, completed }) => {
+  const { t } = useTranslation();
+  const { value } = milestoneRatingSummary(tasks).weighted(customers);
+  return (
+    <div className={classes(css.ratingSummary, { [css.completed]: completed })}>
+      <Rating title={t('Weighted total value')} value={value('avg').total} />
+      <Rating title={t('Weighted average value')} value={value('avg').avg} />
     </div>
   );
 };
