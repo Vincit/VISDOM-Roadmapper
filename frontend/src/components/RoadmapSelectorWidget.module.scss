@@ -8,16 +8,16 @@
 }
 
 .dropButton {
+  @extend .layout-row;
+  gap: 5px;
   @extend .typography-body-small;
-  @extend .rightSide;
   position: relative;
   align-items: center;
   white-space: nowrap;
-  margin-right: 0;
   border-radius: 16px;
   border: 2px solid $COLOR_EMERALD;
   height: 32px;
-  padding: 0px 26px 0px 16px;
+  padding: 0px 6px 0px 16px;
   background-color: $COLOR_BLACK5;
 
   &:hover,
@@ -47,14 +47,6 @@
 
 .menuCanvas {
   background-color: white;
-}
-
-.expandIcon {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 17px;
-  height: 17px;
 }
 
 .emptyTitle {
