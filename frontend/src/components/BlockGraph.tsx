@@ -10,6 +10,10 @@ const classes = classNames.bind(css);
 const mapToRange = (values: number[], low: number, high: number) => {
   const min = Math.min(...values);
   const max = Math.max(...values);
+  if (min === max) {
+    const mid = low + Math.floor((high - low) / 2);
+    return values.map(() => mid);
+  }
   return values.map(
     (x) => low + Math.floor(((x - min) / (max - min)) * (high - low)),
   );
