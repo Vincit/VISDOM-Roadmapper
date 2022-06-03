@@ -8,8 +8,8 @@
   min-height: 56px;
   width: 100%;
   border: 0;
-  display: flex;
-  flex-direction: row;
+
+  @extend .layout-row;
   justify-content: flex-start;
   vertical-align: middle;
   box-sizing: border-box;
@@ -26,10 +26,10 @@
 }
 
 .navBarRightSide {
+  @extend .layout-row;
+  gap: 16px;
   margin-right: 16px;
-  display: flex;
   flex: 1;
-  flex-direction: row;
   justify-content: flex-end;
   vertical-align: middle;
 }
@@ -38,8 +38,6 @@
   border: 0;
   border-left: 1px solid $COLOR_BLACK10;
   width: 0px;
-  margin-left: 16px;
-  margin-right: 16px;
   height: 30px;
   margin-top: 13px;
   margin-bottom: 13px;
@@ -49,12 +47,8 @@
   display: flex;
   align-items: center;
 
-  padding-right: 10px;
   color: $COLOR_BLACK100;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  padding-left: 6px; // Areas meet at the middle
-  margin-left: -6px; // Added - margin to match the padding
+  margin: 12px 0;
 }
 
 .navBarLink:hover .icon {
@@ -67,8 +61,6 @@
 
   @extend .typography-body-small;
 
-  padding-left: 16px;
-  padding-right: 16px;
   color: $COLOR_BLACK60;
 }
 
@@ -82,7 +74,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: -2px;
-  margin-right: 10px;
   gap: 2px;
 }
