@@ -21,7 +21,10 @@ import {
 } from '../components/forms/SvgButton';
 import { SortableTaskList } from '../components/SortableTaskList';
 import { ExpandableColumn } from '../components/ExpandableColumn';
-import { MilestoneRatingsSummary } from '../components/MilestoneRatingsSummary';
+import {
+  MilestoneRatingsSummary,
+  MilestoneWeightedRatingsSummary,
+} from '../components/MilestoneRatingsSummary';
 import { StoreDispatchType } from '../redux';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes, modalLink, useModal } from '../components/modals/types';
@@ -527,17 +530,28 @@ export const MilestonesEditor = () => {
                           showInfoIcon
                         />
                       )}
-                      {hasCustomerReadPermission && multipleCustomers && (
-                        <div
-                          className={classes(css.summaryWrapper, {
-                            [css.completed]: completed,
-                          })}
-                        >
-                          <CustomerStakesScore
-                            version={version}
-                            completed={completed}
-                          />
-                        </div>
+                      {hasCustomerReadPermission && (
+                        <>
+                          {multipleCustomers && (
+                            <div
+                              className={classes(css.summaryWrapper, {
+                                [css.completed]: completed,
+                              })}
+                            >
+                              <CustomerStakesScore
+                                version={version}
+                                completed={completed}
+                              />
+                            </div>
+                          )}
+                          <div className={classes(css.summaryWrapper)}>
+                            <MilestoneWeightedRatingsSummary
+                              tasks={list}
+                              customers={customers}
+                              completed={completed}
+                            />
+                          </div>
+                        </>
                       )}
                       <div className={classes(css.summaryWrapper)}>
                         <MilestoneRatingsSummary
