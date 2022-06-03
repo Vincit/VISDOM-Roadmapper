@@ -433,5 +433,6 @@ export const english = {
     Great: 'Great',
     'Fit view -tooltip': 'Fit groups to the viewport',
     'Taskgroup reset -tooltip': 'Reset group positions',
+    'Remove relation': 'Remove relation',
   },
 };

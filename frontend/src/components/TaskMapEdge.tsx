@@ -1,5 +1,6 @@
 import { FC, MouseEvent, useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import {
   getMarkerEnd,
@@ -33,6 +34,7 @@ const DrawPath: FC<DrawPathProps> = ({
   isLoading,
   setIsLoading,
 }) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string | undefined>(undefined);
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const [removeTaskRelation] = apiV2.useRemoveTaskRelationMutation();
@@ -142,7 +144,7 @@ const DrawPath: FC<DrawPathProps> = ({
           onClick={() => deleteRelation(id)}
         >
           <DeleteIcon className={classes(css.deleteIcon)} />
-          <div className={classes(css.deleteText)}>Remove relation</div>
+          <div className={classes(css.deleteText)}>{t('Remove relation')}</div>
         </MenuItem>
       </Menu>
     </>
