@@ -87,6 +87,11 @@
     flex: 1;
     max-width: 600px;
     min-width: 300px;
+    height: min-content;
+    border-right: 1px solid $COLOR_BLACK40;
+  }
+  .lastColumn {
+    border: none;
   }
   .row {
     @extend .layout-row;
@@ -133,9 +138,4 @@
       gap: 10px;
     }
   }
-}
-.separator {
-  border-left: 1px solid $COLOR_BLACK40;
-  width: 0px;
-  height: 50px;
 }
