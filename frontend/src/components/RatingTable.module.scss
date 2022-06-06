@@ -1,4 +1,4 @@
-@import './RoadmapSelectorWidget.module.scss';
+@import './forms/DropdownGreen.module.scss';
 
 .ratingContainer {
   min-width: 450px;
@@ -23,9 +23,6 @@
     align-items: center;
     width: max-content;
 
-    .dropContainer {
-      margin: 0;
-    }
     .dropMenu {
       width: max-content;
       left: unset;

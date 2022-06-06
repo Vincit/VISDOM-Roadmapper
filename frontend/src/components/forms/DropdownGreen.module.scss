@@ -1,0 +1,53 @@
+@import '../../shared.scss';
+
+.dropdownContainer {
+  position: relative;
+  min-width: 60px;
+  max-width: 200px;
+
+  .dropButton {
+    @extend .layout-row;
+    gap: 5px;
+    @extend .typography-body-small;
+    position: relative;
+    align-items: center;
+    white-space: nowrap;
+    border-radius: 16px;
+    border: 2px solid $COLOR_EMERALD;
+    height: 32px;
+    padding: 0px 6px 0px 16px;
+    background-color: $COLOR_BLACK5;
+
+    &:hover,
+    &:focus {
+      background: $COLOR_WHITE;
+      outline: none;
+    }
+    &:disabled {
+      cursor: not-allowed;
+      color: $COLOR_BLACK40;
+    }
+  }
+
+  .dropMenu {
+    position: absolute;
+    z-index: 4000;
+    left: 0;
+    overflow: hidden; // Overflow needs to be hidden or border-corners will be hid
+    word-wrap: break-word;
+    margin-top: 5px;
+    border: 1px solid $COLOR_BLACK10;
+    border-radius: 4%;
+    min-width: 130px;
+    max-width: 200px;
+    width: auto;
+  }
+
+  .menuCanvas {
+    background-color: $COLOR_WHITE;
+  }
+
+  .emptyTitle {
+    color: $COLOR_BLACK60;
+  }
+}

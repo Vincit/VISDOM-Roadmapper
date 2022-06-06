@@ -1,4 +1,5 @@
 @import '../shared.scss';
+@import '../components/forms/DropdownWhite.module.scss';
 
 .graphTitle {
   text-align: start;
@@ -97,83 +98,4 @@
 
 .timelineContainer {
   margin-left: 3px; // Fixes overlapping with div on the left
-}
-
-//Drop-down stylings
-
-.dropButton {
-  width: 500px;
-  height: 54px;
-  padding: 13px 20px 13px 20px;
-  border: none;
-  border-radius: 10px;
-  background-color: $COLOR_WHITE;
-  text-align: left;
-  margin-top: 5px;
-  position: relative;
-}
-
-.dropButton:disabled {
-  font-size: 12px !important;
-  line-height: 18px !important;
-  color: $COLOR_BLACK40;
-  padding: 3px;
-  cursor: not-allowed;
-}
-
-.dropMenu {
-  width: auto;
-  min-width: 144px;
-  margin-top: -5px;
-  border-radius: 0px 0px 10px 10px;
-  @extend .layout-column;
-  align-items: center;
-  overflow: hidden;
-  z-index: 999;
-}
-
-.menuCanvas {
-  background-color: $COLOR_WHITE;
-  border: 2px solid $COLOR_WHITE;
-  width: 100%;
-  z-index: 999;
-}
-
-.dropTitle {
-  color: $COLOR_AZURE;
-  font-weight: bold;
-}
-
-.emptyTitle {
-  color: $COLOR_BLACK60;
-}
-
-.notSelected {
-  color: $COLOR_BLACK60;
-  font-weight: normal;
-}
-
-.dropItem {
-  font-size: 14px;
-  padding: 10px 20px 10px 20px;
-
-  &:last-child {
-    border-radius: 0px 0px 10px 10px;
-  }
-}
-
-.disabledItem {
-  font-size: 12px !important;
-  line-height: 18px !important;
-  color: $COLOR_BLACK40;
-  padding: 3px;
-  cursor: not-allowed;
-}
-
-.expandIcon {
-  position: absolute;
-  top: 27%;
-  right: 4%;
-  width: 24px !important;
-  height: 24px !important;
 }

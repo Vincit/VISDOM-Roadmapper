@@ -51,7 +51,7 @@ export const Dropdown: FC<{
 
   if (empty) {
     return (
-      <div className={classes(css.dropContainer)}>
+      <div className={classes(css.dropdownContainer)}>
         <button
           type="button"
           className={classes(css.dropButton)}
@@ -64,7 +64,7 @@ export const Dropdown: FC<{
   }
 
   return (
-    <div className={classes(css.dropContainer)}>
+    <div className={classes(css.dropdownContainer)}>
       <button
         type="button"
         className={classes(css.dropButton)}

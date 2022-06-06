@@ -7,7 +7,7 @@ import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { paths } from '../routers/paths';
 import { Dropdown } from './forms/Dropdown';
-import css from './RoadmapSelectorWidget.module.scss';
+import css from './forms/DropdownGreen.module.scss';
 import { apiV2 } from '../api/api';
 
 const classes = classNames.bind(css);
@@ -34,7 +34,7 @@ export const RoadmapSelectorWidget = () => {
 
   if (roadmaps.length === 0) {
     return (
-      <div className={classes(css.dropContainer)}>
+      <div className={classes(css.dropdownContainer)}>
         <button
           type="button"
           className={classes(css.dropButton)}
