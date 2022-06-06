@@ -71,10 +71,6 @@ export const taskStatusToText = (status: TaskStatus | number) => {
   }
 };
 
-export const taskStatusToEnumName = (status: TaskStatus | number) => {
-  return TaskStatus[status];
-};
-
 // Accumulates results into provided map
 const ratingsSummaryByDimensionInto = (
   result: Map<TaskRatingDimension, RatingsSummary>,
