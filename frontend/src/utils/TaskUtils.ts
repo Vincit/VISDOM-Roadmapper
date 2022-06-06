@@ -56,7 +56,7 @@ class RatingsSummary {
   }
 }
 
-export const taskStatusToText = (status: TaskStatus | number) => {
+export const taskStatusToText = (status: TaskStatus) => {
   switch (status) {
     case TaskStatus.NOT_STARTED:
       return 'Not started';
