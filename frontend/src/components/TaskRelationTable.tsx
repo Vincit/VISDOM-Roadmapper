@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useCallback } from 'react';
+import { FC, useState, useEffect, useCallback, CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Trans } from 'react-i18next';
@@ -32,6 +32,14 @@ const relationTableTitles = {
   [TaskRelationTableType.Contributes]: 'In synergy with',
 } as const;
 
+const subTitles = {
+  [TaskRelationTableType.Requires]:
+    'Tasks that has to be implemented before this task.',
+  [TaskRelationTableType.Precedes]:
+    'Tasks that can’t be implemented until this task is completed.',
+  [TaskRelationTableType.Contributes]: 'Tasks that are related to this task',
+};
+
 const relationTableIcons = {
   [TaskRelationTableType.Requires]: ClockIcon,
   [TaskRelationTableType.Precedes]: CheckIcon,
@@ -40,16 +48,22 @@ const relationTableIcons = {
 
 export const relationTableTitle = (
   type: TaskRelationTableType,
-): FC<{ count?: number }> => {
+): FC<{ count?: number; style?: CSSProperties }> => {
   const Icon = relationTableIcons[type];
   const title = relationTableTitles[type];
+  const subTitle = subTitles[type];
   const typeClass = css[TaskRelationTableType[type]];
-  return ({ count }) => (
-    <div className={classes(css.titleContainer, typeClass)}>
-      <Icon />
-      <h3>
-        <Trans i18nKey={title} /> {count !== undefined && `(${count})`}
-      </h3>
+  return ({ count, style }) => (
+    <div style={style} className={classes(css.titleContainer)}>
+      <div className={classes(css.title, typeClass)}>
+        <Icon />
+        <h3>
+          <Trans i18nKey={title} /> {count !== undefined && `(${count})`}
+        </h3>
+      </div>
+      <p className={classes(css.subTitle)}>
+        <Trans i18nKey={subTitle} />
+      </p>
     </div>
   );
 };
