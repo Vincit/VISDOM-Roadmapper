@@ -14,11 +14,14 @@
 }
 
 .titleContainer {
+  margin: 10px 0 20px 10px;
+  text-align: start;
+}
+
+.title {
   @extend .layout-row;
   line-height: 150%;
-  margin: 10px 0 20px 10px;
   align-items: center;
-  text-align: start;
   gap: 10px;
 
   svg {
@@ -35,4 +38,10 @@
   &.Contributes {
     color: $COLOR_AZURE;
   }
+}
+
+.subTitle {
+  border-left: 4px solid $COLOR_BLACK10;
+  padding-left: 10px;
+  color: $COLOR_BLACK60;
 }

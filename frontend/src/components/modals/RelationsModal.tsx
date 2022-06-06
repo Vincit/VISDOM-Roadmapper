@@ -52,21 +52,12 @@ const badRelationWarning = (
   };
 };
 
-const subTitles = {
-  [TaskRelationTableType.Requires]:
-    'Tasks that has to be implemented before this task.',
-  [TaskRelationTableType.Precedes]:
-    'Tasks that can’t be implemented until this task is completed.',
-  [TaskRelationTableType.Contributes]: 'Tasks that are related to this task',
-};
-
 const RelationTables = relationTables<{
   badRelations: TaskRelation[];
   onTaskClick?: () => unknown;
   showMilestoneName?: boolean;
 }>((type) => {
   const Title = relationTableTitle(type);
-  const subTitle = subTitles[type];
   const BadRelationWarning = badRelationWarning(type);
   return ({
     task,
@@ -75,7 +66,6 @@ const RelationTables = relationTables<{
     onTaskClick,
     showMilestoneName,
   }) => {
-    const { t } = useTranslation();
     const roadmapId = useSelector(chosenRoadmapIdSelector);
     const { data: relations } = apiV2.useGetTaskRelationsQuery(
       roadmapId ?? skipToken,
@@ -101,8 +91,7 @@ const RelationTables = relationTables<{
 
     return (
       <div className={classes(css.listContainer)}>
-        <Title count={tasks.length} />
-        <p className={classes(css.subTitle)}>{t(subTitle)}</p>
+        <Title style={{ marginLeft: 0 }} count={tasks.length} />
         <TaskRelationTable
           height={height}
           tasks={tasks}
