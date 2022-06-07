@@ -16,6 +16,13 @@
   }
 }
 
+.missingTooltip {
+  width: 100%;
+  word-wrap: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .withLabel {
   @extend .typography-pre-title;
   @extend .layout-row;
