@@ -664,9 +664,9 @@ export const MilestonesEditor = () => {
             showSearch
           />
         </ExpandableColumn>
-        <div className={classes(css.layoutCol, css.overflowYAuto)}>
+        <div className={classes(css.layoutCol)}>
           {renderTopBar()}
-          <div className={classes(css.layoutRow, css.overflowYAuto)}>
+          <div className={classes(css.milestoneContainer)}>
             {versionLists && renderMilestones()}
             <Drawer
               anchor="right"
