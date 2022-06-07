@@ -45,6 +45,8 @@
 
   .menuCanvas {
     background-color: $COLOR_WHITE;
+    max-height: 400px;
+    overflow: auto;
   }
 
   .emptyTitle {

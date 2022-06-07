@@ -42,6 +42,8 @@
     border: 2px solid $COLOR_WHITE;
     width: 100%;
     z-index: 4000;
+    max-height: 400px;
+    overflow: auto;
   }
 
   .dropTitle {
