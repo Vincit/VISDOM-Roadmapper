@@ -54,3 +54,10 @@
   justify-content: center;
   display: flex;
 }
+
+.buttonContainer {
+  @extend .layout-row;
+  align-items: center;
+  min-width: min-content;
+  justify-content: end;
+}

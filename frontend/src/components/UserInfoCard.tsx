@@ -54,7 +54,7 @@ const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
           <div>{t(RoleType[type])}</div>
         </div>
         <div>{roadmap?.name}</div>
-        <div className={classes(css.textAlignEnd)}>
+        <div className={classes(css.buttonContainer)}>
           <ExitButton onClick={leaveProject} />
           <ArrowForwardIcon className={classes(css.arrowIcon)} />
         </div>
