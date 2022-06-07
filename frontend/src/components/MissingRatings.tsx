@@ -76,13 +76,16 @@ export const MissingRatings: FC<{
           }}
           key={customer.id}
           title={
-            <div>
+            <div className={classes(css.missingTooltip)}>
               <p className={classes(css.titleHeader)}>{customer.name}</p>
               <div className={classes(css.emailList)}>
                 {allUsers &&
                   getMissingRepresentatives(customer, allUsers, task)?.map(
                     (rep) => (
-                      <div key={`${rep.id}-${customer.id}-${task.id}`}>
+                      <div
+                        key={`${rep.id}-${customer.id}-${task.id}`}
+                        className={classes(css.missingTooltip)}
+                      >
                         {rep.email}{' '}
                         {rep.email === userInfo?.email && (
                           <span>
@@ -111,7 +114,7 @@ export const MissingRatings: FC<{
               tooltip: classes(css.tooltip),
             }}
             key={email}
-            title={email}
+            title={<div className={classes(css.missingTooltip)}>{email}</div>}
             placement="top"
             arrow
           >
