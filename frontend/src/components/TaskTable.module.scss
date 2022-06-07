@@ -1,10 +1,21 @@
 @import '../shared.scss';
 @import './TaskMapTask.module.scss';
 
-// Bottom and top left radius for clean looking hover
-.ratedTitle {
-  padding-left: 25px;
+.taskTitle {
+  @extend .taskNameContainer;
+  width: auto;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+
+  line-height: 1.5;
   text-align: left;
+  overflow-wrap: break-word;
+}
+
+.ratedTitle {
+  @extend .taskTitle;
+  padding-left: 25px;
 }
 
 .ratedButtons {
@@ -42,11 +53,6 @@
 .missingRatings {
   display: flex;
   align-items: center;
-}
-
-.taskTitle {
-  text-align: left;
-  overflow-wrap: break-word;
 }
 
 .userIcon {
