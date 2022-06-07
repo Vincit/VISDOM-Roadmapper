@@ -136,7 +136,7 @@ export const TaskListPage = () => {
       <div className={classes(css.unratedTableContainer)}>
         <TaskTableUnrated items={unrated} filterPredicate={predicate} />
       </div>
-      <div>
+      <div className={classes(css.ratedTableContainer)}>
         <TaskTableRated items={rated} filterPredicate={predicate} />
       </div>
     </>
