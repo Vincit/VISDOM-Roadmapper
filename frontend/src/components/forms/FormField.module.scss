@@ -25,4 +25,6 @@
   path {
     fill: $COLOR_RASPBERRY;
   }
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
