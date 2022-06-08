@@ -4,14 +4,13 @@
   position: relative;
   top: 0;
   left: 0;
-  height: 56px;
-  min-height: 56px;
+  height: fit-content;
   width: 100%;
   border: 0;
 
   @extend .layout-row;
   justify-content: flex-start;
-  vertical-align: middle;
+  align-items: flex-start;
   box-sizing: border-box;
   background-color: $COLOR_BLACK5;
 }
@@ -25,22 +24,25 @@
   }
 }
 
+.navBarLeftSide {
+  @extend .layout-row;
+}
+
 .navBarRightSide {
   @extend .layout-row;
-  gap: 16px;
-  margin-right: 16px;
+  flex-wrap: wrap-reverse;
+  padding: 10px 16px 10px 5px;
   flex: 1;
   justify-content: flex-end;
-  vertical-align: middle;
+  gap: 10px;
 }
 
 .navBarDivider {
   border: 0;
   border-left: 1px solid $COLOR_BLACK10;
   width: 0px;
-  height: 30px;
-  margin-top: 13px;
-  margin-bottom: 13px;
+  height: 21px;
+  margin-left: 6px;
 }
 
 .navBarLink {
@@ -48,20 +50,25 @@
   align-items: center;
 
   color: $COLOR_BLACK100;
-  margin: 12px 0;
+  margin: 0;
 }
 
 .navBarLink:hover .icon {
   color: $COLOR_EMERALD;
 }
 
-.navBarText {
+.navBarProject {
   display: flex;
   align-items: center;
-
+  gap: 16px;
   @extend .typography-body-small;
-
   color: $COLOR_BLACK60;
+}
+
+.navBarUser {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .icon {

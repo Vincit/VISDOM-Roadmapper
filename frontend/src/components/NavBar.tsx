@@ -29,39 +29,47 @@ export const NavBar = () => {
 
   return (
     <div className={classes(css.navBarDiv)}>
-      <CornerPiece />
-      {(pathname.startsWith(paths.overview) ||
-        pathname.startsWith('/join')) && (
-        <div className={classes(css.logo)}>
-          <VisdomLogo />
-        </div>
-      )}
-      {pathname.startsWith(paths.userInfo) && !roadmapId && (
-        <Link to={paths.overview} className={classes(css.logo)}>
-          <VisdomLogo />
-        </Link>
-      )}
-      <div className={classes(css.navBarRightSide)}>
-        <div className={classes(css.navBarText)}>
-          <Trans i18nKey="Project" />
-        </div>
-        <RoadmapSelectorWidget />
-        <div className={classes(css.navBarDivider)} />
-        {userInfo && (
-          <div className={classes(css.userInfoContainer)}>
-            {userRole && (
-              <RoleIcon type={userRole} color={colors.black100} small tooltip />
-            )}
-            {userInfo.email}
+      <div className={classes(css.navBarLeftSide)}>
+        <CornerPiece />
+        {(pathname.startsWith(paths.overview) ||
+          pathname.startsWith('/join')) && (
+          <div className={classes(css.logo)}>
+            <VisdomLogo />
           </div>
         )}
-
-        <Link className={classes(css.navBarLink)} to={paths.userInfo}>
-          <PermIdentityIcon className={classes(css.icon)} />
-        </Link>
-        <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
-          <PowerSettingsNewIcon className={classes(css.icon)} />
-        </Link>
+        {pathname.startsWith(paths.userInfo) && !roadmapId && (
+          <Link to={paths.overview} className={classes(css.logo)}>
+            <VisdomLogo />
+          </Link>
+        )}
+      </div>
+      <div className={classes(css.navBarRightSide)}>
+        <div className={classes(css.navBarProject)}>
+          <Trans i18nKey="Project" />
+          <RoadmapSelectorWidget />
+        </div>
+        <div className={classes(css.navBarUser)}>
+          <div className={classes(css.navBarDivider)} />
+          {userInfo && (
+            <div className={classes(css.userInfoContainer)}>
+              {userRole && (
+                <RoleIcon
+                  type={userRole}
+                  color={colors.black100}
+                  small
+                  tooltip
+                />
+              )}
+              {userInfo.email}
+            </div>
+          )}
+          <Link className={classes(css.navBarLink)} to={paths.userInfo}>
+            <PermIdentityIcon className={classes(css.icon)} />
+          </Link>
+          <Link className={classes(css.navBarLink)} to={paths.logoutPage}>
+            <PowerSettingsNewIcon className={classes(css.icon)} />
+          </Link>
+        </div>
       </div>
     </div>
   );
