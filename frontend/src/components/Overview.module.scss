@@ -134,5 +134,9 @@
       @extend .layout-row;
       gap: 10px;
     }
+    a {
+      @extend .hide-text-ellipsis;
+      padding-top: 2px;
+    }
   }
 }
