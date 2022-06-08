@@ -59,7 +59,15 @@ export const SortableTaskList: FC<{
   }, [search, tasks]);
 
   useEffect(() => {
-    if (divRef.current) setListHeight(divRef.current.clientHeight);
+    const resizeObserver = new ResizeObserver((entries) => {
+      entries.forEach((entry) => {
+        setListHeight(entry.target.clientHeight);
+      });
+    });
+    if (divRef.current) resizeObserver.observe(divRef.current);
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, []);
 
   const Row = useCallback(
