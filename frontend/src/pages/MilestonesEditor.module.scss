@@ -144,9 +144,9 @@
 }
 
 .topbar {
+  @extend .layout-row;
+  min-height: 60px;
   overflow-x: auto;
-  display: flex;
-  flex-direction: row;
   align-items: center;
   border-bottom: 1px solid $COLOR_BLACK40;
   margin-left: 23px;
