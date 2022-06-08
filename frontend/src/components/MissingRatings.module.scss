@@ -2,6 +2,8 @@
 
 .missingContainer {
   @extend .layout-row;
+  max-height: 40px;
+  overflow: hidden;
   gap: 7px;
   flex-wrap: wrap;
 
