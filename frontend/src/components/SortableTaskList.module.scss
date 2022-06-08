@@ -5,8 +5,13 @@
   background-color: rgba(0, 60, 250, 0.045) !important;
 }
 
+.droppableContainer {
+  height: 100%;
+}
+
 .sortableList {
   @extend .layout-column;
+  box-shadow: none;
   height: 100%;
   overflow-y: visible;
   background-color: transparent;
@@ -15,10 +20,8 @@
 
 .sortableListWrapper {
   @extend .layout-column;
-  overflow-y: auto;
   min-height: 100px;
   height: inherit;
-  padding: 1px;
   padding-top: 0px;
   scrollbar-width: thin;
 
