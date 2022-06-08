@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip } from './InfoTooltip';
 import { Dot } from './Dot';
 import { percent } from '../utils/string';
 import { CustomerStakes } from '../redux/roadmaps/types';
@@ -67,10 +67,6 @@ export const CustomerStakesVisualization: FC<{
     );
   return (
     <Tooltip
-      classes={{
-        arrow: classes(css.tooltipArrow),
-        tooltip: classes(css.tooltip),
-      }}
       title={
         <StakesTooltipContent
           customerStakes={customerStakes}

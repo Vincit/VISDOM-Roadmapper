@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip } from './InfoTooltip';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { CustomerStakes } from '../redux/roadmaps/types';
 import css from './CustomerWeightsVisualization.module.scss';
@@ -75,10 +75,6 @@ const CustomerWeightsPercentageBar: FC<{
     );
   return (
     <Tooltip
-      classes={{
-        arrow: classes(css.tooltipArrow),
-        tooltip: classes(css.tooltip),
-      }}
       title={
         <CustomerWeightsTooltipContent
           customerStakes={customerStakes}

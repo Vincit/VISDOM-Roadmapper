@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip } from '../InfoTooltip';
 import { roadmapsActions } from '../../redux/roadmaps';
 import { StoreDispatchType } from '../../redux';
 import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
@@ -125,10 +125,6 @@ export const NotifyUsersModal: Modal<ModalTypes.NOTIFY_USERS_MODAL> = ({
             <div className={classes(css.customerContainer)}>
               {user.customers?.map((customer) => (
                 <Tooltip
-                  classes={{
-                    arrow: classes(css.tooltipArrow),
-                    tooltip: classes(css.tooltip),
-                  }}
                   key={customer.id}
                   title={<div>{customer.name}</div>}
                   placement="top"

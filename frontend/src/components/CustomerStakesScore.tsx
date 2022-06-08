@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
 import { skipToken } from '@reduxjs/toolkit/query/react';
-import { Tooltip } from '@mui/material';
+import { Tooltip } from './InfoTooltip';
 import { Version, CustomerStakes } from '../redux/roadmaps/types';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { customerStakesSummary } from '../utils/TaskUtils';
@@ -87,10 +87,6 @@ export const CustomerStakesScore: FC<{
     );
   return (
     <Tooltip
-      classes={{
-        arrow: classes(css.tooltipArrow),
-        tooltip: classes(css.tooltip),
-      }}
       title={
         <TaskValueCreatedVisualization
           stakes={data}
