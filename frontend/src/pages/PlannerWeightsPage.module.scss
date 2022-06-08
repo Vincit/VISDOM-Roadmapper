@@ -2,20 +2,20 @@
 
 .weightsHeader {
   @extend .layout-row;
-  margin-left: 25px;
+  margin: 0 25px;
   align-items: flex-start;
 
   .title {
     @extend .layout-row;
     gap: 12px;
-    align-items: center;
+    align-items: baseline;
+    margin-right: 25px;
   }
 
   .clientShares {
     display: flex;
-    flex-grow: 1;
-    justify-content: flex-end;
-    margin-right: 25px;
+    padding: 0 17px;
+    margin-left: auto;
 
     .visualizationWrapper {
       padding-top: 12px;
