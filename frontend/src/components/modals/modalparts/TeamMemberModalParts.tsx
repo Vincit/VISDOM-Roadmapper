@@ -8,7 +8,7 @@ import { RadioButton } from '../../forms/RadioButton';
 import { Input } from '../../forms/FormField';
 import { RoleType } from '../../../../../shared/types/customTypes';
 import { DeleteButton, EditButton } from '../../forms/SvgButton';
-import { ControlledTooltip } from '../../ControlledTooltip';
+import { ControlledTooltip } from '../../InfoTooltip';
 import {
   CheckableCustomer,
   InviteRoadmapUser,

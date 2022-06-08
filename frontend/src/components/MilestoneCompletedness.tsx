@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip } from './InfoTooltip';
 import { Task } from '../redux/roadmaps/types';
 import { BarSection } from './PercentageBar';
 import { TaskStatus } from '../../../shared/types/customTypes';
@@ -36,10 +36,6 @@ export const MilestoneCompletedness: FC<{
 
   return (
     <Tooltip
-      classes={{
-        arrow: classes(css.tooltipArrow),
-        tooltip: classes(css.tooltip),
-      }}
       title={
         <div className={classes(css.completednessTooltip)}>
           {orderedNums.map(([status, num]) => (

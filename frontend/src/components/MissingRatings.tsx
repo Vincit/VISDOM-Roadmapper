@@ -1,6 +1,5 @@
 import { useState, useEffect, FC } from 'react';
 import BuildIcon from '@mui/icons-material/Build';
-import Tooltip from '@mui/material/Tooltip';
 import { shallowEqual, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Trans } from 'react-i18next';
@@ -9,6 +8,7 @@ import { RootState } from '../redux/types';
 import { userInfoSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
+import { Tooltip } from './InfoTooltip';
 import { Dot } from './Dot';
 import { getType } from '../utils/UserUtils';
 import {
@@ -70,10 +70,6 @@ export const MissingRatings: FC<{
     <div className={classes(css.missingContainer)}>
       {missingRatings?.map((customer) => (
         <Tooltip
-          classes={{
-            arrow: classes(css.tooltipArrow),
-            tooltip: classes(css.tooltip),
-          }}
           key={customer.id}
           title={
             <div className={classes(css.missingTooltip)}>
@@ -109,10 +105,6 @@ export const MissingRatings: FC<{
       {missingDevRatings &&
         missingDevRatings.map(({ email }) => (
           <Tooltip
-            classes={{
-              arrow: classes(css.tooltipArrow),
-              tooltip: classes(css.tooltip),
-            }}
             key={email}
             title={<div className={classes(css.missingTooltip)}>{email}</div>}
             placement="top"
