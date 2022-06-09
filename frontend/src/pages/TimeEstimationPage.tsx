@@ -12,8 +12,8 @@ import { plannerTimeEstimatesSelector } from '../redux/versions/selectors';
 import { TimeEstimate } from '../redux/versions/types';
 import {
   isCompletedMilestone,
-  remainingTotalValueAndComplexity,
-  totalValueAndComplexity,
+  isCompletedTask,
+  milestoneRatingSummary,
 } from '../utils/TaskUtils';
 import { StoreDispatchType } from '../redux';
 import { versionsActions } from '../redux/versions';
@@ -114,7 +114,9 @@ export const TimeEstimationPage = () => {
       setCalculatedDaysPerWork(undefined);
       return;
     }
-    const { complexity } = totalValueAndComplexity(selectedMilestone.tasks);
+    const complexity = milestoneRatingSummary(
+      selectedMilestone.tasks,
+    ).complexity().total;
     if (complexity <= 0) {
       setCalculatedDaysPerWork(undefined);
       return;
@@ -162,8 +164,10 @@ export const TimeEstimationPage = () => {
           {estimationVersions?.map((version) => {
             const { id, name, tasks } = version;
             const selected = name === selectedTitle;
-            const { complexity } = remainingTotalValueAndComplexity(tasks);
-            const duration = complexity * calculatedDaysPerWork!;
+            const { complexity } = milestoneRatingSummary(
+              tasks.filter((task) => !isCompletedTask(task)),
+            );
+            const duration = complexity().total * calculatedDaysPerWork!;
             return (
               <div
                 key={`graphItem-${id}`}

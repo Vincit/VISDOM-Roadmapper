@@ -12,7 +12,7 @@ import {
   TaskRelationTableType,
   RelationAnnotation,
 } from '../utils/TaskRelationUtils';
-import { taskRatingsCustomerStakes } from '../utils/TaskUtils';
+import { ratingSummary, customerStakes } from '../utils/TaskUtils';
 import { ModalTypes, modalDrawerLink } from './modals/types';
 import { TaskRatingsText } from './TaskRatingsText';
 import { InfoTooltip } from './InfoTooltip';
@@ -39,8 +39,9 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TaskDetailsTooltip: FC<{ task: Task }> = ({ task }) => {
+  const { valueForCustomer } = ratingSummary(task);
   const { data: customers } = apiV2.useGetCustomersQuery(task.roadmapId);
-  const customerValues = taskRatingsCustomerStakes(customers)(new Map(), task);
+  const customerValues = customerStakes(valueForCustomer, customers ?? []);
   return (
     <div className={classes(css.taskDetailsTooltip)}>
       <div className={classes(css.title)}>
@@ -48,10 +49,10 @@ const TaskDetailsTooltip: FC<{ task: Task }> = ({ task }) => {
       </div>
       <TaskRatingsText task={task} />
       <div className={classes(css.customerValues)}>
-        {Array.from(customerValues).map(([{ id, color }, { avg }]) => (
+        {customerValues.map(([{ id, color }, value]) => (
           <div key={id} className={classes(css.taskRating)}>
             <Dot fill={color} />
-            {numFormat.format(avg)}
+            {numFormat.format(value)}
           </div>
         ))}
       </div>

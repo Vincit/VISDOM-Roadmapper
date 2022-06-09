@@ -6,7 +6,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import { Tooltip } from './InfoTooltip';
 import { Version, CustomerStakes } from '../redux/roadmaps/types';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { customerStakesSummary } from '../utils/TaskUtils';
+import { milestoneRatingSummary, customerStakes } from '../utils/TaskUtils';
 import {
   targetCustomerStakes,
   stakesDifferTooMuchFromTarget,
@@ -44,16 +44,15 @@ export const CustomerStakesScore: FC<{
   useEffect(() => {
     if (!targetData) return;
 
-    const customerStakes = Array.from(
-      customerStakesSummary(version.tasks, customers),
-    );
-    const stakesTotalValue = customerStakes.reduce(
+    const { valueForCustomer } = milestoneRatingSummary(version.tasks);
+    const stakes = customerStakes(valueForCustomer, customers ?? []);
+    const stakesTotalValue = stakes.reduce(
       (acc, [, value]) => acc + value.total,
       0,
     );
     setTotalValue(stakesTotalValue);
     setData(
-      customerStakes
+      stakes
         .sort(([a], [b]) => b.weight - a.weight)
         .map(([{ id, name, color }, value]) => {
           const target = targetData.find((customer) => customer.id === id)

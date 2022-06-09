@@ -17,11 +17,7 @@ import { UserInfo } from '../redux/user/types';
 import { RoleType } from '../../../shared/types/customTypes';
 import { getType } from '../utils/UserUtils';
 import css from './TaskTable.module.scss';
-import {
-  averageValueAndComplexity,
-  SortingTypes,
-  taskSort,
-} from '../utils/TaskUtils';
+import { ratingSummary, SortingTypes, taskSort } from '../utils/TaskUtils';
 import { table, TableRow } from './Table';
 import { DeleteButton } from './forms/SvgButton';
 import { MissingRatings } from './MissingRatings';
@@ -47,7 +43,7 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     roleType === RoleType.Admin ||
     (task.createdByUser === userId && roleType === RoleType.Business);
 
-  const { value, complexity } = averageValueAndComplexity([task]);
+  const { value, complexity } = ratingSummary(task);
 
   const openModal = (payload: ShowModalPayload) => (e: SyntheticEvent) => {
     e.preventDefault();
@@ -67,8 +63,8 @@ const TableUnratedTaskRow: TableRow<Task> = ({ item: task, style }) => {
     >
       <div style={style} className={classes(css.virtualizedTableRow)}>
         <div className={classes(css.taskTitle)}>{name}</div>
-        <div>{numFormat.format(value)}</div>
-        <div>{numFormat.format(complexity)}</div>
+        <div>{numFormat.format(value().avg)}</div>
+        <div>{numFormat.format(complexity())}</div>
         <div className={classes(css.missingRatings)}>
           <MissingRatings task={task} />
         </div>

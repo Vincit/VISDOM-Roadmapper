@@ -3,10 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Task } from '../redux/roadmaps/types';
 import css from './MilestoneRatingsSummary.module.scss';
-import {
-  totalValueAndComplexity,
-  averageValueAndComplexity,
-} from '../utils/TaskUtils';
+import { milestoneRatingSummary } from '../utils/TaskUtils';
 
 const classes = classNames.bind(css);
 
@@ -36,17 +33,15 @@ export const MilestoneRatingsSummary: FC<{
   completed?: boolean;
 }> = ({ tasks, completed }) => {
   const { t } = useTranslation();
-  const totalRatings = totalValueAndComplexity(tasks);
-  const averageRatings = averageValueAndComplexity(tasks);
+  const summary = milestoneRatingSummary(tasks);
+  const complexity = summary.complexity();
+  const value = summary.value('avg');
   return (
     <div className={classes(css.ratingSummary, { [css.completed]: completed })}>
-      <Rating title={t('Average value')} value={averageRatings.value} />
-      <Rating
-        title={t('Average complexity')}
-        value={averageRatings.complexity}
-      />
-      <Rating title={t('Total value')} value={totalRatings.value} />
-      <Rating title={t('Total complexity')} value={totalRatings.complexity} />
+      <Rating title={t('Average value')} value={value.avg} />
+      <Rating title={t('Average complexity')} value={complexity.avg} />
+      <Rating title={t('Total value')} value={value.total} />
+      <Rating title={t('Total complexity')} value={complexity.total} />
     </div>
   );
 };

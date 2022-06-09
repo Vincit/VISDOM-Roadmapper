@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import css from './RoadmapOverview.module.scss';
 import { BusinessIcon, WorkRoundIcon } from './RoleIcons';
-import { averageValueAndComplexity } from '../utils/TaskUtils';
+import { milestoneRatingSummary } from '../utils/TaskUtils';
 import { MetricsSummary } from './MetricsSummary';
 import colors from '../colors.module.scss';
 import { apiV2 } from '../api/api';
@@ -34,7 +34,7 @@ export const RoadmapOverview = () => {
   );
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
 
-  const { value, complexity } = averageValueAndComplexity(tasks ?? []);
+  const summary = milestoneRatingSummary(tasks ?? []);
 
   const metrics = [
     {
@@ -47,12 +47,12 @@ export const RoadmapOverview = () => {
     },
     {
       label: 'Avg Value',
-      metricsValue: value,
+      metricsValue: summary.value('avg').avg,
       children: <BusinessIcon color={colors.black100} />,
     },
     {
       label: 'Avg Complexity',
-      metricsValue: complexity,
+      metricsValue: summary.complexity().avg,
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];

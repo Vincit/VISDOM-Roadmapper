@@ -8,7 +8,7 @@ import ListIcon from '@mui/icons-material/List';
 import Drawer from '@mui/material/Drawer';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import {
-  totalValuesAndComplexity,
+  milestoneRatingSummary,
   isCompletedMilestone,
 } from '../utils/TaskUtils';
 import { percent } from '../utils/string';
@@ -75,10 +75,18 @@ export const RoadmapGraphPage = () => {
 
   useEffect(() => {
     setVersions(
-      roadmapsVersions?.map((version) => ({
-        ...version,
-        ...totalValuesAndComplexity(version.tasks, customers),
-      })),
+      roadmapsVersions?.map((version) => {
+        const summary = milestoneRatingSummary(version.tasks);
+        const weighted = summary.weighted(customers);
+        return {
+          ...version,
+          value: weighted.value('avg').total,
+          totalValue: weighted.value('total').total,
+          unweightedValue: summary.value('avg').total,
+          unweightedTotalValue: summary.value('total').total,
+          complexity: summary.complexity().total,
+        };
+      }),
     );
   }, [customers, roadmapsVersions]);
 

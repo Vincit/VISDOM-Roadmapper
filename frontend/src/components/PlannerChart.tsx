@@ -18,7 +18,7 @@ import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Task } from '../redux/roadmaps/types';
 import {
   weightedTaskPriority,
-  valueAndComplexitySummary,
+  ratingSummary,
   hasRatingsOnEachDimension,
 } from '../utils/TaskUtils';
 import { sort, SortingOrders, sortKeyNumeric } from '../utils/SortUtils';
@@ -80,9 +80,9 @@ export const PlannerChart: FC<{
       const more = [
         Object.assign(previousLineEnd, { [name]: previousLineEnd.valueSum }),
         ...tasks.map((task) => {
-          const { value, complexity } = valueAndComplexitySummary(task);
-          complexitySum += complexity;
-          valueSum += value.total;
+          const { value, complexity } = ratingSummary(task);
+          complexitySum += complexity();
+          valueSum += value().total;
 
           return {
             [name]: valueSum,

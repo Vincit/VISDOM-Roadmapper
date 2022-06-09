@@ -9,7 +9,7 @@ import { Task } from '../redux/roadmaps/types';
 import {
   isCompletedTask,
   SortingTypes,
-  valueAndComplexitySummary,
+  ratingSummary,
   taskSort,
   taskStatusToText,
 } from '../utils/TaskUtils';
@@ -32,7 +32,9 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
   const dispatch = useDispatch<StoreDispatchType>();
-  const { value, complexity } = valueAndComplexitySummary(task);
+  const summary = ratingSummary(task);
+  const value = summary.value();
+  const complexity = summary.complexity();
   const roleType = useSelector(userRoleSelector, shallowEqual);
   const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
   const showDeleteButton =

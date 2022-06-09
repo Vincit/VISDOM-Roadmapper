@@ -12,7 +12,7 @@ import { MetricsSummary } from '../MetricsSummary';
 import { TaskTable } from '../TaskTable';
 import { TaskValueCreatedVisualization } from '../TaskValueCreatedVisualization';
 import {
-  averageValueAndComplexity,
+  milestoneRatingSummary,
   isCompletedMilestone,
 } from '../../utils/TaskUtils';
 import { percent } from '../../utils/string';
@@ -47,7 +47,11 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
     type,
     Permission.RoadmapReadCustomerValues,
   );
-  const averageRatings = averageValueAndComplexity(tasks);
+  const summary = milestoneRatingSummary(tasks);
+  const averageRatings = {
+    value: summary.value('avg').avg,
+    complexity: summary.complexity().avg,
+  };
   const visualizationHeight = 160;
   const displayedValue = hasReadCustomerValuesPermission
     ? value

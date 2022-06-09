@@ -9,7 +9,7 @@ import { useParams, useHistory, Redirect, useLocation } from 'react-router-dom';
 import { Permission, TaskStatus } from '../../../shared/types/customTypes';
 import { isToday, isYesterday } from '../../../shared/utils/date';
 import {
-  valueAndComplexitySummary,
+  ratingSummary,
   getRatingsByType,
   taskStatusToText,
 } from '../utils/TaskUtils';
@@ -42,17 +42,17 @@ export const getTaskOverviewData = (
     fieldId: string,
   ) => Promise<string | void>,
 ) => {
-  const { value, complexity } = valueAndComplexitySummary(task);
+  const { value, complexity } = ratingSummary(task);
 
   const metrics = [
     {
       label: i18n.t('Avg Value'),
-      value: value.avg,
+      value: value().avg,
       children: <BusinessIcon color={colors.black100} />,
     },
     {
       label: i18n.t('Avg Complexity'),
-      value: complexity,
+      value: complexity(),
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
@@ -179,7 +179,7 @@ const TaskOverview: FC<{
   const role = useSelector(userRoleSelector, shallowEqual);
   const { id: userId } = useSelector(userInfoSelector, shallowEqual)!;
   const roadmapId = useSelector(chosenRoadmapIdSelector);
-  const { value, complexity } = valueAndComplexitySummary(task);
+  const { value, complexity } = ratingSummary(task);
   const {
     value: valueRatings,
     complexity: complexityRatings,
@@ -264,14 +264,14 @@ const TaskOverview: FC<{
           {valueRatings.length > 0 && (
             <RatingTableValue
               ratings={valueRatings}
-              avg={value.avg}
+              avg={value().avg}
               task={task}
             />
           )}
           {complexityRatings.length > 0 && (
             <RatingTableComplexity
               ratings={complexityRatings}
-              avg={complexity}
+              avg={complexity()}
               task={task}
             />
           )}
