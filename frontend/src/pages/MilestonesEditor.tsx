@@ -184,6 +184,7 @@ export const MilestonesEditor = () => {
       result[ids[index]] = check.flatMap(({ id, ...rest }) => {
         const task = tasksById.get(id);
         if (!task) {
+          // eslint-disable-next-line no-console
           console.error(`Failed to find task by id ${id}`);
           return [];
         }

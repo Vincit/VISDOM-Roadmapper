@@ -88,7 +88,7 @@ export const SelectCustomers: FC<{
   );
 };
 
-export const AddTeamMemberInfo: typeof Info = ({ children, ...props }) => (
+export const AddTeamMemberInfo: typeof Info = ({ ...props }) => (
   <Info {...props}>
     <Trans i18nKey="Here’s how to add a team member" />
   </Info>

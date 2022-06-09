@@ -66,65 +66,61 @@ export const MissingRatings: FC<{
     }
   }, [task, allCustomers, allUsers, userInfo, type, roadmapId]);
 
-  const Icons = () => (
-    <div className={classes(css.missingContainer)}>
-      {missingRatings?.map((customer) => (
-        <Tooltip
-          key={customer.id}
-          title={
-            <div className={classes(css.missingTooltip)}>
-              <p className={classes(css.titleHeader)}>{customer.name}</p>
-              <div className={classes(css.emailList)}>
-                {allUsers &&
-                  getMissingRepresentatives(customer, allUsers, task)?.map(
-                    (rep) => (
-                      <div
-                        key={`${rep.id}-${customer.id}-${task.id}`}
-                        className={classes(css.missingTooltip)}
-                      >
-                        {rep.email}{' '}
-                        {rep.email === userInfo?.email && (
-                          <span>
-                            (<Trans i18nKey="You" />)
-                          </span>
-                        )}
-                      </div>
-                    ),
-                  )}
-              </div>
-            </div>
-          }
-          placement="top"
-          arrow
-        >
-          <div className={classes(css.dotContainer)}>
-            <Dot fill={customer.color} />
-          </div>
-        </Tooltip>
-      ))}
-      {missingDevRatings &&
-        missingDevRatings.map(({ email }) => (
+  return (
+    <div className={classes({ [css.withLabel]: label })}>
+      {label &&
+        (missingDevRatings?.length || missingRatings?.length ? (
+          <Trans i18nKey="Waiting for ratings" />
+        ) : (
+          <Trans i18nKey="No ratings waiting" />
+        ))}
+      <div className={classes(css.missingContainer)}>
+        {missingRatings?.map((customer) => (
           <Tooltip
-            key={email}
-            title={<div className={classes(css.missingTooltip)}>{email}</div>}
+            key={customer.id}
+            title={
+              <div className={classes(css.missingTooltip)}>
+                <p className={classes(css.titleHeader)}>{customer.name}</p>
+                <div className={classes(css.emailList)}>
+                  {allUsers &&
+                    getMissingRepresentatives(customer, allUsers, task)?.map(
+                      (rep) => (
+                        <div
+                          key={`${rep.id}-${customer.id}-${task.id}`}
+                          className={classes(css.missingTooltip)}
+                        >
+                          {rep.email}{' '}
+                          {rep.email === userInfo?.email && (
+                            <span>
+                              (<Trans i18nKey="You" />)
+                            </span>
+                          )}
+                        </div>
+                      ),
+                    )}
+                </div>
+              </div>
+            }
             placement="top"
             arrow
           >
-            <BuildIcon className={classes(css.developerIcon)} />
+            <div className={classes(css.dotContainer)}>
+              <Dot fill={customer.color} />
+            </div>
           </Tooltip>
         ))}
-    </div>
-  );
-
-  if (!label) return <Icons />;
-  return (
-    <div className={classes(css.withLabel)}>
-      {missingDevRatings?.length || missingRatings?.length ? (
-        <Trans i18nKey="Waiting for ratings" />
-      ) : (
-        <Trans i18nKey="No ratings waiting" />
-      )}
-      <Icons />
+        {missingDevRatings &&
+          missingDevRatings.map(({ email }) => (
+            <Tooltip
+              key={email}
+              title={<div className={classes(css.missingTooltip)}>{email}</div>}
+              placement="top"
+              arrow
+            >
+              <BuildIcon className={classes(css.developerIcon)} />
+            </Tooltip>
+          ))}
+      </div>
     </div>
   );
 };

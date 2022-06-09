@@ -69,10 +69,13 @@ export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
   const [sending, setSending] = useState(false);
 
   const ProjectTable = table({
-    Title: () => (
-      <h2>
-        <Trans i18nKey="Projects" />
-      </h2>
+    Title: useCallback(
+      () => (
+        <h2>
+          <Trans i18nKey="Projects" />
+        </h2>
+      ),
+      [],
     ),
     getSort: () => undefined,
     Row: ProjectRow,
