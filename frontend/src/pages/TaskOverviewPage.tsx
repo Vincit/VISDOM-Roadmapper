@@ -52,7 +52,7 @@ export const getTaskOverviewData = (
     },
     {
       label: i18n.t('Avg Complexity'),
-      value: complexity.avg,
+      value: complexity,
       children: <WorkRoundIcon color={colors.black100} />,
     },
   ];
@@ -271,7 +271,7 @@ const TaskOverview: FC<{
           {complexityRatings.length > 0 && (
             <RatingTableComplexity
               ratings={complexityRatings}
-              avg={complexity.avg}
+              avg={complexity}
               task={task}
             />
           )}

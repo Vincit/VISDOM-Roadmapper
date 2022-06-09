@@ -90,7 +90,7 @@ export const TaskTableUnrated = table({
   Title: ({ count }) => (
     <>
       <h2 className={classes(css.title)}>
-        <Trans i18nKey="unratedTaskMessage" /> ({count})
+        <Trans i18nKey="Waiting for ratings" /> ({count})
       </h2>
       <InfoTooltip title={<Trans i18nKey="Task list tooltip" />}>
         <InfoIcon className={classes(css.tooltipIcon)} />
@@ -103,10 +103,7 @@ export const TaskTableUnrated = table({
   header: [
     { label: 'Task title', width: 1.5, sorting: SortingTypes.SORT_NAME },
     { label: 'Current average value', sorting: SortingTypes.SORT_AVG_VALUE },
-    {
-      label: 'Current average complexity',
-      sorting: SortingTypes.SORT_AVG_COMPLEXITY,
-    },
+    { label: 'Current complexity', sorting: SortingTypes.SORT_COMPLEXITY },
     { label: 'Waiting for ratings' },
     { label: '', width: 2.5 },
   ],

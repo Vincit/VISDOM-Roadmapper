@@ -68,10 +68,9 @@ const TableRatedTaskRow: TableRow<Task> = ({ item: task, style }) => {
           )}
           {task.name}
         </div>
-        <div>{numFormat.format(value.avg)}</div>
-        <div>{numFormat.format(complexity.avg)}</div>
         <div>{numFormat.format(value.total)}</div>
-        <div>{numFormat.format(complexity.total)}</div>
+        <div>{numFormat.format(value.avg)}</div>
+        <div>{numFormat.format(complexity)}</div>
         <div>
           <span className={classes(css[TaskStatus[task.status]])}>
             <Trans i18nKey={taskStatusToText(task.status)} />
@@ -102,10 +101,9 @@ export const TaskTableRated = table({
       sorting: SortingTypes.SORT_NAME,
       textAlign: 'center',
     },
-    { label: 'Average value', sorting: SortingTypes.SORT_AVG_VALUE },
-    { label: 'Average complexity', sorting: SortingTypes.SORT_AVG_COMPLEXITY },
     { label: 'Total value', sorting: SortingTypes.SORT_TOTAL_VALUE },
-    { label: 'Total complexity', sorting: SortingTypes.SORT_TOTAL_COMPLEXITY },
+    { label: 'Average value', sorting: SortingTypes.SORT_AVG_VALUE },
+    { label: 'Complexity', sorting: SortingTypes.SORT_COMPLEXITY },
     { label: 'Status', sorting: SortingTypes.SORT_STATUS },
     { label: '' },
   ],

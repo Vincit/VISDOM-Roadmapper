@@ -81,7 +81,7 @@ export const PlannerChart: FC<{
         Object.assign(previousLineEnd, { [name]: previousLineEnd.valueSum }),
         ...tasks.map((task) => {
           const { value, complexity } = valueAndComplexitySummary(task);
-          complexitySum += complexity.avg;
+          complexitySum += complexity;
           valueSum += value.total;
 
           return {

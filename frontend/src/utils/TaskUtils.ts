@@ -31,9 +31,8 @@ export enum SortingTypes {
   SORT_CREATEDAT,
   SORT_RATINGS,
   SORT_AVG_VALUE,
-  SORT_AVG_COMPLEXITY,
   SORT_TOTAL_VALUE,
-  SORT_TOTAL_COMPLEXITY,
+  SORT_COMPLEXITY,
 }
 
 class RatingsSummary {
@@ -89,8 +88,7 @@ export const valueAndComplexitySummary = (task: Task) => {
   return {
     value:
       ratings.get(TaskRatingDimension.BusinessValue) ?? new RatingsSummary(),
-    complexity:
-      ratings.get(TaskRatingDimension.Complexity) ?? new RatingsSummary(),
+    complexity: ratings.get(TaskRatingDimension.Complexity)?.avg ?? 0,
   };
 };
 
@@ -100,7 +98,7 @@ export const totalValueAndComplexity = (tasks: Task[]) =>
     .reduce(
       ({ value, complexity }, ratings) => ({
         value: value + ratings.value.avg,
-        complexity: complexity + ratings.complexity.avg,
+        complexity: complexity + ratings.complexity,
       }),
       { value: 0, complexity: 0 },
     );
@@ -187,14 +185,10 @@ export const taskSort = (type: SortingTypes | undefined): SortBy<Task> => {
       return sortKeyNumeric(calcTaskPriority);
     case SortingTypes.SORT_AVG_VALUE:
       return sortKeyNumeric((t) => valueAndComplexitySummary(t).value.avg);
-    case SortingTypes.SORT_AVG_COMPLEXITY:
-      return sortKeyNumeric((t) => valueAndComplexitySummary(t).complexity.avg);
+    case SortingTypes.SORT_COMPLEXITY:
+      return sortKeyNumeric((t) => valueAndComplexitySummary(t).complexity);
     case SortingTypes.SORT_TOTAL_VALUE:
       return sortKeyNumeric((t) => valueAndComplexitySummary(t).value.total);
-    case SortingTypes.SORT_TOTAL_COMPLEXITY:
-      return sortKeyNumeric(
-        (t) => valueAndComplexitySummary(t).complexity.total,
-      );
     default:
       break;
   }
@@ -277,8 +271,7 @@ export const weightedTaskPriority = (customers: Customer[] | undefined) => (
   const weightedValue = taskValuesSummary(task, customers).weighted.avg;
   if (!weightedValue) return -2;
 
-  const avgComplexityRating = valueAndComplexitySummary(task).complexity.avg;
-
+  const avgComplexityRating = valueAndComplexitySummary(task).complexity;
   if (!avgComplexityRating) return -1;
 
   return weightedValue / avgComplexityRating;
