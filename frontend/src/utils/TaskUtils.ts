@@ -35,7 +35,7 @@ export enum SortingTypes {
   SORT_COMPLEXITY,
 }
 
-class RatingsSummary {
+class Summary {
   private sum: number = 0;
 
   private count: number = 0;
@@ -48,8 +48,8 @@ class RatingsSummary {
     return this.count ? this.sum / this.count : 0;
   }
 
-  add(rating: number) {
-    this.sum += rating;
+  add(value: number) {
+    this.sum += value;
     this.count += 1;
     return this;
   }
@@ -72,11 +72,11 @@ export const taskStatusToText = (status: TaskStatus) => {
 
 // Accumulates results into provided map
 const ratingsSummaryByDimensionInto = (
-  result: Map<TaskRatingDimension, RatingsSummary>,
+  result: Map<TaskRatingDimension, Summary>,
   task: Task,
 ) =>
   task.ratings.reduce((acc, { value, dimension }) => {
-    const previous = acc.get(dimension) ?? new RatingsSummary();
+    const previous = acc.get(dimension) ?? new Summary();
     return acc.set(dimension, previous.add(value));
   }, result);
 
@@ -86,8 +86,7 @@ export const ratingsSummaryByDimension = (task: Task) =>
 export const valueAndComplexitySummary = (task: Task) => {
   const ratings = ratingsSummaryByDimension(task);
   return {
-    value:
-      ratings.get(TaskRatingDimension.BusinessValue) ?? new RatingsSummary(),
+    value: ratings.get(TaskRatingDimension.BusinessValue) ?? new Summary(),
     complexity: ratings.get(TaskRatingDimension.Complexity)?.avg ?? 0,
   };
 };
@@ -209,10 +208,10 @@ const ratingValues = (task: Task, customers: Customer[] | undefined) =>
 
 export const taskRatingsCustomerStakes = (
   customers: Customer[] | undefined,
-) => (result: Map<Customer, RatingsSummary>, task: Task) =>
+) => (result: Map<Customer, Summary>, task: Task) =>
   ratingValues(task, customers).reduce((acc, { creator, unweighted }) => {
     if (!creator) return acc;
-    const prevSummary = acc.get(creator) || new RatingsSummary();
+    const prevSummary = acc.get(creator) || new Summary();
     return acc.set(creator, prevSummary.add(unweighted));
   }, result);
 
@@ -230,8 +229,8 @@ const taskValuesSummary = (task: Task, customers: Customer[] | undefined) =>
       unweighted: acc.unweighted.add(unweighted),
     }),
     {
-      weighted: new RatingsSummary(),
-      unweighted: new RatingsSummary(),
+      weighted: new Summary(),
+      unweighted: new Summary(),
     },
   );
 
