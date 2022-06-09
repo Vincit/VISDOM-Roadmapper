@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { userActions } from '../user/index';
-import { api } from '../../api/api';
+import { api, apiV2 } from '../../api/api';
 import { Task } from './types';
 
 export const notifyUsers = createAsyncThunk<
@@ -26,6 +26,7 @@ export const leaveRoadmap = createAsyncThunk<
     const success = await api.leaveRoadmap(leaveRoadmapRequest.roadmapId);
     if (success) {
       await thunkAPI.dispatch(userActions.getUserInfo());
+      await thunkAPI.dispatch(apiV2.endpoints.refetchRoadmaps.initiate());
     }
     return success;
   } catch (err) {

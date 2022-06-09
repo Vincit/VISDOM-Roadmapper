@@ -14,6 +14,7 @@ import { ReactComponent as AlertIcon } from '../../icons/alert_icon.svg';
 import '../../shared.scss';
 import { RoleType } from '../../../../shared/types/customTypes';
 import { userInfoSelector } from '../../redux/user/selectors';
+import { chosenRoadmapIdSelector } from '../../redux/roadmaps/selectors';
 import { getType } from '../../utils/UserUtils';
 import { apiV2, selectById } from '../../api/api';
 
@@ -24,6 +25,7 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
   const dispatch = useDispatch<StoreDispatchType>();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const currentRoadmapId = useSelector(chosenRoadmapIdSelector);
   const userInfo = useSelector(userInfoSelector);
   const { data: roadmap } = apiV2.useGetRoadmapsQuery(
     undefined,
@@ -52,6 +54,8 @@ export const LeaveRoadmapModal: Modal<ModalTypes.LEAVE_ROADMAP_MODAL> = ({
       if (res.payload?.message) return setErrorMessage(res.payload.message);
       return;
     }
+    if (currentRoadmapId === roadmapId)
+      dispatch(roadmapsActions.clearCurrentRoadmap());
     closeModal();
   };
 
