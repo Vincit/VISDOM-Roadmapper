@@ -14,7 +14,8 @@
     white-space: nowrap;
     border-radius: 16px;
     border: 2px solid $COLOR_EMERALD;
-    height: 32px;
+    min-height: 32px;
+    height: fit-content;
     padding: 0px 6px 0px 16px;
     background-color: $COLOR_BLACK5;
 
