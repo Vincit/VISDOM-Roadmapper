@@ -46,6 +46,8 @@ export const english = {
     'Set as default project': 'Set as default project',
     'Delete project ellipsis': 'Delete project...',
     'Delete project': 'Delete project',
+    'No roadmaps available': 'No roadmaps available',
+    'Get started': 'Get started',
     Project: 'Project',
     Integrations: 'Integrations',
     'task list': 'task list',

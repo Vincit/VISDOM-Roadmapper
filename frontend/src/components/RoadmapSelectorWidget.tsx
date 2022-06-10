@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
@@ -13,6 +14,7 @@ import { apiV2 } from '../api/api';
 const classes = classNames.bind(css);
 
 export const RoadmapSelectorWidget = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch<StoreDispatchType>();
   const { data: roadmaps } = apiV2.useGetRoadmapsQuery();
@@ -30,17 +32,19 @@ export const RoadmapSelectorWidget = () => {
   }, [chosenRoadmap]);
 
   if (!roadmaps)
-    return <Dropdown css={css} title="No roadmaps available" disabled empty />;
+    return (
+      <Dropdown css={css} title={t('No roadmaps available')} disabled empty />
+    );
 
   if (roadmaps.length === 0) {
     return (
       <div className={classes(css.dropdownContainer)}>
         <button
           type="button"
-          className={classes(css.dropButton)}
+          className={classes(css.dropButton, css.withoutIcon)}
           onClick={() => history.push(paths.getStarted)}
         >
-          <div className={classes(css.dropTitle)}>Get started</div>
+          <div className={classes(css.dropTitle)}>{t('Get started')}</div>
         </button>
       </div>
     );

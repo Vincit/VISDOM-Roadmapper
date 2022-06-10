@@ -19,6 +19,10 @@
     padding: 0px 6px 0px 16px;
     background-color: $COLOR_BLACK5;
 
+    &.withoutIcon {
+      padding-right: 16px;
+    }
+
     &:hover,
     &:focus {
       background: $COLOR_WHITE;
