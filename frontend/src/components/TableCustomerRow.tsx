@@ -85,7 +85,7 @@ export const TableCustomerRow: TableRow<Customer> = ({
       role="button"
     >
       <div className={classes(css.virtualizedTableRow)} style={style}>
-        <div>
+        <div className={classes(css.dot)}>
           <Dot fill={color} />
         </div>
         <div>{name}</div>

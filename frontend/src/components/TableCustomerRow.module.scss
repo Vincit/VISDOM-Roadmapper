@@ -3,6 +3,12 @@
 .buttons {
   @extend .layout-row;
   margin-left: auto;
+  align-items: center;
+}
+
+.dot {
+  @extend .layout-row;
+  align-items: center;
 }
 
 .adminButtons {

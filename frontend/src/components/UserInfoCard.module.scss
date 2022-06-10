@@ -9,6 +9,7 @@
 .roleColumn {
   @extend .layout-row;
   gap: 1rem;
+  align-items: center;
 }
 
 .section {
