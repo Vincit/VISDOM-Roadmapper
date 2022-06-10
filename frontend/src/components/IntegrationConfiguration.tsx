@@ -142,7 +142,7 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
                 </button>
               ))}
           </Dropdown>
-          {(selected || !!statusMapping?.length) && (
+          {selected && (
             <div className={classes(css.statusMappingLabel)}>
               <div>{t('Task state')}</div>
               <div>{t('Roadmapper state')}</div>
@@ -151,6 +151,11 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
           <div className={classes(css.mappings)}>
             {selected && (
               <SetMapping name={selected.name} select={select(selected.id)} />
+            )}
+            {statusMapping && statusMapping.length > 0 && (
+              <div className={classes(css.statusMappingLabel)}>
+                {t('Selected mappings')}
+              </div>
             )}
             {columns &&
               statusMapping?.map(({ id: mappingId, fromColumn, toStatus }) => {
