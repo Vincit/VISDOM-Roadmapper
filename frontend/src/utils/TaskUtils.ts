@@ -76,6 +76,30 @@ export const getRatingsByType = (ratings: Taskrating[]) => {
 const customerWeight = (customers: Customer[] | undefined, id: number) =>
   customers?.find((c) => c.id === id)?.weight;
 
+/**
+ * Rating summary for a single task
+ *
+ * Complexity:
+ * - average of complexity ratings
+ *
+ * Value for customer:
+ * - average of value ratings given to the customer in guestion,
+ *   if the customer has received at least one rating
+ *
+ * Value:
+ * - the value of the task is calculated from the values of the
+ *   individual customers
+ * - average
+ *   - the average of the customer values
+ *   - the range is the same as the range of an individual rating
+ * - total
+ *   - the sum of customer values
+ *   - the range is scaled by the number of customers receiving
+ *     value from this task
+ *
+ * Weighted value:
+ * - `Value for customer` and `Value`, but weighted by the customer weights
+ */
 export const ratingSummary = (task: { ratings: Taskrating[] }) => {
   const ratings = getRatingsByType(task.ratings);
   const values = Array.from(groupBy(ratings.value, (r) => r.forCustomer));
@@ -115,13 +139,32 @@ export const ratingSummary = (task: { ratings: Taskrating[] }) => {
   };
 };
 
+/**
+ * Rating summary for a milestone, or a collection of tasks
+ *
+ * Each summary includes the total and average
+ * of the values from the individual tasks.
+ *
+ * Complexity:
+ * - summary of the complexity ratings for the individual tasks
+ *
+ * Value for customer:
+ * - summary of the values for the customer from the individual tasks
+ *
+ * Value:
+ * - summary of the values for the individual tasks using the corresponding
+ *   `total` or `average` value calculation for each task
+ *
+ * Weighted value:
+ * - `Value for customer` and `Value`, but weighted by the customer weights
+ */
 export const milestoneRatingSummary = (tasks: { ratings: Taskrating[] }[]) => {
   const summaries = tasks.map(ratingSummary);
 
   return {
     complexity: () => new Summary(summaries.map((task) => task.complexity())),
 
-    // TODO: should this be total, average or both?
+    // TODO: Should this be total, average or both? And which should be used where?
     value: (taskValue: 'total' | 'avg') =>
       new Summary(summaries.map((task) => task.value()[taskValue])),
 
