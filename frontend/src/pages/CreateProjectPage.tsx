@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { paths } from '../routers/paths';
@@ -17,7 +17,6 @@ import { apiV2 } from '../api/api';
 const classes = classNames.bind(css);
 
 export const CreateProjectPage = requireVerifiedEmail(({ userInfo }) => {
-  const { t } = useTranslation();
   const { data: roadmaps } = apiV2.useGetRoadmapsQuery();
   const dispatch = useDispatch<StoreDispatchType>();
 
@@ -39,7 +38,12 @@ export const CreateProjectPage = requireVerifiedEmail(({ userInfo }) => {
     <>
       <div className={classes(css.formDiv)}>
         <ModalHeader>
-          <h2> {t('Greet user', { name: userInfo.email /* XXX */ })} </h2>
+          <h2 className={classes(css.createProjectHeader)}>
+            <Trans i18nKey="Greet user" values={{ email: userInfo.email }}>
+              <div>Hey, </div>
+              <div>{userInfo.email}</div>
+            </Trans>
+          </h2>
         </ModalHeader>
         <ModalContent gap={50}>
           <div className={classes(css.formSubtitle)}>

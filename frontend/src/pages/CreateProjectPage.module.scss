@@ -9,3 +9,10 @@
     margin-bottom: 0px;
   }
 }
+
+.createProjectHeader {
+  width: 100%;
+  div:last-child {
+    @extend .hide-text-ellipsis;
+  }
+}

@@ -61,7 +61,7 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
 
     return (
       <>
-        <div className={classes(css.formSubtitle)}>
+        <div className={classes(css.verifySubtitle)}>
           <Trans
             i18nKey="Your email has now been verified"
             values={{ email: userInfo.email }}
@@ -78,7 +78,7 @@ export const VerifyEmailPage = requireLogin(({ userInfo }) => {
           <Trans i18nKey="Go to my projects" />
         </Link>
         <div className={classes(css.formFooter)}>
-          <Trans i18nKey="Explore later?" />
+          <Trans i18nKey="Explore later?" />{' '}
           <Link to={paths.logoutPage}>
             <Trans i18nKey="Log out" />
           </Link>

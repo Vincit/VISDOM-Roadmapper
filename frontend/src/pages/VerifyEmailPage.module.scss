@@ -8,3 +8,8 @@
 .icon {
   margin: auto;
 }
+
+.verifySubtitle {
+  @extend .formSubtitle;
+  @extend .word-wrap;
+}

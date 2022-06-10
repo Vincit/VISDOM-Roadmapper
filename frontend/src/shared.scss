@@ -634,6 +634,11 @@ a.green {
   white-space: nowrap;
 }
 
+.word-wrap {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word;
+}
+
 .listHeader {
   @extend .layout-row;
   margin-left: 16px;

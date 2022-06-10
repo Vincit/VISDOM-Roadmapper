@@ -264,7 +264,7 @@ export const english = {
     'Contact us': 'Contact us',
     'Problems in joining a project?': 'Problems in joining a project?',
     'Create a new project': 'Create a new project',
-    'Greet user': 'Hey, {{name}}',
+    'Greet user': '<1>Hey, </1><1>{{email}}</1>',
     'No projects yet': 'It seems you don’t have any projects yet...',
     'First project info 1/2':
       'No problem. You can always start by making a new project. With a new project, you can start filling in tasks, milestones, and related people to your project to succeed in your product development goals.',
