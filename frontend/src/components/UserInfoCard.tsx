@@ -63,20 +63,19 @@ const ProjectRow: TableRow<RoadmapRole> = ({ item: roadmapRole, style }) => {
   );
 };
 
+const Title = () => (
+  <h2>
+    <Trans i18nKey="Projects" />
+  </h2>
+);
+
 export const UserInfoCard = ({ userInfo }: { userInfo: UserInfo }) => {
   const dispatch = useDispatch<StoreDispatchType>();
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
 
   const ProjectTable = table({
-    Title: useCallback(
-      () => (
-        <h2>
-          <Trans i18nKey="Projects" />
-        </h2>
-      ),
-      [],
-    ),
+    Title,
     getSort: () => undefined,
     Row: ProjectRow,
     header: [

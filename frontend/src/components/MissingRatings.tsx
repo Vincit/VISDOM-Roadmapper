@@ -109,17 +109,16 @@ export const MissingRatings: FC<{
             </div>
           </Tooltip>
         ))}
-        {missingDevRatings &&
-          missingDevRatings.map(({ email }) => (
-            <Tooltip
-              key={email}
-              title={<div className={classes(css.missingTooltip)}>{email}</div>}
-              placement="top"
-              arrow
-            >
-              <BuildIcon className={classes(css.developerIcon)} />
-            </Tooltip>
-          ))}
+        {missingDevRatings?.map(({ email }) => (
+          <Tooltip
+            key={email}
+            title={<div className={classes(css.missingTooltip)}>{email}</div>}
+            placement="top"
+            arrow
+          >
+            <BuildIcon className={classes(css.developerIcon)} />
+          </Tooltip>
+        ))}
       </div>
     </div>
   );
