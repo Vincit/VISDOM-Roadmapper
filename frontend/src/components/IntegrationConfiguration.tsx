@@ -152,29 +152,32 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
             {selected && (
               <SetMapping name={selected.name} select={select(selected.id)} />
             )}
-            {statusMapping && statusMapping.length > 0 && (
-              <div className={classes(css.statusMappingLabel)}>
-                {t('Selected mappings')}
-              </div>
+            {columns && statusMapping && statusMapping.length > 0 && (
+              <>
+                <div className={classes(css.statusMappingLabel)}>
+                  {t('Selected mappings')}
+                </div>
+                {statusMapping?.map(
+                  ({ id: mappingId, fromColumn, toStatus }) => {
+                    const columnName = columns.find(
+                      (column) => column.id === fromColumn,
+                    )?.name;
+                    if (!columnName) return undefined;
+                    return (
+                      <SetMapping
+                        key={fromColumn}
+                        name={columnName}
+                        status={toStatus}
+                        select={select(fromColumn)}
+                        remove={() =>
+                          removeMapping({ roadmapId, name, id, mappingId })
+                        }
+                      />
+                    );
+                  },
+                )}
+              </>
             )}
-            {columns &&
-              statusMapping?.map(({ id: mappingId, fromColumn, toStatus }) => {
-                const columnName = columns.find(
-                  (column) => column.id === fromColumn,
-                )?.name;
-                if (!columnName) return undefined;
-                return (
-                  <SetMapping
-                    key={fromColumn}
-                    name={columnName}
-                    status={toStatus}
-                    select={select(fromColumn)}
-                    remove={() =>
-                      removeMapping({ roadmapId, name, id, mappingId })
-                    }
-                  />
-                );
-              })}
           </div>
         </>
       )}
