@@ -56,6 +56,7 @@
 
 .mappings {
   @extend .layout-column;
+  gap: 5px;
 }
 
 .mapping {
