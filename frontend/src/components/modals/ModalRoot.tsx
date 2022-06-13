@@ -36,6 +36,7 @@ import { InfoModal } from './InfoModal';
 import { LeaveRoadmapModal } from './LeaveRoadmapModal';
 import { RelationsModal } from './RelationsModal';
 import { VersionDetailsModal } from './VersionDetailsModal';
+import { TaskMapInfoModal } from './TaskMapInfoModal';
 
 const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.ADD_TASK_MODAL]: AddTaskModal,
@@ -67,6 +68,7 @@ const Modals: { readonly [T in ModalTypes]: Modal<T> } = {
   [ModalTypes.LEAVE_ROADMAP_MODAL]: LeaveRoadmapModal,
   [ModalTypes.RELATIONS_MODAL]: RelationsModal,
   [ModalTypes.VERSION_DETAILS_MODAL]: VersionDetailsModal,
+  [ModalTypes.TASK_MAP_INFO_MODAL]: TaskMapInfoModal,
 } as const;
 
 // TODO: move this to css file

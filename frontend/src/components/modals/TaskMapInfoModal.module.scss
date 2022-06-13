@@ -1,0 +1,112 @@
+@import '../../shared.scss';
+
+/* UI Elements */
+.container {
+  margin-top: 8px;
+}
+
+.mainHeader {
+  margin-top: 9px;
+  margin-left: 5px;
+  font-weight: 600;
+  size: 40px;
+  line-height: 28px;
+}
+
+.infoIcon {
+  color: $COLOR_EMERALD;
+  margin-bottom: 4px;
+  margin-right: 4px;
+}
+
+.infoBox {
+  margin-top: -12px;
+  margin-bottom: 16px;
+}
+
+.disableSelect {
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.pointerCursor {
+  cursor: pointer;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.modalButton {
+  width: 210px;
+  margin-top: -12px;
+  margin-bottom: 20px;
+}
+
+/* Overview and Actions shared styles */
+.columnTitle {
+  @extend .typography-pre-title;
+  color: $COLOR_AZURE;
+  margin: 25px 0;
+}
+
+.columns {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+/* Overview styles */
+.overviewSubtitle {
+  flex-basis: 25%;
+  font-weight: 600;
+}
+
+.overviewDescription {
+  color: $COLOR_BLACK60;
+  flex-basis: 75%;
+}
+
+.overviewIcon {
+  flex-basis: 8%;
+}
+
+.overviewIconSubtitle {
+  flex-basis: 32%;
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.overviewIconDescription {
+  flex-basis: 60%;
+}
+
+/* Action styles */
+.actionIcons {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.actionIconsItem {
+  flex-basis: 50%;
+  margin-bottom: 15px;
+}
+
+.actionSubtitle {
+  flex-basis: 35%;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.actionDescription {
+  color: $COLOR_BLACK60;
+  flex-basis: 65%;
+}
+
+.actionHighlight {
+  color: $COLOR_FOREST;
+  font-weight: 600;
+}

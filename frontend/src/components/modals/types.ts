@@ -43,6 +43,7 @@ export enum ModalTypes {
   LEAVE_ROADMAP_MODAL = 'LEAVE_ROADMAP_MODAL',
   RELATIONS_MODAL = 'RELATIONS_MODAL',
   VERSION_DETAILS_MODAL = 'VERSION_DETAILS_MODAL',
+  TASK_MAP_INFO_MODAL = 'TASK_MAP_INFO_MODAL',
 }
 
 type OwnProps = {
@@ -120,6 +121,7 @@ type OwnProps = {
   [ModalTypes.VERSION_DETAILS_MODAL]: {
     version: VersionComplexityAndValues;
   };
+  [ModalTypes.TASK_MAP_INFO_MODAL]: {};
 };
 
 type Props = {

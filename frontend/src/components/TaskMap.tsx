@@ -10,6 +10,7 @@ import ReactFlow, {
   Edge as FlowEdge,
 } from 'react-flow-renderer';
 import classNames from 'classnames';
+import Drawer from '@mui/material/Drawer';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +35,7 @@ import { InfoTooltip } from './InfoTooltip';
 import { apiV2 } from '../api/api';
 
 import css from './TaskMap.module.scss';
+import { TaskMapInfoModal } from './modals/TaskMapInfoModal';
 
 const classes = classNames.bind(css);
 
@@ -79,6 +81,7 @@ export const TaskMap: FC<{
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
   const [groupDraggable, setGroupDraggable] = useState(true);
+  const [openInfo, setOpenInfo] = useState(false);
 
   useEffect(() => {
     if (!mapPosition && flowInstance && (edges.length || groups.length)) {
@@ -288,7 +291,9 @@ export const TaskMap: FC<{
           >
             <InfoTooltip title={t('Fit view -tooltip')}>
               <FullscreenIcon
-                className={classes(css.controlButton)}
+                className={classes(css.centerIcon, {
+                  [css.infoOpen]: openInfo,
+                })}
                 onClick={() => {
                   if (flowInstance) flowInstance.fitView();
                 }}
@@ -296,22 +301,32 @@ export const TaskMap: FC<{
             </InfoTooltip>
             <InfoTooltip title={t('Taskgroup reset -tooltip')}>
               <RestartAltIcon
-                className={classes(css.controlButton)}
+                className={classes(css.restartIcon, {
+                  [css.infoOpen]: openInfo,
+                })}
                 onClick={resetCanvas}
               />
             </InfoTooltip>
-            <InfoTooltip title={t('Taskmap-tooltip')}>
-              <InfoIcon
-                className={classes(
-                  css.taskmapInfo,
-                  css.tooltipIcon,
-                  css.infoIcon,
-                )}
-              />
-            </InfoTooltip>
+            <InfoIcon
+              className={classes(
+                css.taskmapInfo,
+                css.tooltipIcon,
+                css.infoIcon,
+              )}
+              onClick={() => setOpenInfo(true)}
+            />
           </Controls>
         </div>
       </ReactFlow>
+      <Drawer
+        className={classes(css.infoDrawer)}
+        anchor="right"
+        variant="persistent"
+        open={openInfo}
+        onClose={() => setOpenInfo(false)}
+      >
+        <TaskMapInfoModal closeModal={() => setOpenInfo(false)} />
+      </Drawer>
     </div>
   );
 };
