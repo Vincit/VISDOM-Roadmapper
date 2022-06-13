@@ -38,9 +38,9 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
     tasks,
     complexity,
     value,
-    unweightedValue,
+    weightedValue,
     totalValue,
-    unweightedTotalValue,
+    weightedTotalValue,
   } = version;
   const type = useSelector(userRoleSelector, shallowEqual);
   const hasReadCustomerValuesPermission = hasPermission(
@@ -54,8 +54,8 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
   };
   const visualizationHeight = 160;
   const displayedValue = hasReadCustomerValuesPermission
-    ? value
-    : unweightedValue;
+    ? weightedValue
+    : value;
   const completed = isCompletedMilestone(version);
 
   return (
@@ -81,8 +81,8 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
                   )}
                   value={
                     hasReadCustomerValuesPermission
-                      ? totalValue
-                      : unweightedTotalValue
+                      ? weightedTotalValue
+                      : totalValue
                   }
                 >
                   <BusinessIcon color={colors.black100} />

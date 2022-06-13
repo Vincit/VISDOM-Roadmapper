@@ -80,10 +80,10 @@ export const RoadmapGraphPage = () => {
         const weighted = summary.weighted(customers);
         return {
           ...version,
-          value: weighted.value('avg').total,
-          totalValue: weighted.value('total').total,
-          unweightedValue: summary.value('avg').total,
-          unweightedTotalValue: summary.value('total').total,
+          value: summary.value('avg').total,
+          totalValue: summary.value('total').total,
+          weightedValue: weighted.value('avg').total,
+          weightedTotalValue: weighted.value('total').total,
           complexity: summary.complexity().total,
         };
       }),
@@ -98,10 +98,10 @@ export const RoadmapGraphPage = () => {
   const dimensions = ({
     complexity,
     value,
-    unweightedValue,
+    weightedValue,
   }: VersionComplexityAndValues) => ({
     width: complexity,
-    height: hasReadCustomerValuesPermission ? value : unweightedValue,
+    height: hasReadCustomerValuesPermission ? weightedValue : value,
   });
 
   const limits = {
@@ -161,14 +161,7 @@ export const RoadmapGraphPage = () => {
           }}
         >
           {({
-            item: {
-              name,
-              value,
-              unweightedValue,
-              complexity,
-              tasks,
-              completed,
-            },
+            item: { name, value, weightedValue, complexity, tasks, completed },
             index,
           }) => (
             <>
@@ -180,7 +173,7 @@ export const RoadmapGraphPage = () => {
                   />
                   <p>
                     {numFormat.format(
-                      hasReadCustomerValuesPermission ? value : unweightedValue,
+                      hasReadCustomerValuesPermission ? weightedValue : value,
                     )}
                   </p>
                 </div>

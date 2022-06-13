@@ -205,8 +205,8 @@ export interface VersionComplexityAndValues extends Version {
   complexity: number;
   value: number;
   totalValue: number;
-  unweightedValue: number;
-  unweightedTotalValue: number;
+  weightedValue: number;
+  weightedTotalValue: number;
 }
 
 export interface VersionRequest {
