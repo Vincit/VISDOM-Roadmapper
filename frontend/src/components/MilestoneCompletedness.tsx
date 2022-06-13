@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from './InfoTooltip';
 import { Task } from '../redux/roadmaps/types';
 import { BarSection } from './PercentageBar';
@@ -13,9 +13,22 @@ import css from './MilestoneCompletedness.module.scss';
 const classes = classNames.bind(css);
 
 const colorByStatus = (status: number) => {
-  if (status === TaskStatus.COMPLETED) return colors.emerald;
+  if (status === TaskStatus.COMPLETED) return colors.forest;
   if (status === TaskStatus.IN_PROGRESS) return colors.orange;
   return colors.black10;
+};
+
+const TaskStatusLabel: FC<{ status: TaskStatus; percent: number }> = ({
+  status,
+  percent: percentValue,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className={classes(css.label, css[TaskStatus[status]])}>
+      <div>{t(taskStatusToText(status))}</div>
+      <strong>{percent(0).format(percentValue)}</strong>
+    </div>
+  );
 };
 
 export const MilestoneCompletedness: FC<{
@@ -52,8 +65,22 @@ export const MilestoneCompletedness: FC<{
       arrow
     >
       <div className={classes(css.completedness)}>
-        {percent(0).format(nums[TaskStatus.COMPLETED] / total)}{' '}
-        <Trans i18nKey="Completed" />
+        <div
+          className={classes(css.labels, {
+            [css.grey]:
+              nums[TaskStatus.COMPLETED] === 0 &&
+              nums[TaskStatus.IN_PROGRESS] === 0,
+          })}
+        >
+          <TaskStatusLabel
+            status={TaskStatus.COMPLETED}
+            percent={nums[TaskStatus.COMPLETED] / total}
+          />
+          <TaskStatusLabel
+            status={TaskStatus.IN_PROGRESS}
+            percent={nums[TaskStatus.IN_PROGRESS] / total}
+          />
+        </div>
         <div className={classes(css.progressIndicator)}>
           {orderedNums.map(([status, num]) => {
             if (!num) return null;

@@ -4,6 +4,29 @@
   @extend .layout-column;
   text-align: left;
   gap: 5px;
+
+  .labels {
+    @extend .layout-row;
+    justify-content: space-between;
+
+    &.grey {
+      color: $COLOR_BLACK40;
+      .label > div {
+        color: $COLOR_BLACK40;
+      }
+    }
+  }
+  .label {
+    @extend .layout-row;
+    gap: 5px;
+
+    &.COMPLETED > div {
+      color: $COLOR_FOREST;
+    }
+    &.IN_PROGRESS > div {
+      color: $COLOR_ORANGE;
+    }
+  }
 }
 
 .completednessTooltip {
