@@ -440,6 +440,7 @@ export const english = {
     'Remove relation': 'Remove relation',
     'Roadmapper state': 'Roadmapper state',
     'Task state': 'Task state',
+    'Saved mappings': 'Saved mappings',
     'Remove configuration': 'Remove Configuration',
     'Remove configuration button': 'Remove {{name}} settings',
   },

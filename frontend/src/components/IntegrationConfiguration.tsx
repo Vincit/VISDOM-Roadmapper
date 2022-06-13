@@ -155,7 +155,7 @@ const MapStates: FC<{ configuration: IntegrationConfiguration }> = ({
             {columns && statusMapping && statusMapping.length > 0 && (
               <>
                 <div className={classes(css.statusMappingLabel)}>
-                  {t('Selected mappings')}
+                  {t('Saved mappings')}
                 </div>
                 {statusMapping?.map(
                   ({ id: mappingId, fromColumn, toStatus }) => {
