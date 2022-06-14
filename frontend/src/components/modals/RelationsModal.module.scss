@@ -7,6 +7,19 @@
   width: 458px;
 }
 
+.taskDetails h3 {
+  color: $COLOR_BLACK100;
+}
+.taskDetails div {
+  color: $COLOR_BLACK40;
+  // display max. 3 lines of text
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .listContainer {
   flex-grow: 1;
   min-width: 387px;

@@ -143,6 +143,10 @@ export const RelationsModal: Modal<ModalTypes.RELATIONS_MODAL> = ({
             <LoadingSpinner />
           ) : (
             <>
+              <div className={classes(css.taskDetails)}>
+                <h3>{task.name}</h3>
+                <div>{task.description}</div>
+              </div>
               <RelationTables
                 task={task}
                 badRelations={badRelations}
