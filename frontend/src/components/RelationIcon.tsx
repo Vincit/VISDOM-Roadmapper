@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ReactComponent as RelationSvg } from '../icons/relation.svg';
-import { ReactComponent as BadRelationSvg } from '../icons/bad-relation.svg';
+import { ReactComponent as UnmetRelationSvg } from '../icons/unmet-relation.svg';
 import { TaskRelationTableType } from '../utils/TaskRelationUtils';
 import colors from '../colors.module.scss';
 
@@ -15,7 +15,7 @@ export const RelationIcon: FC<{
   size: number;
   incorrect?: boolean;
 }> = ({ type, size, incorrect }) => {
-  const Icon = incorrect ? BadRelationSvg : RelationSvg;
+  const Icon = incorrect ? UnmetRelationSvg : RelationSvg;
   return (
     <Icon
       style={{
