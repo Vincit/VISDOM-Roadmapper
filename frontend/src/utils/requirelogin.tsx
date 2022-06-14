@@ -1,10 +1,12 @@
 import { FC, ComponentType, useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation, matchPath } from 'react-router-dom';
+import { hasPermission } from '../../../shared/utils/permission';
+import { Permission, RoleType } from '../../../shared/types/customTypes';
 import { StoreDispatchType } from '../redux';
 import { RootState } from '../redux/types';
 import { userActions } from '../redux/user';
-import { userInfoSelector } from '../redux/user/selectors';
+import { userInfoSelector, userRoleSelector } from '../redux/user/selectors';
 import { UserInfo } from '../redux/user/types';
 import { paths } from '../routers/paths';
 
@@ -71,3 +73,22 @@ export function requireVerifiedEmail<T>(
     );
   });
 }
+
+export const requireRoadmapRole = <T,>(
+  Component: ComponentType<T>,
+  required: RoleType[],
+): FC<T> => (props) => {
+  const role = useSelector(userRoleSelector, shallowEqual);
+  if (!role || !required.includes(role))
+    return <Redirect to={paths.notFound} />;
+  return <Component {...props} />;
+};
+
+export const requireRoadmapPermission = <T,>(
+  Component: ComponentType<T>,
+  required: Permission,
+): FC<T> => (props) => {
+  const role = useSelector(userRoleSelector, shallowEqual);
+  if (!hasPermission(role, required)) return <Redirect to={paths.notFound} />;
+  return <Component {...props} />;
+};

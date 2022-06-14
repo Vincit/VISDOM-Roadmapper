@@ -7,6 +7,7 @@ import { MilestonesEditor } from '../pages/MilestonesEditor';
 import { PlannerWeightsPage } from '../pages/PlannerWeightsPage';
 import { RoadmapGraphPage } from '../pages/RoadmapGraphPage';
 import { TimeEstimationPage } from '../pages/TimeEstimationPage';
+import { requireRoadmapPermission } from '../utils/requirelogin';
 import { Permission } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
 import { paths } from './paths';
@@ -30,7 +31,10 @@ const routes = [
   },
   {
     path: paths.plannerRelative.weights,
-    component: PlannerWeightsPage,
+    component: requireRoadmapPermission(
+      PlannerWeightsPage,
+      Permission.RoadmapReadCustomerValues,
+    ),
     exact: false,
   },
   {

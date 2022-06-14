@@ -16,13 +16,18 @@ import { ClientOverviewPage } from '../pages/ClientOverviewPage';
 import { StoreDispatchType } from '../redux';
 import { roadmapsActions } from '../redux/roadmaps';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
-import { requireVerifiedEmail } from '../utils/requirelogin';
+import {
+  requireRoadmapPermission,
+  requireRoadmapRole,
+  requireVerifiedEmail,
+} from '../utils/requirelogin';
 import { paths } from './paths';
 import { PlannerPageRouter } from './PlannerPageRouter';
 import { TasksPageRouter } from './TasksPageRouter';
 import '../shared.scss';
 import { usePrevious } from '../utils/usePrevious';
 import { apiV2, selectById } from '../api/api';
+import { Permission, RoleType } from '../../../shared/types/customTypes';
 
 const routes = [
   {
@@ -31,7 +36,7 @@ const routes = [
   },
   {
     path: paths.roadmapRelative.team,
-    component: TeamListPage,
+    component: requireRoadmapRole(TeamListPage, [RoleType.Admin]),
   },
   {
     path: paths.roadmapRelative.tasks,
@@ -43,15 +48,21 @@ const routes = [
   },
   {
     path: paths.roadmapRelative.clients,
-    component: ClientsListPage,
+    component: requireRoadmapRole(ClientsListPage, [
+      RoleType.Admin,
+      RoleType.Business,
+    ]),
   },
   {
     path: paths.roadmapRelative.planner,
-    component: PlannerPageRouter,
+    component: requireRoadmapPermission(
+      PlannerPageRouter,
+      Permission.VersionRead,
+    ),
   },
   {
     path: paths.roadmapRelative.settings,
-    component: ConfigurationPage,
+    component: requireRoadmapRole(ConfigurationPage, [RoleType.Admin]),
   },
   {
     path: '',
