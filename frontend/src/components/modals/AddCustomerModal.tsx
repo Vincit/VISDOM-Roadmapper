@@ -105,7 +105,6 @@ export const AddCustomerModal: Modal<ModalTypes.ADD_CUSTOMER_MODAL> = ({
     },
     {
       description: t('Select representative'),
-      disabled: () => !getCheckedIds(representatives).length,
       component: () => (
         <SelectRepresentatives
           representatives={representatives}
