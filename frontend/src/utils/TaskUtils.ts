@@ -373,7 +373,10 @@ export const unratedTasksAmount = (
   tasks: Task[],
   users: RoadmapUser[] | undefined,
   customers: Customer[] | undefined,
-) => tasks.filter(isUnrated(user, roadmapId, users, customers)).length;
+) =>
+  isCustomer(user) && !user.representatives?.length
+    ? tasks.length
+    : tasks.filter(isUnrated(user, roadmapId, users, customers)).length;
 
 export const missingDeveloper = (task: Task) => {
   if (isCompletedTask(task)) return () => false;
