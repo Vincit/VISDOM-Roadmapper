@@ -24,17 +24,6 @@
   margin-bottom: 16px;
 }
 
-.disableSelect {
-  user-select: none; /* supported by Chrome and Opera */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-}
-
-.pointerCursor {
-  cursor: pointer;
-}
-
 .fullWidth {
   width: 100%;
 }
@@ -52,34 +41,45 @@
   margin: 25px 0;
 }
 
-.columns {
+.column {
   display: flex;
   margin-bottom: 15px;
 }
 
+.overview {
+  cursor: pointer;
+
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
 /* Overview styles */
-.overviewSubtitle {
-  flex-basis: 25%;
-  font-weight: 600;
-}
+.overviewColumn {
+  @extend .column;
 
-.overviewDescription {
-  color: $COLOR_BLACK60;
-  flex-basis: 75%;
-}
+  .icon {
+    flex-basis: 8%;
+  }
+  .subtitle {
+    flex-basis: 25%;
+    font-weight: 600;
+  }
+  .description {
+    color: $COLOR_BLACK60;
+    flex-basis: 75%;
+  }
 
-.overviewIcon {
-  flex-basis: 8%;
-}
-
-.overviewIconSubtitle {
-  flex-basis: 32%;
-  font-weight: 600;
-  margin-right: 5px;
-}
-
-.overviewIconDescription {
-  flex-basis: 60%;
+  &.icon {
+    .subtitle {
+      flex-basis: 32%;
+      margin-right: 5px;
+    }
+    .description {
+      flex-basis: 60%;
+    }
+  }
 }
 
 /* Action styles */
@@ -88,25 +88,27 @@
   flex-wrap: wrap;
   margin-top: 20px;
   margin-bottom: 10px;
+
+  .item {
+    flex-basis: 50%;
+    margin-bottom: 15px;
+  }
 }
 
-.actionIconsItem {
-  flex-basis: 50%;
-  margin-bottom: 15px;
-}
+.actionColumn {
+  @extend .column;
 
-.actionSubtitle {
-  flex-basis: 35%;
-  font-weight: 600;
-  margin-right: 10px;
-}
-
-.actionDescription {
-  color: $COLOR_BLACK60;
-  flex-basis: 65%;
-}
-
-.actionHighlight {
-  color: $COLOR_FOREST;
-  font-weight: 600;
+  .subtitle {
+    flex-basis: 35%;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  .description {
+    color: $COLOR_BLACK60;
+    flex-basis: 65%;
+  }
+  .highlight {
+    color: $COLOR_FOREST;
+    font-weight: 600;
+  }
 }
