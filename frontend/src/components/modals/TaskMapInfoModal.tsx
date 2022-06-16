@@ -12,7 +12,6 @@ import {
   actionColumns,
   actionIcons,
   overviewColumns,
-  overviewIcons,
 } from './TaskMapInfoModalColumns';
 import css from './TaskMapInfoModal.module.scss';
 
@@ -41,10 +40,9 @@ export const TaskMapInfoModal: Modal<ModalTypes.TASK_MAP_INFO_MODAL> = ({
         >
           <Trans i18nKey="Task map info" />
         </Info>
-
         {/* Overview */}
         <div
-          className={classes(css.pointerCursor, css.disableSelect)}
+          className={classes(css.overview)}
           onClick={() => setShowOverview(!showOverview)}
           onKeyPress={() => setShowOverview(!showOverview)}
           role="button"
@@ -54,54 +52,30 @@ export const TaskMapInfoModal: Modal<ModalTypes.TASK_MAP_INFO_MODAL> = ({
             <Trans i18nKey="Overview" />
             {!showOverview ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </h4>
-          {showOverview && (
-            <div>
-              {overviewColumns.map((overview) => (
-                <div>
-                  <div className={classes(css.columnTitle)}>
-                    {overview.Title}
-                  </div>
-                  {overview.Columns.map((column) => (
-                    <div className={classes(css.columns)}>
-                      <div className={classes(css.overviewSubtitle)}>
-                        {column.Subtitle}
-                      </div>
-                      <div className={classes(css.overviewDescription)}>
-                        {column.Description}
-                      </div>
+          {showOverview &&
+            overviewColumns.map(({ title, columns }) => (
+              <>
+                <div className={classes(css.columnTitle)}>{title}</div>
+                {columns.map(({ subtitle, icon, description }) => (
+                  <div
+                    className={classes(css.overviewColumn, {
+                      [css.icon]: icon,
+                    })}
+                  >
+                    {icon && <div className={classes(css.icon)}>{icon}</div>}
+                    <div className={classes(css.subtitle)}>{subtitle}</div>
+                    <div className={classes(css.description)}>
+                      {description}
                     </div>
-                  ))}
-                </div>
-              ))}
-
-              {overviewIcons.map((overview) => (
-                <div>
-                  <div className={classes(css.columnTitle)}>
-                    {overview.Title}
                   </div>
-                  {overview.Columns.map((column) => (
-                    <div className={classes(css.columns)}>
-                      <div className={classes(css.overviewIcon)}>
-                        {column.Icon}
-                      </div>
-                      <div className={classes(css.overviewIconSubtitle)}>
-                        {column.Subtitle}
-                      </div>
-                      <div className={classes(css.overviewIconDescription)}>
-                        {column.Description}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </>
+            ))}
           <hr className={classes(css.fullWidth)} />
         </div>
-
         {/* Actions */}
         <div
-          className={classes(css.pointerCursor, css.disableSelect)}
+          className={classes(css.overview)}
           onClick={() => setShowActions(!showActions)}
           onKeyPress={() => setShowActions(!showActions)}
           role="button"
@@ -112,39 +86,32 @@ export const TaskMapInfoModal: Modal<ModalTypes.TASK_MAP_INFO_MODAL> = ({
             {!showActions ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </h4>
           {showActions && (
-            <div>
-              <div>
-                <Trans i18nKey="Task map actions description" />
-              </div>
+            <>
+              <Trans i18nKey="Task map actions description" />
               <div className={classes(css.actionIcons)}>
-                {actionIcons.map((column) => (
-                  <div className={classes(css.actionIconsItem)}>
-                    {column.Icon} {column.Action}
+                {actionIcons.map(({ icon, action }) => (
+                  <div className={classes(css.item)}>
+                    {icon} {action}
                   </div>
                 ))}
               </div>
-
-              {actionColumns.map((overview) => (
-                <div>
-                  <div className={classes(css.columnTitle)}>
-                    {overview.Title}
-                  </div>
-                  {overview.Columns.map((column) => (
-                    <div className={classes(css.columns)}>
-                      <div className={classes(css.actionSubtitle)}>
-                        {column.Subtitle}
-                      </div>
-                      <div className={classes(css.actionDescription)}>
-                        <span className={classes(css.actionHighlight)}>
-                          {column.Action}{' '}
+              {actionColumns.map(({ title, columns }) => (
+                <>
+                  <div className={classes(css.columnTitle)}>{title}</div>
+                  {columns.map(({ subtitle, action, description }) => (
+                    <div className={classes(css.actionColumn)}>
+                      <div className={classes(css.subtitle)}>{subtitle}</div>
+                      <div className={classes(css.description)}>
+                        <span className={classes(css.highlight)}>
+                          {action}{' '}
                         </span>
-                        {column.Description}
+                        {description}
                       </div>
                     </div>
                   ))}
-                </div>
+                </>
               ))}
-            </div>
+            </>
           )}
           <hr className={classes(css.fullWidth)} />
         </div>
