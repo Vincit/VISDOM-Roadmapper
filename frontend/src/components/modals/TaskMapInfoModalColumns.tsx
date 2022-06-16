@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { FC } from 'react';
 import { Trans } from 'react-i18next';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -8,59 +8,57 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 export const overviewColumns: {
-  title: ReactNode;
-  columns: {
-    subtitle: ReactNode;
-    description: ReactNode;
-    icon?: ReactNode;
-  }[];
+  Title: FC;
+  columns: { Subtitle: FC; Description: FC; Icon?: FC }[];
 }[] = [
   {
-    title: <Trans i18nKey="Task relations" />,
+    Title: () => <Trans i18nKey="Task relations" />,
     columns: [
       {
-        subtitle: <Trans i18nKey="Relations" />,
-        description: <Trans i18nKey="Relations description" />,
+        Subtitle: () => <Trans i18nKey="Relations" />,
+        Description: () => <Trans i18nKey="Relations description" />,
       },
       {
-        subtitle: <Trans i18nKey="Synergies" />,
-        description: <Trans i18nKey="Synergies description" />,
+        Subtitle: () => <Trans i18nKey="Synergies" />,
+        Description: () => <Trans i18nKey="Synergies description" />,
       },
     ],
   },
   {
-    title: <Trans i18nKey="View" />,
+    Title: () => <Trans i18nKey="View" />,
     columns: [
       {
-        subtitle: <Trans i18nKey="Task map" />,
-        description: <Trans i18nKey="Task map description" />,
+        Subtitle: () => <Trans i18nKey="Task map" />,
+        Description: () => <Trans i18nKey="Task map description" />,
       },
       {
-        subtitle: <Trans i18nKey="Task circles" />,
-        description: <Trans i18nKey="Task circles description" />,
+        Subtitle: () => <Trans i18nKey="Task circles" />,
+        Description: () => <Trans i18nKey="Task circles description" />,
       },
       {
-        subtitle: <Trans i18nKey="Unstaged tasks list" />,
-        description: <Trans i18nKey="Unstaged tasks list description" />,
+        Subtitle: () => <Trans i18nKey="Unstaged tasks list" />,
+        Description: () => <Trans i18nKey="Unstaged tasks list description" />,
       },
       {
-        subtitle: <Trans i18nKey="Task info" />,
-        description: <Trans i18nKey="Task info description" />,
+        Subtitle: () => <Trans i18nKey="Task info" />,
+        Description: () => <Trans i18nKey="Task info description" />,
       },
     ],
   },
   {
-    title: <Trans i18nKey="Screen functions" />,
+    Title: () => <Trans i18nKey="Screen functions" />,
     columns: [
       {
-        icon: <FullscreenIcon />,
-        subtitle: <Trans i18nKey="Fit groups into the viewport" />,
-        description: <Trans i18nKey="Fit groups description" />,
+        Icon: () => <FullscreenIcon />,
+        Subtitle: () => <Trans i18nKey="Fit groups into the viewport" />,
+        Description: () => <Trans i18nKey="Fit groups description" />,
       },
       {
-        icon: <RestartAltIcon />,
-        subtitle: <Trans i18nKey="Reset group positions" />,
-        description: <Trans i18nKey="Reset group positions description" />,
+        Icon: () => <RestartAltIcon />,
+        Subtitle: () => <Trans i18nKey="Reset group positions" />,
+        Description: () => (
+          <Trans i18nKey="Reset group positions description" />
+        ),
       },
     ],
   },
@@ -68,42 +66,44 @@ export const overviewColumns: {
 
 export const actionColumns = [
   {
-    title: <Trans i18nKey="Adding and removing task relations & Synergies" />,
+    Title: () => (
+      <Trans i18nKey="Adding and removing task relations & Synergies" />
+    ),
     columns: [
       {
-        subtitle: <Trans i18nKey="Add relation" />,
-        action: <Trans i18nKey="Add relation action" />,
-        description: <Trans i18nKey="Add relation description" />,
+        Subtitle: () => <Trans i18nKey="Add relation" />,
+        Action: () => <Trans i18nKey="Add relation action" />,
+        Description: () => <Trans i18nKey="Add relation description" />,
       },
       {
-        subtitle: <Trans i18nKey="Remove relation" />,
-        action: <Trans i18nKey="Remove relation action" />,
-        description: <Trans i18nKey="Remove relation description" />,
+        Subtitle: () => <Trans i18nKey="Remove relation" />,
+        Action: () => <Trans i18nKey="Remove relation action" />,
+        Description: () => <Trans i18nKey="Remove relation description" />,
       },
       {
-        subtitle: <Trans i18nKey="Add synergy" />,
-        action: <Trans i18nKey="Add synergy action" />,
-        description: <Trans i18nKey="Add synergy description" />,
+        Subtitle: () => <Trans i18nKey="Add synergy" />,
+        Action: () => <Trans i18nKey="Add synergy action" />,
+        Description: () => <Trans i18nKey="Add synergy description" />,
       },
       {
-        subtitle: <Trans i18nKey="Remove synergy" />,
-        action: <Trans i18nKey="Remove synergy actions" />,
-        description: <Trans i18nKey="Remove synergy description" />,
+        Subtitle: () => <Trans i18nKey="Remove synergy" />,
+        Action: () => <Trans i18nKey="Remove synergy actions" />,
+        Description: () => <Trans i18nKey="Remove synergy description" />,
       },
     ],
   },
   {
-    title: <Trans i18nKey="Reorganizing the view and viewing info" />,
+    Title: () => <Trans i18nKey="Reorganizing the view and viewing info" />,
     columns: [
       {
-        subtitle: <Trans i18nKey="Move a task or group" />,
-        action: <Trans i18nKey="Move a task or group action" />,
-        description: <Trans i18nKey="Move a task or group description" />,
+        Subtitle: () => <Trans i18nKey="Move a task or group" />,
+        Action: () => <Trans i18nKey="Move a task or group action" />,
+        Description: () => <Trans i18nKey="Move a task or group description" />,
       },
       {
-        subtitle: <Trans i18nKey="Show task info" />,
-        action: <Trans i18nKey="Show task info action" />,
-        description: <Trans i18nKey="Show task info description" />,
+        Subtitle: () => <Trans i18nKey="Show task info" />,
+        Action: () => <Trans i18nKey="Show task info action" />,
+        Description: () => <Trans i18nKey="Show task info description" />,
       },
     ],
   },
@@ -111,19 +111,19 @@ export const actionColumns = [
 
 export const actionIcons = [
   {
-    icon: <PanToolAltIcon />,
-    action: <Trans i18nKey="Click or Click & drag" />,
+    Icon: () => <PanToolAltIcon />,
+    Action: () => <Trans i18nKey="Click or Click & drag" />,
   },
   {
-    icon: <PanToolIcon />,
-    action: <Trans i18nKey="Grab (a task)" />,
+    Icon: () => <PanToolIcon />,
+    Action: () => <Trans i18nKey="Grab (a task)" />,
   },
   {
-    icon: <OpenWithIcon />,
-    action: <Trans i18nKey="Move (a group)" />,
+    Icon: () => <OpenWithIcon />,
+    Action: () => <Trans i18nKey="Move (a group)" />,
   },
   {
-    icon: <ZoomInIcon />,
-    action: <Trans i18nKey="Zoom in and out (scroll wheel)" />,
+    Icon: () => <ZoomInIcon />,
+    Action: () => <Trans i18nKey="Zoom in and out (scroll wheel)" />,
   },
 ];
