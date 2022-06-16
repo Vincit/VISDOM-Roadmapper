@@ -1,5 +1,6 @@
 import { ReactNode, FC, useEffect, useState, useCallback } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import ReactFlow, {
   applyNodeChanges,
@@ -36,6 +37,7 @@ import { apiV2 } from '../api/api';
 
 import css from './TaskMap.module.scss';
 import { TaskMapInfoModal } from './modals/TaskMapInfoModal';
+import { modalDrawerLink, ModalTypes, useModal } from './modals/types';
 
 const classes = classNames.bind(css);
 
@@ -66,7 +68,10 @@ export const TaskMap: FC<{
   isLoading,
   setIsLoading,
 }) => {
+  const drawer = useModal('openDrawer', ModalTypes.TASK_MAP_INFO_MODAL);
+
   const { t } = useTranslation();
+  const history = useHistory();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
   const flowKey = `taskmap-positions-key-rm-${roadmapId}`;
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
@@ -81,7 +86,8 @@ export const TaskMap: FC<{
   const [unavailable, setUnavailable] = useState<Set<number>>(new Set());
   const [dragHandle, setDragHandle] = useState<TaskProps['dragHandle']>();
   const [groupDraggable, setGroupDraggable] = useState(true);
-  const [openInfo, setOpenInfo] = useState(false);
+
+  const infoOpen = !!drawer.payload;
 
   useEffect(() => {
     if (!mapPosition && flowInstance && (edges.length || groups.length)) {
@@ -292,7 +298,7 @@ export const TaskMap: FC<{
             <InfoTooltip title={t('Fit view -tooltip')}>
               <FullscreenIcon
                 className={classes(css.centerIcon, {
-                  [css.infoOpen]: openInfo,
+                  [css.infoOpen]: infoOpen,
                 })}
                 onClick={() => {
                   if (flowInstance) flowInstance.fitView();
@@ -302,7 +308,7 @@ export const TaskMap: FC<{
             <InfoTooltip title={t('Taskgroup reset -tooltip')}>
               <RestartAltIcon
                 className={classes(css.restartIcon, {
-                  [css.infoOpen]: openInfo,
+                  [css.infoOpen]: infoOpen,
                 })}
                 onClick={resetCanvas}
               />
@@ -313,7 +319,11 @@ export const TaskMap: FC<{
                 css.tooltipIcon,
                 css.infoIcon,
               )}
-              onClick={() => setOpenInfo(true)}
+              onClick={() =>
+                history.replace(
+                  modalDrawerLink(ModalTypes.TASK_MAP_INFO_MODAL, {}),
+                )
+              }
             />
           </Controls>
         </div>
@@ -322,10 +332,15 @@ export const TaskMap: FC<{
         className={classes(css.infoDrawer)}
         anchor="right"
         variant="persistent"
-        open={openInfo}
-        onClose={() => setOpenInfo(false)}
+        open={infoOpen}
+        onClose={() => drawer.close}
       >
-        <TaskMapInfoModal closeModal={() => setOpenInfo(false)} />
+        {drawer.payload && (
+          <TaskMapInfoModal
+            closeModal={drawer.close}
+            {...drawer.payload.modalProps}
+          />
+        )}
       </Drawer>
     </div>
   );
