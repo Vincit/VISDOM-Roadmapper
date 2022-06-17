@@ -33,15 +33,7 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
-  const {
-    name,
-    tasks,
-    complexity,
-    value,
-    weightedValue,
-    totalValue,
-    weightedTotalValue,
-  } = version;
+  const { name, tasks, complexity, value, weightedValue } = version;
   const type = useSelector(userRoleSelector, shallowEqual);
   const hasReadCustomerValuesPermission = hasPermission(
     type,
@@ -53,9 +45,6 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
     complexity: summary.complexity().avg,
   };
   const visualizationHeight = 160;
-  const displayedValue = hasReadCustomerValuesPermission
-    ? weightedValue
-    : value;
   const completed = isCompletedMilestone(version);
 
   return (
@@ -75,14 +64,12 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
               <>
                 <MetricsSummary
                   label={t(
-                    hasReadCustomerValuesPermission
-                      ? 'Weighted total value'
-                      : 'Value',
+                    `${
+                      hasReadCustomerValuesPermission ? 'weighted ' : ''
+                    }total value`,
                   )}
                   value={
-                    hasReadCustomerValuesPermission
-                      ? weightedTotalValue
-                      : totalValue
+                    hasReadCustomerValuesPermission ? weightedValue : value
                   }
                 >
                   <BusinessIcon color={colors.black100} />
@@ -123,7 +110,7 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
             <div className={classes(css.rightSide)}>
               <div>
                 <BusinessIcon size="xxsmall" color={colors.azure} />
-                {displayedValue ? numFormat.format(displayedValue) : '-'}
+                {value ? numFormat.format(value) : '-'}
               </div>
               <div>
                 <WorkRoundIcon size="xxsmall" color={colors.azure} />
