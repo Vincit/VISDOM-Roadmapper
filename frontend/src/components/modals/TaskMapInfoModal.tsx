@@ -12,7 +12,7 @@ import {
   actionColumns,
   actionIcons,
   overviewColumns,
-} from './TaskMapInfoModalColumns';
+} from './modalparts/TaskMapInfoModalColumns';
 import css from './TaskMapInfoModal.module.scss';
 
 const classes = classNames.bind(css);
