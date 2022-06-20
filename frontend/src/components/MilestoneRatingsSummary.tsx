@@ -37,7 +37,7 @@ export const MilestoneWeightedRatingsSummary: FC<{
   const { value } = milestoneRatingSummary(tasks).weighted(customers);
   return (
     <div className={classes(css.ratingSummary, { [css.completed]: completed })}>
-      <Rating title={t('Weighted total value')} value={value('avg').total} />
+      <Rating title={t('Weighted total value')} value={value('total').total} />
       <Rating title={t('Weighted average value')} value={value('avg').avg} />
     </div>
   );
