@@ -35,12 +35,11 @@ export const MilestoneRatingsSummary: FC<{
   const { t } = useTranslation();
   const summary = milestoneRatingSummary(tasks);
   const complexity = summary.complexity();
-  const value = summary.value('avg');
   return (
     <div className={classes(css.ratingSummary, { [css.completed]: completed })}>
-      <Rating title={t('Average value')} value={value.avg} />
+      <Rating title={t('Average value')} value={summary.value('avg').avg} />
       <Rating title={t('Average complexity')} value={complexity.avg} />
-      <Rating title={t('Total value')} value={value.total} />
+      <Rating title={t('Total value')} value={summary.value('total').total} />
       <Rating title={t('Total complexity')} value={complexity.total} />
     </div>
   );
