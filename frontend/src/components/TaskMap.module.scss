@@ -26,24 +26,26 @@ $ZOOM: var(--zoom, 1);
   cursor: pointer;
 }
 
-.centerIcon {
+.icon {
   right: 0;
   cursor: pointer;
 
   &.infoOpen {
     transition: right 0.2s;
     position: absolute;
+  }
+}
+
+.centerIcon {
+  @extend .icon;
+  &.infoOpen {
     right: 350px;
   }
 }
 
 .restartIcon {
-  right: 0;
-  cursor: pointer;
-
+  @extend .icon;
   &.infoOpen {
-    transition: right 0.2s;
-    position: absolute;
     right: 325px;
   }
 }
@@ -60,5 +62,5 @@ $ZOOM: var(--zoom, 1);
   width: 400px;
   max-width: 45%;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
-  border-radius: 20px;
+  border-radius: 20px 0px 0px 20px;
 }
