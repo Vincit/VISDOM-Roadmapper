@@ -11,10 +11,7 @@ import { BusinessIcon, WorkRoundIcon } from '../RoleIcons';
 import { MetricsSummary } from '../MetricsSummary';
 import { TaskTable } from '../TaskTable';
 import { TaskValueCreatedVisualization } from '../TaskValueCreatedVisualization';
-import {
-  milestoneRatingSummary,
-  isCompletedMilestone,
-} from '../../utils/TaskUtils';
+import { isCompletedMilestone } from '../../utils/TaskUtils';
 import { percent } from '../../utils/string';
 import { Permission } from '../../../../shared/types/customTypes';
 import { hasPermission } from '../../../../shared/utils/permission';
@@ -33,17 +30,21 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
-  const { name, tasks, complexity, value, weightedValue } = version;
+  const {
+    name,
+    tasks,
+    complexity,
+    totalValue,
+    weightedTotalValue,
+    avgValue,
+    avgTotalValue,
+    avgComplexity,
+  } = version;
   const type = useSelector(userRoleSelector, shallowEqual);
   const hasReadCustomerValuesPermission = hasPermission(
     type,
     Permission.RoadmapReadCustomerValues,
   );
-  const summary = milestoneRatingSummary(tasks);
-  const averageRatings = {
-    value: summary.value('avg').avg,
-    complexity: summary.complexity().avg,
-  };
   const visualizationHeight = 160;
   const completed = isCompletedMilestone(version);
 
@@ -69,7 +70,9 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
                     }total value`,
                   )}
                   value={
-                    hasReadCustomerValuesPermission ? weightedValue : value
+                    hasReadCustomerValuesPermission
+                      ? weightedTotalValue
+                      : totalValue
                   }
                 >
                   <BusinessIcon color={colors.black100} />
@@ -87,17 +90,13 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
             <div>
               <Trans i18nKey="Average value" />
               <div className={classes(css.value)}>
-                {averageRatings.value
-                  ? numFormat.format(averageRatings.value)
-                  : '-'}
+                {avgValue ? numFormat.format(avgValue) : '-'}
               </div>
             </div>
             <div>
               <Trans i18nKey="Average complexity" />
               <div className={classes(css.value)}>
-                {averageRatings.complexity
-                  ? numFormat.format(averageRatings.complexity)
-                  : '-'}
+                {avgComplexity ? numFormat.format(avgComplexity) : '-'}
               </div>
             </div>
           </div>
@@ -110,7 +109,7 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
             <div className={classes(css.rightSide)}>
               <div>
                 <BusinessIcon size="xxsmall" color={colors.azure} />
-                {value ? numFormat.format(value) : '-'}
+                {avgTotalValue ? numFormat.format(avgTotalValue) : '-'}
               </div>
               <div>
                 <WorkRoundIcon size="xxsmall" color={colors.azure} />
