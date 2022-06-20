@@ -24,10 +24,18 @@ import {
 import { sort, SortingOrders, sortKeyNumeric } from '../utils/SortUtils';
 import css from './PlannerChart.module.scss';
 import { apiV2 } from '../api/api';
+import color from '../colors.module.scss';
 
 const classes = classNames.bind(css);
 
-const colors = ['blue', 'red', 'green', 'orange'] as const;
+const colors = [
+  color.random_1,
+  color.random_2,
+  color.random_3,
+  color.random_4,
+  color.random_5,
+  color.random_6,
+] as const;
 
 enum DataKeys {
   OptimalRoadmap = 'Optimal roadmap',

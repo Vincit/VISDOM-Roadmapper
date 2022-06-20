@@ -10,6 +10,13 @@ $COLOR_MANDY_HOVER: adjust-color($COLOR_MANDY, $lightness: -7%);
 $COLOR_ORANGE: #ffac30;
 $COLOR_WHITE: #ffffff;
 
+$COLOR_RANDOM_1: #e24a4a;
+$COLOR_RANDOM_2: #53d4f0;
+$COLOR_RANDOM_3: #8ce434;
+$COLOR_RANDOM_4: #aa75ee;
+$COLOR_RANDOM_5: #fcd92e;
+$COLOR_RANDOM_6: #ea9128;
+
 $COLOR_BLACK100: #000000;
 $COLOR_BLACK60: #6a6a6a;
 $COLOR_BLACK40: #c6c6c6;
@@ -30,6 +37,13 @@ $COLOR_CLOUD_MINT_MIX: #ecfcfb;
   mandy_hover: $COLOR_MANDY_HOVER;
   orange: $COLOR_ORANGE;
   white: $COLOR_WHITE;
+
+  random_1: $COLOR_RANDOM_1;
+  random_2: $COLOR_RANDOM_2;
+  random_3: $COLOR_RANDOM_3;
+  random_4: $COLOR_RANDOM_4;
+  random_5: $COLOR_RANDOM_5;
+  random_6: $COLOR_RANDOM_6;
 
   black100: $COLOR_BLACK100;
   black60: $COLOR_BLACK60;
