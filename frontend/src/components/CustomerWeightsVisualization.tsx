@@ -42,7 +42,7 @@ export const CustomerWeightsTooltipContent: FC<{
       {customerStakes.map((entry) => (
         <div
           key={entry.id}
-          className={classes(css.customer, {
+          className={classes(css.stakesCustomer, {
             [css.differsTooMuch]: entry.differsTooMuchFromPlanned,
           })}
         >
