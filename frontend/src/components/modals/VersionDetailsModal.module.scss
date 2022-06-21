@@ -25,13 +25,12 @@
   @extend .layout-row;
   gap: 10px;
   height: max-content;
-  align-items: center;
   justify-content: center;
   div {
     white-space: normal !important;
-    height: calc(100% - 8px);
     max-height: unset;
     :nth-child(2) {
+      margin-top: auto;
       line-height: normal;
       padding-top: 15px;
     }
