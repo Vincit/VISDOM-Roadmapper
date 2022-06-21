@@ -25,6 +25,11 @@
   path {
     fill: $COLOR_RASPBERRY;
   }
-  overflow: hidden;
-  text-overflow: ellipsis;
+  & > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  & > svg {
+    min-width: max-content;
+  }
 }
