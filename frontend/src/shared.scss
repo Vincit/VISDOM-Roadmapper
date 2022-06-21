@@ -748,3 +748,25 @@ a.green {
 .measure {
   visibility: hidden;
 }
+
+.stakesCustomer {
+  @extend .layout-row;
+  gap: 5px;
+  align-items: center;
+  word-break: break-word;
+
+  &.differsTooMuch > span {
+    color: $COLOR_RASPBERRY;
+  }
+
+  & > .name {
+    flex-grow: 1;
+    margin-right: 8px;
+    max-width: 70%;
+  }
+
+  & > .percentage {
+    @extend .typography-pre-title;
+    color: $COLOR_AZURE;
+  }
+}

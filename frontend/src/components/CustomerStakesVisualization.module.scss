@@ -7,23 +7,3 @@
   text-align: start;
   gap: 10px;
 }
-
-.customer {
-  @extend .layout-row;
-  gap: 5px;
-  align-items: center;
-
-  &.differsTooMuch > span {
-    color: $COLOR_RASPBERRY;
-  }
-
-  & > .name {
-    flex-grow: 1;
-    margin-right: 8px;
-  }
-
-  & > .percentage {
-    @extend .typography-pre-title;
-    color: $COLOR_AZURE;
-  }
-}
