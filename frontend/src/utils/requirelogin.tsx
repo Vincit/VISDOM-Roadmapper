@@ -79,8 +79,8 @@ export const requireRoadmapRole = <T,>(
   required: RoleType[],
 ): FC<T> => (props) => {
   const role = useSelector(userRoleSelector, shallowEqual);
-  if (!role || !required.includes(role))
-    return <Redirect to={paths.notFound} />;
+  if (!role) return null;
+  if (!required.includes(role)) return <Redirect to={paths.notFound} />;
   return <Component {...props} />;
 };
 
@@ -89,6 +89,7 @@ export const requireRoadmapPermission = <T,>(
   required: Permission,
 ): FC<T> => (props) => {
   const role = useSelector(userRoleSelector, shallowEqual);
+  if (!role) return null;
   if (!hasPermission(role, required)) return <Redirect to={paths.notFound} />;
   return <Component {...props} />;
 };
