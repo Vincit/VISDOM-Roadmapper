@@ -46,8 +46,10 @@
 
   .customer {
     min-width: 320px;
+    max-width: 320px;
     text-align: start;
     padding: 24px 0;
+    word-break: break-word;
   }
 
   .slider {
