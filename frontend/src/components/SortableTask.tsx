@@ -1,9 +1,10 @@
 import { CSSProperties, FC, forwardRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Trans } from 'react-i18next';
 import { ReactComponent as AlertIcon } from '../icons/alert-exclamation-mark.svg';
 import { RelationIcon } from './RelationIcon';
@@ -15,12 +16,15 @@ import {
 import { ratingSummary, customerStakes } from '../utils/TaskUtils';
 import { ModalTypes, modalDrawerLink } from './modals/types';
 import { TaskRatingsText } from './TaskRatingsText';
+import { paths } from '../routers/paths';
 import { InfoTooltip } from './InfoTooltip';
 import { Dot } from './Dot';
+import colors from '../colors.module.scss';
 import { apiV2 } from '../api/api';
 import css from './SortableTask.module.scss';
 import { CustomerStakesVisualization } from './CustomerStakesVisualization';
 import { convertScale } from '../../../shared/utils/conversion';
+import { BusinessIcon, BusinessCriticalIcon } from './RoleIcons';
 
 const classes = classNames.bind(css);
 
@@ -42,9 +46,10 @@ const numFormat = new Intl.NumberFormat(undefined, {
 });
 
 const TaskDetailsTooltip: FC<{ task: Task }> = ({ task }) => {
-  const { valueForCustomer } = ratingSummary(task);
+  const { valueForCustomer, value } = ratingSummary(task);
   const { data: customers } = apiV2.useGetCustomersQuery(task.roadmapId);
   const customerValues = customerStakes(valueForCustomer, customers ?? []);
+  const { pathname, search } = useLocation();
   return (
     <div className={classes(css.taskDetailsTooltip)}>
       <div className={classes(css.title)}>
@@ -52,13 +57,42 @@ const TaskDetailsTooltip: FC<{ task: Task }> = ({ task }) => {
       </div>
       <TaskRatingsText task={task} />
       <div className={classes(css.customerValues)}>
-        {customerValues.map(([{ id, color }, value]) => (
-          <div key={id} className={classes(css.taskRating)}>
-            <Dot fill={color} />
-            {numFormat.format(value)}
-          </div>
-        ))}
+        {customerValues.map(([{ id, color }, customerValue]) => {
+          const businessCritical = customerValue > convertScale(4);
+          return (
+            <div
+              key={id}
+              className={classes(css.taskRating, {
+                [css.critical]: businessCritical,
+              })}
+            >
+              {businessCritical ? (
+                <BusinessCriticalIcon color={color} />
+              ) : (
+                <Dot fill={color} />
+              )}
+              {numFormat.format(customerValue)}
+            </div>
+          );
+        })}
       </div>
+      <div className={classes(css.title, css.extraMargin)}>
+        <Trans i18nKey="Total value" />
+      </div>
+      <div className={classes(css.taskRating)}>
+        <BusinessIcon size="xxsmall" color={colors.azure} />
+        {numFormat.format(value().total)}
+      </div>
+      <Link
+        className={classes(css.green, css.taskDetailsLink)}
+        to={{
+          pathname: `${paths.roadmapHome}/${task.roadmapId}${paths.roadmapRelative.tasks}/${task.id}`,
+          state: { from: `${pathname}${search}` },
+        }}
+      >
+        <Trans i18nKey="Task details" />
+        <ArrowForwardIcon fontSize="small" />
+      </Link>
     </div>
   );
 };

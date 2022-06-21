@@ -83,6 +83,7 @@ export const english = {
     'Rate customer': 'Rate customer',
     milestones: 'milestones',
     Milestones: 'Milestones',
+    'Task details': 'Task details',
     'Not Relevant': 'Not Relevant',
     'A Bit Important': 'A Bit Important',
     'Somewhat Important': 'Somewhat Important',

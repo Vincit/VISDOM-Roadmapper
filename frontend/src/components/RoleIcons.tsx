@@ -5,6 +5,7 @@ import BuildIcon from '@mui/icons-material/BuildSharp';
 import StarIcon from '@mui/icons-material/StarSharp';
 import { ReactComponent as BusinessValueFilled } from '../icons/rate_value_filled.svg';
 import { ReactComponent as RequiredWorkFilled } from '../icons/rate_work_filled.svg';
+import { ReactComponent as BusinessCriticalSvg } from '../icons/business_critical.svg';
 import { RoleType } from '../../../shared/types/customTypes';
 import css from './RoleIcons.module.scss';
 import { InfoTooltip } from './InfoTooltip';
@@ -61,3 +62,11 @@ export const RoleIcon: FC<{
     );
   return <Icon />;
 };
+
+export const BusinessCriticalIcon: FC<{ color: string }> = ({ color }) => (
+  <BusinessCriticalSvg
+    style={{
+      ['--client--color' as any]: color,
+    }}
+  />
+);

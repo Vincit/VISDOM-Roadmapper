@@ -46,18 +46,37 @@
 }
 
 .taskDetailsTooltip {
+  @extend .typography-body;
   @extend .layout-column;
   align-items: center;
-  gap: 20px;
+  gap: 9px;
+  text-transform: none;
 
   .title {
+    @extend .typography-body-bold;
     margin-bottom: 2px;
+  }
+
+  .extraMargin {
+    margin-top: 7px;
+  }
+
+  .taskDetailsLink {
+    @extend .extraMargin;
+    @extend .layout-row;
+    align-items: center;
+    gap: 7px;
   }
 
   .customerValues {
     @extend .layout-row;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: 7px;
     gap: 15px;
   }
+}
+
+.critical {
+  color: $COLOR_AZURE;
 }
