@@ -1,4 +1,4 @@
-import { CSSProperties, FC, forwardRef } from 'react';
+import { CSSProperties, FC, forwardRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd';
@@ -7,7 +7,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Trans } from 'react-i18next';
 import { ReactComponent as AlertIcon } from '../icons/alert-exclamation-mark.svg';
 import { RelationIcon } from './RelationIcon';
-import { Task, TaskRelation } from '../redux/roadmaps/types';
+import { CustomerStakes, Task, TaskRelation } from '../redux/roadmaps/types';
 import {
   TaskRelationTableType,
   RelationAnnotation,
@@ -19,6 +19,8 @@ import { InfoTooltip } from './InfoTooltip';
 import { Dot } from './Dot';
 import { apiV2 } from '../api/api';
 import css from './SortableTask.module.scss';
+import { CustomerStakesVisualization } from './CustomerStakesVisualization';
+import { convertScale } from '../../../shared/utils/conversion';
 
 const classes = classNames.bind(css);
 
@@ -27,6 +29,7 @@ interface TaskProps {
   height?: number;
   showRatings: boolean;
   showInfoIcon: boolean;
+  showShares: boolean;
   hideDragIndicator?: boolean;
   provided?: DraggableProvided;
   style?: CSSProperties;
@@ -119,6 +122,7 @@ export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
       task,
       showRatings,
       showInfoIcon,
+      showShares,
       hideDragIndicator,
       provided,
       style,
@@ -126,29 +130,68 @@ export const StaticTask = forwardRef<HTMLDivElement, TaskProps>(
       height,
     },
     ref,
-  ) => (
-    <div
-      className={classes(css.taskDiv, className)}
-      ref={provided?.innerRef}
-      {...provided?.draggableProps}
-      {...provided?.dragHandleProps}
-      style={{ ...provided?.draggableProps.style, ...style, height }}
-    >
-      <div className={css.leftSideDiv} ref={ref}>
-        {task.name}
-      </div>
-      <div className={css.rightSideDiv}>
-        <RelationIndicator task={task} />
-        {showInfoIcon && (
-          <InfoTooltip title={<TaskDetailsTooltip task={task} />}>
-            <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
-          </InfoTooltip>
+  ) => {
+    const { data: customers } = apiV2.useGetCustomersQuery(task.roadmapId);
+    const [data, setData] = useState<CustomerStakes[]>([]);
+    const [totalValue, setTotalValue] = useState(0);
+    const maxValue = (customers?.length || 0) * convertScale(5);
+    const valueWidth = (totalValue / maxValue) * 100;
+
+    useEffect(() => {
+      if (!customers) return;
+      const { valueForCustomer, value: taskValue } = ratingSummary(task);
+      setTotalValue(taskValue().total);
+      setData(
+        customerStakes(valueForCustomer, customers ?? [])
+          .sort(([a], [b]) => b.weight - a.weight)
+          .map(([{ id, name, color }, value]) => ({
+            id,
+            name,
+            value,
+            color,
+          })),
+      );
+    }, [task, customers]);
+
+    return (
+      <div
+        className={classes(css.taskDiv, className)}
+        ref={provided?.innerRef}
+        {...provided?.draggableProps}
+        {...provided?.dragHandleProps}
+        style={{ ...provided?.draggableProps.style, ...style, height }}
+      >
+        <div className={classes(css.innerDiv)}>
+          <div className={css.leftSideDiv} ref={ref}>
+            {task.name}
+          </div>
+          <div className={css.rightSideDiv}>
+            <RelationIndicator task={task} />
+            {showInfoIcon && (
+              <InfoTooltip title={<TaskDetailsTooltip task={task} />}>
+                <InfoIcon className={classes(css.tooltipGray, css.infoIcon)} />
+              </InfoTooltip>
+            )}
+            {showRatings && <TaskRatingsText task={task} />}
+            {!hideDragIndicator && <DragIndicatorIcon fontSize="small" />}
+          </div>
+        </div>
+        {showShares && totalValue > 0 && (
+          <div
+            className={classes(css.shares)}
+            style={{ width: `${valueWidth}%` }}
+          >
+            <CustomerStakesVisualization
+              customerStakes={data}
+              totalValue={totalValue}
+              barWidth={10}
+              noTooltip
+            />
+          </div>
         )}
-        {showRatings && <TaskRatingsText task={task} />}
-        {!hideDragIndicator && <DragIndicatorIcon fontSize="small" />}
       </div>
-    </div>
-  ),
+    );
+  },
 );
 
 export const SortableTask: FC<

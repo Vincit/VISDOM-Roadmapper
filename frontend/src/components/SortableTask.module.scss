@@ -1,11 +1,15 @@
 @import '../shared.scss';
 
 .taskDiv {
-  display: flex;
+  @extend .layout-column;
   border-radius: 5px;
   padding: 8px 16px;
   background-color: white;
   user-select: none;
+}
+
+.innerDiv {
+  @extend .layout-row;
 }
 
 .leftSideDiv {
@@ -23,6 +27,12 @@
   svg:last-child {
     color: $COLOR_BLACK40;
   }
+}
+
+.shares {
+  @extend .layout-row;
+  justify-content: flex-start;
+  margin-top: auto;
 }
 
 .dependencyTooltip {

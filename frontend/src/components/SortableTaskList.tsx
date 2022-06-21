@@ -30,6 +30,7 @@ export const SortableTaskList: FC<{
   isDropDisabled?: boolean;
   showRatings?: boolean;
   showInfoIcon?: boolean;
+  showShares?: boolean;
   hideDragIndicator?: boolean;
   showSearch?: boolean;
   className?: string;
@@ -39,6 +40,7 @@ export const SortableTaskList: FC<{
   disableDragging,
   showRatings,
   showInfoIcon,
+  showShares,
   hideDragIndicator,
   showSearch,
   className,
@@ -48,7 +50,7 @@ export const SortableTaskList: FC<{
   const [search, setSearch] = useState('');
   const [searched, setSearched] = useState(tasks);
   const [listHeight, setListHeight] = useState(0);
-  const itemHeight = 52; // enough for two lines for the task name
+  const itemHeight = showShares ? 65 : 52; // enough for two lines for the task name
   const itemMargin = 6;
   const divRef = useRef<HTMLDivElement | null>(null);
 
@@ -84,11 +86,19 @@ export const SortableTaskList: FC<{
           disableDragging={disableDragging}
           showRatings={!!showRatings}
           showInfoIcon={!!showInfoIcon}
+          showShares={!!showShares}
           hideDragIndicator={hideDragIndicator}
         />
       );
     },
-    [disableDragging, hideDragIndicator, showInfoIcon, showRatings],
+    [
+      disableDragging,
+      hideDragIndicator,
+      itemHeight,
+      showInfoIcon,
+      showRatings,
+      showShares,
+    ],
   );
 
   return (
@@ -113,6 +123,7 @@ export const SortableTaskList: FC<{
               task={searched[rubric.source.index]}
               showRatings={!!showRatings}
               showInfoIcon={!!showInfoIcon}
+              showShares={!!showShares}
               provided={provided}
             />
           )}
