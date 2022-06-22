@@ -98,7 +98,7 @@ export const apiV2 = createApi({
       void,
       { roadmapId: number; customer: CustomerRequest }
     >({
-      invalidatesTags: ['Customers'],
+      invalidatesTags: (result) => (result ? ['Customers', 'Tasks'] : []),
       query: ({ roadmapId, customer }) => ({
         url: `roadmaps/${roadmapId}/customers/${customer.id}`,
         method: 'delete',
