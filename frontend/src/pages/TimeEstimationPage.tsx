@@ -210,7 +210,11 @@ export const TimeEstimationPage = () => {
         <Trans i18nKey="Estimate milestone durations" />
         <InfoIcon
           onClick={handleTooltipModal}
-          className={classes(css.tooltipClickable, css.infoIcon)}
+          className={classes(
+            css.tooltipClickable,
+            css.infoIcon,
+            css.tooltipIcon,
+          )}
         />
       </h2>
       <div className={classes(css.inputContainer)}>
