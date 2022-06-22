@@ -7,7 +7,7 @@ import {
   UserModifyRequest,
   UserDeleteRequest,
 } from './types';
-import { api } from '../../api/api';
+import { api, apiV2 } from '../../api/api';
 import { RoadmapRoleResponse, Invitation } from '../roadmaps/types';
 
 export const getUserInfo = createAsyncThunk<
@@ -136,7 +136,10 @@ export const verifyEmail = createAsyncThunk<
   { rejectValue: AxiosError }
 >('verifyEmail', async ({ user, verificationId }, thunkAPI) => {
   try {
-    return await api.verifyEmail(user, verificationId);
+    const res = await api.verifyEmail(user, verificationId);
+    if (user.roles.length > 0)
+      await thunkAPI.dispatch(apiV2.endpoints.refetchUsers.initiate());
+    return res;
   } catch (err) {
     return thunkAPI.rejectWithValue(err as AxiosError<any>);
   }
