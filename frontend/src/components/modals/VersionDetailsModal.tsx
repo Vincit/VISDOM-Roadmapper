@@ -27,6 +27,7 @@ const numFormat = new Intl.NumberFormat(undefined, {
 
 export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
   version,
+  showShares,
   closeModal,
 }) => {
   const { t } = useTranslation();
@@ -118,29 +119,31 @@ export const VersionDetailsModal: Modal<ModalTypes.VERSION_DETAILS_MODAL> = ({
             </div>
           </div>
           <hr />
-          <div className={classes(css.shares)}>
-            <div
-              className={classes(css.lines)}
-              style={{ ['--bar-height' as any]: `${visualizationHeight}px` }}
-            >
-              {[1, 0.75, 0.5, 0.25, 0].map((p) => (
-                <div key={p}>
-                  <span>{percent(0).format(p)}</span>
-                  <hr />
-                </div>
-              ))}
+          {showShares && (
+            <div className={classes(css.shares)}>
+              <div
+                className={classes(css.lines)}
+                style={{ ['--bar-height' as any]: `${visualizationHeight}px` }}
+              >
+                {[1, 0.75, 0.5, 0.25, 0].map((p) => (
+                  <div key={p}>
+                    <span>{percent(0).format(p)}</span>
+                    <hr />
+                  </div>
+                ))}
+              </div>
+              <div className={classes(css.visualization)}>
+                <TaskValueCreatedVisualization
+                  width={37}
+                  height={visualizationHeight}
+                  versions={[version]}
+                  key={version.id}
+                  noTooltip
+                  vertical
+                />
+              </div>
             </div>
-            <div className={classes(css.visualization)}>
-              <TaskValueCreatedVisualization
-                width={37}
-                height={visualizationHeight}
-                versions={[version]}
-                key={version.id}
-                noTooltip
-                vertical
-              />
-            </div>
-          </div>
+          )}
         </div>
       </ModalContent>
     </div>

@@ -144,6 +144,7 @@ export const MilestonesEditor = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedVersions, setSelectedVersions] = useState<number[]>([]);
 
+  const multipleCustomers = (customers?.length || []) > 1;
   const versionsSelected = selectedVersions.length > 0;
   const visualizedVersions =
     (versionsSelected
@@ -373,39 +374,43 @@ export const MilestonesEditor = () => {
   const renderTopBar = () => {
     return (
       <div className={classes(css.topbar)}>
-        <div className={classes(css.topbarShares)}>
-          <div>
-            <Trans i18nKey="Actual weighted shares" />
-          </div>
-          {roadmapsVersions && (
-            <TaskValueCreatedVisualization
-              versions={visualizedVersions}
-              width={200}
-              height={20}
-              barWidth={20}
-            />
-          )}
-        </div>
-        {hasCustomerReadPermission && (
+        {multipleCustomers && (
           <>
             <div className={classes(css.topbarShares)}>
-              <Trans i18nKey="Target weighted shares" />
+              <div>
+                <Trans i18nKey="Actual weighted shares" />
+              </div>
               {roadmapsVersions && (
-                <CustomerWeightsVisualization
+                <TaskValueCreatedVisualization
+                  versions={visualizedVersions}
                   width={200}
                   height={20}
                   barWidth={20}
-                  light
                 />
               )}
             </div>
-            {roadmapsVersions && (
-              <Link
-                className={classes(css.clientWeightsLink, 'green')}
-                to={`/roadmap/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.weights}`}
-              >
-                <Trans i18nKey="See client weights" />
-              </Link>
+            {hasCustomerReadPermission && (
+              <>
+                <div className={classes(css.topbarShares)}>
+                  <Trans i18nKey="Target weighted shares" />
+                  {roadmapsVersions && (
+                    <CustomerWeightsVisualization
+                      width={200}
+                      height={20}
+                      barWidth={20}
+                      light
+                    />
+                  )}
+                </div>
+                {roadmapsVersions && (
+                  <Link
+                    className={classes(css.clientWeightsLink, 'green')}
+                    to={`/roadmap/${roadmapId}${paths.roadmapRelative.planner}${paths.plannerRelative.weights}`}
+                  >
+                    <Trans i18nKey="See client weights" />
+                  </Link>
+                )}
+              </>
             )}
           </>
         )}
@@ -522,7 +527,7 @@ export const MilestonesEditor = () => {
                           showInfoIcon
                         />
                       )}
-                      {hasCustomerReadPermission && (
+                      {hasCustomerReadPermission && multipleCustomers && (
                         <div
                           className={classes(css.summaryWrapper, {
                             [css.completed]: completed,

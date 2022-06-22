@@ -57,6 +57,7 @@ export const RoadmapGraphPage = () => {
   const { data: customers } = apiV2.useGetCustomersQuery(
     roadmapId ?? skipToken,
   );
+  const multipleCustomers = (customers?.length || []) > 1;
 
   const a = useRef<HTMLDivElement | null>(null);
   const b = useRef<HTMLDivElement>(null);
@@ -144,6 +145,7 @@ export const RoadmapGraphPage = () => {
             history.replace(
               modalDrawerLink(ModalTypes.VERSION_DETAILS_MODAL, {
                 version: versions![idx],
+                showShares: multipleCustomers,
               }),
             )
           }
@@ -215,51 +217,53 @@ export const RoadmapGraphPage = () => {
             </>
           )}
         </BlockGraph>
-        <div className={classes(css.footer)}>
-          <div
-            className={classes(
-              css.titleContainer,
-              css.lowerGraphTitleContainer,
-            )}
-          >
-            <h2 className={classes(css.graphTitle)}>
-              {t('customerStakesTitle')}
-            </h2>
-            <InfoTooltip title={t('Planner customerStakes tooltip')}>
-              <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
-            </InfoTooltip>
-          </div>
-          <div className={classes(css.stakesContainer)}>
+        {multipleCustomers && (
+          <div className={classes(css.footer)}>
             <div
-              className={classes(css.lines)}
-              style={{ ['--bar-height' as any]: `${height}px` }}
-            >
-              {[1, 0.75, 0.5, 0.25, 0].map((p) => (
-                <div key={p}>
-                  <span>{percent(0).format(p)}</span>
-                  <hr />
-                </div>
-              ))}
-            </div>
-            <BlockView
-              items={versions ?? []}
-              dimensions={dimensions}
-              limits={limits}
-              innerRef={b}
-              style={{ overflowX: 'hidden' }}
-            >
-              {({ item: ver, width }) => (
-                <TaskValueCreatedVisualization
-                  width={width}
-                  height={height}
-                  versions={[ver]}
-                  key={ver.id}
-                  vertical
-                />
+              className={classes(
+                css.titleContainer,
+                css.lowerGraphTitleContainer,
               )}
-            </BlockView>
+            >
+              <h2 className={classes(css.graphTitle)}>
+                {t('customerStakesTitle')}
+              </h2>
+              <InfoTooltip title={t('Planner customerStakes tooltip')}>
+                <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
+              </InfoTooltip>
+            </div>
+            <div className={classes(css.stakesContainer)}>
+              <div
+                className={classes(css.lines)}
+                style={{ ['--bar-height' as any]: `${height}px` }}
+              >
+                {[1, 0.75, 0.5, 0.25, 0].map((p) => (
+                  <div key={p}>
+                    <span>{percent(0).format(p)}</span>
+                    <hr />
+                  </div>
+                ))}
+              </div>
+              <BlockView
+                items={versions ?? []}
+                dimensions={dimensions}
+                limits={limits}
+                innerRef={b}
+                style={{ overflowX: 'hidden' }}
+              >
+                {({ item: ver, width }) => (
+                  <TaskValueCreatedVisualization
+                    width={width}
+                    height={height}
+                    versions={[ver]}
+                    key={ver.id}
+                    vertical
+                  />
+                )}
+              </BlockView>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <Drawer
         anchor="right"

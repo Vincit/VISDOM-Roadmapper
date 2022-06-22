@@ -120,6 +120,7 @@ type OwnProps = {
   };
   [ModalTypes.VERSION_DETAILS_MODAL]: {
     version: VersionComplexityAndValues;
+    showShares: boolean;
   };
   [ModalTypes.TASK_MAP_INFO_MODAL]: {};
 };

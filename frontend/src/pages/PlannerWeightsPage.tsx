@@ -34,6 +34,7 @@ export const PlannerWeightsPage = () => {
 
   const [localCustomers, setLocalCustomers] = useState<Customer[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const multipleCustomers = (customers?.length || []) > 1;
 
   useEffect(() => {
     if (customers)
@@ -62,18 +63,20 @@ export const PlannerWeightsPage = () => {
             <InfoIcon className={classes(css.tooltipIcon, css.infoIcon)} />
           </InfoTooltip>
         </h2>
-        <div className={classes(css.clientShares)}>
-          <MetricsSummary label={t('Target weighted shares')} value={null}>
-            <div className={classes(css.visualizationWrapper)}>
-              <CustomerWeightsVisualization
-                width={180}
-                height={20}
-                barWidth={20}
-                light
-              />
-            </div>
-          </MetricsSummary>
-        </div>
+        {multipleCustomers && (
+          <div className={classes(css.clientShares)}>
+            <MetricsSummary label={t('Target weighted shares')} value={null}>
+              <div className={classes(css.visualizationWrapper)}>
+                <CustomerWeightsVisualization
+                  width={180}
+                  height={20}
+                  barWidth={20}
+                  light
+                />
+              </div>
+            </MetricsSummary>
+          </div>
+        )}
       </header>
       {errorMessage.length > 0 && (
         <Alert
