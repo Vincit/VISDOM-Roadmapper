@@ -624,7 +624,6 @@ a.green {
 }
 
 .tooltipClickable {
-  @extend .tooltipGray;
   cursor: pointer;
 }
 
