@@ -53,16 +53,17 @@ export const TaskMapInfoModal: Modal<ModalTypes.TASK_MAP_INFO_MODAL> = ({
             {!showOverview ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </h4>
           {showOverview &&
-            overviewColumns.map(({ Title, columns }) => (
-              <>
+            overviewColumns.map(({ title, columns }) => (
+              <div key={title}>
                 <div className={classes(css.columnTitle)}>
-                  <Title />
+                  <Trans i18nKey={title} />
                 </div>
-                {columns.map(({ Subtitle, Icon, Description }) => (
+                {columns.map(({ subtitle, Icon, description }) => (
                   <div
                     className={classes(css.overviewColumn, {
                       [css.icon]: Icon,
                     })}
+                    key={subtitle}
                   >
                     {Icon && (
                       <div className={classes(css.icon)}>
@@ -70,14 +71,14 @@ export const TaskMapInfoModal: Modal<ModalTypes.TASK_MAP_INFO_MODAL> = ({
                       </div>
                     )}
                     <div className={classes(css.subtitle)}>
-                      <Subtitle />
+                      <Trans i18nKey={subtitle} />
                     </div>
                     <div className={classes(css.description)}>
-                      <Description />
+                      <Trans i18nKey={description} />
                     </div>
                   </div>
                 ))}
-              </>
+              </div>
             ))}
           <hr className={classes(css.fullWidth)} />
         </div>
@@ -97,31 +98,31 @@ export const TaskMapInfoModal: Modal<ModalTypes.TASK_MAP_INFO_MODAL> = ({
             <>
               <Trans i18nKey="Task map actions description" />
               <div className={classes(css.actionIcons)}>
-                {actionIcons.map(({ Icon, Action }) => (
-                  <div className={classes(css.item)}>
-                    <Icon /> <Action />
+                {actionIcons.map(({ Icon, action }) => (
+                  <div key={action} className={classes(css.item)}>
+                    <Icon /> <Trans i18nKey={action} />
                   </div>
                 ))}
               </div>
-              {actionColumns.map(({ Title, columns }) => (
-                <>
+              {actionColumns.map(({ title, columns }) => (
+                <div key={title}>
                   <div className={classes(css.columnTitle)}>
-                    <Title />
+                    <Trans i18nKey={title} />
                   </div>
-                  {columns.map(({ Subtitle, Action, Description }) => (
-                    <div className={classes(css.actionColumn)}>
+                  {columns.map(({ subtitle, action, description }) => (
+                    <div className={classes(css.actionColumn)} key={subtitle}>
                       <div className={classes(css.subtitle)}>
-                        <Subtitle />
+                        <Trans i18nKey={subtitle} />
                       </div>
                       <div className={classes(css.description)}>
                         <span className={classes(css.highlight)}>
-                          <Action />{' '}
+                          <Trans i18nKey={action} />{' '}
                         </span>
-                        <Description />
+                        <Trans i18nKey={description} />
                       </div>
                     </div>
                   ))}
-                </>
+                </div>
               ))}
             </>
           )}
