@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Trans } from 'react-i18next';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import PanToolAltIcon from '@mui/icons-material/PanToolAlt';
@@ -8,57 +7,55 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 export const overviewColumns: {
-  Title: FC;
-  columns: { Subtitle: FC; Description: FC; Icon?: FC }[];
+  title: string;
+  columns: { subtitle: string; description: string; Icon?: FC }[];
 }[] = [
   {
-    Title: () => <Trans i18nKey="Task relations" />,
+    title: 'Task relations',
     columns: [
       {
-        Subtitle: () => <Trans i18nKey="Relations" />,
-        Description: () => <Trans i18nKey="Relations description" />,
+        subtitle: 'Relations',
+        description: 'Relations description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Synergies" />,
-        Description: () => <Trans i18nKey="Synergies description" />,
+        subtitle: 'Synergies',
+        description: 'Synergies description',
       },
     ],
   },
   {
-    Title: () => <Trans i18nKey="View" />,
+    title: 'View',
     columns: [
       {
-        Subtitle: () => <Trans i18nKey="Task map" />,
-        Description: () => <Trans i18nKey="Task map description" />,
+        subtitle: 'Task map',
+        description: 'Task map description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Task circles" />,
-        Description: () => <Trans i18nKey="Task circles description" />,
+        subtitle: 'Task circles',
+        description: 'Task circles description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Unstaged tasks list" />,
-        Description: () => <Trans i18nKey="Unstaged tasks list description" />,
+        subtitle: 'Unstaged tasks list',
+        description: 'Unstaged tasks list description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Task info" />,
-        Description: () => <Trans i18nKey="Task info description" />,
+        subtitle: 'Task info',
+        description: 'Task info description',
       },
     ],
   },
   {
-    Title: () => <Trans i18nKey="Screen functions" />,
+    title: 'Screen functions',
     columns: [
       {
         Icon: () => <FullscreenIcon />,
-        Subtitle: () => <Trans i18nKey="Fit groups into the viewport" />,
-        Description: () => <Trans i18nKey="Fit groups description" />,
+        subtitle: 'Fit groups into the viewport',
+        description: 'Fit groups description',
       },
       {
         Icon: () => <RestartAltIcon />,
-        Subtitle: () => <Trans i18nKey="Reset group positions" />,
-        Description: () => (
-          <Trans i18nKey="Reset group positions description" />
-        ),
+        subtitle: 'Reset group positions',
+        description: 'Reset group positions description',
       },
     ],
   },
@@ -66,44 +63,42 @@ export const overviewColumns: {
 
 export const actionColumns = [
   {
-    Title: () => (
-      <Trans i18nKey="Adding and removing task relations & Synergies" />
-    ),
+    title: 'Adding and removing task relations & Synergies',
     columns: [
       {
-        Subtitle: () => <Trans i18nKey="Add relation" />,
-        Action: () => <Trans i18nKey="Add relation action" />,
-        Description: () => <Trans i18nKey="Add relation description" />,
+        subtitle: 'Add relation',
+        action: 'Add relation action',
+        description: 'Add relation description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Remove relation" />,
-        Action: () => <Trans i18nKey="Remove relation action" />,
-        Description: () => <Trans i18nKey="Remove relation description" />,
+        subtitle: 'Remove relation',
+        action: 'Remove relation action',
+        description: 'Remove relation description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Add synergy" />,
-        Action: () => <Trans i18nKey="Add synergy action" />,
-        Description: () => <Trans i18nKey="Add synergy description" />,
+        subtitle: 'Add synergy',
+        action: 'Add synergy action',
+        description: 'Add synergy description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Remove synergy" />,
-        Action: () => <Trans i18nKey="Remove synergy actions" />,
-        Description: () => <Trans i18nKey="Remove synergy description" />,
+        subtitle: 'Remove synergy',
+        action: 'Remove synergy actions',
+        description: 'Remove synergy description',
       },
     ],
   },
   {
-    Title: () => <Trans i18nKey="Reorganizing the view and viewing info" />,
+    title: 'Reorganizing the view and viewing info',
     columns: [
       {
-        Subtitle: () => <Trans i18nKey="Move a task or group" />,
-        Action: () => <Trans i18nKey="Move a task or group action" />,
-        Description: () => <Trans i18nKey="Move a task or group description" />,
+        subtitle: 'Move a task or group',
+        action: 'Move a task or group action',
+        description: 'Move a task or group description',
       },
       {
-        Subtitle: () => <Trans i18nKey="Show task info" />,
-        Action: () => <Trans i18nKey="Show task info action" />,
-        Description: () => <Trans i18nKey="Show task info description" />,
+        subtitle: 'Show task info',
+        action: 'Show task info action',
+        description: 'Show task info description',
       },
     ],
   },
@@ -112,18 +107,18 @@ export const actionColumns = [
 export const actionIcons = [
   {
     Icon: () => <PanToolAltIcon />,
-    Action: () => <Trans i18nKey="Click or Click & drag" />,
+    action: 'Click or Click & drag',
   },
   {
     Icon: () => <PanToolIcon />,
-    Action: () => <Trans i18nKey="Grab (a task)" />,
+    action: 'Grab (a task)',
   },
   {
     Icon: () => <OpenWithIcon />,
-    Action: () => <Trans i18nKey="Move (a group)" />,
+    action: 'Move (a group)',
   },
   {
     Icon: () => <ZoomInIcon />,
-    Action: () => <Trans i18nKey="Zoom in and out (scroll wheel)" />,
+    action: 'Zoom in and out (scroll wheel)',
   },
 ];
