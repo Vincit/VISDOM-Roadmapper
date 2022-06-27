@@ -7,8 +7,6 @@ ease planning of the upcoming product version. VISDOM roadmap visualizations
 are based on expert evaluations and collaboration, so that the chosen roadmap
 always represents authentic wishes and needs for the product.
 
-
-
 # Local development & testing
 
 [Docker](https://docs.docker.com/get-docker/) is recommended for running a
@@ -121,3 +119,43 @@ CD Configuration step-by-step:
    a push to your continuous delivery branch, and monitor your github actions
    progress as well as AWS CodeDeploy deployment status. Also test the site to
    verify configuration is correct.
+
+# Integrations in Roadmapper
+
+VISDOM Roadmap tool supports importing tasks from JIRA, Trello, and GitLab.
+To configure a integration, navigate to the settings page of a Roadmap project 
+and fill in the required data. Since the process of setting up a integration 
+varies a bit for each source, the following tables detail where the required 
+data can be retrieved at.
+
+| Source | Host | Consumer & Private Key Location |
+| ------ | ------ | ------ |
+| JIRA | JIRA URL | Board settings |
+
+| Source | Key Location | Consumer Key | Private Key |
+| ------ | ------ | ------ | ------ |
+| Trello | https://trello.com/app-key | Developer API Key | OAuth Secret |
+
+| Source | Project ID | Key Location | Consumer Key | Private Key |
+| ------ | ------ | ------ | ------ | ------ |
+| GitLab | Top of the repository front page | Application details page | Application ID | Application Secret |
+
+- For GitLab, an Application needs to be added for Roadmapper at 
+https://gitlab.com/-/profile/applications
+  - Redirect URI: `roadmapper_base_url`**/oauth/redirect**
+  - Confidental: **No**
+  - Scopes: **read_api**
+
+Once keys are set up in the Roadmap tool, the integration needs to be 
+authorized. Follow the instructions in the Roadmap tool for this step.
+
+Once the integration is authorized, tasks can be imported from the source.
+A board may need to be selected in the settings page, if multiple are available. 
+
+Additionally, the source columns or labels can be mapped to the task states used
+in the Roadmap tool. 
+- If so, the task state is derived from the configuration when importing tasks. 
+However, the Roadmap tool only updates task states that have progressed. For 
+example, if imported task’s state is "in progress" and the source’s has been 
+moved back to "not started", the state will remain in "in progress" on a 
+re-import.
