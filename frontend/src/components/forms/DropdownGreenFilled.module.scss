@@ -1,0 +1,55 @@
+@import './DropdownGreen.module.scss';
+
+.dropdownContainer {
+  position: relative;
+  min-width: 60px;
+  max-width: 500px;
+
+  .dropButton {
+    background-color: $COLOR_EMERALD;
+    color: $COLOR_WHITE;
+
+    .expandIcon {
+      color: $COLOR_WHITE;
+    }
+
+    &:hover,
+    &:focus {
+      background: $COLOR_FOREST;
+      border-color: $COLOR_FOREST;
+    }
+  }
+
+  .dropMenu {
+    @extend .shadow-roadmapblock;
+    @extend .layout-column;
+    align-items: center;
+    right: 0;
+    left: inherit;
+    border-radius: 10px;
+    width: max-content;
+    max-width: max-content;
+  }
+
+  .menuCanvas {
+    border: 2px solid $COLOR_WHITE;
+    width: 100%;
+    z-index: 4000;
+  }
+
+  .dropItem {
+    font-size: 14px;
+    padding: 10px 20px 10px 20px;
+    width: 100%;
+
+    &:last-child {
+      border-radius: 0px 0px 10px 10px;
+    }
+    &:first-child {
+      border-radius: 10px 10px 0px 0px;
+    }
+    &:only-child {
+      border-radius: 10px;
+    }
+  }
+}

@@ -13,6 +13,8 @@ import classNames from 'classnames';
 import Drawer from '@mui/material/Drawer';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import DoneAll from '@mui/icons-material/DoneAll';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { Link } from 'react-router-dom';
 import {
   DeleteButton,
@@ -31,6 +33,8 @@ import { ModalTypes, modalLink, useModal } from '../components/modals/types';
 import { RelationsModal } from '../components/modals/RelationsModal';
 import { chosenRoadmapIdSelector } from '../redux/roadmaps/selectors';
 import { Task, Version, TaskRelation } from '../redux/roadmaps/types';
+import { RootState } from '../redux/types';
+import { UserInfo } from '../redux/user/types';
 import {
   weightedTaskPriority,
   hasRatingsOnEachDimension,
@@ -47,18 +51,20 @@ import { InfoTooltip } from '../components/InfoTooltip';
 import css from './MilestonesEditor.module.scss';
 import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { getType } from '../utils/UserUtils';
 import {
   Permission,
   TaskRelationType,
 } from '../../../shared/types/customTypes';
 import { hasPermission } from '../../../shared/utils/permission';
-import { userRoleSelector } from '../redux/user/selectors';
+import { userInfoSelector } from '../redux/user/selectors';
 import { MilestonesAmountSummary } from '../components/MilestonesAmountSummary';
 import { CustomerWeightsVisualization } from '../components/CustomerWeightsVisualization';
 import { TaskValueCreatedVisualization } from '../components/TaskValueCreatedVisualization';
 import { CustomerStakesScore } from '../components/CustomerStakesScore';
 import { MilestoneCompletedness } from '../components/MilestoneCompletedness';
 import { paths } from '../routers/paths';
+import { Dropdown } from '../components/forms/Dropdown';
 
 const classes = classNames.bind(css);
 
@@ -117,12 +123,16 @@ export const MilestonesEditor = () => {
 
   const { t } = useTranslation();
   const roadmapId = useSelector(chosenRoadmapIdSelector);
+  const userInfo = useSelector<RootState, UserInfo | undefined>(
+    userInfoSelector,
+    shallowEqual,
+  );
   const { data: tasks } = apiV2.useGetTasksQuery(roadmapId ?? skipToken);
   const [
     patchVersion,
     { isLoading: disableDrag, isError },
   ] = apiV2.usePatchVersionMutation();
-  const role = useSelector(userRoleSelector, shallowEqual);
+  const role = getType(userInfo, roadmapId);
   const hasVersionEditPermission = hasPermission(role, Permission.VersionEdit);
   const hasCustomerReadPermission = hasPermission(
     role,
@@ -146,6 +156,27 @@ export const MilestonesEditor = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedVersions, setSelectedVersions] = useState<number[]>([]);
+
+  const getSettings = (type: string): boolean =>
+    JSON.parse(
+      localStorage.getItem(`${roadmapId}-${userInfo?.id}-${type}`) || 'true',
+    );
+  const setSettings = (type: string, selection: boolean) =>
+    localStorage.setItem(
+      `${roadmapId}-${userInfo?.id}-${type}`,
+      JSON.stringify(selection),
+    );
+
+  const [milestonesSettings, setMilestonesSettings] = useState<{
+    [key: string]: boolean;
+  }>({
+    showTaskShares: getSettings('showTaskShares'),
+    showMilestoneCompleteness: getSettings('showMilestoneCompleteness'),
+    ...(hasCustomerReadPermission && {
+      showMilestoneShares: getSettings('showMilestoneShares'),
+      showMilestoneWeightedSummary: getSettings('showMilestoneWeightedSummary'),
+    }),
+  });
 
   const multipleCustomers = (customers?.length || []) > 1;
   const versionsSelected = selectedVersions.length > 0;
@@ -374,6 +405,36 @@ export const MilestonesEditor = () => {
     else setSelectedVersions([id]);
   };
 
+  const viewOptions = [
+    {
+      title: 'Tasks',
+    },
+    {
+      title: 'Client shares',
+      type: 'showTaskShares',
+    },
+    { title: 'Milestones' },
+    ...(hasCustomerReadPermission
+      ? [
+          {
+            title: 'Client shares score',
+            type: 'showMilestoneShares',
+          },
+          {
+            title: 'Weighted value summary',
+            type: 'showMilestoneWeightedSummary',
+          },
+        ]
+      : []),
+    {
+      title: 'Completeness rates',
+      type: 'showMilestoneCompleteness',
+    },
+  ];
+  const selectedMilestonesSettingsNum = Object.entries(
+    milestonesSettings,
+  ).filter(([, selected]) => selected).length;
+
   const renderTopBar = () => {
     return (
       <div className={classes(css.topbar)}>
@@ -422,6 +483,53 @@ export const MilestonesEditor = () => {
             selected={versionsSelected}
             versions={visualizedVersions}
           />
+          <Dropdown
+            css={css}
+            customTitle={
+              <div className={classes(css.title)}>
+                {selectedMilestonesSettingsNum > 0 && (
+                  <div className={classes(css.circle)}>
+                    {selectedMilestonesSettingsNum}
+                  </div>
+                )}
+                <Trans i18nKey="View" />
+              </div>
+            }
+          >
+            {viewOptions.map(({ title, type }) => {
+              if (!type)
+                return (
+                  <div
+                    className={classes(css.dropItem, css.section)}
+                    key={title}
+                  >
+                    <Trans i18nKey={title} />
+                  </div>
+                );
+              const selected = milestonesSettings[type];
+              return (
+                <button
+                  className={classes(css.dropItem, {
+                    [css.selected]: selected,
+                  })}
+                  key={type}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSettings(type, !selected);
+                    setMilestonesSettings({
+                      ...milestonesSettings,
+                      [type]: !selected,
+                    });
+                  }}
+                  type="button"
+                >
+                  {selected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+                  <Trans i18nKey={title} />
+                </button>
+              );
+            })}
+          </Dropdown>
           <InfoTooltip
             title={
               <div>
@@ -528,30 +636,33 @@ export const MilestonesEditor = () => {
                           }
                           hideDragIndicator={!hasVersionEditPermission}
                           showInfoIcon
-                          showShares
+                          showShares={milestonesSettings.showTaskShares}
                         />
                       )}
                       {hasCustomerReadPermission && (
                         <>
-                          {multipleCustomers && (
-                            <div
-                              className={classes(css.summaryWrapper, {
-                                [css.completed]: completed,
-                              })}
-                            >
-                              <CustomerStakesScore
-                                version={version}
+                          {milestonesSettings.showMilestoneShares &&
+                            multipleCustomers && (
+                              <div
+                                className={classes(css.summaryWrapper, {
+                                  [css.completed]: completed,
+                                })}
+                              >
+                                <CustomerStakesScore
+                                  version={version}
+                                  completed={completed}
+                                />
+                              </div>
+                            )}
+                          {milestonesSettings.showMilestoneWeightedSummary && (
+                            <div className={classes(css.summaryWrapper)}>
+                              <MilestoneWeightedRatingsSummary
+                                tasks={list}
+                                customers={customers}
                                 completed={completed}
                               />
                             </div>
                           )}
-                          <div className={classes(css.summaryWrapper)}>
-                            <MilestoneWeightedRatingsSummary
-                              tasks={list}
-                              customers={customers}
-                              completed={completed}
-                            />
-                          </div>
                         </>
                       )}
                       <div className={classes(css.summaryWrapper)}>
@@ -560,11 +671,13 @@ export const MilestonesEditor = () => {
                           completed={completed}
                         />
                       </div>
-                      {!completed && list.length > 0 && (
-                        <div className={classes(css.summaryWrapper)}>
-                          <MilestoneCompletedness tasks={list} />
-                        </div>
-                      )}
+                      {milestonesSettings.showMilestoneCompleteness &&
+                        !completed &&
+                        list.length > 0 && (
+                          <div className={classes(css.summaryWrapper)}>
+                            <MilestoneCompletedness tasks={list} />
+                          </div>
+                        )}
                       {hasVersionEditPermission && (
                         <div className={classes(css.milestoneFooter)}>
                           <DeleteButton

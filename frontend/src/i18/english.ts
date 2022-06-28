@@ -442,6 +442,8 @@ export const english = {
     'Client weights': 'Client weights',
     'See client weights': 'See client weights',
     'Client shares score': 'Client shares score',
+    'Weighted value summary': 'Weighted value summary',
+    'Completeness rates': 'Completeness rates',
     Poor: 'Poor',
     Great: 'Great',
     'Fit view -tooltip': 'Fit groups to the viewport',

@@ -1,9 +1,16 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, {
+  FC,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import classNames from 'classnames';
 
 export const Dropdown: FC<{
   css: { readonly [k: string]: string };
+  customTitle?: ReactElement;
   title?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -12,6 +19,7 @@ export const Dropdown: FC<{
   id?: string;
 }> = ({
   css,
+  customTitle,
   title,
   placeholder = 'Not selected',
   children,
@@ -56,6 +64,7 @@ export const Dropdown: FC<{
         return `${target.slice(0, maxLength - 1)}..`;
     return target;
   };
+  const dropdownTitle = customTitle || shortenString(title ?? placeholder);
 
   if (empty) {
     return (
@@ -66,9 +75,7 @@ export const Dropdown: FC<{
           disabled={disabled}
           id={id}
         >
-          <div className={classes(css.emptyTitle)}>
-            {shortenString(title ?? placeholder)}
-          </div>
+          <div className={classes(css.emptyTitle)}>{dropdownTitle}</div>
         </button>
       </div>
     );
@@ -84,7 +91,7 @@ export const Dropdown: FC<{
         id={id}
       >
         <div className={classes(title ? css.dropTitle : css.notSelected)}>
-          {shortenString(title ?? placeholder)}
+          {dropdownTitle}
         </div>
         <ExpandMoreIcon className={classes(css.expandIcon)} />
       </button>
