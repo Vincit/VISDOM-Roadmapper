@@ -380,9 +380,12 @@ export const english = {
     'config-jira-tooltip': 'Settings for JIRA for task imports',
     'config-trello-tooltip': 'Settings for TRELLO for task imports',
     'config-gitLab-tooltip': 'Settings for GITLAB for task imports',
-    'oauth-jira-tooltip': 'TBD',
-    'oauth-trello-tooltip': 'TBD',
-    'oauth-gitLab-tooltip': 'TBD',
+    'oauth-jira-tooltip':
+      'Authorize the VISDOM Roadmap tool for task importing',
+    'oauth-trello-tooltip':
+      'Authorize the VISDOM Roadmap tool to select a board for task importing',
+    'oauth-gitLab-tooltip':
+      'Authorize the VISDOM Roadmap tool to select a board for task importing',
     'Personal auth token tooltip': 'TBD',
     'Taskmap-tooltip':
       'New synergy group can be created by dragging a task outside of existing groups.\n\nRelations can be deleted by right clicking them or hovering over and pressing backspace or delete.',
