@@ -1,10 +1,11 @@
 @import '../shared.scss';
 
 .graphWrapper {
-  display: flex;
-  flex-direction: column;
+  @extend .layout-column;
   border-radius: 10px;
   border: 1px solid $COLOR_SKY;
+  background-color: $COLOR_WHITE;
+  padding: 25px 35px 25px 25px;
 }
 
 .buttonsBar {
@@ -19,4 +20,36 @@
 
 .label {
   @extend .typography-pre-title;
+  fill: $COLOR_BLACK60;
+}
+
+:global(.recharts-cartesian-axis-tick-value) {
+  @extend .typography-pre-title;
+  fill: $COLOR_BLACK100;
+  letter-spacing: 0;
+}
+
+.title {
+  @extend .typography-body-bold;
+  @extend .layout-row;
+  align-items: flex-start;
+}
+
+.legendColumn {
+  @extend .layout-row;
+  border: solid 1px $COLOR_BLACK10;
+  border-radius: 10px;
+  padding: 15px;
+  height: 120px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.legendWrapper {
+  width: 100%;
+  width: fit-content;
+  height: fit-content;
+  :global(.recharts-legend-wrapper) {
+    position: unset !important;
+  }
 }

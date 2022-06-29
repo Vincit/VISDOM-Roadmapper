@@ -35,6 +35,10 @@ const colors = [
   color.random_4,
   color.random_5,
   color.random_6,
+  color.random_7,
+  color.random_8,
+  color.random_9,
+  color.random_10,
 ] as const;
 
 enum DataKeys {
@@ -152,11 +156,13 @@ export const PlannerChart: FC<{
 
   return (
     <div className={classes(css.graphWrapper)}>
-      <ResponsiveContainer width="100%" aspect={2}>
+      <div className={classes(css.title)}>Project roadmap</div>
+      <ResponsiveContainer width="100%" aspect={1.1}>
         <LineChart
           data={dataPoints}
-          margin={{ top: 32, right: 64, left: 0, bottom: 32 }}
+          margin={{ top: 16, right: 16, left: 0, bottom: 32 }}
         >
+          <CartesianGrid vertical={false} />
           {savedData ? (
             <Line
               isAnimationActive={false}
@@ -166,6 +172,7 @@ export const PlannerChart: FC<{
               type="linear"
               dataKey={DataKeys.SavedData}
               stroke="black"
+              strokeWidth={2}
             />
           ) : (
             <Line
@@ -176,9 +183,10 @@ export const PlannerChart: FC<{
               type="linear"
               dataKey={DataKeys.OptimalRoadmap}
               stroke="black"
+              strokeWidth={2}
             />
           )}
-          {versionKeyNames.map((vername, index) => (
+          {versionKeyNames.reverse().map((vername, index) => (
             <Line
               isAnimationActive={false}
               id={vername}
@@ -186,10 +194,12 @@ export const PlannerChart: FC<{
               name={vername}
               type="linear"
               dataKey={vername}
-              stroke={colors[index % colors.length]}
+              stroke={
+                colors[(versionKeyNames.length - 1 - index) % colors.length]
+              }
+              strokeWidth={2}
             />
           ))}
-
           <XAxis
             tickCount={complexityAxisTicks}
             type="number"
@@ -197,15 +207,14 @@ export const PlannerChart: FC<{
             domain={[0, complexityDomainMax]}
           >
             <Label
-              position="insideLeft"
+              position="center"
               dx={-4}
               dy={20}
               className={classes(css.label)}
             >
-              Complexity
+              Total Complexity
             </Label>
           </XAxis>
-          <CartesianGrid vertical={false} />
 
           <YAxis
             type="number"
@@ -213,16 +222,33 @@ export const PlannerChart: FC<{
             domain={[0, valueDomainMax]}
           >
             <Label
-              position="insideBottom"
-              angle={90}
-              dx={-10}
+              position="center"
+              angle={-90}
+              dx={-20}
               dy={-14}
               className={classes(css.label)}
             >
-              Value
+              Total Value
             </Label>
           </YAxis>
-          <Legend verticalAlign="bottom" wrapperStyle={{ bottom: 12 }} />
+          <Legend
+            verticalAlign="bottom"
+            wrapperStyle={{ bottom: 12 }}
+            // eslint-disable-next-line react/no-unstable-nested-components
+            content={({ payload }) =>
+              payload ? (
+                <div className={classes(css.legendColumn)}>
+                  <div className={classes(css.legendWrapper)}>
+                    <Legend payload={payload.slice(0, 1)} />
+                  </div>
+                  <div className={classes(css.legendWrapper)}>
+                    <Legend payload={payload.slice(1).reverse()} />
+                  </div>
+                </div>
+              ) : null
+            }
+            className={classes(css.legend)}
+          />
         </LineChart>
       </ResponsiveContainer>
       {!hideButtons && (
