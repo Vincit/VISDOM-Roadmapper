@@ -509,5 +509,13 @@ export const english = {
     'Grab (a task)': 'Grab (a task)',
     'Move (a group)': 'Move (a group)',
     'Zoom in and out (scroll wheel)': 'Zoom in and out (scroll wheel)',
+    Attachments: 'Attachments',
+    'Link to attachment': 'Link to attachment',
+    'Add another attachment': 'Add another attachment',
+    'Link to another attachment': 'Link to another attachment',
+    'Remove attachment': 'Remove attachment',
+    'Remove attachment warning':
+      'Are you sure you want to remove <2>{{link}}</2>?',
+    'Copied to clipboard': 'Copied to clipboard',
   },
 };
