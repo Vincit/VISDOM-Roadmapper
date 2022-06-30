@@ -11,6 +11,7 @@ import { IKoaContext, IKoaState } from '../../types/customTypes';
 import { Permission } from '../../../../shared/types/customTypes';
 import taskratingRouter from '../taskratings/taskratings.routes';
 import taskrelationRouter from '../taskrelation/taskrelation.routes';
+import taskattachmentRouter from '../taskattachments/taskattachments.routes';
 const tasksRouter = new KoaRouter<IKoaState, IKoaContext>();
 
 tasksRouter.use('/tasks', taskrelationRouter.routes());
@@ -44,5 +45,8 @@ tasksRouter.post(
 
 tasksRouter.use('/tasks/:taskId', taskratingRouter.routes());
 tasksRouter.use('/tasks/:taskId', taskratingRouter.allowedMethods());
+
+tasksRouter.use('/tasks/:taskId', taskattachmentRouter.routes());
+tasksRouter.use('/tasks/:taskId', taskattachmentRouter.allowedMethods());
 
 export default tasksRouter;
