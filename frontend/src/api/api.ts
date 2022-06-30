@@ -512,50 +512,36 @@ export const apiV2 = createApi({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Versions'],
     }),
-    getAttachments: build.query<
-      Attachment[],
-      { roadmapId: number; taskId: number }
-    >({
-      providesTags: ['Tasks'],
-      query: ({ roadmapId, taskId }) => ({
-        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments`,
-        method: 'get',
-      }),
-    }),
     addAttachment: build.mutation<
-      Attachment[],
-      { roadmapId: number; taskId: number; link: string }
+      Attachment,
+      { roadmapId: number; taskId: number; attachment: string }
     >({
-      invalidatesTags: ['Tasks'],
-      query: ({ roadmapId, taskId, link }) => ({
+      invalidatesTags: (result) => (result ? ['Tasks'] : []),
+      query: ({ roadmapId, taskId, attachment }) => ({
         url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments`,
         method: 'post',
-        data: {
-          attachment: link,
-        },
+        data: { attachment },
       }),
     }),
     deleteAttachment: build.mutation<
-      Attachment[],
-      { roadmapId: number; taskId: number; attachmentId: number }
+      void,
+      { roadmapId: number; parentTask: number; id: number }
     >({
       invalidatesTags: ['Tasks'],
-      query: ({ roadmapId, taskId, attachmentId }) => ({
-        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments/${attachmentId}`,
+      query: ({ roadmapId, parentTask, id }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${parentTask}/attachments/${id}`,
         method: 'delete',
       }),
     }),
     editAttachment: build.mutation<
-      Attachment[],
-      { roadmapId: number; taskId: number; attachmentId: number; link: string }
+      Attachment,
+      { roadmapId: number; parentTask: number; id: number; attachment: string }
     >({
-      invalidatesTags: ['Tasks'],
-      query: ({ roadmapId, taskId, attachmentId, link }) => ({
-        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments/${attachmentId}`,
+      invalidatesTags: (result) => (result ? ['Tasks'] : []),
+      query: ({ roadmapId, parentTask, id, attachment }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${parentTask}/attachments/${id}`,
         method: 'patch',
-        data: {
-          attachment: link,
-        },
+        data: { attachment },
       }),
     }),
   }),

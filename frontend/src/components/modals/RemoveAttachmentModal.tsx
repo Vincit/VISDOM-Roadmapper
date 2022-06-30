@@ -16,8 +16,8 @@ const classes = classNames.bind(css);
 
 export const RemoveAttachmentModal: Modal<ModalTypes.REMOVE_ATTACHMENT_MODAL> = ({
   closeModal,
+  roadmapId,
   attachment,
-  ...payload
 }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [deleteAttachment, { isLoading }] = apiV2.useDeleteAttachmentMutation();
@@ -27,7 +27,7 @@ export const RemoveAttachmentModal: Modal<ModalTypes.REMOVE_ATTACHMENT_MODAL> = 
     e.stopPropagation();
     setErrorMessage('');
     try {
-      await deleteAttachment(payload).unwrap();
+      await deleteAttachment({ roadmapId, ...attachment }).unwrap();
       closeModal();
     } catch (err: any) {
       setErrorMessage(err.data?.message ?? err.data ?? 'something went wrong');
@@ -50,7 +50,7 @@ export const RemoveAttachmentModal: Modal<ModalTypes.REMOVE_ATTACHMENT_MODAL> = 
               values={{ link: attachment }}
             >
               Are you sure you want to remove attachment{' '}
-              <a href={attachment}>{attachment}</a>?
+              <a href={attachment.attachment}>{attachment.attachment}</a>?
             </Trans>
           </div>
         </div>

@@ -37,7 +37,6 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [addTaskTrigger, { isLoading }] = apiV2.useAddTaskMutation();
-  const [addAttachment] = apiV2.useAddAttachmentMutation();
   const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
@@ -62,6 +61,9 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
         description: formValues.description,
         roadmapId: chosenRoadmapId!,
         createdByUser: userInfo?.id,
+        attachments: attachmentArray.flatMap(({ attachment }) =>
+          attachment.length ? { attachment } : [],
+        ),
       };
 
       try {
@@ -69,15 +71,6 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
           roadmapId: chosenRoadmapId!,
           task: req,
         }).unwrap();
-        attachmentArray.forEach(async (newAttachment) => {
-          if (newAttachment.attachment.length > 0) {
-            await addAttachment({
-              taskId: task.id,
-              roadmapId: chosenRoadmapId!,
-              link: newAttachment.attachment,
-            });
-          }
-        });
         closeModal();
         if (!representsCustomers(userInfo!, chosenRoadmapId!)) return;
         dispatch(

@@ -2,6 +2,7 @@ import { QueryContext, AnyQueryBuilder, ModelOptions } from 'objection';
 import { TaskStatus } from '../../../../shared/types/customTypes';
 import Model from '../BaseModel';
 import Roadmap from '../roadmaps/roadmaps.model';
+import { TaskAttachment } from '../taskattachments/taskattachments.model';
 import TaskRating from '../taskratings/taskratings.model';
 import User from '../users/users.model';
 
@@ -17,6 +18,7 @@ export default class Task extends Model {
   externalLink!: string | null;
 
   belongsToRoadmap!: Roadmap;
+  attachments?: TaskAttachment[];
   ratings?: TaskRating[];
   createdBy?: User;
   createdByUser?: number;
@@ -78,6 +80,14 @@ export default class Task extends Model {
         join: {
           from: 'tasks.roadmapId',
           to: 'roadmaps.id',
+        },
+      },
+      attachments: {
+        relation: Model.HasManyRelation,
+        modelClass: TaskAttachment,
+        join: {
+          from: 'tasks.id',
+          to: 'taskattachments.parentTask',
         },
       },
       ratings: {

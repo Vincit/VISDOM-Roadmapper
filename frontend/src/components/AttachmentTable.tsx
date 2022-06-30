@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { Tooltip } from './InfoTooltip';
 import { Input } from './forms/FormField';
-import { Task } from '../redux/roadmaps/types';
+import { Attachment, Task } from '../redux/roadmaps/types';
 import { apiV2 } from '../api/api';
 import { modalsActions } from '../redux/modals';
 import { ModalTypes } from './modals/types';
@@ -28,6 +28,7 @@ export const AttachmentTable: FC<{
   task: Task;
   roadmapId: number;
 }> = ({ task, roadmapId }) => {
+  const { attachments } = task;
   const { t } = useTranslation();
   const dispatch = useDispatch<StoreDispatchType>();
   const [copyOpen, setCopyOpen] = useState<number[]>([]);
@@ -35,10 +36,6 @@ export const AttachmentTable: FC<{
   const [editOpen, setEditOpen] = useState<
     { id: number; attachment: string }[]
   >([]);
-  const { data: attachments } = apiV2.useGetAttachmentsQuery({
-    taskId: task.id,
-    roadmapId,
-  });
   const [addAttachment] = apiV2.useAddAttachmentMutation();
   const [editAttachment] = apiV2.useEditAttachmentMutation();
 
@@ -47,7 +44,7 @@ export const AttachmentTable: FC<{
     await addAttachment({
       taskId: task.id,
       roadmapId,
-      link: newAttachment,
+      attachment: newAttachment,
     });
     setNewAttachment('');
   };
@@ -62,10 +59,10 @@ export const AttachmentTable: FC<{
     if (!editedAttachment || !validateUrl(editedAttachment)) return;
     setEditOpen((prev) => prev.filter((edit) => edit.id !== id));
     await editAttachment({
-      taskId: task.id,
+      parentTask: task.id,
       roadmapId,
-      attachmentId: id,
-      link: editedAttachment,
+      id,
+      attachment: editedAttachment,
     });
   };
 
@@ -73,14 +70,12 @@ export const AttachmentTable: FC<{
     setEditOpen((prev) => prev.filter((edit) => edit.id !== id));
   };
 
-  const removeAttachment = async (attachment: string, id: number) => {
+  const removeAttachment = async (attachment: Attachment) => {
     dispatch(
       modalsActions.showModal({
         modalType: ModalTypes.REMOVE_ATTACHMENT_MODAL,
         modalProps: {
-          taskId: task.id,
           roadmapId,
-          attachmentId: id,
           attachment,
         },
       }),
@@ -105,64 +100,69 @@ export const AttachmentTable: FC<{
   return (
     <div>
       <div className={classes(css.list)}>
-        {attachments?.map(({ attachment, id }) => (
-          <div key={id}>
-            {editOpen.find((edit) => edit.id === id) ? (
-              <div className={classes(css.inputContainer)}>
-                <Input
-                  type="url"
-                  className={classes(css.input)}
-                  autoComplete="off"
-                  name={`edit-${id}`}
-                  id={`edit-${id}`}
-                  placeholder={attachment}
-                  value={editOpen.find((edit) => edit.id === id)?.attachment}
-                  onChange={(e) => handleEditChange(id, e.currentTarget.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') applyEdit(id);
-                  }}
-                />
-                <DoneIcon
-                  className={classes(css.doneIcon)}
-                  onClick={() => applyEdit(id)}
-                />
-                <CloseIcon
-                  className={classes(css.closeIcon)}
-                  onClick={() => closeEdit(id)}
-                />
-              </div>
-            ) : (
-              <div className={classes(css.attachment)}>
-                <LinkIcon className={classes(css.linkIcon)} />
-                <a href={attachment} className={classes(css.link)}>
-                  {attachment}
-                </a>
-                <Tooltip
-                  open={copyOpen.includes(id)}
-                  title={t('Copied to clipboard')}
-                  placement="right"
-                  arrow
-                  className={classes(css.arrow)}
-                >
-                  <ContentCopyIcon
-                    className={classes(css.copyIcon)}
-                    onClick={() => handleCopyUrl(id, attachment)}
+        {attachments?.map((attachment) => {
+          const { attachment: link, id } = attachment;
+          return (
+            <div key={id}>
+              {editOpen.find((edit) => edit.id === id) ? (
+                <div className={classes(css.inputContainer)}>
+                  <Input
+                    type="url"
+                    className={classes(css.input)}
+                    autoComplete="off"
+                    name={`edit-${id}`}
+                    id={`edit-${id}`}
+                    placeholder={link}
+                    value={editOpen.find((edit) => edit.id === id)?.attachment}
+                    onChange={(e) =>
+                      handleEditChange(id, e.currentTarget.value)
+                    }
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') applyEdit(id);
+                    }}
                   />
-                </Tooltip>
-                <div className={classes(css.sideIcons)}>
-                  <EditIcon
-                    className={classes(css.edit)}
-                    onClick={() => modifyAttachment(id)}
+                  <DoneIcon
+                    className={classes(css.doneIcon)}
+                    onClick={() => applyEdit(id)}
                   />
-                  <DeleteIcon
-                    className={classes(css.remove)}
-                    onClick={() => removeAttachment(attachment, id)}
+                  <CloseIcon
+                    className={classes(css.closeIcon)}
+                    onClick={() => closeEdit(id)}
                   />
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              ) : (
+                <div className={classes(css.attachment)}>
+                  <LinkIcon className={classes(css.linkIcon)} />
+                  <a href={link} className={classes(css.link)}>
+                    {link}
+                  </a>
+                  <Tooltip
+                    open={copyOpen.includes(id)}
+                    title={t('Copied to clipboard')}
+                    placement="right"
+                    arrow
+                    className={classes(css.arrow)}
+                  >
+                    <ContentCopyIcon
+                      className={classes(css.copyIcon)}
+                      onClick={() => handleCopyUrl(id, link)}
+                    />
+                  </Tooltip>
+                  <div className={classes(css.sideIcons)}>
+                    <EditIcon
+                      className={classes(css.edit)}
+                      onClick={() => modifyAttachment(id)}
+                    />
+                    <DeleteIcon
+                      className={classes(css.remove)}
+                      onClick={() => removeAttachment(attachment)}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div className={classes(css.inputContainer)}>
         <Input

@@ -6,7 +6,12 @@ import { Permission } from '../../../../shared/types/customTypes';
 import Task from './tasks.model';
 import User from '../users/users.model';
 import { sendEmail } from '../../utils/sendEmail';
-import { isNumberArray } from '../../utils/typeValidation';
+import {
+  isArray,
+  isNumberArray,
+  isRecord,
+  isString,
+} from '../../utils/typeValidation';
 import { ClientEvents } from '../../../../shared/types/sockettypes';
 import { notifyUsersEmail } from '../../utils/emailMessages';
 
@@ -19,7 +24,7 @@ export const getTasks: RouteHandlerFnc = async (ctx) => {
   ctx.body = await Task.query()
     .where({ roadmapId: Number(ctx.params.roadmapId) })
     .withGraphFetched(
-      '[ratings(ratingModifier), createdBy(userModifier), lastUpdatedBy(userModifier)]',
+      '[attachments, ratings(ratingModifier), createdBy(userModifier), lastUpdatedBy(userModifier)]',
     )
     .modifiers(
       ctx.query.eager
@@ -43,21 +48,35 @@ export const getTasks: RouteHandlerFnc = async (ctx) => {
 };
 
 export const postTasks: RouteHandlerFnc = async (ctx) => {
-  if (!ctx.state.user) {
-    throw new Error('User is required');
-  }
-  const { createdAt, id, ...others } = ctx.request.body;
-  const { user, role } = ctx.state;
+  if (!ctx.state.user) throw new Error('User is required');
+  const { createdAt, id, attachments, ...others } = ctx.request.body;
+  if (!isArray(isRecord({ attachment: isString }))(attachments))
+    return void (ctx.status = 400);
 
-  let task = await Task.query().insertAndFetch({
-    ...others,
-    roadmapId: Number(ctx.params.roadmapId),
-    createdByUser: Number(ctx.state.user.id),
+  const { user, role } = ctx.state;
+  const roadmapId = Number(ctx.params.roadmapId);
+
+  let task = await Task.transaction(async (trx) => {
+    const created = await Task.query(trx).insertAndFetch({
+      ...others,
+      roadmapId,
+      createdByUser: Number(ctx.state.user!.id),
+    });
+
+    await Promise.all(
+      attachments.map(({ attachment }) =>
+        Task.relatedQuery('attachments', trx)
+          .for(created.id)
+          .insert({ parentTask: created.id, attachment })
+          .where({ roadmapId }),
+      ),
+    );
+    return created;
   });
 
   const graphTask = await task
     .$fetchGraph(
-      '[ratings(ratingModifier), createdBy(userModifier), lastUpdatedBy(userModifier)]',
+      '[attachments, ratings(ratingModifier), createdBy(userModifier), lastUpdatedBy(userModifier)]',
     )
     .modifiers(
       ctx.query.eager
@@ -87,7 +106,7 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     eventParams: [],
   });
 
-  ctx.body = graphTask;
+  return void (ctx.body = graphTask);
 };
 
 export const deleteTasks: RouteHandlerFnc = async (ctx) => {
@@ -120,7 +139,14 @@ export const patchTasks: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) {
     throw new Error('User is required');
   }
-  const { id, name, description, status, ...others } = ctx.request.body;
+  const {
+    id,
+    name,
+    description,
+    status,
+    attachments,
+    ...others
+  } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const res = await Task.transaction(async (trx) => {

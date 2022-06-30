@@ -10,6 +10,7 @@ import {
   Taskrating,
   TaskRelation,
   VersionComplexityAndValues,
+  Attachment,
 } from '../../redux/roadmaps/types';
 import { UserModifyRequest, UserDeleteRequest } from '../../redux/user/types';
 
@@ -125,10 +126,8 @@ type OwnProps = {
   };
   [ModalTypes.TASK_MAP_INFO_MODAL]: {};
   [ModalTypes.REMOVE_ATTACHMENT_MODAL]: {
-    taskId: number;
     roadmapId: number;
-    attachmentId: number;
-    attachment: string;
+    attachment: Attachment;
   };
 };
 

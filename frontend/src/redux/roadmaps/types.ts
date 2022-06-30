@@ -108,6 +108,7 @@ export interface Task {
   updatedAt?: string;
   status: TaskStatus;
   ratings: Taskrating[];
+  attachments: Attachment[];
   createdByUser: number;
   lastUpdatedByUserId?: number;
 }
@@ -119,6 +120,7 @@ export interface TaskRequest {
   completed?: boolean;
   roadmapId?: number;
   createdByUser?: number;
+  attachments?: { attachment: string }[];
 }
 
 export interface Taskrating {
@@ -273,6 +275,6 @@ export interface TaskmapPosition {
 
 export interface Attachment {
   id: number;
-  task: number;
+  parentTask: number;
   attachment: string;
 }

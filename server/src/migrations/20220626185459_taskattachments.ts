@@ -4,7 +4,9 @@ export async function up(knex: Knex): Promise<any> {
   return knex.schema.createTable('taskattachments', (table) => {
     table.increments('id').primary();
     table
-      .integer('task')
+      .integer('parentTask')
+      .unsigned()
+      .notNullable()
       .references('id')
       .inTable('tasks')
       .onDelete('CASCADE')

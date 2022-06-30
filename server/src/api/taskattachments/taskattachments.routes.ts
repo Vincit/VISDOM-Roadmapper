@@ -1,6 +1,5 @@
 import KoaRouter from '@koa/router';
 import {
-  getTaskattachments,
   postTaskattachments,
   patchTaskattachments,
   deleteTaskattachments,
@@ -8,13 +7,9 @@ import {
 import { requirePermission } from './../../utils/checkPermissions';
 import { Permission } from '../../../../shared/types/customTypes';
 import { IKoaContext, IKoaState } from '../../types/customTypes';
+
 const taskattachmentRouter = new KoaRouter<IKoaState, IKoaContext>();
 
-taskattachmentRouter.get(
-  '/attachments',
-  requirePermission(Permission.TaskRead),
-  getTaskattachments,
-);
 taskattachmentRouter.post(
   '/attachments',
   requirePermission(Permission.TaskCreate),
