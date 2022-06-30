@@ -270,3 +270,9 @@ export interface TaskmapPosition {
   x: number;
   y: number;
 }
+
+export interface Attachment {
+  id: number;
+  task: number;
+  attachment: string;
+}

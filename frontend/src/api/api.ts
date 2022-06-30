@@ -27,6 +27,7 @@ import {
   TaskRelation,
   NewInvitation,
   RoadmapCreation,
+  Attachment,
 } from '../redux/roadmaps/types';
 import { IntegrationBoard, Integrations } from '../redux/types';
 import {
@@ -510,6 +511,52 @@ export const apiV2 = createApi({
     refetchVersions: build.mutation<null, void>({
       queryFn: () => ({ data: null }),
       invalidatesTags: ['Versions'],
+    }),
+    getAttachments: build.query<
+      Attachment[],
+      { roadmapId: number; taskId: number }
+    >({
+      providesTags: ['Tasks'],
+      query: ({ roadmapId, taskId }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments`,
+        method: 'get',
+      }),
+    }),
+    addAttachment: build.mutation<
+      Attachment[],
+      { roadmapId: number; taskId: number; link: string }
+    >({
+      invalidatesTags: ['Tasks'],
+      query: ({ roadmapId, taskId, link }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments`,
+        method: 'post',
+        data: {
+          attachment: link,
+        },
+      }),
+    }),
+    deleteAttachment: build.mutation<
+      Attachment[],
+      { roadmapId: number; taskId: number; attachmentId: number }
+    >({
+      invalidatesTags: ['Tasks'],
+      query: ({ roadmapId, taskId, attachmentId }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments/${attachmentId}`,
+        method: 'delete',
+      }),
+    }),
+    editAttachment: build.mutation<
+      Attachment[],
+      { roadmapId: number; taskId: number; attachmentId: number; link: string }
+    >({
+      invalidatesTags: ['Tasks'],
+      query: ({ roadmapId, taskId, attachmentId, link }) => ({
+        url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments/${attachmentId}`,
+        method: 'patch',
+        data: {
+          attachment: link,
+        },
+      }),
     }),
   }),
 });
