@@ -44,6 +44,7 @@ export enum ModalTypes {
   RELATIONS_MODAL = 'RELATIONS_MODAL',
   VERSION_DETAILS_MODAL = 'VERSION_DETAILS_MODAL',
   TASK_MAP_INFO_MODAL = 'TASK_MAP_INFO_MODAL',
+  REMOVE_ATTACHMENT_MODAL = 'REMOVE_ATTACHMENT_MODAL',
 }
 
 type OwnProps = {
@@ -123,6 +124,12 @@ type OwnProps = {
     showShares: boolean;
   };
   [ModalTypes.TASK_MAP_INFO_MODAL]: {};
+  [ModalTypes.REMOVE_ATTACHMENT_MODAL]: {
+    taskId: number;
+    roadmapId: number;
+    attachmentId: number;
+    attachment: string;
+  };
 };
 
 type Props = {

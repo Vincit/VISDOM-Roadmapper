@@ -1,0 +1,11 @@
+@import '../../shared.scss';
+
+.warningText > a {
+  color: $COLOR_EMERALD;
+  text-decoration: underline;
+}
+
+.button {
+  @extend .button-large;
+  width: 220px;
+}
