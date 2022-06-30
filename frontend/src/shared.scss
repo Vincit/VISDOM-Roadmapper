@@ -364,6 +364,10 @@ body .tooltipArrow {
   color: white;
 }
 
+.MuiTooltip-popper[data-popper-placement*='right'] .MuiTooltip-arrow {
+  margin-left: -0.65em;
+}
+
 .menu {
   @extend .shadow-tooltip;
   border-radius: 10px;

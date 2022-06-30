@@ -1,0 +1,94 @@
+@import '../shared.scss';
+
+.icon {
+  cursor: pointer;
+  color: $COLOR_BLACK40;
+  width: 20px;
+  height: 20px;
+}
+
+.list {
+  @extend .layout-column;
+
+  .attachment {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .linkIcon {
+    margin-right: 10px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .link {
+    color: $COLOR_EMERALD;
+    text-decoration: underline;
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
+    margin-bottom: 12px;
+    max-width: 558px;
+    text-align: start;
+    word-break: break-all;
+  }
+
+  .copyIcon {
+    @extend .icon;
+    margin-left: 10px;
+
+    &:hover {
+      filter: brightness(90%);
+    }
+  }
+
+  .sideIcons {
+    margin-left: auto;
+
+    .edit {
+      @extend .icon;
+      margin-left: 8px;
+      &:hover {
+        color: $COLOR_AZURE;
+      }
+    }
+    .remove {
+      @extend .icon;
+      margin-left: 8px;
+      &:hover {
+        color: $COLOR_MANDY;
+      }
+    }
+  }
+}
+.inputContainer {
+  @extend .layout-row;
+
+  .input {
+    width: 610px;
+    background-color: white;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  .doneIcon {
+    @extend .icon;
+    margin-top: 10px;
+    margin-left: 6px;
+
+    &:hover {
+      color: $COLOR_EMERALD;
+    }
+  }
+  .closeIcon {
+    @extend .icon;
+    margin-top: 10px;
+    margin-left: 6px;
+
+    &:hover {
+      color: $COLOR_MANDY;
+    }
+  }
+}

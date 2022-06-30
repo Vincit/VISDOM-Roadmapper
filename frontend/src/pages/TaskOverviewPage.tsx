@@ -31,6 +31,7 @@ import { apiV2 } from '../api/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EditableTextWithButtons } from '../components/EditableText';
 import { EditableSelectWithButtons } from '../components/EditableSelect';
+import { AttachmentTable } from '../components/AttachmentTable';
 
 const classes = classNames.bind(css);
 
@@ -243,6 +244,16 @@ const TaskOverview: FC<{
           hasEditPermission ? handleEditConfirm : undefined,
         )}
       />
+
+      <div className={classes(css.section)}>
+        <div className={classes(css.header)}>
+          <h2>{t('Attachments')}</h2>
+        </div>
+        <div className={classes(css.attachments)}>
+          <AttachmentTable task={task} roadmapId={roadmapId} />
+        </div>
+      </div>
+
       <div className={classes(css.section)}>
         <div className={classes(css.header)}>
           <h2>{t('Relations')}</h2>
