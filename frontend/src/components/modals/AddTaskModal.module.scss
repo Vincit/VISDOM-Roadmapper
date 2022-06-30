@@ -1,5 +1,59 @@
+@import '../../shared.scss';
+
 textarea {
   min-height: 5em !important;
   height: 20em;
   max-height: 55vh;
+}
+
+.title {
+  @extend .typography-pre-title;
+  color: $COLOR_AZURE;
+  margin-bottom: 5px;
+}
+
+.attachmentContainer {
+  @extend .layout-row;
+  margin-bottom: 12px;
+
+  .placeholderPrefix {
+    position: relative;
+
+    .icon {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .divider {
+      position: absolute;
+      border-left: 2px solid $COLOR_BLACK10;
+      top: 16px;
+      left: 40px;
+      height: 21px;
+      margin-left: 6px;
+    }
+  }
+
+  .inputArea {
+    width: 419px;
+    text-indent: 40px;
+  }
+
+  .closeIcon {
+    cursor: pointer;
+    color: $COLOR_BLACK40;
+    width: 22px;
+    height: 22px;
+    margin-top: 12px;
+    margin-left: 12px;
+  }
+}
+
+.button {
+  @extend .button-small-filled;
+  width: 190px;
+  margin-top: 8px;
 }

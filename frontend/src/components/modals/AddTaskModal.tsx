@@ -1,7 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
+import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import LinkIcon from '@mui/icons-material/Link';
+import CloseIcon from '@mui/icons-material/Close';
 import { StoreDispatchType } from '../../redux';
 import { modalsActions } from '../../redux/modals';
 import { ModalTypes, Modal } from './types';
@@ -18,9 +21,10 @@ import { ModalFooterButtonDiv } from './modalparts/ModalFooterButtonDiv';
 import { ModalHeader } from './modalparts/ModalHeader';
 import { Input, TextArea } from '../forms/FormField';
 import { representsCustomers } from '../../utils/UserUtils';
-import '../../shared.scss';
-import './AddTaskModal.module.scss';
 import { apiV2 } from '../../api/api';
+import css from './AddTaskModal.module.scss';
+
+const classes = classNames.bind(css);
 
 export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   closeModal,
@@ -33,11 +37,15 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [addTaskTrigger, { isLoading }] = apiV2.useAddTaskMutation();
+  const [addAttachment] = apiV2.useAddAttachmentMutation();
   const chosenRoadmapId = useSelector(chosenRoadmapIdSelector);
   const userInfo = useSelector<RootState, UserInfo | undefined>(
     userInfoSelector,
     shallowEqual,
   );
+  const [attachmentArray, setAttachmentArray] = useState([
+    { id: 0, attachment: '' },
+  ]);
 
   useEffect(() => {
     if (!userInfo) dispatch(userActions.getUserInfo());
@@ -61,6 +69,15 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
           roadmapId: chosenRoadmapId!,
           task: req,
         }).unwrap();
+        attachmentArray.forEach(async (newAttachment) => {
+          if (newAttachment.attachment.length > 0) {
+            await addAttachment({
+              taskId: task.id,
+              roadmapId: chosenRoadmapId!,
+              link: newAttachment.attachment,
+            });
+          }
+        });
         closeModal();
         if (!representsCustomers(userInfo!, chosenRoadmapId!)) return;
         dispatch(
@@ -84,6 +101,30 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
 
   const onDescriptionChange = (description: string) => {
     setFormValues({ ...formValues, description });
+  };
+
+  const handleAttachmentDelete = (elementId: number) => {
+    if (attachmentArray.length === 1) {
+      setAttachmentArray((prev) =>
+        prev.map((obj) => {
+          if (obj.id === elementId) return { ...obj, attachment: '' };
+          return obj;
+        }),
+      );
+    } else {
+      setAttachmentArray((prev) =>
+        prev.filter((prevAttachment) => prevAttachment.id !== elementId),
+      );
+    }
+  };
+
+  const handleAttachmentChange = (currentValue: string, elementId: number) => {
+    setAttachmentArray((prev) =>
+      prev.map((obj) => {
+        if (obj.id === elementId) return { ...obj, attachment: currentValue };
+        return obj;
+      }),
+    );
   };
 
   return (
@@ -119,6 +160,51 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
             onChange={(e) => onDescriptionChange(e.currentTarget.value)}
           />
         </div>
+
+        <div className={classes(css.title)}>{t('Attachments')}</div>
+
+        {attachmentArray.map((element) => (
+          <div key={element.id}>
+            <div className={classes(css.attachmentContainer)}>
+              <div className={classes(css.placeholderPrefix)}>
+                <LinkIcon className={classes(css.icon)} />
+                <div className={classes(css.divider)} />
+              </div>
+              <Input
+                type="url"
+                className={classes(css.inputArea)}
+                autoComplete="off"
+                name={`attachment-${element.id}`}
+                id={`attachment-${element.id}`}
+                placeholder={t('Link to attachment')}
+                value={element.attachment}
+                onChange={(e) =>
+                  handleAttachmentChange(e.currentTarget.value, element.id)
+                }
+              />
+              <CloseIcon
+                className={classes(css.closeIcon)}
+                onClick={() => handleAttachmentDelete(element.id)}
+              />
+            </div>
+          </div>
+        ))}
+
+        <button
+          className={classes(css.button)}
+          type="button"
+          onClick={() =>
+            setAttachmentArray((prev) =>
+              prev.concat({
+                id: prev[prev.length - 1].id + 1,
+                attachment: '',
+              }),
+            )
+          }
+        >
+          <Trans i18nKey="Add another attachment" />
+        </button>
+
         {errorMessage.length > 0 && (
           <Alert
             severity="error"
