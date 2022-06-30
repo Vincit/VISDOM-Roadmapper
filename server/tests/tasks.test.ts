@@ -41,7 +41,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
   });
 
   describe('POST /roadmaps/:roadmapId/tasks/', function () {
-    it('Should add new task', async function () {
+    it('Should add new task with no attachemnts', async function () {
       const roadmapId = await someRoadmapId();
       const before = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
       const res = await loggedInAgent
@@ -50,6 +50,7 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
         .send({
           name: 'testtask',
           description: 'testdesc',
+          attachments: [],
         });
       const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
       expect(res.status).to.equal(200);
@@ -58,6 +59,34 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(added).to.exist;
       expect(added.description).to.equal('testdesc');
       expect(added.roadmapId).to.equal(roadmapId);
+      const userId = (await getUser('AdminPerson1')).id;
+      expect(added.createdByUser).to.equal(userId);
+    });
+    it('Should add new task with multiple attachments', async function () {
+      const roadmapId = await someRoadmapId();
+      const before = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
+      const res = await loggedInAgent
+        .post(`/roadmaps/${roadmapId}/tasks/`)
+        .type('json')
+        .send({
+          name: 'testtask',
+          description: 'testdesc',
+          attachments: [
+            { attachment: 'test attachment 1' },
+            { attachment: 'test attachment 2' },
+          ],
+        });
+      const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
+      expect(res.status).to.equal(200);
+      expect(before.body.length + 1).to.equal(after.body.length);
+      const added = after.body.find((task: any) => task.name === 'testtask');
+      expect(added).to.exist;
+      expect(added.description).to.equal('testdesc');
+      expect(added.roadmapId).to.equal(roadmapId);
+      expect(added.attachments[0].attachment).to.equal('test attachment 1');
+      expect(added.attachments[0].parentTask).to.equal(added.id);
+      expect(added.attachments[1].attachment).to.equal('test attachment 2');
+      expect(added.attachments[1].parentTask).to.equal(added.id);
       const userId = (await getUser('AdminPerson1')).id;
       expect(added.createdByUser).to.equal(userId);
     });
