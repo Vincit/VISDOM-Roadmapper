@@ -97,14 +97,9 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   };
 
   const handleAttachmentDelete = (elementId: number) => {
-    if (attachmentArray.length === 1) {
-      setAttachmentArray((prev) =>
-        prev.map((obj) => {
-          if (obj.id === elementId) return { ...obj, attachment: '' };
-          return obj;
-        }),
-      );
-    } else {
+    if (attachmentArray.length === 1)
+      setAttachmentArray([{ id: 0, attachment: '' }]);
+    else {
       setAttachmentArray((prev) =>
         prev.filter((prevAttachment) => prevAttachment.id !== elementId),
       );
