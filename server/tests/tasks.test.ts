@@ -3,6 +3,7 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 import { loggedInAgent } from './setuptests';
 import Task from '../src/api/tasks/tasks.model';
+import { TaskAttachment } from '../src/api/taskattachments/taskattachments.model';
 import { Permission } from '../../shared/types/customTypes';
 import { withoutPermission, someRoadmapId } from './testUtils';
 import { getUser } from '../src/utils/testdataUtils';
@@ -83,10 +84,17 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(added).to.exist;
       expect(added.description).to.equal('testdesc');
       expect(added.roadmapId).to.equal(roadmapId);
-      expect(added.attachments[0].link).to.equal('test attachment 1');
-      expect(added.attachments[0].parentTask).to.equal(added.id);
-      expect(added.attachments[1].link).to.equal('test attachment 2');
-      expect(added.attachments[1].parentTask).to.equal(added.id);
+      expect(added.attachments.length).to.equal(2);
+      const attachment1 = added.attachments.find(
+        ({ link }: TaskAttachment) => link === 'test attachment 1',
+      );
+      expect(attachment1).to.exist;
+      expect(attachment1.parentTask).to.equal(added.id);
+      const attachment2 = added.attachments.find(
+        ({ link }: TaskAttachment) => link === 'test attachment 2',
+      );
+      expect(attachment2).to.exist;
+      expect(attachment2.parentTask).to.equal(added.id);
       const userId = (await getUser('AdminPerson1')).id;
       expect(added.createdByUser).to.equal(userId);
     });
