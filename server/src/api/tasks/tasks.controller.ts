@@ -50,7 +50,7 @@ export const getTasks: RouteHandlerFnc = async (ctx) => {
 export const postTasks: RouteHandlerFnc = async (ctx) => {
   if (!ctx.state.user) throw new Error('User is required');
   const { createdAt, id, attachments, ...others } = ctx.request.body;
-  if (!isArray(isRecord({ attachment: isString }))(attachments))
+  if (!isArray(isRecord({ link: isString }))(attachments))
     return void (ctx.status = 400);
 
   const { user, role } = ctx.state;
@@ -64,10 +64,10 @@ export const postTasks: RouteHandlerFnc = async (ctx) => {
     });
 
     await Promise.all(
-      attachments.map(({ attachment }) =>
+      attachments.map(({ link }) =>
         Task.relatedQuery('attachments', trx)
           .for(created.id)
-          .insert({ parentTask: created.id, attachment })
+          .insert({ parentTask: created.id, link })
           .where({ roadmapId }),
       ),
     );

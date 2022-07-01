@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<any> {
       .inTable('tasks')
       .onDelete('CASCADE')
       .index();
-    table.string('attachment');
+    table.string('link');
   });
 }
 

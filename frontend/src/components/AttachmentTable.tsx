@@ -33,36 +33,29 @@ export const AttachmentTable: FC<{
   const dispatch = useDispatch<StoreDispatchType>();
   const [copyOpen, setCopyOpen] = useState<number[]>([]);
   const [newAttachment, setNewAttachment] = useState('');
-  const [editOpen, setEditOpen] = useState<
-    { id: number; attachment: string }[]
-  >([]);
+  const [editOpen, setEditOpen] = useState<{ id: number; link: string }[]>([]);
   const [addAttachment] = apiV2.useAddAttachmentMutation();
   const [editAttachment] = apiV2.useEditAttachmentMutation();
 
   const sendAttachment = async () => {
     if (newAttachment.length === 0 || !validateUrl(newAttachment)) return;
-    await addAttachment({
-      taskId: task.id,
-      roadmapId,
-      attachment: newAttachment,
-    });
+    await addAttachment({ taskId: task.id, roadmapId, link: newAttachment });
     setNewAttachment('');
   };
 
   const modifyAttachment = async (id: number) => {
-    setEditOpen((prev) => prev.concat([{ id, attachment: '' }]));
+    setEditOpen((prev) => prev.concat([{ id, link: '' }]));
   };
 
   const applyEdit = async (id: number) => {
-    const editedAttachment = editOpen.find((edit) => edit.id === id)
-      ?.attachment;
+    const editedAttachment = editOpen.find((edit) => edit.id === id)?.link;
     if (!editedAttachment || !validateUrl(editedAttachment)) return;
     setEditOpen((prev) => prev.filter((edit) => edit.id !== id));
     await editAttachment({
       parentTask: task.id,
       roadmapId,
       id,
-      attachment: editedAttachment,
+      link: editedAttachment,
     });
   };
 
@@ -85,14 +78,14 @@ export const AttachmentTable: FC<{
   const handleEditChange = (id: number, value: string) => {
     setEditOpen((prev) =>
       prev.map((previous) => {
-        if (previous.id === id) return { id, attachment: value };
+        if (previous.id === id) return { id, link: value };
         return previous;
       }),
     );
   };
 
-  const handleCopyUrl = (id: number, attachment: string) => {
-    navigator.clipboard.writeText(`${attachment}`);
+  const handleCopyUrl = (id: number, link: string) => {
+    navigator.clipboard.writeText(`${link}`);
     setCopyOpen([id]);
     setTimeout(() => setCopyOpen([]), 2000);
   };
@@ -101,7 +94,7 @@ export const AttachmentTable: FC<{
     <div>
       <div className={classes(css.list)}>
         {attachments?.map((attachment) => {
-          const { attachment: link, id } = attachment;
+          const { link, id } = attachment;
           return (
             <div key={id}>
               {editOpen.find((edit) => edit.id === id) ? (
@@ -113,7 +106,7 @@ export const AttachmentTable: FC<{
                     name={`edit-${id}`}
                     id={`edit-${id}`}
                     placeholder={link}
-                    value={editOpen.find((edit) => edit.id === id)?.attachment}
+                    value={editOpen.find((edit) => edit.id === id)?.link}
                     onChange={(e) =>
                       handleEditChange(id, e.currentTarget.value)
                     }

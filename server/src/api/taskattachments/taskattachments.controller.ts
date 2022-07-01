@@ -6,13 +6,13 @@ import Task from '../tasks/tasks.model';
 import { TaskAttachment } from './taskattachments.model';
 
 export const postTaskattachments: RouteHandlerFnc = async (ctx) => {
-  const { attachment, ...others } = ctx.request.body;
+  const { link, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
   const taskId = Number(ctx.params.taskId);
 
   const added = await Task.relatedQuery('attachments')
     .for(taskId)
-    .insert({ parentTask: taskId, attachment })
+    .insert({ parentTask: taskId, link })
     .where({ roadmapId: Number(ctx.params.roadmapId) });
 
   await emitRoadmapEvent(ctx.io, {
@@ -43,12 +43,12 @@ export const deleteTaskattachments: RouteHandlerFnc = async (ctx) => {
 };
 
 export const patchTaskattachments: RouteHandlerFnc = async (ctx) => {
-  const { attachment, ...others } = ctx.request.body;
+  const { link, ...others } = ctx.request.body;
   if (Object.keys(others).length) return void (ctx.status = 400);
 
   const patched = await TaskAttachment.query().patchAndFetchById(
     ctx.params.attachmentId,
-    { attachment },
+    { link },
   );
   if (!patched) return void (ctx.status = 404);
 

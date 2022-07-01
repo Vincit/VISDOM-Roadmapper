@@ -47,10 +47,10 @@ export const RemoveAttachmentModal: Modal<ModalTypes.REMOVE_ATTACHMENT_MODAL> = 
           <div className={classes(css.warningText)}>
             <Trans
               i18nKey="Remove attachment warning"
-              values={{ link: attachment.attachment }}
+              values={{ link: attachment.link }}
             >
               Are you sure you want to remove attachment{' '}
-              <a href={attachment.attachment}>{attachment.attachment}</a>?
+              <a href={attachment.link}>{attachment.link}</a>?
             </Trans>
           </div>
         </div>

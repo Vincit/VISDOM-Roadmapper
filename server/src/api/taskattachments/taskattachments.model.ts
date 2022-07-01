@@ -2,7 +2,7 @@ import { Model } from 'objection';
 import Task from '../tasks/tasks.model';
 
 export class TaskAttachment extends Model {
-  attachment!: string;
+  link!: string;
   parentTask!: number;
 
   belongsToTask?: Task;
@@ -11,10 +11,10 @@ export class TaskAttachment extends Model {
 
   static jsonSchema = {
     type: 'object',
-    required: ['attachment'],
+    required: ['link'],
     properties: {
       parentTask: { type: 'integer' },
-      attachment: { type: 'string' },
+      link: { type: 'string' },
     },
   };
 

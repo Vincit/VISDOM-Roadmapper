@@ -42,9 +42,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
     userInfoSelector,
     shallowEqual,
   );
-  const [attachmentArray, setAttachmentArray] = useState([
-    { id: 0, attachment: '' },
-  ]);
+  const [attachmentArray, setAttachmentArray] = useState([{ id: 0, link: '' }]);
 
   useEffect(() => {
     if (!userInfo) dispatch(userActions.getUserInfo());
@@ -61,8 +59,8 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
         description: formValues.description,
         roadmapId: chosenRoadmapId!,
         createdByUser: userInfo?.id,
-        attachments: attachmentArray.flatMap(({ attachment }) =>
-          attachment.length ? { attachment } : [],
+        attachments: attachmentArray.flatMap(({ link }) =>
+          link.length ? { link } : [],
         ),
       };
 
@@ -97,19 +95,17 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
   };
 
   const handleAttachmentDelete = (elementId: number) => {
-    if (attachmentArray.length === 1)
-      setAttachmentArray([{ id: 0, attachment: '' }]);
-    else {
+    if (attachmentArray.length === 1) setAttachmentArray([{ id: 0, link: '' }]);
+    else
       setAttachmentArray((prev) =>
         prev.filter((prevAttachment) => prevAttachment.id !== elementId),
       );
-    }
   };
 
   const handleAttachmentChange = (currentValue: string, elementId: number) => {
     setAttachmentArray((prev) =>
       prev.map((obj) => {
-        if (obj.id === elementId) return { ...obj, attachment: currentValue };
+        if (obj.id === elementId) return { ...obj, link: currentValue };
         return obj;
       }),
     );
@@ -165,7 +161,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
                 name={`attachment-${element.id}`}
                 id={`attachment-${element.id}`}
                 placeholder={t('Link to attachment')}
-                value={element.attachment}
+                value={element.link}
                 onChange={(e) =>
                   handleAttachmentChange(e.currentTarget.value, element.id)
                 }
@@ -185,7 +181,7 @@ export const AddTaskModal: Modal<ModalTypes.ADD_TASK_MODAL> = ({
             setAttachmentArray((prev) =>
               prev.concat({
                 id: prev[prev.length - 1].id + 1,
-                attachment: '',
+                link: '',
               }),
             )
           }

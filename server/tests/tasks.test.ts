@@ -72,8 +72,8 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
           name: 'testtask',
           description: 'testdesc',
           attachments: [
-            { attachment: 'test attachment 1' },
-            { attachment: 'test attachment 2' },
+            { link: 'test attachment 1' },
+            { link: 'test attachment 2' },
           ],
         });
       const after = await loggedInAgent.get(`/roadmaps/${roadmapId}/tasks/`);
@@ -83,9 +83,9 @@ describe('Test /roadmaps/:roadmapId/tasks/ api', function () {
       expect(added).to.exist;
       expect(added.description).to.equal('testdesc');
       expect(added.roadmapId).to.equal(roadmapId);
-      expect(added.attachments[0].attachment).to.equal('test attachment 1');
+      expect(added.attachments[0].link).to.equal('test attachment 1');
       expect(added.attachments[0].parentTask).to.equal(added.id);
-      expect(added.attachments[1].attachment).to.equal('test attachment 2');
+      expect(added.attachments[1].link).to.equal('test attachment 2');
       expect(added.attachments[1].parentTask).to.equal(added.id);
       const userId = (await getUser('AdminPerson1')).id;
       expect(added.createdByUser).to.equal(userId);

@@ -120,7 +120,7 @@ export interface TaskRequest {
   completed?: boolean;
   roadmapId?: number;
   createdByUser?: number;
-  attachments?: { attachment: string }[];
+  attachments?: { link: string }[];
 }
 
 export interface Taskrating {
@@ -276,5 +276,5 @@ export interface TaskmapPosition {
 export interface Attachment {
   id: number;
   parentTask: number;
-  attachment: string;
+  link: string;
 }

@@ -514,13 +514,13 @@ export const apiV2 = createApi({
     }),
     addAttachment: build.mutation<
       Attachment,
-      { roadmapId: number; taskId: number; attachment: string }
+      { roadmapId: number; taskId: number; link: string }
     >({
       invalidatesTags: (result) => (result ? ['Tasks'] : []),
-      query: ({ roadmapId, taskId, attachment }) => ({
+      query: ({ roadmapId, taskId, link }) => ({
         url: `roadmaps/${roadmapId}/tasks/${taskId}/attachments`,
         method: 'post',
-        data: { attachment },
+        data: { link },
       }),
     }),
     deleteAttachment: build.mutation<
@@ -535,13 +535,13 @@ export const apiV2 = createApi({
     }),
     editAttachment: build.mutation<
       Attachment,
-      { roadmapId: number; parentTask: number; id: number; attachment: string }
+      { roadmapId: number; parentTask: number; id: number; link: string }
     >({
       invalidatesTags: (result) => (result ? ['Tasks'] : []),
-      query: ({ roadmapId, parentTask, id, attachment }) => ({
+      query: ({ roadmapId, parentTask, id, link }) => ({
         url: `roadmaps/${roadmapId}/tasks/${parentTask}/attachments/${id}`,
         method: 'patch',
-        data: { attachment },
+        data: { link },
       }),
     }),
   }),
