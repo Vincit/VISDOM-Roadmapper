@@ -200,21 +200,6 @@ export const PlannerChart: FC<{
               strokeWidth={2}
             />
           ))}
-          <XAxis
-            tickCount={complexityAxisTicks}
-            type="number"
-            dataKey="complexitySum"
-            domain={[0, complexityDomainMax]}
-          >
-            <Label
-              position="center"
-              dx={-4}
-              dy={20}
-              className={classes(css.label)}
-            >
-              Total Complexity
-            </Label>
-          </XAxis>
 
           <YAxis
             type="number"
@@ -231,6 +216,21 @@ export const PlannerChart: FC<{
               Total Value
             </Label>
           </YAxis>
+          <XAxis
+            tickCount={complexityAxisTicks}
+            type="number"
+            dataKey="complexitySum"
+            domain={[0, complexityDomainMax]}
+          >
+            <Label
+              position="center"
+              dx={-4}
+              dy={20}
+              className={classes(css.label)}
+            >
+              Total Complexity
+            </Label>
+          </XAxis>
           <Legend
             verticalAlign="bottom"
             wrapperStyle={{ bottom: 12 }}
